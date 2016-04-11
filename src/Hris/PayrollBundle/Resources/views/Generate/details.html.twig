@@ -105,7 +105,7 @@
                                                     <td>Undertime</td>
                                                     <td class="numeric">{{ deductions['Undertime'] is defined ? deductions['Undertime']|number_format(2) : '0.00' }}</td>
                                                 </tr>
-                                                 <tr>
+                                                 {#<tr>
                                                     <td>SSS Premium</td>
                                                     <td class="numeric">{{ deductions['SSS'] is defined ? deductions['SSS']|number_format(2) : '0.00' }}</td>
                                                 </tr>
@@ -116,7 +116,7 @@
                                                  <tr>
                                                     <td>Pagibig</td>
                                                     <td class="numeric">{{ deductions['Pagibig'] is defined ? deductions['Pagibig']|number_format(2) : '0.00' }}</td>
-                                                </tr>
+                                                </tr>#}
                                                 {% if deductions['Others'] is defined %}
                                                 {% for l in deductions['Others'] %}
                                                     {% if l.isTaxable == true %}
