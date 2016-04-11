@@ -105,11 +105,10 @@ class PayrollComputation
         }elseif($payPeriod->getPayPeriod()->getName() == PayPeriod::TYPE_SEMIMONTHLY){
             $curr = new DateTime();
             $end1 = clone $curr;
-            $end1->setDate($end1->format('Y'), $payEnd->format('m'), $sched['cutoff_end1']);
+            $end1->setDate($end1->format('Y'), $end1->format('m'), $sched['cutoff_end1']);
             $end2 = clone $curr;
-            $end2->setDate($end1->format('Y'), $payEnd->format('m'), $sched['cutoff_end2']);
+            $end2->setDate($end1->format('Y'), $end2->format('m'), $sched['cutoff_end2']);
 
-            //what if im generating payroll for the past month?
 
             
             if($end1 > $curr){
@@ -142,6 +141,7 @@ class PayrollComputation
                 break;
 
             case self::DED_PHILHEALTH:
+                //echo Benefit::NAME_PHILHEALTH;
                 return $wm->hasEmployeeBenefit($employee, Benefit::NAME_PHILHEALTH);
                 break;
             
@@ -168,12 +168,17 @@ class PayrollComputation
         //     return $deductions;
         // }
 
-
         if($this->checkDeductionSched($this->config['sss_sched'], $this->config['sched'], $pay_period) && $this->checkEmployeeBenefit($employee, self::DED_SSS))
+        {
             $deductions[self::DED_SSS] = SSSDeduction::getDeductionAmount($employee, $this->em);
+        }
         
+        //echo $this->checkEmployeeBenefit($employee, self::DED_PHILHEALTH);
         if($this->checkDeductionSched($this->config['philhealth_sched'], $this->config['sched'], $pay_period)  && $this->checkEmployeeBenefit($employee, self::DED_PHILHEALTH))
+        {
             $deductions[self::DED_PHILHEALTH] = PhilhealthDeduction::getDeductionAmount($employee, $this->em);
+
+        }
         
         if($this->checkDeductionSched($this->config['pagibig_sched'], $this->config['sched'], $pay_period) &&  $this->checkEmployeeBenefit($employee, self::DED_PAGIBIG))
             $deductions[self::DED_PAGIBIG] = PagibigDeduction::getDeductionAmount($employee, $this->em);
@@ -597,7 +602,9 @@ class PayrollComputation
             $this->applyTax($payroll);
             $employee_payroll[] = $payroll;
         }
-        //die();
+
+        //print_r($this->config['philhealth_sched']);
+        // die();
         //die to see results
 
 

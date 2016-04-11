@@ -34,7 +34,7 @@ class Benefit
     const NAME_SICK = "Sick Leave";
     const NAME_MATERNITY = "Maternity Leave";
     const NAME_SSS = "SSS";
-    const NAME_PHILHEALTH = "PhileHealth";
+    const NAME_PHILHEALTH = "PhilHealth";
     const NAME_PAGIBIG = "PAG-IBIG";
     const NAME_PATERNITY = "Paterniy Leave";
     const NAME_PARENTAL = "Parental Leave";
