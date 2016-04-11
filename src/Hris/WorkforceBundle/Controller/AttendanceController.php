@@ -383,7 +383,7 @@ class AttendanceController extends CrudController
             }
             elseif($attendance->getStatus() == Attendance::STATUS_PAIDLEAVE)
             {
-                $arr[] = array('title' => Attendance::STATUS_PAIDLEAVE, 'start' => $start, 'end' => $end, 'backgroundColor' => '#ff00f4', 'late' => $attendance->getLateDisplay(), 'undertime' => $attendance->getUnderTimeDisplay()); 
+                $arr[] = array('title' => Attendance::STATUS_PAIDLEAVE, 'backgroundColor' => 'ff00f4', 'late' => null, 'undertime' => null); 
             }
 
         }
