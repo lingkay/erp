@@ -1,0 +1,202 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue-hoki">
+			<div class="portlet-title">
+				<div class="caption"> Biometrics Access Settings </div>
+			</div>
+			<div class="portlet-body">
+				<div class="table-toolbar">
+				</div>
+                    <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                            {% if app.user.hasAccess(prefix ~ '.add') %}
+                                {% set access = true %}
+                            {% else %}
+                                {% set access = false %}
+                            {% endif %}
+                        
+                            {# {{ form_tools.hidden('check',access)}} #}
+                            {{ form_tools.group_text('Username', 'username', username , 3, 4) }}
+                            {{ form_tools.group_password('Password', 'password', 3, 4) }}
+
+                        
+                        <div class="form-actions fluid">
+                            {% if app.user.hasAccess(prefix ~ '.add') %}
+                            <div class="col-md-9">
+                                <button type="submit" class="btn blue">Submit</button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </form>                
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="add-phone-modal" class="modal fade" role="dialog">
+    <form id="add-phone-form" method="post" action="{{ path('cnt_phone_ajax_add') }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Phone</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-body">
+                    {{ form.group_select('Type', 'name', '', '', 3, 8) }}
+                    {{ form.group_text('Number', 'number', '', 3, 8, false, prefix) }}                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="profile-phone-close" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="profile-phone-submit" type="submit" class="btn btn-primary">Add Phone</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+$(document).ready(function() {
+
+    
+
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+        if(element.parent().parent().hasClass('form-group'))
+        {
+            error.appendTo(element.parent().last());
+            element.parent().parent().addClass('has-error');
+        }
+        else if(element.parent().parent().hasClass('radio'))
+        {   
+            error.appendTo(element.parent().parent().parent().parent().last());
+            element.parent().parent().parent().parent().parent().addClass('has-error');
+        }
+        else if(element.parent().parent().hasClass('checker'))
+        {   
+            error.appendTo(element.parent().parent().parent().parent().last());
+            element.parent().parent().parent().parent().parent().addClass('has-error');
+        }
+        else if(element.parent().hasClass('tables'))
+        {   
+            error.appendTo(element.parent().last());
+            element.parent().addClass('has-error');
+        }
+        else
+        {
+            error.appendTo(element.parent().parent().last());
+            element.parent().parent().parent().addClass('has-error');
+        }
+        },
+        success: function(element) {
+        if(element.parent().parent().hasClass('form-group'))
+        {  
+            element.parent().parent().removeClass('has-error');
+            element.parent().parent().addClass('has-success');
+        }
+        else if(element.parent().parent().hasClass('checker'))
+        {   
+            element.parent().parent().parent().parent().parent().addClass('has-error');
+            element.parent().parent().parent().parent().parent().addClass('has-success');
+        }
+        else if(element.parent().parent().hasClass('radio'))
+        {   
+            element.parent().parent().parent().parent().parent().removeClass('has-error');
+            element.parent().parent().parent().parent().parent().addClass('has-success');
+        }
+        else if(element.parent().hasClass('tables'))
+        {   
+            element.parent().removeClass('has-error');
+            element.parent().addClass('has-success');
+        }
+        else
+        {  
+            element.parent().parent().parent().removeClass('has-error');
+            element.parent().parent().parent().addClass('has-success');
+        }
+
+        element.remove();
+        },
+    });
+    $("#add-phone-form").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+            number: {
+                required: true,
+                number: true,
+                minlength: 7,
+                maxlength: 13
+            },
+        },
+        submitHandler: function(form) {
+        // e.preventDefault();
+        var url = $(form).attr('action');
+        var data = $(form).serializeArray();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(data, text_status, xhr) {
+            // make phone node
+                var template = $('#phone-template').html();
+                Mustache.parse(template);   // optional, speeds up future uses
+                var rendered = Mustache.render(template, 
+                {
+                    type  :     data.data.name,
+                    number:     data.data.number,
+                    id    :     data.data.id,
+                    is_primary: data.data.is_primary
+                });
+                // copy over data and display
+                $('#phone-section').append(rendered);
+                // hide modal
+                $('#add-phone-modal').modal('hide');
+                },
+                error: function(xhr, text_status, error) {
+                }
+            });
+            return false;
+            }
+        });
+    });
+
+    $('#add-phone-modal').on('hidden.bs.modal', function(){
+        var validator = $('#add-phone-form').validate(); 
+        validator.resetForm();
+    });
+    $(".form-horizontal").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+            username: {
+                required: true
+                },
+            password: {
+                required: true
+                },
+            }
+        });
+    });
+
+    
+});
+</script>
+{% endblock %}

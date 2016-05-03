@@ -1,0 +1,40 @@
+{% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_SIGNING')%}
+{% set readonly = true %}
+{% endif %}
+<form method="post" class="form-horizontal form">
+    {{form.hidden('app_form','signing')}}
+	<div class="form-group">
+        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+	    {{ form.group_date('Scheduled Signing of Contract','signing_date',object.getContractSigning != null ? object.getContractSigning.date.date|date('m/d/Y'),3,5,readonly) }}
+        <div class="tabbable tabbable-custom tabbable-custom-profile">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_1_11" data-toggle="tab">
+                    Signing of Contract
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1_11">
+                    <div class="portlet-body">
+{#                         <div class="col-md-12">
+                        <a href="#" class="btn green" style="float: right;">Print Contract</a>  
+                        </div> #}
+                        {{form.group_textarea('Remarks', 'signing_remark', object.getContractSigning.remark|default(''),3,2,7, readonly)}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if not readonly %}
+		<div class="form-group">
+			<div class="col-md-9">
+                <button name="result" value="" type="submit" class="btn blue">Save</button>
+                {% if object.getContractSigning != null %}
+                <button name="result" value="pass" type="submit" class="btn green">Hired</button>
+                <button name="result" value="fail" type="submit" class="btn red">Decline</a>
+                {% endif %}
+			</div>
+		</div>
+        {% endif %} 
+	</div>
+</form>

@@ -1,0 +1,238 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Leave Details {# block form_header %}{% endblock #}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                    {% if dh is same as('true') %}
+                        {% set readonly = true %}
+                    {% endif %}
+                    {% if hr is same as('true') %}
+                        {% set readonly = true %}
+                    {% endif %}
+                    {{ form.hidden('csrf_token', app.session.get('csrf_token')) }}
+                    {{ form.hidden('leave_type_id', '') }}
+                    {{ form.typeahead('Employee Name','emp',object.getEmployee is not null ? object.getEmployee.getDisplayName:'',object.getEmployee is not null ? object.getEmployee.getID:'',path('hris_workforce_employee_ajax_get'),3,4,readonly) }}
+                    {{ form.hidden('emp_leave_id',object.getEmpLeave.getID|default(0))}}
+                    {{ form.group_select('Type of Leave','emp_leave_id',object.getEmployee is not null ? leave_type:'',object.getEmpLeave.getID|default(0),3,4,readonly) }}
+                    {{ form.group_text('Available Leave','avail_leave',object.getEmpLeave.getAvailLeaves|default(0),3,4,true) }}
+                    {{ form.group_number('No. Leave days applied','apply_leave',object.getAppliedLeaveDays|default(0),3,4,readonly) }}
+                    {{ form.group_date('Date Start', 'date_start',object.getDateStart|date('m/d/Y'),3,4,readonly) }}
+                    {{ form.group_date('Date End', 'date_end',object.getDateEnd|date('m/d/Y'),3,4,true) }}
+                    {{ form.group_textarea('Reason for Leave', 'notes',object.getNotes|default(''),3,3,4,readonly)}}
+                    {% if object.getStatus is not same as(null) %}
+                        {{ form.group_text('Status','status',object.getStatus|default(''),3,4,true) }}
+                    {% endif %}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% set status = object.getStatus %}
+                            {% if object.getDateReviewedDH is null %}
+                                {% if (status is same as('Pending') or status is same as('Pending Review')) %}
+                                {% if app.user.hasAccess('hris_workforce_leave.review') and dh is same as('true') %}
+                                <button type="submit" name="action_btn" value="ReviewDH" class="btn blue">Review</button>
+                                {% endif %}
+
+                                {% if app.user.hasAccess('hris_workforce_leave.reject') and dh is same as('true') %}
+                                <button type="submit" name="action_btn" value="Reject" class="btn red">Reject</button>
+                                {% endif %}
+                                {% endif %}
+                            {% endif %}
+                            
+                            {% if object.getDateReviewedHR is null %}
+                                {% if (status is same as('Pending') or status is same as('Pending Review')) %}
+                                {% if app.user.hasAccess('hris_workforce_leave.review')  and hr is same as('true') %}
+                                <button type="submit" name="action_btn" value="ReviewHR" class="btn blue">Review</button>
+                                {% endif %}
+
+                                {% if app.user.hasAccess('hris_workforce_leave.reject') and hr is same as('true') %}
+                                <button type="submit" name="action_btn" value="Reject" class="btn red">Reject</button>
+                                {% endif %}
+                                {% endif %}
+                            {% endif %}
+                            
+                            {% if (status is same as('Reviewed') and app.user.hasAccess('hris_workforce_leave.approve')) %}
+                            <button type="submit" name="action_btn" value="Approve" class="btn green">Approve</button>
+                            {% endif %}
+                            {% if (app.user.hasAccess('hris_workforce_leave.reject') and vp is same as('true')) and (object.getStatus != 'Approved')  %}
+                            <button type="submit" name="action_btn" value="Reject" class="btn red">Reject</button>
+                            {% endif %}
+                            {% if not readonly %}
+                                {% if app.user.getName is same as('Administrator') or app.user.hasAccess('hris_workforce_leave.add') %}
+                                <button type="submit" class="btn green">Submit</button>
+                                {% endif %}
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function setLeaveDates() {
+    var date = new Date($("input[name='date_start']").val()),
+       days = parseInt($('input[name="apply_leave"]').val(), 10);
+    // console.log(days);
+
+    if(!isNaN(date.getTime())){
+        date.setDate(date.getDate() + (days-1));
+        $("input[name='date_end']").val(date.toInputFormat());
+    } else {
+        alert("Invalid Date");  
+    }
+}
+
+function setLeaveCount(data) {
+    // console.log(data.avail_leave);
+    // console.log(data.count_type);
+    $('input[name="avail_leave"]').val(data.avail_leave);
+    $('input[name="leave_type_id"]').val(data.id);
+    if(data.count_type == 'per Year') {
+        $('input[name="apply_leave"]').val(1);
+        $('input[name="apply_leave"]').attr({
+            'readonly': false,
+            'max': data.avail_leave,
+            'min': 1
+        });
+    }
+    else if(data.count_type == 'per Request') {
+        $('input[name="apply_leave"]').val(data.avail_leave);
+        $('input[name="apply_leave"]').attr({
+            'readonly': true,
+            'max': data.avail_leave,
+            'min': 1
+        });
+    }
+    else {
+        $('input[name="apply_leave"]').val(data.avail_leave);
+        $('input[name="apply_leave"]').attr({
+            'readonly': false,
+            'max': data.avail_leave,
+            'min': 1
+        });
+    }
+}
+
+function filter_select(emp_id) {
+    if (emp_id == 0) {
+        return false;
+    }
+
+    var url = "{{ path ('hris_profile_leaves_emp_ajax', { id: ':emp_id' }) }}";
+    url = url.replace(":emp_id", emp_id);
+    // var sel = {{ object.getLeaveType.getID|default(0) }};
+
+    $('select[name="emp_leave_id"]').empty();
+
+    console.log(url);
+    // get evaluator list
+    $.getJSON(url, function(data){
+        console.log(data);
+
+        $('select[name="emp_leave_id"]').html('<option></option>').select2();
+        i=0;
+        for(var index in data)
+        {
+            $('select[name="emp_leave_id"]').append('<option value="'+ data[index].id + '">'+ data[index].name + ' </option>');
+        }
+        // set selected index value
+        // if (sel !== 0) {
+        //     $('select[name="emp_leave_id"]').val(sel).trigger('change');   
+        // };
+    });
+}
+
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+    $(".datetime").datetimepicker({
+        isRTL: Metronic.isRTL(),
+        format: "mm/dd/yyyy HH:ii P",
+        showMeridian: true,
+        autoclose: true,
+        todayBtn: true
+    });
+
+    $('select[name="emp_leave_id"]').change(function() {
+        var url = "{{ path('hris_profile_leave_emp_ajax', {'id': ':id'}) }}";
+        url = url.replace(':id', $(this).val());
+        
+        // console.log(url);
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(data, text_status, xhr) {
+                setLeaveCount(data);
+                setLeaveDates();
+            },
+            error: function(xhr, text_status, error) {
+            }
+        });
+    });
+
+    $("input[name='apply_leave']").on("change", function(){
+       setLeaveDates();
+    });
+
+    $("input[name='date_start']").on("change", function(){
+       setLeaveDates();
+    });
+
+    Date.prototype.toInputFormat = function() {
+       var yyyy = this.getFullYear().toString();
+       var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+       var dd  = this.getDate().toString();
+       return (mm[1]?mm:"0"+mm[0]) + "/" + (dd[1]?dd:"0"+dd[0]) + "/" + yyyy; // padding
+    };
+
+    $('input[name="emp_id"]').on("change", function(){
+        filter_select($(this).val());
+    });
+
+    $('.typeahead').each(function(){
+        var auto = $(this);
+        auto.typeahead('destroy');
+    });
+
+    $('#cemp_typeahead').typeahead({
+        ajax: "{{ path('hris_workforce_employee_ajax_get') }}",
+        onSelect: function(item){
+            $('#cemp_id').val(item.value);
+            filter_select(item.value);
+        }
+    });
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                {# <div class="form-horizontal">
+                    {{ form_tools.typeahead_noclear('Employee Name','emp','','',path('hris_workforce_employee_ajax_get'),4,4)}}
+                    {{ form_tools.typeahead_noclear('Item Name','item','', '',path('hris_workforce_issued_property_ajax_get'),4,4)}}
+                    <div class="col-md-8">
+                    <button class="btn red pull-right" id="clear_filter">Clear Filters</button>    
+                    </div>
+                    
+                </div> #}
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                            <th style="width: 165px">{{ col.getLabel }}</th>
+                            {% else %}
+                            <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+var dTable;
+function generatePath() {
+    var id = $('#cemp_id').val();
+    var item = $('#citem_id').val();
+
+    path = "{{ path('hris_workforce_issued_property_ajax_grid', { 'id' : 'ID', 'item_name' : 'ITEM'} ) }}";
+    if (id == null || id == '') {
+        path = path.replace('ID', null);
+    } else {
+        path = path.replace('ID', id);
+    };
+
+    if (item == null || item == '') {
+        path = path.replace('ITEM', null);
+    } else {
+        path = path.replace('ITEM', item);
+    };
+
+    return path;
+}
+
+$(document).ready(function() {
+    var path = '';
+
+    path = generatePath();
+
+    dTable = $('#list_table').dataTable({
+        "bProcessing": true,
+        "sAjaxSource": "{{ path('hris_workforce_201_grid') }}",
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+{% endblock %}

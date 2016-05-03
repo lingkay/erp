@@ -1,0 +1,46 @@
+{% macro main_menu(menu_items) %}
+    {% import _self as menu %}
+    <ul class="page-sidebar-menu" data-auto-scroll="false" data-auto-speed="200">
+    {% for mi in menu_items %}
+        <li class="{% if loop.first %}start{% endif %}{% if mi.isSelected %} active{% if mi.hasChildren %} open{% endif %}{% endif %}">
+            <a href="{{ mi.getLink }}">
+                {% if mi.getIcon != null %}
+                <i class="fa {{ mi.getIcon }}"></i>
+                {% endif %}
+                <span class="title">{{ mi.getLabel }}</span>
+                {% if mi.isSelected %}
+                <span class="selected"></span>
+                {% endif %}
+                {% if mi.hasChildren %}
+                <span class="arrow "></span>
+                {% endif %}
+            </a>
+            {% if mi.hasChildren %}
+            {{ menu.sub_menu(mi.getChildren) }}
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro sub_menu(menu_items) %}
+    {% import _self as menu %}
+    <ul class="sub-menu">
+    {% for mi in menu_items %}
+        <li class="{% if mi.isSelected %}active{% if mi.hasChildren %} open{% endif %}{% endif %}">
+            <a href="{{ mi.getLink }}">
+                {% if mi.getIcon != null %}
+                <i class="fa {{ mi.getIcon }}"></i>
+                {% endif %}
+                {{ mi.getLabel }}
+                {% if mi.hasChildren %}
+                <span class="arrow "></span>
+                {% endif %}
+            </a>
+            {% if mi.hasChildren %}
+            {{ menu.sub_menu(mi.getChildren) }}
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% endmacro %}

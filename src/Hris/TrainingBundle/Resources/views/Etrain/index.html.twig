@@ -1,0 +1,141 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue-hoki">
+			<div class="portlet-title">
+				<div class="caption"> {{list_title}} </div>
+			</div>
+			<div class="portlet-body">
+				<div class="table-toolbar">
+					{% if app.user.hasAccess(prefix ~ '.add') %}
+						<a href="{{ path(route_add) }}" class="btn green">Add New {{title}} </a>
+					{% endif %}
+				</div>                
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                            <th style="width: 90px">{{ col.getLabel }}</th>
+                            {% else %}
+                            <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    <td>CCNA certification training</td>
+                    <td>Cisco Networking</td>
+                    <td>2015-03-25</td>
+                    <td>On-going</td>
+                            <td style="width: 125px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Introduction to SAP</td>
+                    <td>SAP</td>
+                    <td>2015-03-13</td>
+                    <td>Cancelled</td>
+                            <td style="width: 120px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Introduction to Avaya</td>
+                    <td>Avaya</td>
+                    <td>2015-02-15</td>
+                    <td>Done</td>
+                            <td style="width: 120px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Marketing Philosophies and Ethics</td>
+                    <td>Marketing and Sales concepts</td>
+                    <td>2015-01-22 - 2015-01-25</td>
+                    <td>Cancelled</td>
+                            <td style="width: 120px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Discovering and Meeting Marketing Needs</td>
+                    <td>Marketing</td>
+                    <td>2015-01-26</td>
+                    <td>Done</td>
+                            <td style="width: 120px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    </tbody>
+                </table>     
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

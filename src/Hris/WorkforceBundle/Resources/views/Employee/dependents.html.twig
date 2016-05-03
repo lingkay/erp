@@ -1,0 +1,130 @@
+<form method="post" class="form-horizontal form">
+    <div class="form-body">
+        <h4 class="form-section">Civil Status</h4>
+            {{ form.hidden('employee_form','dependents')}}
+            {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+
+            {{ form.group_select('Civil Status', 'civil',civil_opts, object.getMaritalStatus, 3, 4, readonly) }}
+        <h4 class="form-section">Qualified Dependent(s)</h4>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <a href="#dependent_form" class="btn green" data-toggle="modal" style="float: right;">Add Dependent</a>
+                </div> 
+            </div>
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Relationship</td>
+                        <td>Birthdate</td>
+                        <td>Remarks</td>
+                        <td>Qualified Dependent?</td>
+                        <td style="width: 90px"></td>
+                    </tr>
+                </thead>
+                <tbody id="dependent_table">
+                {% for dependent in object.getDependents%}
+                    <td><input type = "hidden" name = "dependent_name[]" value = "{{dependent.name}}">{{dependent.name}}</td>
+                    <td><input type = "hidden" name = "dependent_relationship[]" value = "{{dependent.relationship}}">{{dependent.relationship}}</td>
+                    <td><input type = "hidden" name = "dependent_birthdate[]" value ="{{dependent.birthdate}}">{{dependent.birthdate}}</td>
+                    <td><input type = "hidden" name = "dependent_remarks[]" value ="{{dependent.remarks}}">{{dependent.remarks}}</td>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-md-1 control-label"></label>
+                                <div class="col-md-9">
+                                    <div class="radio-list">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="{{dependent.name}}_qualified" id="cform-qualified" value="qualified" 
+                                                {% if dependent != null %}
+                                                    {% if dependent.qualified == 'qualified'%}
+                                                    checked 
+                                                    {% endif %}
+                                                {% endif %}
+                                            />Yes
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="{{dependent.name}}_qualified" id="cform-qualified" value="not qualified"
+                                                {% if dependent != null %}
+                                                    {% if dependent.qualified == 'not qualified'%}
+                                                        checked 
+                                                    {% endif %}
+                                                {% endif %}
+                                            />No
+                                        </label>
+                                    </div>
+                                </div>
+                        </div>
+                 </td>
+                    <td><button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table> 
+        <div class="form-actions fluid">
+            <div class="col-md-9">
+                {% if not readonly %}
+                <button type="submit" class="btn blue">Submit</button>
+                {% endif %}
+                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+{%embed "HrisWorkforceBundle:Employee:modal/dependents_form.html.twig"%}{%endembed%}
+
+{% block js %}
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+    $('#dependent_form').on('hidden.bs.modal', function () {
+        $('#cform-dependent').val('');
+        $('#cform-relationship').val('');
+        $('#cform-dep_birthday').val('');
+        $('#cform-condition').val('0');
+        var $element = $('#cform-condition').select2();
+        $element.trigger('change');
+    });
+
+    $('#btn_dependent_submit').click(function(){
+        if ($('#cform-dependent').val() == '' || $('#cform-relationship').val() == '') 
+        {
+            //toastr['error']("Incomplete form", 'Error');
+        }
+        else
+        {
+            var dependent_name = $('#cform-dependent').val();
+            var relationship = $('#cform-relationship').val();
+            var birth_date = $('#cform-dep_birthday').val();
+            var remarks = $('#cform-condition').val();
+            var dependent_qualified = $('input[name=qualified]:checked').val();
+            var row = '<tr>';
+            if(dependent_qualified == 'qualified')
+            {
+                var qualified = 'checked';
+            }
+            else if (dependent_qualified == 'not qualified')
+            {
+                var not_qualified = 'checked';
+            }
+            row += '<td><input type = "hidden" name = "dependent_name[]" value = "'+ dependent_name +'">'+ dependent_name +'</td>';
+            row += '<td><input type = "hidden" name = "dependent_relationship[]" value = "'+ relationship +'">'+ relationship +'</td>';
+            row += '<td><input type = "hidden" name = "dependent_birthdate[]" value ="'+ birth_date +'">'+ birth_date + '</td>';
+            row += '<td><input type = "hidden" name = "dependent_remarks[]" value ="'+ remarks +'">'+ remarks + '</td>';
+           
+            row += '<td><div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-9"><div class="radio-list"><label class="radio-inline"><input type="radio" name="'+dependent_name+'_qualified" id="cform-qualified" value="qualified" '+qualified+'/>Yes</label><label class="radio-inline"><input type="radio" name="'+dependent_name+'_qualified" id="cform-qualified" value="not qualified" '+not_qualified+'/>No</label></div></div></div></td>';   
+            row += '<td><button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button></td>';
+            row += '</tr>';
+
+            $('#dependent_table').append(row);
+            $('#dependent_form').modal('hide');
+        }
+    });
+
+    $('#dependent_table').on('click', '.btn_en_del', function() {
+        var row = $(this).closest('tr');
+        row.remove();
+    });
+});   
+</script>
+{% endblock %}

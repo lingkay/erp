@@ -1,0 +1,10 @@
+app/cache/*
+app/logs/*
+web/uploads/images/*
+web/bundles
+web/uploads/*
+web/css/*
+web/js/*
+vendor/
+app/config/parameters.yml
+.phpintel/*

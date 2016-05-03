@@ -1,0 +1,176 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Memo</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <input type="hidden" name="type" id="type" value="{{type}}">
+                              {{ form.group_text('Issued by', 'issued_by', object.getUserCreate.getEmployee.getDisplayName|default(''), 3, 4, true) }}
+                                {{ form.typeahead('Employee Name','emp',object.getEmployee is not null ? object.getEmployeeName : "",
+                                           object.getEmployee is not null ? object.getEmployee.getID: "",path('hris_workforce_employee_ajax_get'),3,4, readonly)}}
+                              {{ form.group_text('Department','issued_to_dept', object.getEmployee.getDepartment.getName|default(''),3,4, true) }}
+                            
+                           {#  <div id="agent">
+                            {{ form.group_text('Agency', 'agency', agency|default(''), 3, 4) }}
+                            </div> #}
+                            {{ form.group_date('Date Issued','issued_date', object.getDateCreate|default('')|date('m/d/Y'),3,4) }}
+                        </div>
+                    </div>
+                    <hr>
+                        
+                    {# {{ form.group_text('Department From', 'department_from', object.getEmployee.getDepartment.getName, 3, 4, readonly) }}
+                    {{ form.group_select('Department To','department_to',dept_opts, department_to|default('') ,3,4, readonly) }}
+                    {{ form.group_text('Position From', 'position_from', object.getEmployee.getJobTitle.getName, 3, 4, readonly) }}
+                    {{ form.group_select('Position To','position_to', position_to, joblevel_to|default('') ,3,4, readonly) }}
+                    {{ form.group_text('Job-level From', 'joblevel_from', object.getEmployee.getJobLevel.getName, 3, 4, readonly) }}
+                    {{ form.group_select('Job Level To','joblevel_to', level_opts, joblevel_to|default('') ,3,4, readonly) }} #}
+
+                    {% if object.getID != null %}
+                    {{ form.group_text('Department From', 'department_from', object.getEmployee.getDepartment.getName, 3, 4, true) }}
+                    {{ form.group_text('Department To', 'department_to', department_to|default(''), 3, 4, true) }}
+                    {{ form.group_text('Position From', 'position_from', object.getEmployee.getJobTitle.getName, 3, 4, true) }}
+                    {{ form.group_text('Position To', 'position_to', position_to|default(''), 3, 4, true) }}
+                    {{ form.group_text('Job-level From', 'joblevel_from', object.getEmployee.getJobLevel.getName, 3, 4, true) }}
+                    {{ form.group_text('Job-level To', 'joblevel_to', joblevel_to|default(''), 3, 4, true) }}
+                    {% else %}
+                    {{ form.group_text('Department From', 'department_from', object.getEmployee.getDepartment.getName, 3, 4, true) }}
+                    {{ form.group_select('Department To','department_to',dept_opts, '' ,3,4, readonly) }}
+                    {{ form.group_text('Position From', 'position_from', object.getEmployee.getJobTitle.getName, 3, 4, true) }}
+                    {{ form.group_select('Position To','position_to', title_opts, '' ,3,4, readonly) }}
+                    {{ form.group_text('Job-level From', 'joblevel_from', object.getEmployee.getJobLevel.getName, 3, 4, true) }}
+                    {{ form.group_select('Job Level To','joblevel_to', level_opts, '' ,3,4, readonly) }}
+                    {% endif %}
+
+
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-6">
+                            {% if object.getStatus == 'Draft' %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="pull-right">
+                            {% if object.getID != null %}
+                                {% if object.getStatus == 'Draft' and is_hr == true %}
+                                <a href="{{ path('hris_memo_promotion_change_status', {id: object.getID, type: type, status: 'Sent'}) }}" class="btn blue-hoki">Send</a>
+                                {% endif %}
+                                {% if object.getStatus == 'Sent' and is_vp == true %}
+                                <a href="{{ path('hris_memo_promotion_change_status', {id: object.getID, type: type, status: 'Reviewed'}) }}" class="btn blue-hoki">Reviewed</a>
+                                {% endif %}
+                                {% if object.getStatus == 'Reviewed' and is_president == true %}
+                                <a href="{{ path('hris_memo_promotion_change_status', {id: object.getID, type: type, status: 'Approved'}) }}" class="btn blue-hoki">Approved</a>
+                                {% endif %}
+
+                                {% if object.getStatus == 'Approved' %}
+                                 <a href="{{ path('hris_memo_promotion_print', {id: object.getID}) }}" class="btn green">Print</a>
+                                {% endif %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(document).ready( function() {
+    $('.calendar').prop('disabled', true);
+
+     $('#cform-date_from').datepicker().on('changeDate', function (ev) {
+            $('#cform-date_to').datepicker({
+            todayHighlight: true,
+            startDate: $('#cform-date_from').val(),
+            });
+    });
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            event_name: "required",
+            emp: "required",
+            location: "required",
+            violation_committed: "required",
+            violated_policy: "required",
+            date_of_incident: "required",
+        },
+        messages: {
+            event_name: "Event name cannot be blank.",
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,79 @@
+<div class="col-md-6 col-sm-6">
+    <!-- BEGIN PORTLET-->
+    <div class="portlet box blue-madison">
+        <div class="portlet-title line">
+            <div class="caption">
+                <i class="fa fa-bell-o"></i>Memo
+            </div>
+            <div class="tools">
+                <a href="" class="collapse">
+                </a>
+                <a href="#portlet-config" data-toggle="modal" class="config">
+                </a>
+                <a href="" class="reload">
+                </a>
+                <a href="" class="remove">
+                </a>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <!--BEGIN TABS-->
+            <div class="tabbable tabbable-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_1_3" data-toggle="tab">
+                        Tardiness </a>
+                    </li>
+                    <li>
+                        <a href="#tab_1_2" data-toggle="tab">
+                        Disciplinary Action </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1_3">
+                        <div class="scroller" style="height: 290px;" data-always-visible="1" data-rail-visible1="1">
+                            <div class="row">
+                                <div class="col-md-6 user-info">
+                                    <img alt="" src="{{ asset('bundles/catalysttemplate/assets/admin/layout/img/avatar.png') }}" class="img-responsive"/>
+                                    <div class="details">
+                                        <div>
+                                            <a href="#">
+                                            Jerome Farañal </a>
+                                            <span class="label label-sm label-warning label-mini">
+                                            Late </span>
+                                        </div>
+                                        <div>
+                                             31 Mar 2015 11:00AM
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="tab_1_2">
+                        <div class="scroller" style="height: 290px;" data-always-visible="1" data-rail-visible1="1">
+                            <div class="row">
+                                <div class="col-md-6 user-info">
+                                    <img alt="" src="{{ asset('bundles/catalysttemplate/assets/admin/layout/img/avatar.png') }}" class="img-responsive"/>
+                                    <div class="details">
+                                        <div>
+                                            <a href="#">
+                                            Jerome Faranal </a>
+                                            <span class="badge badge-danger">5 </span>
+                                        </div>
+                                        <div>
+                                            <a href="#memo_type" class="btn btn-xs blue" data-toggle="modal">Send Memo</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--END TABS-->
+        </div>
+    </div>
+    <!-- END PORTLET-->
+</div>

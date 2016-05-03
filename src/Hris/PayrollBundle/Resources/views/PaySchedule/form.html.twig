@@ -1,0 +1,86 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+        <div class="portlet-body form">
+        <!-- BEGIN FORM-->
+            <form method="post" class="form-horizontal">
+                <div class="form-body">
+                    <div class="form-group">
+                        {{ form.group_text('Schedule Name','name', object.getName|default(''),3,4, readonly) }}
+                        {{ form.group_select('Period','period', sched_opts, object.getPeriod != null ? object.getPeriod.getID:"",3,4, readonly) }}
+
+                        <div id="weekly_period" class="period">
+                            {{ form.group_select('Weekly Cutoff Start','startend[weekly_start]', days_opts,object.getStartEnd != null ? object.getStartEnd['weekly_start']:'0',3,4, readonly) }}
+                            {{ form.group_select('Weekly Cutoff End','startend[weekly_end]', days_opts,object.getStartEnd != null ? object.getStartEnd['weekly_end']:'0',3,4, readonly) }}
+                            {{ form.group_select('Weekly Cutoff Pay','startend[weekly_pay]', days_opts,object.getStartEnd != null ? object.getStartEnd['weekly_pay']:'0',3,4, readonly) }}
+                        </div>
+
+                        <div id="monthly_period" class="period">
+                            {{ form.group_select('Monthly Cutoff Start','startend[monthly_start]', dates_opts,object.getStartEnd != null ? object.getStartEnd['monthly_start']:'0',3,4, readonly) }}
+                            {{ form.group_select('Monthly Cutoff End','startend[monthly_end]', dates_opts,object.getStartEnd != null ? object.getStartEnd['monthly_end']:'0',3,4, readonly) }}
+                            {{ form.group_select('Monthly Cutoff Pay','startend[monthly_pay]', dates_opts,object.getStartEnd != null ? object.getStartEnd['monthly_pay']:'0',3,4, readonly) }}
+                        </div>
+
+                        <div id="semimonthly_period" class="period">
+                            {{ form.group_select('Semi Monthly Cutoff Start 1','startend[semimonthly_start1]', dates_opts,object.getStartEnd != null ? object.getStartEnd['semimonthly_start1']:'0',3,4, readonly) }}
+                            {{ form.group_select('Semi Monthly Cutoff End 1','startend[semimonthly_end1]', dates_opts,object.getStartEnd != null ? object.getStartEnd['semimonthly_end1']:'0',3,4, readonly) }}
+                            {{ form.group_select('Semi Monthly Cutoff Pay 1','startend[semimonthly_pay1]', dates_opts,object.getStartEnd != null ? object.getStartEnd['semimonthly_pay1']:'0',3,4, readonly) }}
+
+                            {{ form.group_select('Semi Monthly Cutoff Start 2','startend[semimonthly_start2]', dates_opts,object.getStartEnd != null ? object.getStartEnd['semimonthly_start2']:'0',3,4, readonly) }}
+                            {{ form.group_select('Semi Monthly Cutoff End 2','startend[semimonthly_end2]', dates_opts,object.getStartEnd != null ? object.getStartEnd['semimonthly_end2']:'0',3,4, readonly) }}
+                            {{ form.group_select('Semi Monthly Cutoff Pay 2','startend[semimonthly_pay2]', dates_opts,object.getStartEnd != null ? object.getStartEnd['semimonthly_pay2']:'0',3,4, readonly) }}
+                        </div>
+
+                    </div> 
+                </div>
+                <div class="form-actions fluid">
+                    <div class="col-md-offset-3 col-md-12">
+                        {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                        {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        <!-- END FORM-->
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js%}
+<script>
+
+$(document).ready(function() {
+    showfields();
+    function showfields()
+    {
+         $('.period').each(function(){
+            $(this).hide();
+        });
+        selected = $('#cform-period option:selected').text();
+        switch(selected)
+        {
+            case 'Weekly': $('#weekly_period').show();
+                break;
+            case 'Monthly': $('#monthly_period').show();
+                break;
+            case 'Semi-Monthly': $('#semimonthly_period').show();
+                break;
+        }
+    }
+    $('#cform-period').change(function(){
+       
+        showfields();
+
+    });
+});
+</script>
+{% endblock %}

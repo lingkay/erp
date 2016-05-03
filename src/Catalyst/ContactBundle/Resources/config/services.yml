@@ -1,0 +1,5 @@
+services:
+    catalyst_contact:
+        class: Catalyst\ContactBundle\Model\ContactManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"

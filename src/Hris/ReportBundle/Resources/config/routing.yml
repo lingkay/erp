@@ -1,0 +1,294 @@
+hris_report_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: HrisReportBundle:Default:index }
+
+
+
+## Attendace Reports
+
+hris_report_attendance_index:
+    path:     /attendance
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:AttendanceReport:index }
+
+hris_report_attendance_grid:
+    path:     /attendance/grid
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:AttendanceReport:grid }
+
+hris_report_attendance_print:
+    path:     /attendance/print/{id}/{date_from}/{date_to}/{department}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:AttendanceReport:print, id: null, date_from: null, date_to: null, department: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
+
+hris_report_attendance_csv:
+    path:     /attendance/csv/{id}/{date_from}/{date_to}/{department}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:AttendanceReport:csv, id: null, date_from: null, date_to: null, department: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
+
+
+hris_report_attendance_view:
+    path:     /attendance/view
+    defaults: { _controller: HrisReportBundle:AttendanceReport:view }
+
+hris_report_attendance_ajax_grid:
+    path:    /attendances/ajax/{id}/{department}/{date_from}/{date_to}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
+    defaults: { _controller: HrisReportBundle:AttendanceReport:gridAttendancesReport,id: null,department: null, date_from: null, date_to: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
+
+hris_report_attendance_ajax:
+    path:    /attendance/{id}/{date_from}/{date_to}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
+    defaults: { _controller: HrisReportBundle:AttendanceReport:gridAttendanceReport,id: null,department: null, date_from: null, date_to: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
+
+## Regular Employees Report
+
+hris_report_regulars_index:
+    path:     /regulars
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:RegularsReport:index }
+
+hris_report_regulars_grid:
+    path:     /regulars/grid
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:RegularsReport:grid }
+
+hris_report_regulars_print:
+    path:     /regulars/print/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:RegularsReport:print, id: null }
+
+hris_report_regulars_csv:
+    path:     /regulars/csv/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:RegularsReport:csv, id: null }
+
+hris_report_regulars_view:
+    path:     /regulars/view
+    defaults: { _controller: HrisReportBundle:RegularsReport:view }
+
+hris_report_regulars_ajax_grid:
+    path:    /regulars/ajax/{id}
+    defaults: { _controller: HrisReportBundle:RegularsReport:gridRegularsReport,id: null }
+
+hris_report_regulars_ajax:
+    path:    /regulars/{id}
+    defaults: { _controller: HrisReportBundle:RegularsReport:gridRegularReport,id: null }
+
+## Total Expense Report
+
+hris_report_total_expense_index:
+    path:     /totalexpense
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:index }
+
+hris_report_total_expense_grid:
+    path:     /totalexpense/grid
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:grid }
+
+hris_report_total_expense_print:
+    path:     /totalexpense/print/{month}/{year}
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:print, month: null, year: null }
+
+hris_report_total_expense_csv:
+    path:     /totalexpense/csv/{month}/{year}
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:csv, month: null, year: null }
+
+hris_report_total_expense_view:
+    path:     /totalexpense/view
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:view }
+
+hris_report_total_expense_ajax_grid:
+    path:    /totalexpense/ajax/{month}/{year}
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:gridTotalExpenseReport,month: null, year: null }
+
+hris_report_total_expense_ajax:
+    path:    /totalexpense/{id}
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:gridRegularReport,id: null }
+
+hris_report_total_expense_update_total:
+    path: /totalexpense/grid/update/{month}/{year}
+    defaults: { _controller: HrisReportBundle:TotalExpenseReport:updateTotal,month: null, year: null }
+
+# Reimbursement Report
+
+hris_report_reimbursement_index:
+    path:     /reimbursements
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:ReimbursementReport:index }
+
+hris_report_reimbursement_grid:
+    path:       /reimbursements/grid/{department}/{date_from}/{date_to}/{status}
+    methods:    [GET]
+    defaults:   { _controller: HrisReportBundle:ReimbursementReport:gridReimbursement, department: null, date_from: null, date_to: null, status: null }
+
+hris_report_reimbursement_print:
+    path:       /reimbursements/print/{department}/{date_from}/{date_to}/{status}
+    methods:    [GET]
+    defaults:   { _controller: HrisReportBundle:ReimbursementReport:print, department: null, date_from: null, date_to: null, status: null }
+
+hris_report_reimbursement_export:
+    path:       /reimbursements/export/{department}/{date_from}/{date_to}/{status}
+    methods:    [GET]
+    defaults:   { _controller: HrisReportBundle:ReimbursementReport:reimbursementCSV, department: null, date_from: null, date_to: null, status: null }
+
+# Turnover Report
+
+hris_report_turnover_index:
+    path:     /turnovers
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:TurnoverReport:index }
+
+hris_report_turnover_grid:
+    path:       /turnovers/grid/{department}/{date_from}/{date_to}
+    methods:    [GET]
+    defaults:   { _controller: HrisReportBundle:TurnoverReport:gridTurnover, department: null, date_from: null, date_to: null }
+
+hris_report_turnover_print:
+    path:    /turnovers/print/{department}/{date_from}/{date_to}
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:TurnoverReport:print, department: null, date_from: null, date_to: null}
+
+hris_report_turnover_export:
+    path:    /turnovers/export/{department}/{date_from}/{date_to}
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:TurnoverReport:turnoverCSV, department: null, date_from: null, date_to: null}
+
+## Loan Reports
+
+hris_report_loans_index:
+    path:    /loans
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:LoanReport:index }
+
+hris_report_loans_grid:
+    pattern: /loans/grid
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:LoanReport:grid }
+
+hris_report_loans_submit:
+    path:    /loans
+    methods: [POST]
+    defaults: { _controller: HrisReportBundle:LoanReport:submit }
+
+hris_report_loans_ajax_get:
+    pattern: /ajax/loans/{id}
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:LoanReport:ajaxGet }
+
+hris_report_loans_status:
+    pattern: /loan/{id}/status/{status}
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:LoanReport:statusUpdate}
+
+hris_report_loans_ajax_grid:
+    pattern: /loans/ajax/{id}/{date_from}/{date_to}
+    defaults: { _controller: HrisReportBundle:LoanReport:gridIncentive}
+
+hris_report_loans_ajax_filter_get:
+    pattern: /ajax/filter/loans
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:LoanReport:ajaxFilterGet }
+
+hris_report_loans_print:
+    pattern: /loans/print
+    methods: [POST]
+    defaults: { _controller: HrisReportBundle:LoanReport:print }
+
+
+## Incentive Reports
+
+hris_report_incentives_index:
+    path:    /incentives
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:IncentiveReport:index }
+
+hris_report_incentives_grid:
+    pattern: /incentives/grid
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:IncentiveReport:grid }
+
+hris_report_incentives_submit:
+    path:    /incentives
+    methods: [POST]
+    defaults: { _controller: HrisReportBundle:IncentiveReport:submit }
+
+hris_report_incentives_ajax_get:
+    pattern: /ajax/incentives/{id}
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:IncentiveReport:ajaxGet }
+
+hris_report_incentives_status:
+    pattern: /incentive/{id}/status/{status}
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:IncentiveReport:statusUpdate}
+
+hris_report_incentives_ajax_grid:
+    pattern: /incentives/ajax/{id}/{date_from}/{date_to}
+    defaults: { _controller: HrisReportBundle:IncentiveReport:gridIncentive}
+
+hris_report_incentives_ajax_filter_get:
+    pattern: /ajax/filter/incentives
+    methods: [GET]
+    defaults: { _controller: HrisReportBundle:IncentiveReport:ajaxFilterGet }
+
+hris_report_incentives_print:
+    pattern: /incentives/print
+    methods: [POST]
+    defaults: { _controller: HrisReportBundle:IncentiveReport:print }
+
+
+## Evaluation Reports
+
+hris_report_evals_index:
+    path:     /evaluations
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:EvaluationReport:index }
+
+hris_report_evals_grid:
+    path:     /evaluations/grid
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:EvaluationReport:gridEval }
+
+hris_report_evals_print:
+    pattern:  /evaluation/print/{id}
+    defaults: { _controller: HrisReportBundle:EvaluationReport:printEval }
+
+hris_report_evals_print_all:
+    pattern:  /evaluations/print/all
+    defaults: { _controller: HrisReportBundle:EvaluationReport:printAll }
+
+
+## Leave Reports
+
+hris_report_leave_index:
+    path:     /leaves
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:LeavesReport:index }
+
+hris_report_leave_grid:
+    path:     /leaves/grid
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:LeavesReport:gridLeave }
+
+hris_report_leave_print:
+    pattern:  /leave/print
+    defaults: { _controller: HrisReportBundle:LeavesReport:printLeave }
+
+
+## Payroll Reports
+
+hris_report_payroll_index:
+    path:     /payroll
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:PayrollReport:index }
+
+hris_report_payroll_grid:
+    path:     /payroll/grid
+    methods:  [GET]
+    defaults: { _controller: HrisReportBundle:PayrollReport:gridPay }
+
+hris_report_payroll_print:
+    pattern:  /payroll/print
+    defaults: { _controller: HrisReportBundle:PayrollReport:printPay }

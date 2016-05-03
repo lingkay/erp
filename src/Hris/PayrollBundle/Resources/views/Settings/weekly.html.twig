@@ -1,0 +1,103 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Weekly Settings</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4>Payroll Schedule</h4>
+                        {{ form.group_select('Cutoff Start','sched[cutoff_start]', days_opts, sched != null ? sched.cutoff_start : '0',3,4) }}
+                        {{ form.group_select('Cutoff End','sched[cutoff_end]', days_opts, sched != null ? sched.cutoff_end: '0',3,4) }}
+                        {{ form.group_select('Cutoff Pay','sched[cutoff_pay]', days_opts, sched != null ? sched.cutoff_pay: '0',3,4) }}
+
+                        {# <h4>Deduction Schedule</h4>
+                        <table class="table table-striped table-bordered table-hover dataTable">
+                            <thead>
+                                <th>Payroll</th>
+                                <th>Week 1</th>
+                                <th>Week 2</th>
+                                <th>Week 3</th>
+                                <th>Week 4</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tax Deduction</td>
+                                    <td>
+                                        {{ form.select('payroll[percent][]', percent_opts,payroll_percent != null ? payroll_percent[0]: '0',12) }}
+                                    </td>
+                                    <td>
+                                        {{ form.select('payroll[percent][]', percent_opts,payroll_percent != null ? payroll_percent[1]: '0',12) }}
+                                    </td>
+                                    <td>
+                                        {{ form.select('payroll[percent][]', percent_opts,payroll_percent != null ? payroll_percent[2]: '0',12) }}
+                                    </td>
+                                    <td>
+                                        {{ form.select('payroll[percent][]', percent_opts,payroll_percent != null ? payroll_percent[3]: '0',12) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SSS Deduction</td>
+                                    <td>
+                                        {{ form.radio('sss', '0', '',sss=='0'? true : false, 'payroll[sss]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('sss', '1', '',sss=='1'? true : false, 'payroll[sss]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('sss', '2', '',sss=='2'? true : false, 'payroll[sss]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('sss', '3', '',sss=='3'? true : false, 'payroll[sss]') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Philhealth Deduction</td>
+                                     <td>
+                                        {{ form.radio('philhealth', '0', '', philhealth=='0'? true : false, 'payroll[philhealth]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('philhealth', '1', '', philhealth=='1'? true : false, 'payroll[philhealth]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('philhealth', '2', '', philhealth=='2'? true : false, 'payroll[philhealth]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('philhealth', '3', '', philhealth=='3'? true : false, 'payroll[philhealth]') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Pagibig Deduction</td>
+                                     <td>
+                                        {{ form.radio('pagibig', '0', '', pagibig=='0'? true : false, 'payroll[pagibig]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('pagibig', '1', '', pagibig=='1'? true : false, 'payroll[pagibig]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('pagibig', '2', '', pagibig=='2'? true : false, 'payroll[pagibig]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('pagibig', '3', '', pagibig=='3'? true : false, 'payroll[pagibig]') }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table> #}
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            {# <button type="submit" value="generate" name="generate" class="btn green">Generate Payroll Period</button> #}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

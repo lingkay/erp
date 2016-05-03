@@ -1,0 +1,14 @@
+# hris_biometrics_homepage:
+#   path:     /biometrics/index
+#   methods:  [GET]
+#   defaults: { _controller: HrisBiometricsBundle:Biometrics:index }
+
+# hris_biometrics_index:
+#   path:     /biometrics/index
+#   methods:  [GET]
+#   defaults: { _controller: HrisBiometricsBundle:Biometrics:index }
+
+# hris_biometrics_homepage_submit:
+#   path:     /biometrics/index
+#   methods:  [POST]
+#   defaults: { _controller: HrisBiometricsBundle:Biometrics:indexSubmit }

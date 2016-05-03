@@ -1,0 +1,73 @@
+<style type="text/css">
+div.container4 {
+height: 100%;
+width: 100%;
+position: relative 
+}
+div.container_logo {
+width: 100%;
+max-height: 50px;
+position: relative; 
+}
+.img_logo {
+width: 300px;
+position: absolute;
+left: 50%;
+margin-left: -150px;
+}
+.page_label {
+text-align:center;
+}
+.parag {
+margin: 0;
+position: absolute;
+top: 50%;
+text-align:center;
+left: 50%;
+margin-right: -50%;
+font-size: 28px;
+}
+</style>
+
+<page>
+    <div class="container_logo">
+        <img class="img_logo" src="{{logo|default('bundles/catalystmedia/img/default.png')}}">
+    </div>
+    <div align="center" style="margin: 0;">
+        <p style="font-weight: bold; font-style: italic; font-size: 125%;">{{list_title}}</p>
+    </div>
+    <br>
+    <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
+        <tr>
+            <th style="width: 20px; padding-top: 5px; padding-bottom: 5px; text-align: center;"></th>
+            {% for col in grid_cols %}
+            <th style="padding: 10px; text-align: center;">{{col}}</th>
+            {% endfor %}
+        </tr>
+        <tbody>
+            {% set number = 0 %}
+            {% for turnover in data %}
+                <tr>
+                    {% set number = number + 1 %}
+                    <td style="padding-top: 5px; padding-bottom: 5px;  text-align: center;">{{number}}</td>
+                    <td style="padding-top: 5px; padding-bottom: 5px; padding-right: 3px; padding-left: 3px; text-align: center;">{{turnover.getDateFiled|date('m/d/Y')}}</td>
+                    <td style="padding-top: 5px; padding-bottom: 5px; padding-right: 3px; padding-left: 3px; text-align: center;">{{turnover.getDateApproved|date('m/d/Y')}}</td>
+                    <td style="padding-top: 5px; padding-bottom: 5px; padding-right: 3px; padding-left: 3px; text-align: center;">{{turnover.getEmployee.getDisplayName}}</td>
+                    <td style="padding-top: 5px; padding-bottom: 5px; padding-right: 3px; padding-left: 3px; text-align: center;">{{turnover.getEmployee.getDepartment.getName}}</td>
+                    <td style="width: 15%; padding-top: 5px; padding-bottom: 5px; padding-right: 3px; padding-left: 3px; text-align: center;">{{turnover.getEmployee.getJobTitle.getName}}</td>
+                    <td style="padding-top: 5px; padding-bottom: 5px; padding-right: 3px; padding-left: 3px; text-align: center;">{{turnover.getEmployee.getSupervisor.getDisplayName|default('')}}</td>
+                </tr>
+            {% endfor %}
+            {% if number == 0 %}
+                <tr>
+                    <td style="width: 670px; padding-top: 1px; padding-bottom: 1px; text-align: center; font-size: 12px;" colspan="7">NO RECORD FOUND</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <page_footer>
+        <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions Inc.')}}</b></p></div>
+        <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 Legaspi Suites, Brgy. San Lorenzo, Makati City')}}</p></div>
+        <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+    </page_footer>
+</page>

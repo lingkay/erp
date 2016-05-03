@@ -1,0 +1,88 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block css %}
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/portfolio.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/dropzone/css/dropzone.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Discount and Perks Details{# block form_header %}{% endblock #}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+
+                        <h4 class="form-section"></h4>
+
+                        {{ form.group_text('Name', 'name', '', 3, 4, readonly) }}
+                        {{ form.group_textarea('Details', 'details', '', 3, 3, 4, readonly) }}
+                        <div class="form-group">
+                            {{form.group_number('Band Requirement', 'band_req', '', 3, 3, readonly)}} 
+                            <label class="col-md-0 control-label">Years</label>
+                        </div>                                  
+                        {{ form.group_select('Employment Status','emp_status','', '',3,4, readonly) }}
+                        <div class="form-group">
+						    <label class="col-md-3 control-label">Department(s)</label>
+						    <div class="col-md-4">
+						        <select id="form_department" id="department" name="department" class="form-control select_2">
+						        
+						        </select>
+						    </div>
+						    <button class="add_dept_button btn green">Add Department</button>
+						</div>
+                       
+                        <div class="add_dept">
+                        </div>
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>      
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/portfolio.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/dropzone/dropzone.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/form-dropzone.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    
+    $(".add_dept_button").click(function(e){ //on add input button click
+        e.preventDefault();
+            $(".add_dept").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><select id="form_department" id="department" name="department" class="form-control select_2"></select></div><a href="#" class="remove_dept_field">Remove</a></div>'); //add input box
+            $("select").select2();
+    });
+    $('.add_dept').on("click",".remove_dept_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+}); 
+</script>
+
+{% endblock %}

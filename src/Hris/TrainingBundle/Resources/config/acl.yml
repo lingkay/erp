@@ -1,0 +1,11 @@
+acl:
+    - category: Trainings
+      entries:
+       - id: hris_training.menu
+         label: "Menu"
+    - category: Training
+      entries:
+       - id: hris_etrain.menu
+         label: "Menu"
+       - id: hris_etrain.add
+         label: "Add"

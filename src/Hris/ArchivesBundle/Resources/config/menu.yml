@@ -1,0 +1,9 @@
+# menu_items:
+#     - id: hris_archives
+#       acl: hris_archives.menu
+#       label: Archives
+#       icon: fa-archive
+#     - id: hris_employeedb_index
+#       acl: hris_employeedb.menu
+#       label: Employee Database
+#       parent: hris_archives

@@ -1,0 +1,7 @@
+parameters:
+#    catalyst_template.example.class: Catalyst\TemplateBundle\Example
+
+services:
+#    catalyst_template.example:
+#        class: %catalyst_template.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

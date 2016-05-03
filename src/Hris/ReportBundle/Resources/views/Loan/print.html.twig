@@ -1,0 +1,105 @@
+<style type="text/css">
+div.container4 {
+    height: 100%;
+    width: 100%;
+    position: relative 
+}
+div.container_logo {
+    width: 100%;
+    max-height: 50px;
+    position: relative; 
+}
+.img_logo {
+    width: 300px;
+   position: absolute;
+   left: 50%;
+   margin-left: -150px;
+}
+.page_label {
+    text-align:center;
+}
+.parag {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    text-align:center;
+    left: 50%;
+    margin-right: -50%;
+    font-size: 28px;
+}
+</style>
+<page orientation="landscape">
+		<div class="container_logo">
+    <img class="img_logo" src="{{logo|default('bundles/catalystmedia/img/default.png')}}">
+    </div>
+		<br>
+		<table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
+			<tr>
+				<th style="width: 670px; padding-top: 5px; padding-bottom: 5px; text-align: left;" colspan="8">&nbsp;Loans Report - {{date_from_display|date('F d, Y')}} to {{date_to_display|date('F d, Y')}}</th>
+		    </tr>
+			<tr>
+		        <th style="width: 75px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Date</th>
+                <th style="width: 150px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Employee</th>
+                <th style="width: 150px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Department</th>
+                <th style="width: 150px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Loan Type</th>
+                <th style="width: 100px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Cost (Php)</th>
+                <th style="width: 100px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Payment</th>
+                <th style="width: 100px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Balance</th>
+                <th style="width: 100px; padding-top: 5px; padding-bottom: 5px; text-align: center;">Status</th>
+		    </tr>
+		    {% set count = 0 %}
+		    {% for loan in data %}
+		    	{% set count = count + 1 %}
+		    	<tr>
+                    <td style="width: 75px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{loan.getDateFiledDisplay}}</td>
+                    <td style="width: 150px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{loan.getEmployee.getDisplayName}}</td>
+                    <td style="width: 150px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{loan.getEmployee.getDepartment.getName}}</td>
+                    <td style="width: 150px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{loan.getType}}</td>
+                    <td style="width: 100px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{loan.getCost|number_format(2)}}</td>
+                    <td style="width: 100px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{loan.getPaid|number_format(2)}}</td>
+                    <td style="width: 100px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{loan.getBalance|number_format(2)}}</td>
+                    <td style="width: 100px; padding-top: 1px; padding-bottom: 1px; text-align: center;">{{loan.getStatus}}</td>
+                </tr>
+                	{% if include_payments is defined %}
+                	{% if loan.getPayments is not empty and include_payments %}
+                    <tr><td colspan="8" style="padding: 5px;text-align: left;font-weight: bold;font-size: 10px;">Payment Details</td></tr>
+                    {% for pay in loan.getPayments %}
+                    <tr>
+                    	<td></td>
+                        <td colspan="2" style="text-align: center;">{{pay.getCode}}</td>
+                        <td colspan="2" style="text-align: center;">{{pay.getDatePaid|date('m/d/Y')}}</td>
+                        <td style="text-align: right;">{{pay.getPayment}}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    {% endfor %}
+                	<tr><td colspan="8" style="padding: 5px;"></td></tr>
+                	{% endif %}
+                	{% endif %}
+			{% endfor %}
+			{% if count == 0 %}
+				<tr>
+		    		<td style="width: 670px; padding-top: 1px; padding-bottom: 1px; text-align: center; font-size: 12px;" colspan="7">NO RECORD FOUND</td>
+		    	</tr>
+			{% endif %}
+		</table>
+		{# {% if count > 0 %}
+			<p style="font-size: 14px; margin-">
+				<br>
+				<b>Selected Filters:</b>
+				<br>
+				<br>
+				<b>Employee:</b> {{filter_employee|default('all')}}&nbsp;/&nbsp;
+				<b>Department:</b> {{filter_department|default('all')}}&nbsp;/&nbsp;
+				<b>Gender:</b> {{filter_gender|default('all')}}&nbsp;/&nbsp;
+				<b>Position:</b> {{filter_position|default('all')}}&nbsp;/&nbsp;
+				<b>Rank:</b> {{filter_rank|default('all')}}&nbsp;/&nbsp;
+				<b>Office/Branch:</b> {{filter_location|default('all')}}&nbsp;/&nbsp;
+				<b>Status:</b> {{filter_status|default('all')}}&nbsp;/&nbsp;
+			</p>
+		{% endif %} #}
+		<page_footer>
+    	<div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions Inc.')}}</b></p></div>
+	    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 Legaspi Suites, Brgy. San Lorenzo, Makati City')}}</p></div>
+	    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+</page_footer>
+</page>

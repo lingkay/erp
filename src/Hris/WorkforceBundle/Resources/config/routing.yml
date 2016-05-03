@@ -1,0 +1,554 @@
+hris_workforce_get_cities:
+    pattern: /employee/cities/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation}
+
+hris_workforce_get_states:
+    pattern: /employee/states/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation}
+## Employee
+hris_workforce_employee_index:
+    path:     /employees
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:index }
+
+hris_workforce_employee_add_form:
+    path:    /employee
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:addForm }
+
+hris_workforce_employee_add_submit:
+    path:    /employee
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Employee:addSubmit }
+
+hris_workforce_employee_edit_form:
+    path:    /employee/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:editForm }
+
+hris_workforce_employee_edit_submit:
+    path:    /employee/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Employee:editSubmit }
+
+hris_workforce_employee_grid:
+    path:    /employees/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:grid }
+
+hris_workforce_employee_201_print:
+    path:    /employee/201file/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:print201 }
+
+hris_workforce_employee_ajax_get:
+    path:     /employees/ajax
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:ajaxFilterEmployee }
+
+hris_admin_employee_ajax_filter:
+    path:     /employees/{id}/ajax
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:ajaxFilterEmployeeDept }
+
+hris_workforce_emplyoee_total:
+    path:    /employees/update/{id}/{month}/{year}
+    defaults: { _controller: HrisWorkforceBundle:Employee:updateAttendance,id: null, month: null, year: null }
+
+hris_workforce_employee_email:
+    path:   /employee/email/view
+    defaults: { _controller: HrisWorkforceBundle:Employee:viewEmailTemplate }
+
+hris_workforce_employee_resend_email:
+    path:   /employee/{id}/email/resend
+    defaults: { _controller: HrisWorkforceBundle:Employee:resendDetails }
+
+## Attendance
+hris_workforce_attendance_index:
+    path:     /attendances
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:index }
+
+hris_workforce_attendance_add_form:
+    path:     /attendance
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:addForm }
+
+hris_workforce_attendance_add_submit:
+    path:     /attendance
+    methods:  [POST]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:addSubmit }
+
+hris_workforce_attendance_edit_form:
+    path:     /attendance/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:editForm }
+
+hris_workforce_attendance_edit_submit:
+    path:     /attendance/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:editSubmit }
+
+hris_workforce_attendance_grid:
+    path:     /attendances/grid
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:grid }
+
+hris_workforce_attendance_print:
+    path:     /attendances/print/{id}/{dfrom}/{dto}/{dept}
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:print, id: null, dfrom: null, dto: null, dept: null }
+
+hris_workforce_attendance_delete:
+    path:     /attendance/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:delete }
+
+hris_workforce_attendance_view:
+    path:     /attendance/view
+    defaults: { _controller: HrisWorkforceBundle:Attendance:view }
+
+hris_workforce_attendance_ajax_grid:
+    path:    /attendances/ajax/{id}/{department}/{date_from}/{date_to}
+    defaults: { _controller: HrisWorkforceBundle:Attendance:gridAttendances,id: null,department: null, date_from: null, date_to: null }
+
+hris_workforce_attendance_ajax:
+    path:    /attendance/{id}/{date_from}/{date_to}
+    defaults: { _controller: HrisWorkforceBundle:Attendance:gridAttendance,id: null, date_from: null, date_to: null }
+
+hris_workforce_attendance_import:
+    path:    /attendances/import
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Attendance:importDTR }
+
+## Appraisal
+hris_workforce_appraisals_index:
+    path:     /appraisal
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:index }
+
+hris_workforce_appraisals_add_form:
+    path:    /appraisals/add
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:addForm }
+
+hris_workforce_appraisals_add_submit:
+    path:    /appraisals/add
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:addSubmit }
+
+hris_workforce_get_evaluator:
+    path:    /appraisals/evaluators/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:getEvalList }
+
+hris_workforce_appraisals_edit_form:
+    path:    /appraisals/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:editForm }
+
+hris_workforce_appraisals_evaluate:
+    path:     /appraisals/evaluate/{eval}
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:evaluate }
+
+hris_workforce_appraisals_evaluate_submit:
+    path:     /appraisals/evaluate/{eval}
+    methods:  [POST]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:evaluateSubmit }
+
+hris_workforce_appraisals_grid:
+    path:    /appraisal/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:grid }
+
+hris_workforce_appraisals_delete:
+    path:    /appraisal/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Appraisal:delete }
+
+## Benefits
+hris_workforce_benefits_index:
+    path:     /benefits
+    defaults: { _controller: HrisWorkforceBundle:Benefit:index }
+
+hris_workforce_benefits_add_form:
+    path:     /addbenefit
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Benefit:addForm }
+
+hris_workforce_benefits_edit_form:
+    path:     /benefit
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Benefit:addForm }
+
+
+## Issued Property
+hris_workforce_issued_property_index:
+    path:     /properties
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:index }
+
+hris_workforce_get_emp:
+    path:    /property/employees/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:getEmpList }
+
+hris_workforce_issued_property_add_form:
+    path:    /property
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:addForm }
+
+hris_workforce_issued_property_add_submit:
+    path:    /property
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:addSubmit }
+
+hris_workforce_issued_property_edit_form:
+    path:    /property/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:editForm }
+
+hris_workforce_issued_property_edit_submit:
+    path:    /property/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:editSubmit }
+
+hris_workforce_issued_property_edit_submit:
+    path:    /property/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:editSubmit }
+
+hris_workforce_issued_properties_print:
+    path:    /properties/print
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:print }
+
+hris_workforce_issued_property_print:
+    path:    /properties/print/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:printProperty }
+
+hris_workforce_issued_property_grid:
+    path:    /properties/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:grid }
+
+hris_workforce_issued_property_delete:
+    path:    /property/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:delete }
+
+hris_workforce_issued_property_ajax_get:
+    path:     /properties/ajax
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:ajaxFilterProperty }
+
+hris_workforce_issued_property_ajax_grid:
+    path:    /properties/ajax/{id}/{item_name}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IssuedProperty:gridIssued }
+
+
+## Reimbursement
+
+hris_workforce_reimbursement_index:
+    path:    /reimburses
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:index }
+
+hris_workforce_reimbursement_add_form:
+    pattern: /reimburse
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:addForm }
+
+hris_workforce_reimbursement_add_submit:
+    pattern: /reimburse
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:addSubmit }
+
+hris_workforce_reimbursement_edit_form:
+    pattern: /reimburse/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:editForm }
+
+hris_workforce_reimbursement_edit_submit:
+    pattern: /reimburse/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:editSubmit }
+
+hris_workforce_reimbursement_delete:
+    pattern: /reimburse/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:delete }
+
+hris_workforce_reimbursement_grid:
+    pattern: /reimburses/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:grid }
+
+hris_workforce_reimbursement_ajax_get:
+    pattern: /ajax/reimburses/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:ajaxGet }
+
+hris_workforce_reimbursement_ajax_add:
+    pattern: /ajax/reimburses/add
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:ajaxAdd }
+
+hris_workforce_reimbursement_status:
+    pattern: /reimburse/{id}/status/{status}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:statusUpdate}
+
+hris_workforce_reimbursement_ajax_grid:
+    pattern: /reimburses/ajax/{id}/{date_from}/{date_to}
+    defaults: { _controller: HrisWorkforceBundle:Reimbursement:gridReimbursement}
+
+
+## Cash Advance
+hris_workforce_cashadvance_index:
+    path:     /cash-advances
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Advance:index }
+
+hris_workforce_cashadvance_add_form:
+    path:     /cash-advance
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Advance:addForm }
+
+hris_workforce_cashadvance_add_submit:
+    path:     /cash-advance
+    methods:  [POST]
+    defaults: { _controller: HrisWorkforceBundle:Advance:addSubmit }
+
+hris_workforce_cashadvance_edit_form:
+    path:     /cash-advance/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Advance:editForm }
+
+hris_workforce_cashadvance_edit_submit:
+    path:     /cash-advance/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisWorkforceBundle:Advance:editSubmit }
+
+hris_workforce_cashadvance_grid:
+    path:     /cash-advance/grid
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Advance:grid }
+
+hris_workforce_cashadvance_delete:
+    path:     /cash-advance/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:Advance:delete }
+
+hris_workforce_cashadvance_ajax_grid:
+    pattern: /cash-advances/ajax/{id}/{date_from}/{date_to}
+    defaults: { _controller: HrisWorkforceBundle:Advance:gridAdvance}
+
+hris_workforce_cashadvance_status:
+    pattern: /cash-advance/{id}/status/{status}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Advance:statusUpdate}
+
+
+## On Boarding
+
+hris_workforce_onboard_index:
+    path:    /onboard
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Onboard:index }
+
+hris_workforce_onboard_grid:
+    pattern: /onboard/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Onboard:grid }
+
+hris_workforce_onboard_edit_form:
+    pattern: /employee/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee:editForm }
+
+## Resignations
+hris_workforce_resign_index:
+    path:     /resignations
+    defaults: { _controller: HrisWorkforceBundle:Resign:index }
+
+hris_workforce_resign_add_form:
+    pattern: /resignation
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Resign:addForm }
+
+hris_workforce_resign_edit_form:
+    pattern: /resignation/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Resign:editForm }
+
+hris_workforce_resign_edit_submit:
+    pattern: /resignation/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Resign:editSubmit }
+
+hris_workforce_resign_details:
+    path:     /resignation/detail
+    defaults: { _controller: HrisWorkforceBundle:Resign:details }
+
+hris_workforce_resign_grid:
+    path:    /resignations/grid
+    defaults: { _controller: HrisWorkforceBundle:Resign:grid }
+
+
+## Leave
+
+hris_workforce_leave_index:
+    path:    /leaves
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Leave:index }
+
+hris_workforce_leave_add_form:
+    pattern: /leave
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Leave:addForm }
+
+hris_workforce_leave_add_submit:
+    pattern: /leave
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Leave:addSubmit }
+
+hris_workforce_leave_edit_form:
+    pattern: /leave/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Leave:editForm }
+
+hris_workforce_leave_edit_submit:
+    pattern: /leave/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Leave:editSubmit }
+
+hris_workforce_leave_delete:
+    pattern: /leave/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Leave:delete }
+
+hris_workforce_leave_grid:
+    pattern: /leaves/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Leave:grid }
+
+hris_workforce_leave_ajax_get:
+    pattern: /ajax/leaves/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Leave:ajaxGet }
+
+hris_workforce_leave_ajax_add:
+    pattern: /ajax/leaves/add
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Leave:ajaxAdd }
+
+## Incident Report
+
+hris_workforce_incident_index:
+    path:    /incidents
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:index }
+
+hris_workforce_incident_add_form:
+    pattern: /incident
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:addForm }
+
+hris_workforce_incident_add_submit:
+    pattern: /incident
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:addSubmit }
+
+hris_workforce_incident_edit_form:
+    pattern: /incident/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:editForm }
+
+hris_workforce_incident_edit_submit:
+    pattern: /incident/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:editSubmit }
+
+hris_workforce_incident_delete:
+    pattern: /incident/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:delete }
+
+hris_workforce_incident_grid:
+    pattern: /incidents/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:grid }
+
+hris_workforce_incident_ajax_get:
+    pattern: /ajax/incidents/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:ajaxGet }
+
+hris_workforce_incident_ajax_add:
+    pattern: /ajax/incidents/add
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:IncidentReport:ajaxAdd }
+
+## Overtime
+
+hris_workforce_overtime_index:
+    path:    /overtimes
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Overtime:index }
+
+hris_memo:
+    resource: "@HrisWorkforceBundle/Resources/config/memo_routing.yml"
+    prefix:   /
+
+
+## Employee 201
+
+hris_workforce_201_index:
+    path:    /201-files
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee201:index }
+
+# hris_workforce_201_add_form:
+#     pattern: /leave
+#     methods: [GET]
+#     defaults: { _controller: HrisWorkforceBundle:Employee201:addForm }
+
+# hris_workforce_201_add_submit:
+#     pattern: /leave
+#     methods: [POST]
+#     defaults: { _controller: HrisWorkforceBundle:Employee201:addSubmit }
+
+hris_workforce_201_view_form:
+    pattern: /201-file/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee201:editForm }
+
+hris_workforce_201_print_form:
+    pattern: /201-file/{id}
+    methods: [POST]
+    defaults: { _controller: HrisWorkforceBundle:Employee201:print201 }
+
+# hris_workforce_201_delete:
+#     pattern: /leave/{id}/delete
+#     methods: [GET]
+#     defaults: { _controller: HrisWorkforceBundle:Employee201:delete }
+
+hris_workforce_201_grid:
+    pattern: /201-files/grid
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee201:grid }
+
+hris_workforce_201_ajax_get:
+    pattern: /ajax/201-files/{id}
+    methods: [GET]
+    defaults: { _controller: HrisWorkforceBundle:Employee201:ajaxGet }
+
+# hris_workforce_201_ajax_add:
+#     pattern: /ajax/leaves/add
+#     methods: [POST]
+#     defaults: { _controller: HrisWorkforceBundle:Employee201:ajaxAdd }

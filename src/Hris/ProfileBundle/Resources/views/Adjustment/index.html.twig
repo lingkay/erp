@@ -1,0 +1,421 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<form method="post" class="form-horizontal form">
+    <div class="form-body">
+            {% if app.user.getEmployee != NULL %}
+                {% set user = app.user.getEmployee.getID %}
+            {% else %}
+                {% set user = NULL %}
+            {% endif %}
+            {{ form.hidden('employee', user ) }}
+            <!-- START CALENDAR -->
+            <!-- BEGIN PORTLET-->
+            <div class="portlet box blue-madison calendar">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-calendar"></i>Employee Attendance
+                    </div>
+                </div>
+                <div class="portlet-body light-grey">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div id="calendar" class="has-toolbar">
+                            </div>
+                            <div class="portlet-body">
+                                <div style="margin: 20px 0 10px 30px">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Total Late</label>
+                                            <div class="col-md-2">
+                                                <input id="late" type="text" name="late" class="form-control" placeholder="Total Late" value="" readonly>
+                                            </div>
+                                            <label class="col-md-2 control-label">Total Undertime</label>
+                                            <div class="col-md-2">
+                                                <input id="undertime" type="text" name="undertime" class="form-control" placeholder="Total Undertime" value="" readonly>
+                                            </div>
+                                            <label class="col-md-1 control-label">Total Absent</label>
+                                            <div class="col-md-2">
+                                                <input id="absent" type="text" name="absent" class="form-control" placeholder="Total Absent" value="" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- END PORTLET-->
+    </div>
+{#     {% embed "HrisProfileBundle:Adjustment:request_modal.html.twig" with {form:form}%}{% endembed %} #}
+</form>
+{% include "HrisProfileBundle:Adjustment:request_modal.html.twig" with {form:form} %}
+{% endblock %}
+
+{% block js%}
+<script>
+function generatePath() 
+{
+    var id = $('#cform-employee').val();
+    var moment = $('#calendar').fullCalendar('getDate');
+    var month = moment.format('M');
+    var year = moment.format('YYYY');
+    var paths = "{{ path('hris_workforce_emplyoee_total', { 'id' : 'ID', 'month' : 'MONTH', 'year' : 'YEAR'} ) }}";
+        paths = paths.replace('ID', id);
+        paths = paths.replace('MONTH', month);
+        paths = paths.replace('YEAR', year);
+
+    return paths;
+}
+$(document).ready(function() {
+    var time_in;
+    var time_out;
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                error.appendTo(element.parent().last());
+                element.parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                element.parent().removeClass('has-error');
+                element.parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        },
+    });
+
+    var id = $('#cform-employee').val();
+
+    var path = "{{ path('hris_workforce_attendance_ajax', { 'id' : 'ID', 'date_from' : 'DFROM' , 'date_to' : 'DTO' } ) }}";
+        path = path.replace('ID', id);
+
+    var request = "{{ path('hris_profile_attendance_check_request', { 'id' : 'ID' }) }}";
+        request = request.replace('ID', id);
+    $('#calendar').fullCalendar({
+
+        // put your options and callbacks here
+        // weekends: false, will hide Saturdays and Sundays
+
+        dayClick: function(date, jsEvent, view) {
+
+            },
+        eventClick: function(calEvent, jsEvent, view) {
+
+                var date = calEvent.start;
+
+                var check = "{{ path('hris_profile_attendance_check', { 'id' : 'ID', 'date' : 'DATE'}) }}";
+                    check = check.replace('ID', id);
+                    check = check.replace('DATE', date);
+                $.getJSON(check, function(data){
+                    if(data.isLocked == false)
+                    {
+                        var date = $('#calendar').fullCalendar('getDate');
+                        var today = date.format('M/D/YYYY');
+                        
+                        var moment = calEvent.start;
+                        var month = moment.format('M/D/YYYY');
+
+                        $('#cform-employees').val(id);
+                        $('#cform-date').val(month);
+                        $('#cform-attendance_request').val(today);
+                        $('#cform-overtime_request').val(today);
+                        time_in = data.time_in;
+                        time_out = data.time_out;
+                        $('#cform-time_in').val(data.time_in);
+                        $('#cform-time_out').val(data.time_out);
+                        $('#attendance_management').modal('show'); 
+                    }
+                });
+            },
+
+        eventSources: [
+            {
+                //Attendance
+                url: path,
+                textColor: 'white',
+            },
+            {
+                //Holidays
+                url: "{{ path('hris_admin_holiday_ajax_holiday_all')}}", // use the `url` property
+                // color: 'blue',    // an option!
+                textColor: 'white'  // an option!
+            },
+            {
+                //Request
+                url: request,
+                textColor: 'black',
+            }
+        ],
+        // events: path,
+        firstDay: 1,
+        height: 'auto',
+        selectable: true,
+        displayEventEnd: true,
+
+        eventRender: function(event, element) {
+            if(event.late != '0 Minute(s)' && event.late != null)
+            {
+                element.find(".fc-content").append("<br/><b>Late</b>:" + event.late);
+            }
+            if(event.undertime != '0 Minute(s)' && event.undertime != null)
+            {
+                element.find(".fc-content").append("<br/><b>Undertime</b>:" + event.undertime);
+            }
+        },
+    });
+
+    paths = generatePath();
+
+    $.getJSON(paths, function(data) {
+        $('#undertime').val(data.total_undertime);
+        $('#late').val(data.total_late);
+        $('#absent').val(data.total_absent);
+    });
+
+    //on click change the list of holidays
+    $('.fc-button-group').click(function(event){
+
+        paths = generatePath();
+
+        $.getJSON(paths, function(data) {
+            $('#undertime').val(data.total_undertime);
+            $('#late').val(data.total_late);
+            $('#absent').val(data.total_absent);
+        });
+    });
+
+    $('.fc-today-button').click(function(event){
+
+        paths = generatePath();
+
+        $.getJSON(paths, function(data) {
+            $('#undertime').val(data.total_undertime);
+            $('#late').val(data.total_late);
+            $('#absent').val(data.total_absent);
+        });
+    });
+    $('#adjustment :input').attr('disabled', true);
+    $('#adjustment').hide();
+    $('#overtime :input').attr('disabled', true);
+    $('#overtime').hide();
+
+    $('.request').click(function(event){
+        var type = $(this).data('type');
+        var toggle = $(this).data('toggle');
+
+        if(type == 'attendance')
+        {
+            $('#overtime').hide();
+            $('#overtime :input').attr('disabled', true);     
+
+            $('#adjustment :input').removeAttr('disabled');
+            $('#adjustment').show();
+            // alert(time_in);
+            $('#cform-adj_time_in').val(time_in);
+            $('#cform-adj_time_out').val(time_out);
+            $(this).attr('data-toggle', 'true');
+            $(this).removeData('toggle');
+
+            if(toggle == true)
+            {
+                $('#adjustment').hide();
+                $('#adjustment :input').attr('disabled', true);
+                $(this).attr('data-toggle', 'false');
+                $(this).removeData('toggle');
+            }
+        }
+        else if(type == 'overtime')
+        {
+            $('#adjustment').hide();
+            $('#adjustment :input').attr('disabled', true);     
+
+            $('#overtime :input').removeAttr('disabled');
+            var date = new Date($('#cform-date').val());
+            var date = date.toDateString();
+
+            var overtime = "{{ path('hris_profile_attendance_overtime', { 'id' : 'ID', 'date' : 'DATE'}) }}";
+                overtime = overtime.replace('ID', id);
+                overtime = overtime.replace('DATE', date);
+            $.getJSON(overtime, function(data){
+                if(data.ot_allowed)
+                {
+                    $('#cform-total_hrs').val(data.overtime);
+                    $('#overtime').show();
+                }
+                else
+                {
+                    $('#attendance_management').modal('hide');
+                    toastr['error']('Cannot File for Overtime', 'Error');
+                }
+            });
+
+            $(this).attr('data-toggle', 'true');
+            $(this).removeData('toggle');
+
+            if(toggle == true)
+            {
+                $('#overtime').hide();
+                $('#overtime :input').attr('disabled', true);
+                $(this).attr('data-toggle', 'false');
+                $(this).removeData('toggle');
+            }
+        }
+    });
+    $('#close_attendance').click(function(event){
+        $('#adjustment :input').attr('disabled', true);
+        $('#adjustment').hide();
+    });
+
+    $('#close_overtime').click(function(event){
+        $('#overtime :input').attr('disabled', true);
+        $('#overtime').hide();
+    });
+
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
+
+    $('#attendance_management').on('hidden.bs.modal', function (){
+        var validator = $('#request_add_form').validate(); 
+            validator.resetForm();
+        $('.request').attr('data-toggle', 'false');
+        $('.request').removeData('toggle');
+        $('#adjustment :input').attr('disabled', true);
+        $('#overtime :input').attr('disabled', true);
+        $('#cform-reason').val('');
+        $('#cform-total_hrs').val('');
+        $('#adjustment').hide();
+        $('#overtime').hide();
+        $('div').removeClass('has-error');
+        $('div').removeClass('has-success');
+    });
+
+    //VALIDATE ADJUSTMENT MODAL
+    $('#request_add_form').validate({
+        onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+            //BEGIN VALIDATION FOR ADJUSTMENT MODAL
+            reason: {
+                required: true,
+            },
+            total_hrs: {
+                required: {
+                    depends: function(element)
+                    {
+                        if($('#cform-overtime_max').val() <= $('#cform-total_hrs').val())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                },
+            },
+            //END VALIDATION FOR ADJUSTMENT MODAL
+        },
+        messages: {
+            total_hrs: {
+                required: "Hours",
+            }
+        },
+        submitHandler: function(form) {
+            //APPEND DATA TO ADJUSTMENT TABLE
+        var date = new Date($('#cform-date').val());
+        var date = date.toDateString();
+        
+        var url = "{{ path('hris_profile_attendance_ajax_add', { 'id' : 'ID', 'date':'DATE' }) }}";
+            url = url.replace('ID',id);
+            url = url.replace('DATE', date);
+
+        var data = $('#request_add_form').serializeArray();
+
+        var request = data[5].value;
+        if(data.length == 16)
+        {
+            request = 'both';
+        }
+
+        var message = '';
+
+        switch(request)
+        {
+            case 'attendance':
+                message = 'Attendance Adjustment';
+                break;
+            case 'overtime':
+                message = 'Overtime';
+                break;
+            case 'both':
+                message = 'Attendance Adjustment and Overtime';
+                break;
+        }
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                success: function(data, text_status, xhr) {
+                    $('#attendance_management').modal('hide');
+                    toastr['success'](message + ' added Successfully', 'Success');
+                },
+                error: function(xhr, text_status, error) {
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Savings Loan</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" id="loan_form" class="form-horizontal">
+                    <div class="form-body">
+                        {# {% if new == false %}
+                            <a href="" class="btn green">Print</a>
+                        {% endif %} #}
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Employee', 'employee', employee.getDisplayName,3,4, true)}}
+                        {{ form.hidden('employee', employee.getID)}}
+                        {{ form.group_text('Status', 'status', object.getStatus,3,4, true)}}
+                        {{ form.group_date('Loan Date', 'date', object.getDateCreate|date("m/d/Y"),3,4,true)}}
+                        {{ form.group_number('Balance', 'balance', balance ,3,4,true)}}
+                        {{ form.group_number('Loan Amount', 'amount', object.getAmount,3,4,readonly)}}
+                    
+                    </div>
+
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-6">
+                        {% if object.getStatus != 'Approved' and object.getStatus != 'Reject' %}
+                            <button type="submit" class="btn green">Save</button>
+                        {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-right">
+                            {% if object.getID is not null and object.getStatus == 'Draft' %}
+                                <a id="btn_approve" href="#" class="btn blue">Approve</a>
+                                <a id="btn_reject" href="#" class="btn red">Reject</a>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+$(document).ready(function() {
+
+   
+    $('#cform-employee').change(function() {
+        $.ajax({
+            url: "{{path('hris_remuneration_cashbond_employee_ajax')}}",
+            type: 'GET',
+            data: {'id': $(this).val()},
+            success: function(data, text_status, xhr) {
+                $('#cform-balance').val(data.balance);
+            }
+        });  
+    });  
+
+    $('.form-horizontal .select_2').change(function () {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('#btn_approve').click(function(){
+        $('#cform-status').val('Approved');
+        $('#loan_form').submit();
+    });
+
+    $('#btn_reject').click(function(){
+        $('#cform-status').val('Reject');
+        $('#loan_form').submit();
+    });
+
+    // $('.date-picker .form-control').change(function() {
+    //     $('.form-horizontal').validate().element($(this));
+    // });
+
+
+}); 
+</script>
+{% endblock %}

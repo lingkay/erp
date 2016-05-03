@@ -1,0 +1,126 @@
+<style type="text/css">
+div.container4 {
+    height: 100%;
+    width: 100%;
+    position: relative 
+}
+div.container_logo {
+    width: 100%;
+    max-height: 50px;
+    position: relative; 
+}
+.img_logo {
+    width: 300px;
+   position: absolute;
+   left: 50%;
+   margin-left: -150px;
+}
+.page_label {
+    text-align:center;
+}
+.parag {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    text-align:center;
+    left: 50%;
+    margin-right: -50%;
+    font-size: 28px;
+}
+</style>
+<page>
+{# <img src="{{ logo.getURL }}" style="width:30%;margin-left: 225px;"/> #}
+<div class="container_logo">
+    <img class="img_logo" src="{{logo|default('bundles/catalystmedia/img/default.png')}}">
+    </div>
+<br>
+<br>
+
+
+<table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
+<tbody>
+    <tr>
+        <td style="padding-top: 0; padding-bottom: 0; width: 350px;"><b>NAME OF EMPLOYEE:</b> {{object.getEmployeeName}}</td>
+        <td style="padding-top: 0; padding-bottom: 0; width: 350px;"><b>DATE OF INCIDENT:</b> {{date_of_incident}}</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 0; padding-bottom: 0; width: 350px;"><b>POSITION:</b> {{object.getEmployee.getJobTitle.getName}}</td>
+        <td style="padding-top: 0; padding-bottom: 0; width: 350px;"><b>DEPARTMENT:</b> {{object.getEmployee.getDepartment.getName}}</td>
+    </tr>
+</tbody>
+</table>
+<br>
+<table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
+<thead>
+    <tr><th colspan="2" style="width:700px; text-align: center;">DETAILS OF VIOLATIONS COMMITTED</th></tr>
+</thead>
+<tbody>
+    <tr>
+        <td style="padding-top: 15px; padding-bottom: 15px; width: 200px;">DATE OF INCIDENT</td>
+        <td style="padding-top: 15px; padding-bottom: 15px; width: 500px;">{{date_of_incident}}</td>
+    </tr>
+    <tr>
+                    <td style="padding-top: 15px; padding-bottom: 15px; width: 200px;">LOCATION</td>
+                    <td style="padding-top: 15px; padding-bottom: 15px; width: 500px;">{{location}}</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 15px; padding-bottom: 15px; width: 200px;">NATURE OF VIOLATION COMMITTED</td>
+        <td style="padding-top: 15px; padding-bottom: 15px; width: 500px;">{{violation_committed}}</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 15px; padding-bottom: 15px; width: 200px;">PARTICULAR COMPANY POLICY VIOLATED</td>
+        <td style="padding-top: 15px; padding-bottom: 15px; width: 500px;">{{violated_policy}}</td>
+    </tr>
+</tbody>
+</table>
+<br>
+<p style="font-size: 14px;" align="justify">
+{% if reason == 0 %}
+We are in receipt of your written explanation dated {{date_of_exp}} and found your explanation as unsatisfactory
+{% elseif reason == 1 %}
+You failed to submit the written explanation the deadline of which was on {{date_of_exp}} 
+{% endif %}
+<br>
+<br>
+<br>
+{% if action == 0 %}
+
+{% elseif action == 1 %}
+In view of this, the following disciplinary action is hereby being imposed on you:
+<br>
+<br>
+Suspension for {{no_of_days}} {% if no_of_days > 1 %}days{% else %}day{% endif %} to take effect on the following dates: {{date_start}} - {{date_end}}
+{% elseif action == 2 %}
+In view of this, the following disciplinary action is hereby being imposed on you:
+<br>
+<br>
+{{other_actions|default('')}}
+{% endif %}    
+</p>
+<br>
+<br>
+<p style="font-size: 14px;" align="justify">
+May this serve as a stern warning that repetition of the same violation shall warrant a stiffer disciplinary action!
+</p>
+<br>
+<table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
+    <tbody>
+        <tr>
+            <td style="padding-bottom: 2px; width: 200px;">Issued by:<br><br>{{object.getUserCreateName}}</td>
+            <td style="padding-bottom: 2px; width: 200px;">Reviewed by:<br><br>{{employee.getSupervisor.getDisplayName|default('(signatory)')}}</td>
+            <td style="padding-bottom: 2px; width: 300px;">Received and Acknowledged by:<br><br>{{object.getEmployeeName}}</td>
+        </tr>
+        <tr>
+            <td>Date Prepared: {{object.getDateCreate|date('m/d/Y')}}</td>
+            <td>Date:</td>
+            <td>Date Received:</td>
+        </tr>
+    </tbody>
+</table>
+
+<page_footer>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions, Inc.')}}</b></p></div>
+    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 10th Floor, Legaspi Suites, Salcedo Street, Legaspi Village, Makati City, Philippines')}}</p></div>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 14px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+</page_footer>
+</page>

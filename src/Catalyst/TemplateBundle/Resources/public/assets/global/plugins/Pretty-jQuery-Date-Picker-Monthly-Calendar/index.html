@@ -1,0 +1,133 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>jquery.datepicker Plugin Demo Page</title>
+    <link rel="stylesheet" type="text/css" href="css/jquery.datepicker.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.datepicker.js"></script>
+    <script type="text/javascript">
+        // Localization
+
+        jQueryDatepicker.day_names_short = {
+            1: 'Mon',
+            2: 'Tue',
+            3: 'Wed',
+            4: 'Thu',
+            5: 'Fri',
+            6: 'Sat',
+            7: 'Sun'
+        };
+
+        jQueryDatepicker.day_names = {
+            1: 'Monday',
+            2: 'Tuesday',
+            3: 'Wednesday',
+            4: 'Thursday',
+            5: 'Friday',
+            6: 'Saturday',
+            7: 'Sunday'
+        };
+
+        jQueryDatepicker.month_names = {
+            1: 'January',
+            2: 'February',
+            3: 'March',
+            4: 'Apri',
+            5: 'May',
+            6: 'June',
+            7: 'July',
+            8: 'Agust',
+            9: 'September',
+            10: 'October',
+            11: 'November',
+            12: 'December'
+        };
+
+        $(document).ready(function () {
+            var $selected = $('.selected');
+
+            $some_datepicker = $('.some_datepicker');
+            
+            $some_datepicker.datepicker({
+                next_button: '&gt;',
+                prev_button: '&lt;'
+            });
+
+            $some_datepicker.setStartDate({
+                year: 2015,
+                // jquery.datepicker accepts first month as 1
+                // (built-in Date() class accepts first month as 0)
+                month: 1,
+                day: 3
+            });
+
+            $some_datepicker.on('date_selected.datepicker', function (event, date) {
+                $selected.show().html('Selected date is: '+date.date.toString());
+            });
+        });
+    </script>
+    <style type="text/css">
+        .a,
+        .a:visited {
+            color: #176bb8;
+            text-decoration: none;
+        }
+
+        .a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div id="jquery-script-menu">
+<div class="jquery-script-center">
+<ul>
+<li><a href="http://www.jqueryscript.net/time-clock/Pretty-jQuery-Date-Picker-Monthly-Calendar-Plugin.html">Download This Plugin</a></li>
+<li><a href="http://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
+</ul>
+<div class="jquery-script-ads"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+<div class="jquery-script-clear"></div>
+</div>
+</div>
+    <div style="text-align: center; font-family: 'roboto', sans-serif; margin-top:150px;">
+        <div style="font-size: 25px; margin-bottom: 5px; margin-top: 10px;">
+            jquery.datepicker Plugin Demo Page</div>
+       
+        <div style="width: 350px;font-family: 'roboto', sans-serif; margin:50px auto">
+            <div class="some_datepicker">
+            </div>
+        </div>
+
+        <div class="selected" style="margin: auto;margin-top: 15px;">
+        </div>
+        
+    </div>
+   <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</body>
+</html>

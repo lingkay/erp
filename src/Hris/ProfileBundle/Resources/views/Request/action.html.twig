@@ -1,0 +1,8 @@
+{% if app.user.hasAccess(prefix ~ '.view') and status is same as('Pending') %}
+<a href="{{ path(route_edit, { 'id': id, 'type':type }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> Edit</a>
+{% else %}
+<a href="{{ path(route_edit, { 'id': id, 'type':type }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View</a>
+{% endif %}
+{% if app.user.hasAccess(prefix ~ '.delete') and status is same as('Pending') %}
+<a href="{{ path(route_delete, { 'id': id, 'type':type }) }}" class="btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i> Delete</a>
+{% endif %}

@@ -1,0 +1,52 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Employee Memos</h4>
+    {{ form.hidden('employee_form','benefits')}}
+    
+    {# <div class="form-group">
+        <label class="col-md-3 control-label">Memo</label>
+        <div class="col-md-4">
+            <select name="benefits" class="form-control select_2">
+            {{ form.options(benefits,0) }}
+            </select>
+        </div>
+        <button class="add_benefit_button btn green">Add Benefit</button>
+    </div> #}
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date Issued</th>
+                <th>Type</th>
+                <th>Issued by</th>
+                <th width="20px;"></th>
+            </tr>
+        </thead>
+        <tbody class="benefit_list">
+            {% if emp_mem is empty %}
+                <tr class="odd empty">
+                    <td valign="top" colspan="6" class="dataTables_empty">No memo issued.</td>
+                </tr>
+            {% else %}
+                {% for e in emp_mem %}
+                <tr class="odd gradeX">
+                    <td>{{ e.getDateIssuedFormatted }}</td>
+                    <td>{{ e.getType }}</td>
+                    <td>{{ e.getUserCreateName }}</td>
+                    <td><a href="{{path('hris_memo_print', {'id':e.getID})}}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View</a></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    {# <div class="form-actions fluid">
+        <div class="col-md-9">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+        </div>
+    </div> #}
+</div>
+</form>

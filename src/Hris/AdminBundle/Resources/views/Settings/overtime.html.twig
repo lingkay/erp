@@ -1,0 +1,59 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Overtime Settings</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4>Overtime Settings</h4>
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Overtime Threshold','threshold', threshold,3,4) }}
+                      
+                        <h4>Allowed to File</h4>
+                        <table class="table table-striped table-bordered table-hover dataTable">
+                            <thead>
+                                <th>
+                                </th>
+                                {% for type in emp_type %}
+                                <th>
+                                    {{ type }}
+                                </th>
+                                {% endfor %}
+                            </thead>
+                            <tbody>
+                                {% for level_id,level in job_level %}
+                                <tr>
+                                    <td>{{ level }}</td>
+                                    {% for type_id, type in emp_type %}
+                                    <td>
+                                        {% if ot_allowed[level_id] is defined and ot_allowed[level_id][type_id] is defined %}
+                                            {% set checked = true %}
+                                        {% else %}
+                                            {% set checked = false %}
+                                        {% endif %}
+                                        <input type="checkbox" class="form-control" name="ot_allowed[{{ level_id }}][{{ type_id }}]" {{ checked ? "checked" :"" }}>
+            
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

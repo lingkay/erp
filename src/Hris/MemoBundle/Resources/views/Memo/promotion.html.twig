@@ -1,0 +1,19 @@
+<hr>
+{% if view_mode == true %}
+{{ form.group_text('Department From', 'department_from', employee.getDepartment.getName, 3, 4, true) }}
+{{ form.group_text('Department To', 'department_to', department_to|default(''), 3, 4, view_mode) }}
+{{ form.group_text('Position From', 'position_from', employee.getJobTitle.getName, 3, 4, true) }}
+{{ form.group_text('Position To', 'position_to', position_to|default(''), 3, 4, view_mode) }}
+{{ form.group_text('Job-level From', 'joblevel_from', employee.getJobLevel.getName, 3, 4, true) }}
+{{ form.group_text('Job-level To', 'joblevel_to', joblevel_to|default(''), 3, 4, view_mode) }}
+{% else %}
+{{ form.group_text('Department From', 'department_from', employee.getDepartment.getName, 3, 4, true) }}
+{{ form.group_select('Department To','department_to',dept_opts, '' ,3,4, readonly) }}
+{{ form.group_text('Position From', 'position_from', employee.getJobTitle.getName, 3, 4, true) }}
+{{ form.group_select('Position To','position_to', title_opts, '' ,3,4, readonly) }}
+{{ form.group_text('Job-level From', 'joblevel_from', employee.getJobLevel.getName, 3, 4, true) }}
+{{ form.group_select('Job Level To','joblevel_to', level_opts, '' ,3,4, readonly) }}
+{% endif %}
+
+
+

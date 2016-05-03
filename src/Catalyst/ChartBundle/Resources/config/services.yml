@@ -1,0 +1,7 @@
+parameters:
+#    catalyst_chart.example.class: Catalyst\ChartBundle\Example
+
+services:
+#    catalyst_chart.example:
+#        class: %catalyst_chart.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

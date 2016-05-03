@@ -1,0 +1,13 @@
+acl:
+    - category: Dashboard
+      entries:
+        - id: cat_dashboard.menu
+          label: "Menu"          
+        - id: hris_dashboard.view
+          label: "View"
+        - id: hris_dashboard.edit
+          label: "Edit"
+        - id: hris_dashboard_admin.view
+          label: "Admin Dashboard View"
+        - id: hris_dashboard_request.view
+          label: "Requests Dashboard View"

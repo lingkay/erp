@@ -1,0 +1,383 @@
+hris_payroll_computation_index:
+    path:     /payrolls
+    defaults: { _controller: HrisPayrollBundle:Computation:index }
+
+hris_payroll_computation_add_form:
+    path:    /payroll/add
+    methods: [GET]
+    defaults: { _controller: HrisPayrollBundle:Computation:addForm }
+
+hris_payroll_computation_add_submit:
+    path:    /payroll/add
+    methods: [POST]
+    defaults: { _controller: HrisPayrollBundle:Computation:addSubmit }
+
+hris_payroll_computation_grid:
+    path:    /payroll/grid
+    methods: [GET]
+    defaults: { _controller: HrisPayrollBundle:Computation:grid }
+
+hris_payroll_computation_update_data:
+    path:    /payrolls/update/{id}/{date_to}/{date_from}
+    methods: [GET]
+    defaults: { _controller: HrisPayrollBundle:Computation:updateData, id: null, date_to: null, date_from: null }
+
+hris_payroll_sss_index:
+    path:     /ssscontributions
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySSSRate:index }
+
+hris_payroll_sss_add_form:
+    path:     /ssscontribution
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySSSRate:addForm }
+
+hris_payroll_sss_add_submit:
+    path:     /ssscontribution
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySSSRate:addSubmit }
+
+hris_payroll_sss_edit_form:
+    path:     /ssscontribution/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySSSRate:editForm }
+
+hris_payroll_sss_edit_submit:
+    path:     /ssscontribution/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySSSRate:editSubmit }
+
+hris_payroll_sss_grid:
+    path:     /ssscontributions/grid
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySSSRate:grid }
+
+hris_payroll_sss_delete:
+    path:     /ssscontribution/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySSSRate:delete }
+
+hris_payroll_philhealth_index:
+    path:     /philhealths
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayPhilHealthRate:index }
+
+hris_payroll_philhealth_add_form:
+    path:     /philhealth
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayPhilHealthRate:addForm }
+
+hris_payroll_philhealth_add_submit:
+    path:     /philhealth
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PayPhilHealthRate:addSubmit }
+
+hris_payroll_philhealth_edit_form:
+    path:     /philhealth/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayPhilHealthRate:editForm }
+
+hris_payroll_philhealth_edit_submit:
+    path:     /philhealth/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PayPhilHealthRate:editSubmit }
+
+hris_payroll_philhealth_grid:
+    path:     /philhealths/grid
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayPhilHealthRate:grid }
+
+hris_payroll_philhealth_delete:
+    path:     /philhealth/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayPhilHealthRate:delete }
+
+hris_payroll_schedule_index:
+    path:     /schedules
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySchedule:index }
+
+hris_payroll_schedule_add_form:
+    path:     /schedule
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySchedule:addForm }
+
+hris_payroll_schedule_add_submit:
+    path:     /schedule
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySchedule:addSubmit }
+
+hris_payroll_schedule_edit_form:
+    path:     /schedule/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySchedule:editForm }
+
+hris_payroll_schedule_edit_submit:
+    path:     /schedule/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySchedule:editSubmit }
+
+hris_payroll_schedule_delete:
+    path:     /schedule/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySchedule:delete }
+
+hris_payroll_schedule_grid:
+    path:     /schedules/grid
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySchedule:grid }
+
+hris_payroll_tax_index:
+    path:     /taxes
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayTaxMatrix:index }
+
+hris_payroll_tax_add_form:
+    path:     /tax
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayTaxMatrix:addForm }
+
+hris_payroll_tax_add_submit:
+    path:     /tax
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PayTaxMatrix:addSubmit }
+
+hris_payroll_tax_edit_form:
+    path:     /tax/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayTaxMatrix:editForm }
+
+hris_payroll_tax_edit_submit:
+    path:     /tax/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PayTaxMatrix:editSubmit }
+
+hris_payroll_tax_delete:
+    path:     /tax/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayTaxMatrix:delete }
+
+hris_payroll_tax_grid:
+    path:     /taxes/grid
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayTaxMatrix:grid }
+
+hris_payroll_weekly_index:
+    path:     /settings/weekly
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:weeklyIndex }
+
+hris_payroll_weekly_submit:
+    path:     /settings/weekly
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:weeklySubmit }
+
+hris_payroll_semimonthly_index:
+    path:     /settings/semimonthly
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:semimonthlyIndex }
+
+hris_payroll_semimonthly_submit:
+    path:     /settings/semimonthly
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:semimonthlySubmit }
+
+
+hris_payroll_setting_min_index:
+    path:     /settings/minimum
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:minIndex }
+
+hris_payroll_setting_min_submit:
+    path:     /settings/minimum
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:minSubmit }
+
+
+hris_payroll_setting_year_index:
+    path:     /settings/year
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:yearIndex }
+
+hris_payroll_setting_year_submit:
+    path:     /settings/year
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:PaySettings:yearSubmit }
+
+
+hris_payroll_generate_index:
+    path:     /generate
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Generate:index }
+
+hris_payroll_generate_submit:
+    path:     /generate
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:Generate:filter }
+
+hris_payroll_details_index:
+    path:     /details/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Generate:details }
+
+hris_payroll_earning_add_ajax:
+    path:     /add_earning/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:Generate:addEarning }
+
+hris_payroll_earning_delete:
+    path:     /delete_earning/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Generate:deleteEarning }
+
+hris_payroll_deduction_add_ajax:
+    path:     /add_deduction/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:Generate:addDeduction }
+
+hris_payroll_deduction_delete:
+    path:     /delete_deduction/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Generate:deleteDeduction }
+
+hris_payroll_lock:
+    path:     /lock/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Generate:lock }
+
+
+
+hris_payroll_details_print:
+    path:     /details/{id}/print
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Generate:print }
+
+# hris_payroll_generate_filter:
+#     path:     /generate
+#     methods:  [POST]
+#     defaults: { _controller: HrisPayrollBundle:Generate:filter}
+
+
+hris_payroll_view_index:
+    path:     /view
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Payroll:index }
+
+hris_payroll_view_grid:
+    path:    /view/grid
+    methods: [GET]
+    defaults: { _controller: HrisPayrollBundle:Payroll:grid }
+
+
+
+hris_payroll_review_index:
+    path:     /review
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:PayrollReview:index }
+
+hris_payroll_review_grid:
+    path:    /view/grid
+    methods: [GET]
+    defaults: { _controller: HrisPayrollBundle:PayrollReview:grid }
+
+
+
+
+hris_payroll_thirteenth_index:
+    path:     /13th
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Thirteenth:index }
+
+hris_payroll_thirteenth_submit:
+    path:     /13th
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:Thirteenth:filter }
+
+hris_payroll_thirteenth_view_index:
+    path:     /13th/list
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Pay13th:index }
+
+
+hris_payroll_thirteenth_view_grid:
+    path:     /13th/grid
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Pay13th:grid }
+
+
+hris_payroll_thirteenth_details_index:
+    path:     /13th/details/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Thirteenth:details }
+
+hris_payroll_thirteenth_details_print:
+    path:     /13th/details/{id}/print
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Thirteenth:print }
+
+
+hris_payroll_thirteenth_add_entry:
+    path:     /13th/entry/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:Pay13th:addEntry }
+
+
+hris_payroll_thirteenth_delete_entry:
+    path:     /13th/delete-entry/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Pay13th:deleteEntry }
+
+
+
+hris_payroll_thirteenth_lock:
+    path:     /13th/lock/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:Pay13th:lock }
+
+
+# generate weekly payroll
+
+hris_payroll_weekly_generate_index:
+    path:     /weekly/generate
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:index }
+
+hris_payroll_weekly_generate_submit:
+    path:     /weekly/generate
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:filter }
+
+hris_payroll_weekly_details_index:
+    path:     /weekly/details/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:details }
+
+hris_payroll_weekly_earning_add_ajax:
+    path:     /weekly/add_earning/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:addEarning }
+
+hris_payroll_weekly_earning_delete:
+    path:     /weekly/delete_earning/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:deleteEarning }
+
+hris_payroll_weekly_deduction_add_ajax:
+    path:     /weekly/add_deduction/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:addDeduction }
+
+hris_payroll_weekly_deduction_delete:
+    path:     /weekly/delete_deduction/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:deleteDeduction }
+
+hris_payroll_weekly_lock:
+    path:     /weekly/lock/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:lock }
+
+hris_payroll_weekly_details_print:
+    path:     /weekly/details/{id}/print
+    methods:  [GET]
+    defaults: { _controller: HrisPayrollBundle:GenerateWeekly:print }

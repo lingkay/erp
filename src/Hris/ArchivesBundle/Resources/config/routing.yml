@@ -1,0 +1,9 @@
+hris_employeedb_index:
+    path:     /employeedb
+    methods: [GET]
+    defaults: { _controller: HrisArchivesBundle:Employeedb:index }
+
+hris_employeedb_add_form:
+    path:    /addemployeedb
+    methods: [GET]
+    defaults: { _controller: HrisArchivesBundle:Employeedb:addForm }

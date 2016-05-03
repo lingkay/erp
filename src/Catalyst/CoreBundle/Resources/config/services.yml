@@ -1,0 +1,9 @@
+services:
+    catalyst_core.table_name_subscriber:
+        class: Catalyst\CoreBundle\Model\TableNameSubscriber
+        tags:
+            - { name: doctrine.event_subscriber }
+        
+#    catalyst_core.example:
+#        class: Catalyst\CoreBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

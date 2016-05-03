@@ -1,0 +1,65 @@
+acl:
+    - category: Report
+      entries:
+        - id: hris_report.menu
+          label: "Menu"
+    - category: Leaves
+      entries:
+        - id: hris_report_leave.menu
+          label: "Menu"
+        - id: hris_report_leave.view
+          label: "View"
+    - category: Attendance
+      entries:
+        - id: hris_report_attendance.menu
+          label: "Menu"
+        - id: hris_report_attendance.view
+          label: "View"
+    - category: Reimbursement
+      entries:
+        - id: hris_report_reimbursement.menu
+          label: "Menu"
+        - id: hris_report_reimbursement.view
+          label: "View"
+    - category: Regular Employees
+      entries:
+        - id: hris_report_regulars.menu
+          label: "Menu"
+        - id: hris_report_regulars.view
+          label: "View"
+    - category: Total Expenses
+      entries:
+        - id: hris_report_total_expense.menu
+          label: "Menu"
+        - id: hris_report_total_expense.view
+          label: "View"
+    - category: Turnover
+      entries:
+        - id: hris_report_turnover.menu
+          label: "Menu"
+        - id: hris_report_turnover.view
+          label: "View"
+    - category: Loans
+      entries:
+        - id: hris_report_loans.menu
+          label: "Menu"
+        - id: hris_report_loans.view
+          label: "View"
+    - category: Incentives
+      entries:
+        - id: hris_report_incentives.menu
+          label: "Menu"
+        - id: hris_report_incentives.view
+          label: "View"
+    - category: Employee Evaluations
+      entries:
+        - id: hris_report_evals.menu
+          label: "Menu"
+        - id: hris_report_evals.view
+          label: "View"
+    - category: Payroll
+      entries:
+        - id: hris_report_payroll.menu
+          label: "Menu"
+        - id: hris_report_payroll.view
+          label: "View"

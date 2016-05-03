@@ -1,0 +1,200 @@
+{% if object.getStatus == constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_HIRED')%}
+{% set readonly = true %}
+{% endif %}
+<form id="add_other_info_form" method="post" class="form-horizontal">   
+    {{form.hidden('app_form','other_info')}}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+{#     
+        {{ form.group_textarea('If yes, Please provide details','forced_resign_details',object.getInformation.getData.forced_resign|default(''),3,3,5,readonly) }} #}
+    <div class="form-group">
+        <label class="col-md-4 control-label">Have you been forced to resign from any of your previous employment?</label>
+        <div class="col-md-3">
+            <div class="radio-list">
+                <label>
+                    <input type="radio" id="cform-is_forced_resign" name="is_forced_resign" class="radio-group" value="0" {{ readonly ? 'disabled ' : '' }} 
+                    {% if object.getInformation != null %}
+                        {% if object.getInformation.getForcedResign == 0%}
+                        checked 
+                        {% endif %}
+                    {% endif %}
+                    />No
+                </label>
+                <label>
+                    <input type="radio" id="cform-is_forced_resign" name="is_forced_resign" class="radio-group" value="1" {{ readonly ? 'disabled ' : '' }} 
+                    {% if object.getInformation != null %}
+                        {% if object.getInformation.getForcedResign == 1%}
+                        checked 
+                        {% endif %}
+                    {% endif %}
+                    />Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="is_forced_resign_area">
+        {% if object.getInformation.getForcedResign is defined %}
+            {% if object.getInformation.getForcedResign == 1 %}
+                {{ form.group_textarea('If yes, Please provide details','forced_resign_details',object.getInformation.getData.forced_resign|default(''),3,3,5,readonly) }}
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label">Have you been convicted from any crime?</label>
+        <div class="col-md-3">
+            <div class="radio-list">
+                <label>
+                    <input type="radio" id="cform-is_convicted" name="is_convicted" class="radio-group" value="0" {{ readonly ? 'disabled ' : '' }}
+                                {% if object.getInformation != null %}
+                                    {% if object.getInformation.getCrimeConvicted == 0%}
+                                    checked 
+                                    {% endif %}
+                                {% endif %}
+                    />No
+                </label>
+                <label>
+                    <input type="radio" id="cform-is_convicted" name="is_convicted" class="radio-group" value="1" {{ readonly ? 'disabled ' : '' }}
+                                {% if object.getInformation != null %}
+                                {% if object.getInformation.getCrimeConvicted == 1%}
+                                checked 
+                                {% endif %}
+                                {% endif %}
+                    />Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="is_convicted_area">
+        {% if object.getInformation.getCrimeConvicted is defined %}
+            {% if object.getInformation.getCrimeConvicted == 1 %}
+                {{ form.group_textarea('If yes, Please provide details','convicted_crime_details',object.getInformation.getData.crime_convicted|default(''),3,3,5,readonly) }}
+            {% endif %}
+        {% endif %}  
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label">Did you suffer from any serious disease or ailment?</label>
+        <div class="col-md-3">
+            <div class="radio-list">
+                <label>
+                    <input type="radio" id="cform-has_serious_disease" name="has_serious_disease" class="radio-group" value="0" {{ readonly ? 'disabled ' : '' }}
+                                {% if object.getInformation != null %}
+                                {% if object.getInformation.getSeriousDisease == 0%}
+                                checked 
+                                {% endif %}
+                                {% endif %}
+                    />No
+                </label>
+                <label>
+                    <input type="radio" id="cform-has_serious_disease" name="has_serious_disease" class="radio-group" value="1" {{ readonly ? 'disabled ' : '' }}
+                                {% if object.getInformation != null %}
+                                {% if object.getInformation.getSeriousDisease == 1%}
+                                checked 
+                                {% endif %}
+                                {% endif %}
+                    />Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="disease_area">
+        {% if object.getInformation.getSeriousDisease is defined %}
+            {% if object.getInformation.getSeriousDisease == 1 %}
+                {{ form.group_textarea('If yes, Please provide details','has_serious_disease_details',object.getInformation.getData.serious_disease|default(''),3,3,5,readonly) }}
+            {% endif %}
+        {% endif %} 
+    </div>
+    
+    <div class="form-group">
+        <label class="col-md-4 control-label">Do you possess a driver's license?</label>
+        <div class="col-md-3">
+            <div class="radio-list">
+                <label>
+                    <input type="radio" id="cform-has_driver_license" name="has_driver_license" class="radio-group" value="0" {{ readonly ? 'disabled ' : '' }}
+                                {% if object.getInformation != null %}
+                                {% if object.getInformation.getLicense == 0%}
+                                checked 
+                                {% endif %}
+                                {% endif %}
+                    />No
+                </label>
+                <label>
+                    <input type="radio" id="cform-has_driver_license" name="has_driver_license" class="radio-group" value="1" {{ readonly ? 'disabled ' : '' }}
+                                {% if object.getInformation != null %}
+                                {% if object.getInformation.getLicense == 1%}
+                                checked 
+                                {% endif %}
+                                {% endif %}
+                    />Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="license_area">
+        {% if object.getInformation.getLicense is defined %}
+            {% if object.getInformation.getLicense == 1 %}
+                <div class="form-group">
+                        <label class="col-md-4 control-label">If yes?</label>
+                        <div class="col-md-3">
+                            <div class="radio-list">
+                                <label>
+                                    <input type="radio" id="cform-is_professional" name="is_professional" class="radio-group" value="0" {{ readonly ? 'disabled ' : '' }}
+                                                {% if object.getInformation != null %}
+                                                {% if object.getInformation.getLicenseType == 0%}
+                                                checked 
+                                                {% endif %}
+                                                {% endif %}
+                                            />Non-Professional 
+                                </label>
+                                <label>
+                                    <input type="radio" id="cform-is_professional" name="is_professional" class="radio-group" value="1" {{ readonly ? 'disabled ' : '' }}
+                                                {% if object.getInformation != null %}
+                                                {% if object.getInformation.getLicenseType == 1%}
+                                                checked 
+                                                {% endif %}
+                                                {% endif %}
+                                            />Professional
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+            {% endif %}
+        {% endif %} 
+    </div>    
+    
+    <div class="form-group">
+            <div id="cgroup-sss_number" class="form-group">
+                <label class="col-md-3 control-label">SSS Number</label>
+                <div class="col-md-5">
+                    <input id="cform-sss_number" type="text" name="sss_number" class="form-control mask_sss" placeholder="SSS Number" value="{{object.getInformation.getSSSNumber|default('')}}" {{ readonly ? 'readonly ' : '' }}>
+                </div>
+            </div>
+            <div id="cgroup-tin_number" class="form-group">
+                <label class="col-md-3 control-label">Tin Number</label>
+                <div class="col-md-5">
+                    <input id="cform-tin_number" type="text" name="tin_number" class="form-control mask_tin" placeholder="Tin Number" value="{{object.getInformation.getTinNumber|default('')}}" {{ readonly ? 'readonly ' : '' }}>
+                </div>
+            </div>
+            <div id="cgroup-philhealth_number" class="form-group">
+                <label class="col-md-3 control-label">Philhealth Number</label>
+                <div class="col-md-5">
+                    <input id="cform-philhealth_number" type="text" name="philhealth_number" class="form-control mask_philhealth" placeholder="Philhealth Number" value="{{object.getInformation.getPhilHealthNumber|default('')}}" {{ readonly ? 'readonly ' : '' }}>
+                </div>
+            </div>
+            <div id="cgroup-pagibig_number" class="form-group">
+                <label class="col-md-3 control-label">Pag IBIG Number</label>
+                <div class="col-md-5">
+                    <input id="cform-pagibig_number" type="text" name="pagibig_number" class="form-control mask_pagibig" placeholder="Pag IBIG Number" value="{{object.getInformation.getPagIbigNumber|default('')}}" {{ readonly ? 'readonly ' : '' }}>
+                </div>
+            </div>  
+        </div>
+
+    <div class="form-actions fluid">
+        <div class="col-md-12">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,64 @@
+<form method="post" class="form-horizontal form">
+    <div class="form-body">
+        <h4 class="form-section">Evaluation Summary</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Evaluator Name</th>
+                    <th>Department</th>
+                    <th>Evaluation Period</th>
+                    <th>Status</th>
+                    <th>Rating</th>
+                    <th style="width:165px">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if evals is empty %}
+                <tr class="odd"><td valign="top" colspan="6" class="dataTables_empty">No Appraisals/Evaluation yet.</td></tr>
+            {% else %}
+            {% for a in appr %}
+                {% for result in appr_result %}
+                {% if result.id == a.getID %}
+                <tr class="odd gradeX" style="background-color: #BFBFBF;">
+                    <td colspan="2">Evaluation Type - {{ a.getType }}</td>
+                    <td colspan="2">Overall Grade - {{ result.grade|default('N/A') }}</td>
+                    <td colspan="2">Overall Rating - {{ result.rating|default('N/A') }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+
+                {% for eval in evals %}
+                    {% for e in eval %}
+                    {% if e.getAppraisal.getID == a.getID %}
+                    <tr class="odd gradeX">
+                        <td>{{ e.getEmployee.getDisplayName }}</td>
+                        <td>{{ e.getEmployee.getDepartment.getName ~ ' (' ~ e.getEmployee.getJobTitle.getName ~ ')' }}</td>
+                        <td>{{ e.getAppraisal.getDateStart|date('m/d/y') ~ '-' ~ e.getAppraisal.getDateEnd|date('m/d/y') }}</td>
+                        <td>{{ e.getStatus }}</td>
+                        <td>{{ e.getQualiRating }}</td>
+                        <td>
+                        {% set eval = e.getID %}
+                        {% if e.getStatus == 'Completed' %}
+                            <a href="{{ path('hris_workforce_appraisals_evaluate', { 'eval':eval }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View</a>
+                        {% else %}
+                            <a href="{{ path('hris_workforce_appraisals_evaluate', { 'eval':eval }) }}" class="btn default btn-xs green"><i class="fa fa-edit"></i> Evaluate</a>
+                        {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+        
+    </div>
+</form>
+
+{# <pre>{{ dump(appr_result) }}</pre>
+
+{% for result in appr_result %}
+    Final Quantitative: {{ result.grade }}
+    Final Qualitative: {{ result.rating }}
+{% endfor %} #}

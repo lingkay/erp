@@ -1,0 +1,221 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Issue new property</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                    <h4 class="form-section">Employee Details</h4>
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_select('Department', 'dept', dept_list, 0, 3, 4) }}
+                        {{ form.group_select('Employee Name', 'emp', '', 0, 3, 4) }}
+                    <h4 class="form-section">Issued Items</h4>
+                        {{ form.group_select('Property Type', 'type', prop_type, 0, 3, 4) }}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:car.html.twig" %}{% endembed %}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:laptop.html.twig" %}{% endembed %}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:phone.html.twig" %}{% endembed %}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:others.html.twig" %}{% endembed %}
+                        {{ form.group_date('Date Issued', 'issue_date', '', 3, 4) }}
+                        {{ form.group_upload_image('Item Picture','picture',object.getUpload,3,4)}}
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+function filter_select(dept) {
+    if (dept == 0) {
+        return false;
+    }
+
+    var url = "{{ path ('hris_workforce_get_emp', { id: ':dept' }) }}";
+    url = url.replace(":dept", dept);
+
+    $('select[name="emp"]').empty();
+
+    console.log(url);
+    // get evaluator list
+    $.getJSON(url, function(data){
+        console.log(data);
+
+        $('select[name="emp"]').html('<option></option>').select2();
+        for(var index in data)
+        {
+            $('select[name="emp"]').append('<option value="'+ index + '">'+ data[index].name + ' </option>');
+        }
+    });
+}
+
+function toggle_form(id) {
+    if(id == 1) {
+        $('#type_car').show();
+        $('#type_laptop').hide();
+        $('#type_phone').hide();
+        $('#type_others').hide();
+    }
+    else if(id == 2) {
+        $('#type_laptop').show();
+        $('#type_car').hide();
+        $('#type_phone').hide();
+        $('#type_others').hide();
+    }
+    else if(id == 3) {
+        $('#type_phone').show();
+        $('#type_laptop').hide();
+        $('#type_car').hide();
+        $('#type_others').hide();
+    }
+    else {
+        $('#type_others').show();
+        $('#type_laptop').hide();
+        $('#type_car').hide();
+        $('#type_phone').hide();
+    };
+}
+
+
+$(document).ready(function() {
+    $('[id=cform-issue_date]').datepicker({
+        todayHighlight: true,
+        endDate: '0'
+        });
+        $('.calendar').prop('disabled', true);
+
+    toggle_form($('select[name="type"]').val());
+
+    $('select[name="dept"]').change(function() {
+        filter_select($(this).val());
+    });
+
+    $('select[name="type"]').change(function() {
+        toggle_form($(this).val());
+    });
+
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            dept: {
+                required: true,
+                min: 1,
+            },
+            emp: "required",
+            item_name: "required",
+            item_code: "required",
+            item_desc: "required",
+            issue_date: "required",
+            'phone[brand]': "required",
+            'phone[model]': "required",
+            'phone[color]': "required",
+            'phone[imei]': "required",
+            'phone[number]': "required",
+            'laptop[brand]': "required",
+            'laptop[model]': "required",
+            'laptop[color]': "required",
+            'laptop[snid]': "required",
+            'car[file_num]': "required",
+            'car[model]': "required",
+            'car[body_type]': "required",
+            'car[denom]': "required",
+            'car[fuel]': "required",
+            'car[plate_num]': "required",
+            'car[engine_num]': "required",
+            'car[or_cr_num]': "required",
+            'car[chassis_num]': "required",
+        },
+        messages: {
+            dept: "Please select Department.",
+            emp: "Please select Employee.",
+            issue_date: "Please specify date issued."
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+    $('.form-horizontal .select_2').change(function () {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('.date-picker .form-control').change(function() {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+});
+</script>
+
+{% endblock %}

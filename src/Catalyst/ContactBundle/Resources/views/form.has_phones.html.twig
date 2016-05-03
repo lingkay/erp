@@ -1,0 +1,23 @@
+<div id="phone-section">
+<h4 class="form-section">Phones</h4>
+<button type="button" id="add-phone" class="btn btn-primary" data-toggle="modal" data-target="#add-phone-modal">Add Phone</button>
+<br>
+
+{% for a in object.getPhones %}
+<div>
+    {{ f.hidden('phone_id[]', a.getID) }}
+    {{ f.group_text('Type', 'name[]', a.getName, 3, 4, true) }}
+    {{ f.group_text('Number', 'number[]', a.getNumber, 3, 4) }}
+    <div class="form-group">
+    	<label class="col-md-3 control-label"></label>
+    	<div class="col-md-4">
+    		<div class="radio-list">
+    		{{ f.radio('is_primary',a.getID,'is primary no.?',a.getIsPrimary == 1 ? true : false, 'is_primary') }}
+			</div>
+		</div>
+	</div>
+    <a href="#" class="btn red delete-phone">Delete Phone</a>
+    <hr>
+</div>
+{% endfor %}
+</div>

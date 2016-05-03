@@ -1,0 +1,153 @@
+hris_profile_employee_index:
+    path:     /myProfile
+    methods:  [GET]
+    defaults: { _controller: HrisProfileBundle:Employee:index }
+
+hris_profile_employee_edit:
+    path:     /myProfile
+    methods:  [POST]
+    defaults: { _controller: HrisProfileBundle:Employee:editInfo }
+
+# Leave
+
+hris_profile_leave_index:
+    path:    /leaves
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:index }
+
+hris_profile_leave_add_form:
+    pattern: /leave
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:addForm }
+
+hris_profile_leave_add_submit:
+    pattern: /leave
+    methods: [POST]
+    defaults: { _controller: HrisProfileBundle:Leave:addSubmit }
+
+hris_profile_leave_edit_form:
+    pattern: /leave/{id}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:editForm }
+
+hris_profile_leave_edit_submit:
+    pattern: /leave/{id}
+    methods: [POST]
+    defaults: { _controller: HrisProfileBundle:Leave:editSubmit }
+
+hris_profile_leave_delete:
+    pattern: /leave/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:delete }
+
+hris_profile_leave_grid:
+    pattern: /leaves/grid
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:grid }
+
+hris_profile_leave_ajax_get:
+    pattern: /ajax/leaves/{id}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:ajaxGet }
+
+hris_profile_leave_ajax_add:
+    pattern: /ajax/leaves/add
+    methods: [POST]
+    defaults: { _controller: HrisProfileBundle:Leave:ajaxAdd }
+
+hris_profile_leave_emp_ajax:
+    path:     /ajax/emp/leave/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:ajaxGetLeave }
+
+hris_profile_leaves_emp_ajax:
+    path:     /ajax/emp/leaves/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisProfileBundle:Leave:ajaxGetEmpLeave }
+
+hris_profile_leave_emp_workweek:
+    path:     /ajax/emp/workweek/{id}
+    # methods:  [GET]
+    defaults: { _controller: HrisProfileBundle:Employee:ajaxEmpWorkdays }
+
+# Request
+
+hris_profile_request_index:
+    path:    /requests
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Request:index }
+
+hris_profile_request_add_form:
+    pattern: /request/{type}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Request:createForm, type: null }
+
+hris_profile_request_add_submit:
+    pattern: /request/{type}
+    methods: [POST]
+    defaults: { _controller: HrisProfileBundle:Request:requestSubmit, type: null }
+
+hris_profile_request_edit_form:
+    pattern: /request/{id}/{type}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Request:viewForm }
+
+hris_profile_request_edit_submit:
+    pattern: /request/{id}/{type}
+    methods: [POST]
+    defaults: { _controller: HrisProfileBundle:Request:viewSubmit }
+
+hris_profile_request_status:
+    pattern: /request/{id}/{type}/{status}
+    # methods: [POST]
+    defaults: { _controller: HrisProfileBundle:Request:updateStatus }
+
+hris_profile_request_delete:
+    pattern: /delete/request/{id}/{type}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Request:deleteRequest }
+
+hris_profile_request_grid:
+    pattern: /requests/grid
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Request:grid }
+
+hris_profile_request_ajax_get:
+    pattern: /ajax/requests/{id}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Request:ajaxGet }
+
+hris_profile_request_ajax_add:
+    pattern: /ajax/requests/add
+    methods: [POST]
+    defaults: { _controller: HrisProfileBundle:Request:ajaxAdd }
+
+hris_profile_request_print:
+    pattern: /print/request/{id}
+    # methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Request:printForm }
+
+#Attendance Management
+
+hris_profile_attendance_index:
+    path:    /attendances
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Adjustment:index }
+
+hris_profile_attendance_check:
+    path:    /attendances/check/{id}/{date}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Adjustment:checkAttendance, id: null, date: null}
+
+hris_profile_attendance_ajax_add:
+    path:    /attendances/ajax/add/{id}/{date}
+    defaults: { _controller: HrisProfileBundle:Adjustment:adjustmentAdd, id: null, date: null}
+
+hris_profile_attendance_overtime:
+    path:    /attendances/ot/{id}/{date}
+    methods: [GET]
+    defaults: { _controller: HrisProfileBundle:Adjustment:checkOvertime, id: null, date: null }
+
+hris_profile_attendance_check_request:
+    path:    /attendances/request/{id}
+    defaults: { _controller: HrisProfileBundle:Adjustment:checkRequest, id: null }

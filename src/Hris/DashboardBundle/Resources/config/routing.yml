@@ -1,0 +1,35 @@
+hris_dashboard_index:
+    path:     /
+    defaults: { _controller: HrisDashboardBundle:Dashboard:index }
+
+hris_dashboard_job_vacancy:
+    path:     /jobvacancy
+    defaults: { _controller: HrisDashboardBundle:JobVacancy:index }
+
+hris_dashboard_job_vacancy_grid:
+    path:     /jobvacancy/grid
+    defaults: { _controller: HrisDashboardBundle:JobVacancy:gridVacancy }
+
+hris_dashboard_shortlisted_applicant:
+    path:     /shortlistedapplicant
+    defaults: { _controller: HrisDashboardBundle:ShortlistedApplicant:index }
+
+hris_dashboard_pending_request:
+    path:     /pendingrequest
+    defaults: { _controller: HrisDashboardBundle:PendingRequest:index}
+
+hris_dashboard_pending_grid_request:
+    path:     /pendingrequest/{request}/{date_from}/{date_to}
+    defaults: { _controller: HrisDashboardBundle:PendingRequest:gridRequest, request: null, date_from: null, date_to: null}
+
+hris_dashboard_schedules:
+    path:     /appschedules
+    defaults: { _controller: HrisDashboardBundle:Schedules:index}
+
+hris_dashboard_scheduled_interview:
+    path:     /scheduledinterview
+    defaults: { _controller: HrisDashboardBundle:ScheduledInterview:index}
+
+hris_dashboard_calendar:
+    path:     /calendar
+    defaults: { _controller: HrisDashboardBundle:Calendar:index }

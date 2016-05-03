@@ -1,0 +1,199 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block css %}
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/portfolio.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/dropzone/css/dropzone.css') }}" rel="stylesheet"/>
+
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+<!-- date picker -->
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker3.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+    <a href="{{ asset('bundles/hristemplate/forms/New Pre employment checklist.pdf') }}" class="btn green">Print Checklist</a>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-12">
+    
+        <div class="portlet box blue-hoki">
+            
+            <div class="portlet-title">
+
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4 class="form-section">Information</h4>
+
+                        {{ form.group_text('Name of Applicant', 'name','', 3, 4, readonly) }}
+
+                        <h4 class="form-section">Set 1:</h4>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Present Original and Photocopy upon submission</label>
+                            <div class="col-md-5">
+                                <div class="checkbox-list">
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, 'Medical', '', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, 'Drug Test', '', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'NBI/Police Clearance','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'Barangay Clearance','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'NSO Birth Certificate','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'Birth certificate of dependents','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, '2x2 Picture (2 pcs.)', '', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, 'SSS Number', '', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'TIN Number','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'Philhealth Number','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'Pag ibig number','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'TOR/Diploma','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, 'BIR 2305 form with stamp', '', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, '1905 with stamp', '', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, '1902 with stamp','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'PMRF (Philhealth Member Registration Form)','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'MDR (Pag ibig online registration)','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, 'SSS loan verification', '', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_service', 1, 'Folder and Envelope', '', 'chars', readonly) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="form-section">Set 2:</h4>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Present Original and Photocopy upon submission</label>
+                            <div class="col-md-5">
+                                <div class="checkbox-list">
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'Certificate of Employment','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'Clearance','', 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, '2316 of the current year','', 'chars', readonly) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js') }}"></script>
+
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/portfolio.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/dropzone/dropzone.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/form-dropzone.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
+
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/components-pickers.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/clockface/js/clockface.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/moment.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/highcharts/highcharts.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/highcharts/modules/exporting.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+{% endblock %}

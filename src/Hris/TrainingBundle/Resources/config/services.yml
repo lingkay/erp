@@ -1,0 +1,7 @@
+parameters:
+#    hris_training.example.class: Hris\TrainingBundle\Example
+
+services:
+#    hris_training.example:
+#        class: %hris_training.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

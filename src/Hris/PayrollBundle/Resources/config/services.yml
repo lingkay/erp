@@ -1,0 +1,13 @@
+parameters:
+#    hris_workforce_management.example.class: Hris\WorkforceBundle\Example
+
+services:
+    hris_payroll:
+        class: Hris\PayrollBundle\Model\PayrollManager
+        arguments: [ "@doctrine.orm.entity_manager","@service_container"]
+    hris_thirteenth:
+        class: Hris\PayrollBundle\Model\Pay13thMonth
+        arguments: [ "@doctrine.orm.entity_manager","@service_container"]
+    hris_payroll_compute:
+        class: Hris\PayrollBundle\Model\PayrollComputation
+        arguments: [ "@doctrine.orm.entity_manager","@service_container"]

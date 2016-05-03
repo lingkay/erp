@@ -1,0 +1,23 @@
+<div id="interview-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <form id="interview-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Interview</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        {{ form.typeahead('Interviewer', 'interviewer', "","" , path('hris_workforce_employee_ajax_get'), 3, 8) }}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_interview_submit" type="submit" class="btn green">Add Interviewer</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>

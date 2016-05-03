@@ -1,0 +1,233 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Employee 201 File</div>
+            </div>
+            <div class="portlet-body">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="portlet box blue">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-filter"></i>Filters
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-horizontal">
+                                    {% set emp_name = object.getDisplayName ~ ' ' ~ object.getMiddleName %}
+                                    {{ form.group_text('Employee Name','emp',emp_name,4,7,true)}}
+                                    {{ form.group_text('Department','dept',object.getDepartment.getName,4,7,true)}}
+                                    {{ form.group_text('Position','pos',object.getJobTitle.getName,4,7,true)}}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-horizontal">
+                                    {{ form.group_checkbox_set('Employee Files','files',files_opts,'',4,7) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-horizontal">
+                                    {{ form.group_checkbox_set('Employee Contributions/Payments','pays',pay_opts,'',4,7) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                        <button type="submit" id="print_btn" class="btn green pull-right"><i class="fa fa-print"></i> Print 201 File</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+// function filter_select(dept) {
+//     if (dept == 0) {
+//         return false;
+//     }
+
+//     var url = "{{ path ('hris_workforce_get_emp', { id: ':dept' }) }}";
+//     url = url.replace(":dept", dept);
+
+//     $('select[name="emp"]').empty();
+
+//     console.log(url);
+//     // get evaluator list
+//     $.getJSON(url, function(data){
+//         console.log(data);
+
+//         $('select[name="emp"]').html('<option></option>').select2();
+//         for(var index in data)
+//         {
+//             $('select[name="emp"]').append('<option value="'+ index + '">'+ data[index].name + ' </option>');
+//         }
+//     });
+// }
+
+// function toggle_form(id) {
+//     if(id == 1) {
+//         $('#type_car').show();
+//         $('#type_laptop').hide();
+//         $('#type_phone').hide();
+//         $('#type_others').hide();
+//     }
+//     else if(id == 2) {
+//         $('#type_laptop').show();
+//         $('#type_car').hide();
+//         $('#type_phone').hide();
+//         $('#type_others').hide();
+//     }
+//     else if(id == 3) {
+//         $('#type_phone').show();
+//         $('#type_laptop').hide();
+//         $('#type_car').hide();
+//         $('#type_others').hide();
+//     }
+//     else {
+//         $('#type_others').show();
+//         $('#type_laptop').hide();
+//         $('#type_car').hide();
+//         $('#type_phone').hide();
+//     };
+// }
+
+
+// $(document).ready(function() {
+//     $('[id=cform-issue_date]').datepicker({
+//         todayHighlight: true,
+//         endDate: '0'
+//         });
+//         $('.calendar').prop('disabled', true);
+
+//     toggle_form($('select[name="type"]').val());
+
+//     $('select[name="dept"]').change(function() {
+//         filter_select($(this).val());
+//     });
+
+//     $('select[name="type"]').change(function() {
+//         toggle_form($(this).val());
+//     });
+
+//     jQuery.validator.setDefaults({
+//         errorClass: 'help-block',
+//         errorElement: 'span',
+//         errorPlacement: function(error, element) {
+//             if(element.parent().parent().hasClass('form-group'))
+//             {
+//                 error.appendTo(element.parent().last());
+//                 element.parent().parent().addClass('has-error');
+//             }
+//             else if(element.parent().parent().hasClass('checker'))
+//             {   
+//                 error.appendTo(element.parent().parent().parent().parent().last());
+//                 element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+//             }
+//             else if(element.parent().parent().hasClass('radio'))
+//             {   
+//                 error.appendTo(element.parent().parent().parent().parent().last());
+//                 element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+//             }
+//             else
+//             {
+//                 error.appendTo(element.parent().parent().last());
+//                 element.parent().parent().parent().addClass('has-error');
+//             }
+//         },
+//         success: function(element) {
+//             if(element.parent().parent().hasClass('form-group'))
+//             {  
+//                 element.parent().parent().removeClass('has-error');
+//                 element.parent().parent().addClass('has-success');
+//             }
+//             else if(element.parent().parent().hasClass('checker'))
+//             {   
+//                 element.parent().parent().parent().parent().parent().removeClass('has-error');
+//                 element.parent().parent().parent().parent().parent().addClass('has-success');
+//             }
+//             else if(element.parent().parent().hasClass('radio'))
+//             {   
+//                 element.parent().parent().parent().parent().parent().removeClass('has-error');
+//                 element.parent().parent().parent().parent().parent().addClass('has-success');
+//             }
+//             else
+//             {  
+//                 element.parent().parent().parent().removeClass('has-error');
+//                 element.parent().parent().parent().addClass('has-success');
+//             }
+
+//             element.remove();
+//         }
+//     });
+
+//     // validate form elements
+//     $(".form-horizontal").validate({
+//         onfocusout: function(element) {
+//            this.element(element);
+//         },
+//         rules: {
+//             dept: {
+//                 required: true,
+//                 min: 1,
+//             },
+//             emp: "required",
+//             item_name: "required",
+//             item_code: "required",
+//             item_desc: "required",
+//             issue_date: "required",
+//             'phone[brand]': "required",
+//             'phone[model]': "required",
+//             'phone[color]': "required",
+//             'phone[imei]': "required",
+//             'phone[number]': "required",
+//             'laptop[brand]': "required",
+//             'laptop[model]': "required",
+//             'laptop[color]': "required",
+//             'laptop[snid]': "required",
+//             'car[file_num]': "required",
+//             'car[model]': "required",
+//             'car[body_type]': "required",
+//             'car[denom]': "required",
+//             'car[fuel]': "required",
+//             'car[plate_num]': "required",
+//             'car[engine_num]': "required",
+//             'car[or_cr_num]': "required",
+//             'car[chassis_num]': "required",
+//         },
+//         messages: {
+//             dept: "Please select Department.",
+//             emp: "Please select Employee.",
+//             issue_date: "Please specify date issued."
+//         },
+//         submitHandler: function(form) {
+//             form.submit();
+//         }
+//     });
+
+//     $('.form-horizontal .select_2').change(function () {
+//         $('.form-horizontal').validate().element($(this));
+//     });
+
+//     $('.date-picker .form-control').change(function() {
+//         $('.form-horizontal').validate().element($(this));
+//     });
+// });
+</script>
+
+{% endblock %}

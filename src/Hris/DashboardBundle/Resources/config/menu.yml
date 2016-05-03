@@ -1,0 +1,9 @@
+menu_items:
+    - id: menu_admin
+      acl: cat_admin.menu
+      label: Administration
+      icon: fa-laptop
+
+    - id: hris_dashboard_calendar
+      label: Events and Announcements
+      parent: menu_admin

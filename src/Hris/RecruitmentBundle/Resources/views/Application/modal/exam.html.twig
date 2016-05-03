@@ -1,0 +1,25 @@
+<div id="exam-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <form id="exam-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Exam Result</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        {{form.group_select('Exam Type','exam_type',exam_opts,exam_id,3,8,readonly)}}
+                        {{form.group_text('Score','score','',3,8,readonly)}}
+                        {{form.group_select('Status','status',status_opts,status_id,3,8,readonly)}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_exam_submit" type="submit" class="btn green">Add Exam Result</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>

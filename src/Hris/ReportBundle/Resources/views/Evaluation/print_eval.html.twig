@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Restitution HTML</title>
+</head>
+<body style="padding: 10px; font-size: 10pt;font-family: Arial;">
+<style type="text/css">
+<!--
+table {
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+    border-spacing: 0px !important
+}
+tr { 
+    vertical-align: top;
+}
+td {
+    vertical-align: top;
+    padding: 0;
+}
+.inner {
+    padding: 2px;
+} 
+-->
+</style>
+<div style="font-size: 12pt">
+    {# Logo and Ratings #}
+    <table cellspacing="0" style="width: 100%; text-align: center; font-size: 12px">
+        <tbody>
+        <tr>
+            <td style="width: 30%;"></td>
+            <td style="width: 40%;"><img style="width: 75%;" src="{{ logo }}" alt="Logo"></td>
+            <td style="width: 30%; color: #444444;">
+                <table cellspacing="0" style="width: 100%; border: solid 2px #000000; ">
+                <tbody>
+                <tr>
+                    <td class="inner" colspan="2" style="border: solid 1px #000000;">RATING</td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 50%; border: solid 1px #000000;">QUANTITATIVE</td>
+                    <td class="inner" style="width: 50%; border: solid 1px #000000;">QUALITATIVE</td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 50%; border: solid 1px #000000;">{{ eval.getQuantiRating ~ '%' }}</td>
+                    <td class="inner" style="width: 50%; border: solid 1px #000000;">{{ eval.getQualiRating }}</td>
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    {# Employee Basic Info, Evaluation Details #}
+    <br>
+    <table cellspacing="0" style="width: 100%; text-align: left; font-size: 14px; border: solid 2px #000000;">
+        <tbody>
+        <tr>
+            <td style="width: 50%;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px;">
+                <tbody>
+                <tr>
+                    <td class="inner" style="width: 100%">NAME: {{ app.getEmployee.getDisplayName }}</td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 100%">POSITION: {{ app.getEmployee.getJobTitle.getName }}</td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 100%">PERIOD COVERED: {{ app.getEvalPeriod }}</td>
+                </tr>
+                </tbody>
+                </table>
+            </td>
+            <td style="width: 50%;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px;">
+                <tbody>
+                <tr>
+                    <td class="inner" style="width: 50%;">PURPOSE OF EVALUATION:</td>
+                    <td class="inner" style="width: 50%;">[{{ app.getType is same as('Merit/Salary Increase') ? 'X':' ' }}] Merit/Salary Increase</td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 50%;">[{{ app.getType is same as('Regularization') ? 'X':' ' }}] Regularization</td>
+                    <td class="inner" style="width: 50%;">[{{ app.getType is same as('Quarterly Review') ? 'X':' ' }}] Quarterly Review</td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 50%;">[{{ app.getType is same as('Promotion') ? 'X':' ' }}] Promotion</td>
+                    <td class="inner" style="width: 50%;">[{{ app.getType is same as('Others') ? 'X':' ' }}] Others</td>
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    {# KPI #}
+    <table cellspacing="0" style="width: 100%; text-align: center; font-size: 14px; background-color: #000; color: #fff;">
+        <tbody>
+        <tr>
+            <td class="inner" style="width: 100%; font-size: 20px;">PERFORMANCE EVALUATION FORM for OFFICE STAFFS</td>
+        </tr>
+        <tr>
+            <td class="inner" style="width: 100%; text-align: left;">I. KEY PERFORMANCE INDICATOR (KPI) ASSESSMENT (60%)</td>
+        </tr>
+        <tr>
+            <td style="width: 100%; text-align: center; font-size: 12px;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px; background-color: #fff; color: #000;">
+                <tbody>
+                <tr style="vertical-align: bottom;">
+                    <td class="inner" style="width: 40%; font-size: 10px;vertical-align: bottom; border: 1px;">
+                        KEY OBJECTIVES<br>
+                        (List the Key Objectives agreed upon this period and put the % weight of each. Total should be 60%)
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 8px;vertical-align: bottom; border: 1px;">
+                        % OF CRITERIA
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 8px;vertical-align: bottom; border: 1px;">
+                        NO PROGRESS
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 8px;vertical-align: bottom; border: 1px;">
+                        VERY MINIMAL PROGRESS
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 8px;vertical-align: bottom; border: 1px;">
+                        SUBSTANTIAL PROGRESS
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 8px;vertical-align: bottom; border: 1px;">
+                        OBJECTIVES MET WITHIN STANDARDS
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 8px;vertical-align: bottom; border: 1px;">
+                        OBJECTIVES WERE SURPASSED IN ALL ASPECTS
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        {# objectives (loop this) #}
+        {% set KPI = eval.getKPIDetails %}
+        {% for key, item in KPI %}
+        {% if key != 'comment' %}
+        <tr>
+            <td style="width: 100%; text-align: left; font-size: 12px;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px; background-color: #fff; color: #000;">
+                <tbody>
+                <tr>
+                    <td class="inner" style="width: 40%; font-size: 12px; font-weight: bold; vertical-align: center; border: 1px; background-color: #000; color: #fff;">
+                        OBJECTIVE # {{ key }}
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 10px;vertical-align: bottom; text-align:right; border: 1px;">
+                        {{ item.percent }}
+                    </td>
+                    {% for id, entries in item.grade %}
+                    <td class="inner" style="width: 10%; font-size: 10px;vertical-align: bottom; text-align:right; border: 1px;">
+                        {{ entries }}
+                    </td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 100%; text-align: left; font-size: 12px;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px; background-color: #fff; color: #000;">
+                <tbody>
+                <tr>
+                    <td class="inner" style="width: 40%; font-size: 12px;vertical-align: top; border: 1px;">
+                        {{ item.objective }}
+                    </td>
+                    <td class="inner" style="width: 10%; font-size: 12px; text-align: center; vertical-align: middle; border: 1px; font-weight: bold;">
+                        {{ item.score ~ '%' }}
+                    </td>
+                    {% for id, desc in item.description %}
+                    <td class="inner" style="width: 10%; font-size: 10px;vertical-align: top; text-align:left; border: 1px;">
+                        {{ desc }}
+                    </td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        <tr>
+            <td class="inner" style="width: 100%; text-align: left; font-size: 12px; border: solid 1px; background-color: #fff; color: #000;">
+                COMMENT/S: {{ eval.getKPIDetails.comment }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+    {% embed 'HrisReportBundle:Evaluation:pqc.html.twig' %}{% endembed %}
+
+    {# Rating System #}
+    <br>
+    <table cellspacing="0" style="width: 100%; text-align: center; font-size: 14px; border: solid 2px #000000;">
+        <tbody>
+        <tr>
+            <td style="width: 100%; text-align: center; font-size: 12px;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px; background-color: #fff; color: #000;">
+                <tbody>
+                <tr>
+                    <td class="inner" style="width: 60%; border: 1px; vertical-align:middle;">
+                        QUALITATIVE RATING DESCRIPTION
+                    </td>
+                    <td class="inner" style="width: 20%; border: 1px; font-size: 11px; vertical-align:middle;">
+                        QUALITATIVE RATING
+                    </td>
+                    <td class="inner" style="width: 20%; border: 1px; font-size: 11px; vertical-align:middle;">
+                        QUANTITATIVE RATING
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 100%; text-align: center; font-size: 12px;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px; background-color: #fff; color: #000;">
+                <tbody>
+                <tr>
+                    <td class="inner" style="width: 60%; vertical-align:middle; border: 1px;">
+                        Exceptional Performance in all areas of responsibility. Planned objectives were achieved well above the established standards and accomplishments were made in unexpected areas.
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        Excellent
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        90% - 100%
+                    </td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 60%; vertical-align:middle; border: 1px;">
+                        Consistently exceed estaablished standards in most areas of responsibility. All requirements were met and objectives were achieved above the established standards.
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        Very Satisfactory
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        80% - 89%
+                    </td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 60%; vertical-align:middle; border: 1px;">
+                        All job requirements were met and planned objectives were accomplished within established standards. There were no critical areas where accomplishement were less than planned.
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        Satisfactory
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        60% - 79%
+                    </td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 60%; vertical-align:middle; border: 1px;">
+                        Performance in one or more critical areas does not meet expectations. Not all planned objectives were accomplished within established standards and some responsibilities were not completely met.
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        Needs Improvement
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        40% - 59%
+                    </td>
+                </tr>
+                <tr>
+                    <td class="inner" style="width: 60%; vertical-align:middle; border: 1px;">
+                        Does not meet minimum job requirements. Performance is unaaceptable. Responsibbilities are not being met and important objectives have not been accomplished. Needs immediate improvement.
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        Poor
+                    </td>
+                    <td class="inner" style="width: 20%; vertical-align:middle; border: 1px;">
+                        20% - 39%
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    {# rater comments #}
+    {% set comment = eval.getComments %}
+    <br>
+    <table cellspacing="0" style="width: 100%; text-align: center; font-size: 14px; border: solid 2px #000000;">
+        <tbody>
+        <tr>
+            <td style="width: 100%; background-color: #000; color: #fff;">TO BE ACCOMPLISHED BY RATER</td>
+        </tr>
+        <tr>
+            <td class="inner" style="width: 100%; min-height: 150px; text-align: center; font-size: 12px; text-align: left; border: solid;">
+                Important Highlights on the employee's performance during the period covered<br>
+                <p class="inner" style="font-weight: bold;">{{ comment[0] }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="inner" style="width: 100%; min-height: 150px; text-align: center; font-size: 12px; text-align: left; border: solid;">
+                Aspects of performance which the employee would need to improve on<br>
+                <p class="inner" style="font-weight: bold;">{{ comment[1] }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="inner" style="width: 100%; min-height: 150px; text-align: center; font-size: 12px; text-align: left; border: solid;">
+                Agreed action plans to be undertaken by employee to further improve his/her performance for the next evaluation period<br>
+                <p class="inner" style="font-weight: bold;">{{ comment[2] }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 100%; text-align: left; font-size: 12px;">
+                <table cellspacing="0" style="width: 100%; border: solid 1px; background-color: #fff; color: #000;">
+                <tbody>
+                <tr>
+                    <td class="inner" style="width: 40%; border: 1px;">
+                        Rated by:<br><br><br>
+                        <span style="font-weight: bold;">{{ eval.getEmployee.getDisplayName }}</span><br>
+                        {{ eval.getEmployee.getJobTitle.getName }}<br>
+                        Date: {{ eval.getDateEvaluated|date('m/d/Y') }}
+                    </td>
+                    <td class="inner" style="width: 30%; border: 1px;">
+                        Reviewed and Approved by:<br><br><br>
+                        <span style="font-weight: bold;">
+                            {{ eval.getEmployee.getDepartment.getDeptHead.getDisplayName|default('') }}
+                        </span><br>
+                        Department Head - {{ eval.getEmployee.getDepartment.getName }}<br>
+                        Date: {{ eval.getDateEvaluated|date('m/d/Y') }}
+                    </td>
+                    <td class="inner" style="width: 30%; border: 1px;">
+                        Acknowledged by:<br><br><br>
+                        <span style="font-weight: bold;">{{ app.getEmployee.getDisplayName }}</span><br>
+                        Employee<br>
+                        Date: {{ eval.getDateEvaluated|date('m/d/Y') }}
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>    
+</body></html>

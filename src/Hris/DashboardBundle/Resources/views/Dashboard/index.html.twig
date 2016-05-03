@@ -1,0 +1,223 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+{% import "CatalystTemplateBundle::dashboard.html.twig" as dboard %}
+
+{% block content %}
+{% embed 'HrisDashboardBundle:Dashboard:contents.html.twig' %}{% endembed %}
+{% endblock %}
+
+{% block js %}
+<script>
+function generatePath()
+{
+    var moment = $('#calendar').fullCalendar('getDate');
+    var month = moment.format('M');
+    var year = moment.format('YYYY');
+    var path = "{{ path('hris_admin_holiday_ajaxHoliday', { 'month': 'Month', 'year': 'Year'}) }}";
+        path = path.replace('Month', month);
+        path = path.replace('Year', year);
+
+    return path; 
+}
+$(document).ready(function(){
+    var total = 0;
+    $('#chart').highcharts({
+            chart:{type:'pie',
+                },
+            credits:{
+                enabled: false
+            },
+            title:{
+                text: 'Employee Headcount'
+            },
+            tooltip:{
+                enabled: true,
+                animation: true
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    animation: true,
+                    cursor: 'pointer',
+                    showInLegend: true,
+                    dataLabels: {
+                        enabled: false,
+                        formatter: function() {
+                            return this.percentage.toFixed(2) + '%';
+                        }
+                    }
+                },
+                series: {
+                    point: {
+                        events: {
+                            legendItemClick: function () {
+                                return false; // <== returning false will cancel the default action
+                            }
+                        }
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                maxHeight: 205,
+                verticalAlign: 'middle',
+                useHTML: true,
+                navigation: {
+                    activeColor: '#3E576F',
+                    animation: true,
+                    arrowSize: 12,
+                    inactiveColor: '#CCC',
+                    style: {
+                        fontWeight: 'bold',
+                        color: '#333',
+                        fontSize: '12px'    
+                    }
+                },
+                y: 25,
+                x: -25,
+                labelFormatter: function() {
+                    total += this.y;
+                    dept_name = this.name.length > 20 ? this.name.slice(0, 15)+' ...' : this.name;
+                    return '<div style="width:150px"><span style="float:left">' + dept_name + '</span><span style="float:right">' + this.y + '</span></div>';
+                },
+            },
+            exporting: {
+                allowHTML: true,
+            },
+            
+            series: [{
+                type: 'pie',
+                name: 'Department Headcount',
+                data:  {{ dept_count|json_encode|raw }}
+            }]
+        });
+    });
+    $('#chart2').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Payroll Expenses'
+            },
+            xAxis: {
+                categories: [
+                    'Jan',
+                    'Feb',
+                    'Mar',
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dec'
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                max: 1000,
+                title: {
+                    text: 'Amount (php per thousand)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} php</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Contractual',
+                data: [490.9, 495.5, 470.4, 420.2, 435.0, 415.0, 407.6, 398.5, 429.4, 419.1, 435.6, 446.4]
+
+            }, {
+                name: 'Probationary',
+                data: [750.6, 680.8, 690.5, 650.4, 622.0, 619.5, 625.0, 609.3, 605.2, 590.5, 620.6, 650.3]
+
+            }, {
+                name: 'Regular',
+                data: [880.9, 920.8, 890.3, 910.4, 890.0, 900.3, 910.0, 880.6, 870.4, 860.2, 880.3, 820.2]
+
+            }],
+            credits:{
+                enabled: false
+            }
+        });
+    $('#calendar').fullCalendar({
+
+        // put your options and callbacks here
+        // weekends: false, // will hide Saturdays and Sundays
+
+        dayClick: function() {
+
+        },
+       // events: "{{ path('hris_admin_holiday_ajax_holiday_all')}}",
+       eventSources: [
+
+        // your event source
+        {
+            url: "{{ path('hris_admin_holiday_ajax_holiday_all')}}", // use the `url` property
+            color: 'blue',    // an option!
+            textColor: 'white'  // an option!
+        },
+        {
+            url: "{{ path('hris_admin_events_get_event_all')}}", // use the `url` property
+            color: 'green',    // an option!
+            textColor: 'black'  // an option!
+        }
+
+        // any other sources...
+
+    ],
+        firstDay: 1,
+        height: 'auto',
+        selectable: true,
+    });
+
+    //inital load of holiday
+
+    path = generatePath();
+
+    $.getJSON(path, function(data){
+        $.each(data, function(key,val){
+        $('#holidays').append('<li class="holiday" style="margin-left: 10px;">' + val.date_formatted + ' - ' + val.holiday + '</li>');
+        });
+    });
+
+    //on click change the list of holidays
+    $('.fc-button-group').click(function(event){
+
+        path = generatePath();
+
+        $.getJSON(path, function(data){
+            $('.holiday').remove();
+            $.each(data, function(key,val){
+            $('#holidays').append('<li class="holiday" style="margin-left: 10px;">' + val.date + ' - ' + val.holiday + '</li>');
+            });
+        });
+    });
+
+    $('.fc-today-button').click(function(event) {
+        path = generatePath();
+
+        $.getJSON(path, function(data){
+            $('.holiday').remove();
+            $.each(data, function(key,val){
+            $('#holidays').append('<li class="holiday" style="margin-left: 10px;">' + val.date + ' - ' + val.holiday + '</li>');
+            });
+        });
+    });
+</script>
+{% endblock %}

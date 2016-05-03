@@ -1,0 +1,93 @@
+<style type="text/css">
+div.container4 {
+    height: 100%;
+    width: 100%;
+    position: relative 
+}
+div.container_logo {
+    width: 100%;
+    max-height: 50px;
+    position: relative; 
+}
+.img_logo {
+    width: 300px;
+   position: absolute;
+   left: 50%;
+   margin-left: -150px;
+}
+.page_label {
+    text-align:center;
+}
+.parag {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    text-align:center;
+    left: 50%;
+    margin-right: -50%;
+    font-size: 28px;
+}
+</style>
+<page>
+{# <img src="{{ logo.getURL }}" style="width:30%;margin-left: 225px;"/> #}
+<div class="container_logo">
+    <img class="img_logo" src="{{logo|default('bundles/catalystmedia/img/default.png')}}">
+    </div>
+<br>
+
+<br>
+<p style="margin-top: 1px; font-size: 16px;">TO: {{object.getEmployeeName}} ({{object.getEmployee.getJobTitle.getName}})</p>
+<p style="margin-top: 1px; font-size: 16px;">FROM: {{object.getUserCreate.getName}}</p>
+<p style="margin-top: 1px; font-size: 16px;">DATE: {{object.getDateCreate|date('m/d/Y')}}</p>
+<p style="margin-top: 1px; font-size: 16px;">SUBJECT: <b>{{object.getType}}</b></p>
+<hr>
+<p style="font-size: 16px;" align="justify">
+
+I am pleased to inform you of your regular appointment as {{object.getEmployee.getJobTitle.getName}} of {{company_name}} effective {{object.getDateCreate|date('m/d/Y')}}.
+<br>
+<br>
+Accordingly, your salary shall be adjusted as follow:
+<br>
+<br>
+(Note: This applies if your company is giving salary adjustment upon regularization. If not, just skip this
+part)
+<br>
+<br>
+<br>
+<table style="border: 1px solid black; border-collapse: collapse; font-size: 16px;" align="center" border="1">
+    <tr>
+        <th style="width: 180;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <th style="width: 120; text-align: center;">FROM</th>
+        <th style="width: 120; text-align: center;">TO</th>
+    </tr>
+    <tr>
+        <td>Basic Salary</td>
+        <td style="text-align: right;">{{basicsalary_from|number_format(2)}}</td>
+        <td style="text-align: right;">{{basicsalary_to|number_format(2)}}</td>
+    </tr>
+    <tr>
+        <td>Allowance (if any)</td>
+        <td style="text-align: right;">{{allowance_from|number_format(2)}}</td>
+        <td style="text-align: right;">{{allowance_to|number_format(2)}}</td>
+    </tr>
+    <tr>
+        <td>TOTAL</td>
+        <td style="text-align: right;">{{(basicsalary_from+allowance_from)|number_format(2)}}</td>
+        <td style="text-align: right;">{{(basicsalary_to+allowance_to)|number_format(2)}}</td>
+    </tr>
+</table>
+<br>
+<br>
+It is hoped that you will continue to exert your best efforts in the performance of your duty.
+<br>
+<br>
+Again, I would like to welcome you to the growing family of {{company_name}}!
+</p>
+<p style="font-size: 16px; padding-top: 80px;" align="right">_________________________<br>Sign and submit this to H.R.</p>
+
+<page_footer>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions, Inc.')}}</b></p></div>
+    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 10th Floor, Legaspi Suites, Salcedo Street, Legaspi Village, Makati City, Philippines')}}</p></div>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 14px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+</page_footer>
+</page>

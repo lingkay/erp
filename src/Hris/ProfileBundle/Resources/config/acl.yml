@@ -1,0 +1,65 @@
+acl:
+    - category: Profile
+      entries:
+       - id: hris_profile_employee.menu
+         label: "Menu"
+
+    # Profile
+    - category: Employee Profile
+      entries:
+       - id: hris_profile_employee.menu
+         label: "Menu"
+       - id: hris_profile_employee.edit
+         label: "Edit"
+
+    # Requests
+    - category: Requests Management
+      entries:
+       - id: hris_profile_request.menu
+         label: "Menu"
+       - id: hris_profile_request.add
+         label: "Add"
+       - id: hris_profile_request.view
+         label: "View"
+       - id: hris_profile_request.edit
+         label: "Edit"
+       - id: hris_profile_request.delete
+         label: "Delete"
+       - id: hris_profile_request.approve
+         label: "Approve"
+       - id: hris_profile_request.reject
+         label: "Reject"
+       - id: hris_profile_request.edit_coe
+         label: "Edit COE"
+       - id: hris_profile_request.save_coe
+         label: "Save COE"
+       - id: hris_profile_request.print_coe
+         label: "Print COE"
+
+    # Leave
+    - category: Leave Management
+      entries:
+       - id: hris_profile_leave.menu
+         label: "Menu"
+       - id: hris_profile_leave.add
+         label: "Add"
+       - id: hris_profile_leave.view
+         label: "View"
+       - id: hris_profile_leave.edit
+         label: "Edit"
+       - id: hris_profile_leave.delete
+         label: "Delete"
+
+    # Attendance
+    - category: Attendance Management
+      entries:
+       - id: hris_profile_attendance.menu
+         label: "Menu"
+       - id: hris_profile_attendance.add
+         label: "Add"
+       - id: hris_profile_attendance.view
+         label: "View"
+       - id: hris_profile_attendance.edit
+         label: "Edit"
+       - id: hris_profile_attendance.delete
+         label: "Delete"

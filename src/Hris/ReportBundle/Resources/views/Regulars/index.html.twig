@@ -1,0 +1,183 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                {% if app.user.hasAccess(prefix ~ '.add') %}
+                {% endif %} 
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-filter"></i>Filters
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-horizontal">
+                                            {# {{ form_tools.group_select('Department','department',dept_opts, 1,4,4)}}  #}
+                                            <div id="cgroup-department" class="form-group">
+                                                <label class="col-md-3 control-label">Department</label>
+                                                <div class="col-md-6">
+                                                    <select id="cform-department" name="department" class="form-control select_2" data-placeholder="-- Select department --" multiple>
+                                                    {{ form_tools.options(dept_opts, 0) }}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-12" style="margin-bottom: 10px;">
+                        <button class="btn blue pull-left" id="filter_button" style="margin-right: 10px;">Apply Filter</button>    
+                        <button class="btn red" id="clear_filter">Clear Filter</button> 
+                        <a href="{{ path('hris_report_regulars_csv') }}" id="csv_btn" class="btn green pull-right"><i class="fa fa-files-o"></i> Export CSV</a>
+                        <a href="{{ path('hris_report_regulars_print') }}" id="print_btn" class="btn green pull-right" style="margin-right: 10px;"><i class="fa fa-print"></i> Print</a>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                            <th style="width: 165px">{{ col.getLabel }}</th>
+                            {% else %}
+                            <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            
+        </div>
+    </div>
+</div>
+{# {% embed 'HrisWorkforceBundle:Attendance:modal/dtr.html.twig'%}{% endembed %} #}
+{% endblock %}
+
+{% block js %}
+<script>
+
+function generatePath() {
+    
+    department = $('#cform-department').val();
+    
+
+    var path = "{{ path('hris_report_regulars_ajax_grid', { 
+                'id' : 'DEPARTMENT'} 
+                ) }}";
+
+    
+    if (department == 0) {
+        path = path.replace('DEPARTMENT', null);
+    } else {
+        path = path.replace('DEPARTMENT', department);
+    };
+
+
+    //console.log(path);
+    return path;
+}
+
+$(document).ready(function() {
+
+        // var pathx = "{{ path('hris_report_regulars_print', { 'id' : '1' } ) }}";
+        // var pathy = "{{ path('hris_report_regulars_csv', { 'id' : '1' } ) }}";
+        // $('#print_btn').attr('href',pathx);
+        // $('#csv_btn').attr('href',pathy);
+
+    
+
+    $("#file_to_upload").change(function(){var l=["csv"];-1==$.inArray($(this).val().split(".").pop().toLowerCase(),l)&&(alert("Only '.csv' formats are allowed."),$("#file_to_upload").replaceWith($("#file_to_upload").clone()))});
+
+    var dTable;
+    var path;
+    var id;
+    var department;
+    var date_from;
+    var date_to;
+    
+    date_to = null;
+    date_from = null;
+    id = null;
+    department = null;
+    path = "{{ path('hris_report_regulars_ajax_grid', { 'id' : 'ID' } ) }}";
+    path = path.replace('ID', id);
+
+    dTable = $('#list_table').dataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": path,
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+    
+    $('#clear_filter').click(function (){
+        $('#cform-department').val(0);
+        path = generatePath();
+        dTable.fnReloadAjax(path);
+    });
+
+    $('#filter_button').click(function (){
+
+        if ($('#cform-department').val() == '' || $('#cform-department').val() == null) 
+        {
+            var dept = 0;
+        }   
+        else
+        {
+            var dept = $('#cform-department').val();
+        }
+
+        var pathx = "{{ path('hris_report_regulars_print', { 'id' : 'DEPT' } ) }}";
+        pathx = pathx.replace('DEPT', dept);
+
+        var pathy = "{{ path('hris_report_regulars_csv', { 'id' : 'DEPT' } ) }}";
+        pathy = pathy.replace('DEPT', dept);
+
+        
+        $('#print_btn').attr('href',pathx);
+        $('#csv_btn').attr('href',pathy);
+
+        path = generatePath();
+        dTable.fnReloadAjax(path);
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+{% endblock %}

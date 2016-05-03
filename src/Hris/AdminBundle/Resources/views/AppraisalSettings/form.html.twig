@@ -1,0 +1,122 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Name', 'name', object.getName|default(''), 3, 4) }}
+                        {{ form.group_number('Number of Objectives', 'obj_count', object.getObjCount|default(1), 3, 4) }}
+                    </div>
+                    
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready( function() {
+// FormValidation.init(); // init form validation
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // var emp_opts = $("input[name='emp_opts']");
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            name: "required",
+            obj_count: {
+                required: true,
+                max: 10,
+                min: 1
+            }
+        },
+        messages: {
+            name: "Name is required.",
+            obj_count: {
+                required: "Objective Count cannot be blank.",
+                max: "Maximum count is 10.",
+                min: "Minimum count is 1."
+            }
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

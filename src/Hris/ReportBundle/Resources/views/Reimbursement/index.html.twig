@@ -1,0 +1,183 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                <i class="fa fa-filter"></i>Filters
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="form-horizontal">
+                                {{ form_tools.group_select('Department','department',dept_opts, '',4,4)}}
+                                {{ form_tools.group_select('Reimbursement Status','reimbursement',status_opts, '',4,4)}} 
+                                {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', date_from, date_to, 4, 4) }}
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button class="btn blue" id="filter_button">Apply Filter</button>    
+                            <button class="btn red" id="clear_filter">Clear Filters</button> 
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ path('hris_report_reimbursement_export')}}" id="export_btn" class="btn green pull-right"><i class="fa fa-files-o"></i> Export CSV</a> 
+                            <a href="{{ path('hris_report_reimbursement_print') }}" id="print_btn" class="btn green pull-right" style="margin-right: 10px;"><i class="fa fa-print"></i> Print</a> 
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                                <th style="width: 165px">{{ col.getLabel }}</th>
+                            {% else %}
+                                <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function generatePath(url)
+{
+    department = $('#cform-department').val();
+    date_from = $('#cform-date_from').val();
+    date_to = $('#cform-date_to').val();
+    status = $('#cform-reimbursement').val();
+    
+    if(department == '')
+    {
+        department = null;
+    }
+    if(status == '')
+    {
+        status = null;
+    }
+    if(date_to == '')
+    {
+        date_to = null;
+    }
+    if(date_from == '')
+    {
+        date_from = null;
+    }
+
+    url = url.replace('DEPARTMENT',department);
+    url = url.replace('DATE_FROM',date_from);
+    url = url.replace('DATE_TO',date_to);
+    url = url.replace('STATUS',status);
+
+    return url;
+}
+$(document).ready(function() {
+    var department;
+    var date_from;
+    var date_to;
+    var status;
+    var path;
+
+    path = "{{ path('hris_report_reimbursement_grid',{'department':'DEPARTMENT','date_from':'DATE_FROM','date_to':'DATE_TO','status':'STATUS'})}}";
+
+    path = generatePath(path);
+
+    var dTable = $('#list_table').dataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": path,
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ records",
+                    "oPaginate": {
+                        "sPrevious": "Prev",
+                        "sNext": "Next"
+                        }
+                    },
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+    $('#daterange').daterangepicker(
+        {
+            ranges: {
+                'Today': [new Date(), moment().add(1, 'days')],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), new Date()],
+                'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+                opens: 'left',
+                format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+                $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+                $('#cform-date_from').val(start.format('YYYYMMDD'));
+                $('#cform-date_to').val(end.format('YYYYMMDD'));
+            }
+        );
+
+    $('#filter_button').click(function (){
+        path = "{{ path('hris_report_reimbursement_grid',{'department':'DEPARTMENT','date_from':'DATE_FROM','date_to':'DATE_TO','status':'STATUS'})}}";    
+        path = generatePath(path);
+        dTable.fnReloadAjax(path);
+    });
+
+    $('#print_btn').click(function (){
+        var print_url = "{{ path('hris_report_reimbursement_print',{'department':'DEPARTMENT','date_from':'DATE_FROM','date_to':'DATE_TO', 'status':'STATUS'})}}";
+        print_url = generatePath(print_url);
+        $('#print_btn').attr('href',print_url);
+    });
+
+    $('#export_btn').click(function (){
+        var export_url = "{{ path('hris_report_reimbursement_export',{'department':'DEPARTMENT','date_from':'DATE_FROM','date_to':'DATE_TO', 'status':'STATUS'})}}"; 
+        export_url = generatePath(export_url);
+        $('#export_btn').attr('href',export_url);
+    });
+
+    $('#clear_filter').click(function (){
+        path = "{{ path('hris_report_reimbursement_grid',{'department':'DEPARTMENT','date_from':'DATE_FROM','date_to':'DATE_TO','status':'STATUS'})}}"; 
+        $('#cform-department').val('');
+        $('#cform-reimbursement').val('');
+        $('select[name="department"]').select2("val", '');
+        $('select[name="reimbursement"]').select2("val", '');
+        $('#daterange input').val('');
+        $('#cform-date_from').val('');
+        $('#cform-date_to').val('');
+        path = generatePath(path);
+        dTable.fnReloadAjax(path);
+    });
+});
+</script>
+{% endblock %}

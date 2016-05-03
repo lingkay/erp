@@ -1,0 +1,45 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Payroll</h4>
+    {{ form.hidden('employee_form','payroll')}}
+    
+    {# <div class="form-group">
+        <label class="col-md-3 control-label">Memo</label>
+        <div class="col-md-4">
+            <select name="benefits" class="form-control select_2">
+            {{ form.options(benefits,0) }}
+            </select>
+        </div>
+        <button class="add_benefit_button btn green">Add Benefit</button>
+    </div> #}
+
+    <table class=" table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Payroll Start</th>
+                <th>Payroll End</th>
+                <th>Gross Pay</th>
+                <th width="20px;"></th>
+            </tr>
+        </thead>
+        <tbody class="payroll_list">
+            {% if payroll is empty %}
+                <tr class="odd empty">
+                    <td valign="top" colspan="6" class="dataTables_empty">No payroll issued.</td>
+                </tr>
+            {% else %}
+                {% for p in payroll %}
+                <tr class="odd gradeX">
+                    <td>{{ p.getPayrollPeriod.getStartDate|date('m/d/Y') }}</td>
+                    <td>{{ p.getPayrollPeriod.getEndDate|date('m/d/Y')  }}</td>
+                    <td class="numeric">{{ p.getTotal|number_format(2) }}</td>
+                    <td><a href="{{ path('hris_payroll_details_index', { 'id': p.getId }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View Details</a></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+  
+</div>
+</form>

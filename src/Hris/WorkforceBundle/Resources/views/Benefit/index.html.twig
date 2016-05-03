@@ -1,0 +1,227 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption"> {{ list_title }} </div>
+            </div>
+            <div class="portlet-body">
+               <div class="table-toolbar">
+                {% if app.user.hasAccess(prefix ~ '.add') %}
+                    <a href="{{ path(route_add) }}" class="btn green">Add New {{title}}</a>
+                    <!-- <a href="{# path(prefix ~ '_export') #}" class="btn green">Export To CSV</a> -->
+                {% endif %}
+
+
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                            <th style="width: 90px">{{ col.getLabel }}</th>
+                            {% else %}
+                            <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    <td>Maternity Leave</td>
+                    <td>Every pregnant employee in the private sector, whether married or unmarried, is entitled to maternity leave benefit of sixty (60) days in case of normal delivery or miscarriage, or seventy-eight (78) days, in case of Caesarian section delivery, with benefits equivalent to one hundred percent (100%) of the average daily salary credit of the employee as defined underthe law.
+                    </td>
+                    <td>1</td>
+                            <td style="width: 135px;">
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Paternity Leave</td>
+                    <td>Paternity Leave is granted to all married male employees in the private sector, regardless of their employment status (e.g., probationary, regular, contractual, project basis). The purpose of this benefit is to allow the husband to lend support to his wife during her period of recovery and/or in nursing her newborn child.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Vacation Leave</td>
+                    <td>Paid time off of work for personal activities.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Medical Insurance</td>
+                    <td>Insurance against the risk of incurring medical expenses among individuals.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td >Thirteenth Month Pay</td>
+                    <td>All employers are required to pay their rank and file employees thirteenth-month pay, regardless of the nature of their employment and irrespective of the methods by which their wages are paid, provided they worked for at least one (1) month during a calendar year. The thirteenth-month pay should be given to the employees not later than December 24 of every year.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Mid-Year Bonus</td>
+                    <td> Assist employees in school enrollment fees for their children.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Pag-IBIG Benefits</td>
+                    <td>The Home Development Mutual Fund, otherwise known as Pag-IBIG (Pagtutulungan sa kinabukasan: Ikaw, Bangko, Industriya at Gobyerno) Fund is a mutual provident savings system for private and government employees and other earning groups, supported by matching mandatory contributions of their respective employers with housing as the primary investment.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Social Security Benefits</td>
+                    <td>The Social Security Program provides a package of benefits in the event of death, disability, sickness, maternity, and old age. Basically, the Social Security System (SSS) provides for a replacement of income lost on account of the aforementioned contingencies.</td>
+                    <td>1</td>
+                             <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>PhilHealth Benefits</td>
+                    <td>The National Health Insurance Program (NHIP), formerly known as Medicare, is a health insurance program for SSS members and their dependents whereby the healthy subsidize the sick who may find themselves in need of financial assistance when they get hospitalized.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Retirement Pay</td>
+                    <td>Employees shall be retired upon reaching the age of sixty (60) years or more but not beyond sixty-five (65) years old [and have served the establishment for at least five (5) years].</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Separation Pay</td>
+                    <td>Separation pay is given to employees in instances covered by Articles 297 and 298 (formerly Articles 283 and 284) of the Labor Code of the Philippines.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                    <td>Bereavement Leave</td>
+                    <td>Three (3) days in the event of death of an immediate family member which includes the employee’s children, parents, grandparents, brother, sister, spouse, and parents-in-law.</td>
+                    <td>1</td>
+                            <td>
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    </tbody>
+                </table>                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",        
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+    // Select all table cells to bind a click event
+    $('table').on("click",".remove_benefit_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent().parent().remove();
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Tender Resignation - {{o_label}}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {% if object.getID|default(NULL) != NULL %}
+                            {% set readonly = true %}
+                            {% if object.getApprovedBy != NULL %}
+                                {% if object.getApprovedBy.getEmployee == NULL %}
+                                    {% set approver_name =  object.getApprovedBy.getName %}
+                                {% else %}
+                                    {% set approver_name = object.getApprovedBy.getEmployee.getDisplayName %}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_date('Date','date_filed',object.getDateFiled|default('')|date('m/d/Y'),3,4,true) }}
+                        {{ form.group_text('Status','status',object.getStatus|default(''),3,4,true) }}
+                        {% if object.getStatus|default('') == constant('\\Hris\\WorkforceBundle\\Entity\\Resign::STATUS_ACCEPT') %}
+                            {{ form.group_date('Date Approved', 'date_approved', object.getDateApproved|default('')|date('m/d/Y'),3,4,readonly)}}
+                            {{ form.group_text('Approved By','approved_by', approver_name|default(''),3,4,readonly) }}
+                        {% elseif object.getStatus|default('') == constant('\\Hris\\WorkforceBundle\\Entity\\Resign::STATUS_REJECT')%}
+                            {{ form.group_text('Rejected By','approved_by', approver_name|default(''),3,4,readonly) }}
+                        {% endif %}
+
+                        {{ form.typeahead('Employee', 'name', object.getEmployee|default(null) is not null ? object.getEmployee.getDisplayName:"",object.getEmployee|default(null) is not null ? object.getEmployee.getID:"0" ,path('hris_workforce_employee_ajax_get'), 3, 4, readonly) }}
+                        {{ form.group_text('Department', 'department', object.getEmployee|default(null) is not null ? object.getDepartmentDisplay:"", 3,4, true) }}
+                        {{ form.group_text('Supervisor', 'supervisor', object.getEmployee.getSupervisor|default(null) is not null ? object.getSupervisor.getDisplayName:"", 3, 4, true) }}
+                        {{ form.group_upload_file('Resignation Letter','file',object.getUpload|default(''),3,4,readonly,'f')}}
+                        {% if object.getID|default(NULL) != NULL %}
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="reason_body">
+
+                                </div>                            
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if object.getID|default(null) == null %}
+                            <button type="submit" class="btn green">Submit</button>
+                            {% elseif object.getStatus|default('') == constant('\\Hris\\WorkforceBundle\\Entity\\Resign::STATUS_PENDING') %}
+                            <button type="submit" class="btn blue accept" name="action_btn" value="accept">Accept</button>
+                            <button type="submit" class="btn red reject" name="action_btn" value="reject">Reject</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function() {
+
+    var is_new = '{{new}}';
+    if (is_new == 'archived') 
+    {
+        window.location.replace("{{ path('hris_workforce_reimbursement_index') }}");
+    }
+
+$('.add_reason_btn').click( function(e){
+    
+    var text = "<div id='cgroup-reason' class='form-group'><label class='col-md-3 control-label'>Reason for Declining Resignation</label><div class='col-md-4'><textarea id='cform-reason' name='reason' class='form-control' rows='3' placeholder='Reason for Declining Resignation'></textarea></div><button class='btn btn-xs red btn_en_del'><i class='fa fa-minus-circle'></i> Remove</button></div>";
+
+        $('.reason_body').append(text);
+
+        $('.add_reason_btn').hide();
+        $('.accept').hide();
+    });
+});
+</script>
+{% endblock %}

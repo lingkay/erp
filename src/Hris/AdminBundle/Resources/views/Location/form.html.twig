@@ -1,0 +1,192 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-body">
+                            <div id="address-section">
+                            <h4 class="form-section">Address</h4>
+                            <br>
+                            {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                            {% set a = object.address %}
+                            {{ form.group_text('Name', 'worksite_name', object.getName|default(''), 3, 4, readonly) }}
+                            {{ form.hidden('address_id', a.getID|default('')) }}
+                            {{ form.hidden('is_new_address', 'false') }}
+                            {{ form.group_text('Unit / Number', 'name', a.getName|default(''), 3, 4) }}
+                            {{ form.group_text('Street Address', 'street', a.getStreet|default(''), 3, 4) }}
+                            {{ form.group_select('Country', 'country', country_opts, a.getCountry.getID|default(0), 3, 4) }}
+                            {{ form.group_select('State', 'state', state_opts, a.getState.getID|default(''), 3, 4) }}
+                            {{ form.group_select('City', 'city', city_opts, a.getCity.getID|default(''), 3, 4) }}
+                             <hr>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function updateCity()
+{
+    var path;
+    var state = $('#cform-state').val();
+    path = "{{path('hris_workforce_get_cities', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', state);
+
+    var $element = $('#cform-city').select2();
+    var $request = $.ajax({
+      url: path
+    });
+
+    $request.then(function (data) 
+    {
+        //clear previous options
+        $('#cform-city option').remove();
+        //loop through all returned data then append
+        $.each(data, function(k, v) {
+            $('#cform-city').append('<option value="'+v.id+'">'+v.text+'</option>');
+        });
+        //refresh element
+        $element.trigger('change');
+    });
+}
+
+function updateState()
+{
+    var path;
+    var country = $('#cform-country').val();
+    path = "{{path('hris_workforce_get_states', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', country);
+
+    var $element = $('#cform-state').select2();
+        var $request = $.ajax({
+        url: path
+        });
+
+        $request.then(function (data) 
+        {
+            //clear previous options
+            $('#cform-state option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-state').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+}
+
+$(document).ready( function() {
+
+    $('#cform-country').on("change", function()
+    {
+        updateState();
+    });
+
+    $('#cform-state').on("change", function()
+    {
+        updateCity();
+    });
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // var emp_opts = $("input[name='emp_opts']");
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            worksite_name: "required",
+            name: "required",
+            street: "required",
+            city: "required",
+            state: "required",
+            country: "required"
+        },
+        messages: {
+            worksite_name: "Please input Worksite Name.",
+            name: "Unit/Number cannot be blank.",
+            street: "Street cannot be blank.",
+            city: "City cannot be blank.",
+            country: "Country cannot be blank."
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,309 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% import _self as self %}
+
+{% macro static_text(label,value,body_size) %}
+<div class="form-group col-md-{{ body_size }}">
+    <label>{{ label }}</label>
+    <p class="form-control-static" style="color: #169ef4;">
+        <strong>{{ value }}</strong>
+    </p>
+</div>
+{% endmacro %}
+
+{% block content %}
+{% if not app.user.hasGroup('employee') %}
+<div class="row">
+    <div class="col-md-12 page-404">
+        <div class="number">
+             404
+        </div>
+        <div class="details">
+            <h3>Oops! Profile not found.</h3>
+            <p> 
+                Your account doesn't have access to a User Profile.<br/>
+            </p>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- start of profile -->
+<div class="row profile">
+    <div class="col-md-12">
+        {% set profile = object.getProfile %}
+        <!--BEGIN TABS-->
+        <div class="tabbable tabbable-custom tabbable-full-width">
+            <!-- MAIN TABS -->
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_overview" data-toggle="tab">
+                    Overview </a>
+                </li>
+                <li>
+                    <a href="#tab_account" data-toggle="tab">
+                    Account </a>
+                </li>
+                <li>
+                    <a href="#tab_downloads" data-toggle="tab">
+                    Downloadable Forms </a>
+                </li>
+                <li>
+                    <a href="#tab_incident" data-toggle="tab">
+                    Incident Reports </a>
+                </li>
+            </ul>
+            <!-- END MAIN TABS -->
+            <div class="tab-content">
+                <!-- OVERVIEW TAB -->
+                <div class="tab-pane active" id="tab_overview">
+                    {% embed "HrisProfileBundle:Employee:prof_overview.html.twig" %}{% endembed %}
+                </div>
+
+                <!-- ACCOUNT TAB -->
+                <div class="tab-pane" id="tab_account">
+                    {% embed "HrisProfileBundle:Employee:prof_account.html.twig" %}{% endembed %}
+                </div>
+
+                <!-- DOWNLOADS TAB -->
+                <div class="tab-pane" id="tab_downloads">
+                    {% embed "HrisProfileBundle:Employee:prof_downloadables.html.twig" %}{% endembed %}
+                </div>
+
+                <!-- INCIDENT REPORTS TAB -->
+                <div class="tab-pane" id="tab_incident">
+                    {% embed "HrisProfileBundle:Employee:prof_incidents.html.twig" %}{% endembed %}
+                </div>
+                <!-- END TAB CONTENTS -->
+            </div>
+        </div>
+        <!--END TABS-->
+    </div>
+</div>
+
+<!-- MODALS -->
+{# <div id="confirm_request" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 id="form_title" class="modal-title">Confirm Request</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <p>Are you sure to request for <span class="req_name"></span>?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn blue confirmed">Confirm</button>
+                    <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> #}
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script>
+  
+function formatDate(d){
+    var months = ["01","02","03","04","05","06","07","08","09","10","11","12"]; //months
+    
+    return months[d.getMonth()] + "/" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate()) + "/" + d.getFullYear();
+}
+
+function updateCity()
+{
+    var path;
+    var state = $('#cform-state').val();
+    path = "{{path('hris_workforce_get_cities', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', state);
+
+    var $element = $('#cform-city').select2();
+    var $request = $.ajax({
+      url: path
+    });
+
+    $request.then(function (data) 
+    {
+        //clear previous options
+        $('#cform-city option').remove();
+        //loop through all returned data then append
+        $.each(data, function(k, v) {
+            $('#cform-city').append('<option value="'+v.id+'">'+v.text+'</option>');
+        });
+        //refresh element
+        $element.trigger('change');
+    });
+}
+
+function updateState()
+{
+    var path;
+    var country = $('#cform-country').val();
+    path = "{{path('hris_workforce_get_states', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', country);
+
+    var $element = $('#cform-state').select2();
+        var $request = $.ajax({
+        url: path
+        });
+
+        $request.then(function (data) 
+        {
+            //clear previous options
+            $('#cform-state option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-state').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+}
+
+$(document).ready(function() {
+
+    
+
+    $('#add-phone-modal').on('hidden.bs.modal', function () {
+        $('#hris_profile_employeeform-number').val('');
+    })
+
+    $( "#add-phone-close" ).click(function() {
+        $('#hris_profile_employeeform-number').val('');
+    });
+
+    $('#cform-country').on("change", function()
+    {
+        updateState();
+    });
+
+    $('#cform-state').on("change", function()
+    {
+        updateCity();
+    });
+
+    var name;
+
+    $('.request').click(function() {
+        name = $(this).text();
+        $('.req_name').html(name);
+    });
+
+    var d = new Date();
+
+    $('.confirmed').click(function() {
+        $('#confirm_request').modal('toggle');
+        var html = '<li>';
+        html += '<div class="task-title"><span class="task-title-sp">'+ formatDate(d) + ' - Requested ' + name + '</span>';
+        html += '<span class="label label-sm label-warning">Pending</span></div>';
+        html += '<div class="task-config"><div class="task-config-btn btn-group"><a class="btn btn-xs default" href="#" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><i class="fa fa-cog"></i><i class="fa fa-angle-down"></i></a><ul class="dropdown-menu pull-right"><li><a href="#"><i class="fa fa-trash-o"></i> Cancel </a></li></ul></div></div></li>';
+
+        $('.task-list').prepend(html);
+    });
+
+
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
+
+    $('#phone-section').on("click",".delete-phone",function (e){
+        e.preventDefault();
+        $(this).closest('div').remove();
+    });
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href");
+
+      if(target == '#acct_attendance')
+      {
+        $('#calendar').fullCalendar('render');
+      }
+    });
+
+    var id = $('#cform-employee').val();
+
+    var path = "{{ path('hris_workforce_attendance_ajax', { 'id' : 'ID', 'date_from' : 'DFROM' , 'date_to' : 'DTO' } ) }}";
+        path = path.replace('ID', id);
+
+    $('#calendar').fullCalendar({
+
+        // put your options and callbacks here
+        // weekends: false, // will hide Saturdays and Sundays
+
+         dayClick: function(date, jsEvent, view) {
+
+                // alert('Clicked on: ' + date.format());
+
+                // alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+
+                // alert('Current view: ' + view.name);
+
+                // // change the day's background color just for fun
+                // $(this).css('background-color', 'red');
+            },
+        events: path,
+        firstDay: 1,
+        height: 'auto',
+        selectable: true,
+        displayEventEnd: true,
+
+        eventRender: function(event, element) {
+            if(event.late != '0 Minute(s)' && event.late != null)
+            {
+                element.find(".fc-content").append("<br/><b>Late</b>:" + event.late); 
+            }
+            if(event.undertime != '0 Minute(s)' && event.undertime != null)
+            {
+                element.find(".fc-content").append("<br/><b>Undertime</b>:" + event.undertime);
+            }
+        },
+    });
+
+    var moment = $('#calendar').fullCalendar('getDate');
+    var month = moment.format('M');
+    var year = moment.format('YYYY');
+    var paths = "{{ path('hris_workforce_emplyoee_total', { 'id' : 'ID', 'month' : 'MONTH', 'year' : 'YEAR'} ) }}";
+
+        paths = paths.replace('ID', id);
+        paths = paths.replace('MONTH', month);
+        paths = paths.replace('YEAR', year);
+
+    $.getJSON(paths, function(data) {
+        $('#undertime').val(data.total_undertime);
+        $('#late').val(data.total_late);
+        $('#absent').val(data.total_absent);
+    });
+
+    //on click change the list of holidays
+    $('.fc-button-group').click(function(event){
+        var moment = $('#calendar').fullCalendar('getDate');
+        var month = moment.format('M');
+        var year = moment.format('YYYY');
+        var id = $('#cform-employee').val();
+
+        var paths = "{{ path('hris_workforce_emplyoee_total', { 'id' : 'ID', 'month' : 'MONTH', 'year' : 'YEAR'} ) }}";
+            paths = paths.replace('ID', id);
+            paths = paths.replace('MONTH', month);
+            paths = paths.replace('YEAR', year);
+
+        $.getJSON(paths, function(data) {
+            $('#undertime').val(data.total_undertime);
+            $('#late').val(data.total_late);
+            $('#absent').val(data.total_absent);
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<!-- PAGE-LEVEL CSS -->
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/profile.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/tasks.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/error.css') }}" rel="stylesheet" type="text/css" />
+<!-- END PAGE-LEVEL CSS -->
+{% endblock %}

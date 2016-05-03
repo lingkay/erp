@@ -1,0 +1,89 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Employee Profile</h4>
+    {{ form.hidden('employee_form','profile')}}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+    {% set profile = object.getProfile %}
+
+    {{ form.group_upload_image('Profile Picture','picture',profile.getUpload,3,4)}}
+    {% if profile != null %}
+        {% if profile.getBirthday != null %}
+            {{ form.group_date('Birthday','birthday',profile.getBirthday|date("m/d/Y"),3,4, readonly) }}
+        {% else %}
+            {{ form.group_date('Birthday','birthday','',3,4, readonly) }}
+        {% endif %}
+    {% else %}
+        {{ form.group_date('Birthday','birthday','',3,4, readonly) }}
+    {% endif %}
+    <div class="form-group">
+            {{ form.group_textnew('SSS Number', 'sss',object.getProfile.getSSS|default(''), 3,5,{'readonly':readonly, 'class':'mask_sss'}) }}
+            {{ form.group_textnew('Tin Number', 'tin',object.getProfile.getTin|default(''), 3,5,{'readonly':readonly, 'class':'mask_tin'}) }}
+            {{ form.group_textnew('Philhealth Number', 'philhealth',object.getProfile.getPhilhealth|default(''), 3,5,{'readonly':readonly, 'class':'mask_philhealth'}) }}
+            {{ form.group_textnew('Pagibig Number', 'pagibig',object.getProfile.getPagibig|default(''), 3,5,{'readonly':readonly, 'class':'mask_pagibig'}) }}
+            {{ form.group_textnew('Bank Account', 'bank_account',object.getProfile.getBankAccount|default(''), 3,5,{'readonly':readonly}) }}
+
+    </div>
+    <h4 class="form-section">Address</h4>
+    
+    {{ form.hidden('address_id',profile.getAddress is not null ? profile.getAddress.getID:"0")}}
+    {{ form.hidden('longitude',profile.getAddress is not null ? profile.getAddress.getID:"0")}}
+    {{ form.hidden('latitude',profile.getAddress is not null ? profile.getAddress.getID:"0")}}
+    {{ form.group_text('Unit no', 'unit',profile.getAddress is not null ? profile.getAddress.getName:"", 3, 4, readonly) }}
+    {{ form.group_text('Street', 'street',profile.getAddress is not null ? profile.getAddress.getStreet:"", 3, 4, readonly) }}
+    {{ form.group_select('Country', 'country', country_opts, profile.getAddress.getCountry.getID|default(0), 3, 4) }}
+    {{ form.group_select('State', 'state', state_opts, profile.getAddress.getState.getID|default(''), 3, 4) }}
+    {{ form.group_select('City', 'city', city_opts, profile.getAddress.getCity.getID|default(''), 3, 4) }}
+    {% include "CatalystContactBundle::form.has_phones.html.twig" with {object:profile, f:form}  %}
+
+    <div class="form-actions fluid">
+        <div class="col-md-9">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+        </div>
+    </div>
+</div>
+</form>
+
+<div id="add-phone-modal" class="modal fade" role="dialog">
+    <form id="profile-phone-form" method="post" action="{{ path('cnt_phone_ajax_add') }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Phone</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-body">
+                    {{ form.group_select('Type', 'name', phone_type_opts, '', 3, 8) }}
+                    {{ form.group_text('Number', 'number', '', 3, 8, false, prefix) }}                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="profile-phone-close" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="profile-phone-submit" type="submit" class="btn btn-primary">Add Phone</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+<script id="phone-template" type="x-tmpl-mustache">
+<div>
+    {{ form.hidden2('phone_id[]','{{ id }}', '') }}
+    {{ form.hidden2('contact_person_id[]','{{ contact_person_id }}', '') }}
+    {{ form.hidden2('is_new_phone[{{ id }}]','new', '') }}
+    {{ form.group_text('Type', 'p_type[{{ id }}]', '{{type}}', 3, 4, true) }}
+    {{ form.group_text('Number', 'p_number[{{ id }}]', '{{number}}', 3, 4, true) }}
+    <div class="form-group">
+        <label class="col-md-3 control-label"></label>
+        <div class="col-md-4">
+            <div class="radio-list">
+            {{ form.radio('is_primary','{{id}}','is primary no.?',false,'is_primary') }}
+            </div>
+        </div>
+    </div>
+    <a href='#' class="btn red delete-phone">Delete Phone</a>
+    <br/>
+</div>   
+</script>

@@ -1,0 +1,90 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">View {{list_title}}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+
+                        {{ form.group_text('Employee Name', 'name','', 3, 4,true ) }}
+                        {{ form.group_text('Department', 'deptartment','', 3, 4,true ) }}
+                            
+                </form>
+                <div id='calendar'></div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+        <script type="text/javascript">
+        
+        $(document).ready(function()
+        {
+
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+                    
+            var calendar = $('#calendar').fullCalendar(
+            {
+
+                header:
+                {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+  
+                selectable: true,
+                selectHelper: true,
+ 
+                select: function(start, end, allDay)
+                {
+ 
+                    var title = prompt('Event Title:');
+
+                    if (title)
+                    {
+                        calendar.fullCalendar('renderEvent',
+                            {
+                                title: title,
+                                start: start,
+                                end: end,
+                            },
+                            true 
+                        );
+                    }
+                    calendar.fullCalendar('unselect');
+                },
+
+                editable: true,
+ 
+                events: [
+    
+                ]
+            });
+            
+        });
+
+    </script>
+    <style type="text/css">
+        #calendar
+        {
+            width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+{% endblock %}
+
+

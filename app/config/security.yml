@@ -1,0 +1,40 @@
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: sha512
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/
+            form_login:
+                check_path: /login_check
+                login_path: /login
+                provider: fos_userbundle
+                default_target_path: /
+                always_use_default_target_path: true
+            logout:
+                path: /logout
+                target: /
+            anonymous: ~
+            switch_user: { role: ROLE_ADMIN, parameter: _switch }
+
+
+    access_control:
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login_check$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/biometrics/login$, allow_if: 1 }
+        - { path: ^/biometrics/transmit$, allow_if: 1 }
+        - { path: ^/biometrics/receive$, allow_if: 1 }
+        - { path: ^/biometrics/pair$, allow_if: 1 }
+        - { path: ^/, roles: ROLE_USER }

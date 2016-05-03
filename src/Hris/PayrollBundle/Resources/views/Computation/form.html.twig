@@ -1,0 +1,130 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+
+                        <h4 class="form-section">Payroll</h4>
+                        
+                        {{ form.typeahead('Employee Name', 'employee', object.getEmployee is not null ? object.getEmployee.getDisplayName:"", object.getEmployee is not null ? object.getEmployee.getID: "" ,path('hris_workforce_employee_ajax_get'), 3, 4) }}
+                        
+                        {{ form.group_date_range('daterange', 'Period Cut-Off', 'date_from', 'date_to','','', 3, 4) }}
+
+                        {{ form.group_text('Basic Salary', 'salary','', 3, 4 ) }}
+                        <div class="row">
+                            <div class="col-md-6">                        
+                                <div class="panel-group accordion" id="accordion1">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                            <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" href="#collapse_1">Earnings</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse_1" class="panel-collapse collapse" style="height: 0px;">
+                                            <div class="panel-body numeric">
+                                                    {{ form.group_price('Overtime', 'overtime','', 3, 4, true) }}
+                                                    {{ form.group_price('ECOLA', 'ecola','', 3, 4, true) }}
+                                                    {{ form.group_price('Allowance', 'allowance','', 3, 4, true) }}
+                                                    {{ form.group_price('Gross Pay', 'gross','', 3, 4, true ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">                        
+                                <div class="panel-group accordion" id="accordion2">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                            <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" href="#collapse_2">Deductions</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse_2" class="panel-collapse collapse" style="height: 0px;">
+                                            <div class="panel-body numeric">
+                                                {{ form.group_price('Absences', 'absences','', 3, 4, true) }}
+                                                {{ form.group_price('Tardiness', 'tardiness','', 3, 4, true ) }}
+                                                {{ form.group_price('Undertime', 'undertime','', 3, 4, true ) }}
+                                                {{ form.group_price('Tax', 'tax','', 3, 4 ,true) }}
+                                                {{ form.group_price('SSS Premium', 'sss','', 3, 4 ,true)}}
+                                                {{ form.group_price('PhilHealth', 'philhealth','', 3, 4 , true) }}
+                                                {{ form.group_price('Pag IBIG', 'pagibig','', 3, 4,true ) }}
+                                                {{ form.group_price('Pag IBIG Loan', 'pagibig_loan','', 3, 4 , true) }}
+                                                {{ form.group_price('Office Loan', 'office_loan','', 3, 4,true ) }}
+                                                {{ form.group_price('Total Deductions', 'total_deductions','', 3, 4 , true) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form.group_text('Net Pay', 'net_pay','', 3, 4 ) }}
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>      
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $('#daterange').daterangepicker( {
+                ranges: {
+                    
+                    '26th to 10th': [moment().subtract('month',1).startOf('month').add('days',25),moment().startOf('month').add('days',9)],
+                    '11th to 25th': [moment().startOf('month').add('days',10),moment().startOf('month').add('days',24)],
+                    'Weekly': [moment().startOf('week').add('days',3), moment().endOf('week').add('days',3)]
+                },
+                opens: 'left',
+                format: 'MM/DD/YYYY',
+            },
+            function(start, end) {
+                $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+                $('#cform-date_from').val(start.format('YYYYMMDD'));
+                $('#cform-date_to').val(end.format('YYYYMMDD'));
+
+                var date_to = $('#cform-date_to').val();
+                var date_from = $('#cform-date_from').val();
+                var id = $('#cemployee_id').val();
+                
+                var path = "{{ path('hris_payroll_computation_update_data', {id:'ID', date_to:'DATE_TO', date_from: 'DATE_FROM'})}}";
+                    path = path.replace('ID', id);
+                    path = path.replace('DATE_TO', date_to);
+                    path = path.replace('DATE_FROM', date_from);
+
+                $.getJSON(path, function(data) {
+                    $('#cform-salary').val(data.salary);
+                    $('#cform-philhealth').val(data.philhealth);
+                    $('#cform-sss').val(data.sss);
+                    $('#cform-pagibig').val(data.pagibig);
+                    $('#cform-tardiness').val(data.late);
+                    $('#cform-undertime').val(data.undertime);
+                    $('#cform-gross').val(data.gross);
+                    $('#cform-absences').val(data.absence);
+                    $('#cform-tax').val(data.tax);
+                    $('#cform-total_deductions').val(data.deduction);
+                    $('#cform-net_pay').val(data.netpay);
+                    // $('#late').val(data.total_late);
+                });
+            }
+        );
+    });
+</script>
+
+{% endblock %}

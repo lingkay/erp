@@ -1,0 +1,144 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{list_title}} </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    {% if app.user.hasAccess(prefix ~ '.add') %}
+                        <a href="{{ path(route_add) }}" class="btn green">Add New {{title}} </a>
+                    {% endif %}
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                            <th style="width: 90px">{{ col.getLabel }}</th>
+                            {% else %}
+                            <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Jericho Nograles</td>
+                        <td>Sales Representative</td>
+                        <td>2015-03-10</td>
+                        <td></td>
+                            <td style="width: 148px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>John Espiritu</td>
+                        <td>Jr. System Administrator</td>
+                        <td>2015-01-05</td>
+                        <td>Completed</td>
+                            <td style="width: 148px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>Divina Uy</td>
+                        <td>HR Personnel</td>
+                        <td>2014-10-10</td>
+                        <td>Completed</td>
+                             <td style="width: 148px;">
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>Joy de la Cruz</td>
+                        <td>Sales Representative</td>
+                        <td>2015-02-16</td>
+                        <td>Completed</td>
+                            <td style="width: 148px;">
+                                <a href="#" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>Jakie Aldea</td>
+                        <td>HR Personnel</td>
+                        <td>2015-01-11</td>
+                        <td>Completed</td>
+                            <td style="width: 148px;">
+                                <a href="{{path(route_edit)}}" class="btn default btn-xs blue-madison">
+                                    <i class="fa fa-edit ::before"></i>Edit
+                                </a>
+                                <a href="#" class="btn default btn-xs red-sunglo remove_benefit_field">
+                                <i class="fa fa-minus-circle"></i>Delete
+                                </a>
+                            </td>
+                    </tr>
+                    </tbody>
+                </table>               
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+            $('table').on("click",".remove_benefit_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent().parent().remove();
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

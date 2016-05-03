@@ -1,0 +1,65 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+        <div class="portlet-body form">
+        <!-- BEGIN FORM-->
+            <form method="post" class="form-horizontal">
+                <div class="form-body">
+                    <div class="form-group">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{form.group_select('Payroll Period','payroll',sched_opts,object.getPayPeriod != null? object.getPayPeriod.getID,3,4,readonly)}}
+                        {{form.group_select('Exemption Status','status',status_opts,status|default(''),3,4,readonly)}}
+                        {{form.group_number('Number Of Qualified Dependent(s)','dependents',dependent|default('0'),3,4,readonly)}}
+                        {{form.group_number('Minimum Taxable Amount','min_amount',object.getTaxRate != null? object.getTaxRate.getMinimum|default('0'),3,4,readonly)}}
+                        {{form.group_number('Maximum Taxable Amount','max_amount',object.getTaxRate != null? object.getTaxRate.getMaximum|default('0'),3,4,readonly)}}
+                        {{form.group_number('Tax','tax',object.getTaxRate != null? object.getTaxRate.getTax|default('0'),3,4,readonly)}}
+                        {{form.group_number('Base Amount','base_amount', object.getBaseAmount|default('0'),3,4,readonly)}}
+                        {{form.group_number('Percent Of Excess','excess',object.getTaxRate != null? object.getTaxRate.getExcess|default('0.00'),3,4,readonly)}}
+                    </div> 
+                <div class="form-actions fluid">
+                    <div class="col-md-offset-3 col-md-12">
+                        {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                        {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        <!-- END FORM-->
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js%}
+<script>
+function compute_contribution () {
+
+    var min = parseFloat($('#cform-ee').val());
+    var max = parseFloat($('#cform-er').val());
+
+    var total = min + max;
+
+    $('#cform-total').val(total);
+}
+$(document).ready(function() {
+    $('#cform-ee').change(function() {
+        compute_contribution();
+    });
+    $('#cform-er').change(function() {
+        compute_contribution();
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+{% endblock %}

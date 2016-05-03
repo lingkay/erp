@@ -1,0 +1,4 @@
+# hris_memo_homepage:
+#     path:     /hello/{name}
+#     defaults: { _controller: HrisMemoBundle:Default:index }
+

@@ -1,0 +1,21 @@
+menu_items:
+    - id: hris_cash
+      acl: hris_cash.menu
+      label: Remuneration
+      icon: fa-rub
+    - id: hris_workforce_reimbursement_index
+      acl: hris_workforce_reimbursement.menu
+      label: Reimbursement
+      parent: hris_cash
+    - id: hris_remuneration_incentive_index
+      acl: hris_remuneration_incentive.menu
+      label: Cash Incentives
+      parent: hris_cash
+    - id: hris_remuneration_cashbond_index
+      acl: hris_remuneration_cashbond.menu
+      label: Savings
+      parent: hris_cash
+    - id: hris_remuneration_loan_index
+      acl: hris_remuneration_loan.menu
+      label: Loans
+      parent: hris_cash

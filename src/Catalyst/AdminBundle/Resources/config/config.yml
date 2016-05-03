@@ -1,0 +1,22 @@
+config::
+    - category: "Template"
+      entries:
+        - id: cat_color_primary
+          label: Primary Color 
+          type: color
+        - id: cat_color_secondary
+          label: Secondary Color 
+          type: color
+        - id: cat_color_tertiary
+          label: Tertiary Color 
+          type: color
+        - id: cat_color_header
+          label: Headers Color 
+          type: color
+        - id: cat_color_bg_image
+          label: Logo Background Color 
+          type: color
+        - id: cat_color_login
+          label: Login Background Color 
+          type: color
+

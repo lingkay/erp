@@ -1,0 +1,377 @@
+/* here you can put your own css to customize and override the theme */
+th {
+  text-align: center;
+}
+
+
+body{
+  background-color: #2B63A0;
+}
+
+.page-header.navbar {
+  background-color: #2E336D;
+}
+
+.page-content-wrapper, .page-sidebar-menu { 
+  background-color: #579FD1;
+  /*sidebar background*/
+}
+
+.page-footer{
+	background-color: #2E336D;
+  /**page footer*/
+}
+
+.page-sidebar .page-sidebar-menu > li:hover > a, .page-sidebar .page-sidebar-menu > li.open > a {
+  background: #2E336D;
+  color: white;
+  /*menu entry when hovered*/
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar .page-sidebar-menu > li.active.open > a  {
+	background: #2E336D;
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a, .page-sidebar .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar .page-sidebar-menu .sub-menu > li.active > a{
+	background: #2E336D !important;
+}
+
+.page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar .page-sidebar-menu > li.active.open > a{
+	background: #2E336D !important;
+}
+
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-user .dropdown-toggle{
+	background-color: #2E336D;
+  /*margin-top: 10px;*/
+  /*height: 50px;*/
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a,
+.page-sidebar .page-sidebar-menu > li > a {
+	/*border-top: 1px solid #CFD792;*/
+}
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open + li > a,
+.page-sidebar .page-sidebar-menu > li.active.open + li > a {
+	/*border-top: 1px solid #CFD792;	*/
+}
+
+.page-sidebar.navbar-collapse.collapse{
+	/*background-color: #1C6712;*/
+}
+
+.page-sidebar .page-sidebar-menu > li .sub-menu {
+  /*background-color: #428C38 !important;*/
+}
+
+@media (max-width: 991px) {
+  .page-content{
+    /*margin-top: 30px !important;*/
+    min-height: 100vh !important;
+  }
+}
+
+.page-sidebar.navbar-collapse.collapse{
+  /*margin-top: 30px !important;*/
+}
+
+.page-header.navbar .menu-toggler.sidebar-toggler{
+  float: left;
+  display: inline-block;
+  /*margin-top: 25px;*/
+}
+
+.page-header.navbar .page-logo .logo-default{
+  float: right;
+  margin-top: 0px;
+  width: 150px !important;
+}
+
+.menu-logo {
+  min-height: 100px;
+  background-color: #2B63A0;
+}
+.page-breadcrumb.breadcrumb {
+  background-color: rgba(247, 247, 247, 0);
+}
+
+.login .content .form-actions{
+ background-color: rgba(58, 58, 60, 1) !important;
+ border-width: 0px 0px 1px;
+ border-style: none none solid;
+ border-color: #2B63A0; 
+
+}
+
+.login .content {
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.84);
+}
+
+.login .content h3{
+  color: #fff;
+}
+
+label.checkbox{
+  color: #fff;
+}
+
+.page-content{
+  background-color: #fff;
+}
+
+.dropdown-toggle:hover{
+  background-color:#082808 !important;
+}
+
+
+.page-footer .page-footer-tools .go-top {
+  background-color: #1E2400;
+}
+
+.menu-toggler.responsive-toggler{
+  /*margin-top: 43px !important;*/
+}
+
+.portlet.box.blue-hoki > .portlet-title{
+    background-color: #2E336D;
+}
+
+.portlet.box.blue-hoki {
+    border: 1px solid #2E336D;
+    border-top: 0;
+}
+
+.page-header.navbar .top-menu .navbar-nav > li.dropdown.open .dropdown-toggle{
+    /*background-color: #082808;*/
+}
+
+/*th{
+  background-color: #8B0C00 !important;
+  color: white !important;
+}*/
+
+.second-th{
+  background-color: #606719 !important;
+}
+
+.accordion-heading{
+  /*font-weight: bold !important;*/
+  background-color: #003f45;
+  font-size: 16px;
+  color: white;
+}
+
+/*.accordion-toggle p, table{
+  margin: 4px;
+}*/
+
+.accordion-toggle p {
+  margin: 4px;
+}
+
+.accordion-inner{
+  /*font-weight: bold !important;*/
+  /*font-size: 14px;*/
+  border: 0px !important;
+  margin: 0px !important;
+}
+
+.main-screen, .accordion-contentone, .accordion-contenttwo, .accordion-contentthree, .accordion-contentfour{
+  color: black;
+  width: 99%;
+}
+
+.accordion-content{
+  color: black;
+}
+
+.remove_field{
+  float: right;
+}
+
+.table .content-heading{
+  background-color: #003f45 !important;
+  background-color: #317256 !important;
+  border: 0px;
+  margin: 0px;
+  color: white;
+}
+
+/*table{
+  text-align: center;
+}*/
+
+.profile ul.profile-nav li {
+  background-color: #d3d3d3;
+}
+
+.profile ul.profile-nav li > img {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/*.page-content-wrapper .page-content {
+  background: url(/bundles/catalysttemplate/assets/admin/layout/img/ikawLangTalaga.png) no-repeat top right;
+  background-size: 30%;
+  background-color: #fff;
+}*/
+
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-user .dropdown-toggle .username {
+  color: #fff;
+}
+
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-user .dropdown-toggle > i {
+  color: #fff;
+}
+
+.dropdown-menu li > p {
+  padding: 6px 0 6px 13px;
+  color: #333;
+  text-decoration: none;
+  display: block;
+  clear: both;
+  font-weight: bold;
+  line-height: 18px;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+#confirm_request p {
+  font-size: 16px;
+  font-weight: normal;
+  margin-top: 5px;
+}
+
+#confirm_request .modal-header {
+  background-color: #428C38;
+  color: #fff;
+}
+
+.profile ul.profile-nav li p {
+  color: #557386;
+  display: block;
+  font-size: 12px;
+  padding: 8px 10px;
+  margin-bottom: 1px;
+  background: #f0f6fa;
+  border-left: solid 2px #c4d5df;
+}
+
+.profile ul.profile-nav li .id-num{
+  color: #557386;
+  font-size: 12px;
+  background: #f0f6fa;
+  float: right;
+  /*border-left: solid 2px #c4d5df;*/
+}
+
+.portlet.box.blue-hoki > .portlet-title > .actions .btn-default {
+  color: #fff;
+    border: 1px solid #fff;
+}
+ol.progtrckr {
+  margin: 10;
+  padding: 0;
+  list-style-type: none;
+}
+ol.progtrckr li {
+  display: inline-block;
+  text-align: center;
+  line-height: 3em;
+}
+
+ol.progtrckr[data-progtrckr-steps="2"] li { width: 49%; }
+ol.progtrckr[data-progtrckr-steps="3"] li { width: 33%; }
+ol.progtrckr[data-progtrckr-steps="4"] li { width: 24%; }
+ol.progtrckr[data-progtrckr-steps="5"] li { width: 19%; }
+ol.progtrckr[data-progtrckr-steps="6"] li { width: 16%; }
+ol.progtrckr[data-progtrckr-steps="7"] li { width: 14%; }
+
+ol.progtrckr li.progtrckr-done {
+  color: black;
+  border-bottom: 4px solid green;
+}
+ol.progtrckr li.progtrckr-fail {
+  color: black;
+  border-bottom: 4px solid red;
+}
+ol.progtrckr li.progtrckr-todo {
+  color: silver; 
+  border-bottom: 4px solid silver;
+}
+
+ol.progtrckr li.progtrckr-current {
+  color: black; 
+  border-bottom: 4px solid orange;
+}
+
+ol.progtrckr li:after {
+  content: "\00a0\00a0";
+}
+ol.progtrckr li:before {
+  position: relative;
+  bottom: -2.5em;
+  float: left;
+  left: 50%;
+  line-height: 1em;
+}
+ol.progtrckr li.progtrckr-current:before {
+  content: "\002d";
+  font-weight: bold;
+  color: white  ;
+  background-color: orange;
+  height: 1.2em;
+  width: 1.2em;
+  line-height: 1.2em;
+  border: none;
+  border-radius: 1.2em;
+}
+
+ol.progtrckr li.progtrckr-done:before {
+  content: "\2713";
+  color: white;
+  background-color: green;
+  height: 1.2em;
+  width: 1.2em;
+  line-height: 1.2em;
+  border: none;
+  border-radius: 1.2em;
+}
+
+ol.progtrckr li.progtrckr-fail:before {
+  content: "\2717";
+  color: white;
+  background-color: red;
+  height: 1.2em;
+  width: 1.2em;
+  line-height: 1.2em;
+  border: none;
+  border-radius: 1.2em;
+}
+ol.progtrckr li.progtrckr-todo:before {
+  content: "\039F";
+  color: silver;
+  background-color: white;
+  font-size: 1.5em;
+  bottom: -1.6em;
+}
+.numeric {
+  text-align: right;
+}
+
+.upload-icon{
+  font-size: 7em;
+  line-height: 1.2;
+}
+
+.fa-file-excel-o{
+  color: #207245;
+}
+
+.fa-file-word-o{
+  color: #2A5699;
+}
+
+.fa-file-powerpoint-o,.fa-file-pdf-o {
+  color: #D24625;
+}

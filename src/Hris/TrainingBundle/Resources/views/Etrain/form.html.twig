@@ -1,0 +1,142 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block css %}
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/portfolio.css') }}" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/dropzone/css/dropzone.css') }}" rel="stylesheet"/>
+
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+<!-- date picker -->
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker3.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+
+                        <h4 class="form-section"></h4>
+
+                        {{ form.group_text('Session Name', 'name','', 3, 4 ) }}
+                        {{ form.group_text('Training Course', 'course','', 3, 4) }}
+                        {{ form.group_date_range('duration_date', 'Duration Date', 'date_from', 'date_to', '', '', 3, 4) }}
+                       
+                        {{ form.group_select('Status','status','','',3,4) }}  
+                       
+                        {{ form.group_textarea('Details', 'detail','', 3, 3, 4)}}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                          
+                            <button type="submit" class="btn blue">Submit</button>
+                            
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>      
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js') }}"></script>
+
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/portfolio.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/dropzone/dropzone.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/form-dropzone.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
+
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/admin/pages/scripts/components-pickers.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/clockface/js/clockface.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/moment.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+
+<script>
+
+    $(document).ready(function() {
+    ComponentsPickers.init();
+
+    $('#daterange').daterangepicker(
+        {
+            ranges: {
+                'Today': [new Date(),moment().add('days', 1)],
+                'Tomorrow': [moment().add('days', 1), moment().add('days', 1)],
+                'Next 7 Days': [new Date(),moment().add('days', 6)],
+                'Next 30 Days': [new Date(),moment().add('days', 29) ],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Next Month': [moment().add('month', 1).startOf('month'), moment().add('month', 1).endOf('month')]
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#form_date_from').val(start.format('YYYYMMDD'));
+            $('#form_date_to').val(end.format('YYYYMMDD'));
+            
+            filter_redirect();
+        }
+    );
+    
+    $(document).ready(function(){
+        $('#br_id').select2();            
+    });
+    });
+</script>
+
+{% endblock %}

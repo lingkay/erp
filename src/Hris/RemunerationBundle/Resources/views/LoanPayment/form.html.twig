@@ -1,0 +1,47 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" id="loan_form" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.hidden('loan',object.getLoan.getID) }}
+                        {{ form.group_date('Date Paid', 'date_paid', object.getDatePaid|date('m/d/Y'), 3, 4, readonly) }}
+                        {{ form.group_number('Amount', 'amount',object.getLoan.getBalance|default(''), 3, 4, readonly) }}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn green">Submit</button>
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+
+    $('input[name="amount"]').attr({
+        'max': {{ object.getLoan.getBalance|default(0) }},
+        'min': 1
+    });
+
+}); 
+</script>
+{% endblock %}

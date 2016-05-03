@@ -1,0 +1,126 @@
+{% if object.getStatus == constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_HIRED')%}
+{% set readonly = true %}
+{% endif %}
+
+<form id="add_personal_info_form" method="post" class="form-horizontal form">
+    <div class="portlet-body">
+    {{form.hidden('app_form','personal_info')}}
+
+        <h4 class="form-section">Position Applied For:</h4>
+{#         object.getEmployee is not null ? object.getEmployee.getDisplayName:"",object.getEmployee is not null ? object.getEmployee.getID:"0" #}
+            {{ form.typeahead('1st Choice', 'first_choice', object.getChoice is not null ? object.getChoice.first:"",object.getChoice is not null ? object.getChoice.first:"0", path('hris_applications_ajax_filter'),2,5,readonly)}}
+            {{ form.typeahead('2nd Choice', 'second_choice', object.getChoice is not null ? object.getChoice.second:"",object.getChoice is not null ? object.getChoice.second:"0", path('hris_applications_ajax_filter'),2,5,readonly)}}
+            {{ form.typeahead('3rd Choice', 'third_choice',object.getChoice is not null ? object.getChoice.third:"",object.getChoice is not null ? object.getChoice.third:"0", path('hris_applications_ajax_filter'), 2, 5,readonly) }}
+        <h4 class="form-section">Personal Information:</h4>
+            {{ form.group_text('First Name', 'first_name',object.getFirstName|default(''),2,5, readonly) }}
+            {{ form.group_text('Middle Name', 'middle_name',object.getMiddleName|default(''),2,5, readonly) }}
+            {{ form.group_text('Last Name', 'last_name',object.getLastName|default(''),2,5, readonly) }}
+            {{ form.group_text('Nickname', 'nickname',object.getNickName|default(''),2,5, readonly) }}
+    
+            {{ form.group_select('Gender','gender',gender_opts, object.getProfile.getGender|default(''),2,5, readonly) }}
+            {{ form.group_date('Date of Birth','birth_date', object.getProfile != null ? object.getProfile.getBirthDateDisplay: "",2,5,readonly) }}                                     
+            {{ form.group_text('Place of Birth','birth_place', object.getProfile.getBirthPlace|default(''),2,5,readonly) }}
+            {{ form.group_text('Height (cm)','height',object.getProfile.getHeight|default(''),2,5,readonly) }}
+            {{ form.group_text('Weight (kg)','weight',object.getProfile.getWeight|default(''),2,5,readonly) }}
+            
+        <h4 class="form-section">Home Address</h4>
+            {% if object.getProfile != null %}
+            {% set home = object.getProfile.getHomeAddress %}
+            {% set permanent = object.getProfile.getPermanentAddress %}
+            {% endif %}
+            {{ form.hidden('home_address_id', home.getID|default('')) }}
+            {{ form.hidden('home_is_new_address', 'false') }}
+            {{ form.group_text('Unit / Number', 'home_name',home.getName|default(''), 2, 5,readonly) }}
+            {{ form.group_text('Street Address', 'home_street',home.getStreet|default(''), 2, 5,readonly) }}
+
+            {{ form.group_select('Country', 'home_country', country_opts, home.getCountry.getID|default('0'), 2, 5,readonly) }}
+            {{ form.group_select('State', 'home_state', home_state_opts, home.getState.getID|default(''), 2, 5,readonly) }}
+            {{ form.group_select('City', 'home_city', home_city_opts, home.getCity.getID|default(''), 2, 5,readonly) }}
+
+        <h4 class="form-section">Permanent Address</h4>
+            {{ form.hidden('permanent_address_id', permanent.getID|default('')) }}
+            {{ form.hidden('permanent_is_new_address', 'false') }}
+            {{ form.group_text('Unit / Number', 'permanent_name', permanent.getName|default(''), 2, 5,readonly) }}
+            {{ form.group_text('Street Address', 'permanent_street', permanent.getStreet|default(''), 2, 5,readonly) }}
+
+            {{ form.group_select('Country', 'permanent_country', country_opts, permanent.getCountry.getID|default('0'), 2, 5,readonly) }}
+            {{ form.group_select('State', 'permanent_state', permanent_state_opts, permanent.getState.getID|default(''), 2, 5,readonly) }}
+            {{ form.group_select('City', 'permanent_city', permanent_city_opts, permanent.getCity.getID|default(''), 2, 5,readonly) }}
+
+        <h4 class="form-section">Contact Number:</h4>
+            {{ form.group_select('Type', 'myphone_type', phone_type_opts, object.getProfile.getMyNumber.getPhoneType.getID|default(''), 2, 5,readonly) }}
+            {{ form.group_text('Number', 'my_number', object.getProfile.getMyNumber.getNumber|default(''),2,5, readonly) }}
+            {{ form.group_text('Email Address','email_add',object.getEmailAddress|default(''),2,5,readonly) }}
+        <div class="form-group">
+            <label class="col-md-2 control-label">Civil Status</label>
+            <div class="col-md-5">
+                <div class="radio-list">
+                    <label>
+                        <input type="radio" name="civil_status" value="1" {{ readonly ? 'disabled' : '' }} 
+                        {% if object.getID == null %}
+                        checked 
+                        {% endif %}
+                        {% if object.getID !=null %}
+                            {% if object.getProfile.getCivilStatus == 1%}
+                        checked 
+                            {% endif %}
+                        {% endif %}
+                        
+                        />Single 
+                    </label>
+                    <label>
+                        <input type="radio" name="civil_status" value="2" {{ readonly ? 'disabled' : '' }}
+                        {% if object.getID !=null %}
+                            {% if object.getProfile.getCivilStatus == 2%}
+                        checked 
+                            {% endif %}
+                        {% endif %}
+                        />Married
+                    </label>
+                    <label>
+                        <input type="radio" name="civil_status" value="3" {{ readonly ? 'disabled' : '' }}
+                            {% if object.getID !=null %}
+                                {% if object.getProfile.getCivilStatus == 3%}
+                            checked 
+                                {% endif %}
+                            {% endif %}
+                               />Widowed
+                    </label>
+                    <label>
+                        <input type="radio" name="civil_status" value="4" {{ readonly ? 'disabled' : '' }}  
+                            {% if object.getID !=null %}
+                                {% if object.getProfile.getCivilStatus == 4%}
+                            checked 
+                                {% endif %}
+                            {% endif %}
+                               />Legally Separated
+                    </label>
+                </div>
+            </div>
+        </div>
+
+
+        {{ form.group_text('Number of Dependents','dependent_num',object.getProfile.getNumberOfDependents|default(''),2,5,readonly) }}
+        {{ form.group_text_nac('Name of Spouse (If Applicable)','spouse_name',object.getProfile.getSpouseName|default(''),2,5,readonly) }}
+        {{ form.group_text('Number of Children','no_of_child',object.getProfile.getNumberOfChildren|default(''),2,5,readonly) }}
+        {{ form.group_text_nac('Name of Father','father_name',object.getProfile.getFatherName|default(''),2,5,readonly) }}
+        {{ form.group_text_nac('Occupation','father_occupation',object.getProfile.getFatherOccupation|default(''),2,5,readonly) }}
+        {{ form.group_text_nac('Name of Mother','mother_name',object.getProfile.getMotherName|default(''),2,5,readonly) }}
+        {{ form.group_text_nac('Occupation','mother_occupation',object.getProfile.getMotherOccupation|default(''),2,5,readonly) }}
+        
+        <h4 class="form-section">Person to be notified in case of Emergency:</h4>    
+            {{ form.group_text_nac('Name','contact_person',object.getProfile.getContactPerson|default(''),2,5,readonly) }}
+        <label>His/Her Contact Number:</label>
+            {{ form.group_select('Type', 'contact_phone_type', phone_type_opts, object.getProfile.getContactNumber.getPhoneType.getID|default(''), 2, 5, readonly) }}
+            {{ form.group_text_nac('Number', 'contact_number', object.getProfile.getContactNumber.getNumber|default(''), 2, 5, readonly) }}    
+    </div>
+        <div class="form-actions fluid">
+            <div class="col-md-12">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{path(route_list)}}" class="btn default">
+            Cancel </a>
+            </div>
+        </div>
+</form>

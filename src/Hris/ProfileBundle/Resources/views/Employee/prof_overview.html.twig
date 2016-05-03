@@ -1,0 +1,77 @@
+<div class="row profile-overview">
+    <div class="col-md-3 col-sm-3">
+        <ul class="list-unstyled profile-nav">
+            <li>
+                {% if profile.getUpload.getURL is not defined %}
+                <img id="profile-image" src="{{ asset('bundles/hristemplate/images/no_photo.png') }}" style="width:100%;" class="img-responsive">
+                {% else %}
+                <img id="profile-image" src="{{ profile.getUpload.getURL|replace({'\\':'/'})|default(asset('bundles/hristemplate/images/no_photo.png')) }}" style="width:100%;" class="img-responsive">
+                {% endif %}
+            </li>
+            {# <li><p>SSS ID<span class="id-num">{{ profile.getSSS|default('N/A') }}</span></p></li>
+            <li><p>PhilHealth ID<span class="id-num">{{ profile.getPhilhealth|default('N/A') }}</span></p></li>
+            <li><p>TIN<span class="id-num">{{ profile.getTin|default('N/A') }}</span></p></li>
+            <li><p>PAG-IBIG ID<span class="id-num">{{ profile.getPagibig|default('N/A') }}</span></p></li> #}
+        </ul>
+        <ul class="ver-inline-menu tabbable margin-bottom-10">
+            <li class="active">
+                <a data-toggle="tab" href="#oview_info">
+                <i class="fa fa-info"></i> Personal Information </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#oview_contact">
+                <i class="fa fa-key"></i> Contact Information </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#oview_job">
+                <i class="fa fa-comments"></i> Job Details </a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-9 col-sm-9">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 profile-info">
+                <h1>{{ app.getUser.getName }}</h1>
+                {% if object is defined  %}
+                <p>{{ object.getDepartment.getName ~ ' | ' ~ object.getJobTitle.getName }}</p>
+                {% endif %}
+                <ul class="list-inline">
+                    <li><i class="fa fa-map-marker"></i> {{ profile.getAddress.getCity.getName|default('N/A') }}</li>
+                    <li><i class="fa fa-calendar"></i> {{ profile.getBirthday|date('d M Y') }}</li>
+                </ul>
+            </div>
+            <!--end col-md-8-->
+            <div class="col-md-6 col-sm-6">
+                <table class="table table-striped table-bordered table-advance table-hover">
+                    <thead>
+                        <tr>
+                            <th style="font-weight: bold;">Leave Summary</th>
+                            <th>Taken</th>
+                            <th>Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in emp_leave  %}
+                        {% if e.getApprovedCount == null %}
+                            {% set leave_count = 0 %}
+                        {% else %}
+                            {% set leave_count = e.getApprovedCount %}
+                        {% endif %}
+                        <tr>
+                            <td>{{e.getLeaveType.getName}}</td>
+                            <td>{{leave_count}}</td>
+                            <td>{{e.getAvailLeaves}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--end row-->
+        <div class="row">
+            <div class="tab-content">
+                {% embed "HrisProfileBundle:Employee:prof_oview_tabs.html.twig" %}{% endembed %}
+            </div>
+        </div>
+    </div>
+</div>

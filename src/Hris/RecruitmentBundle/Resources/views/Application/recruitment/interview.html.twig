@@ -1,0 +1,196 @@
+{% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_INTERVIEW')%}
+{% set readonly = true %}
+{% endif %}
+
+<form method="post" class="form-horizontal form">
+    {{form.hidden('app_form','interview')}}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+    <div class="form-group">
+        {{ form.group_date('Scheduled Interview','interview_date',object.getInterview != null? object.getInterview.getDate|date('m/d/Y'),3,5,readonly) }} 
+        {{ form.group_time('Time of Interview','interview_time','',3,5,readonly)}}
+        <div class="form-group">
+            <label class="col-md-3 control-label">Applicant appeared?</label>
+            <div class="checkbox-inline">
+                {{ form.checkbox('applicant_appeared', 0, 'No', object.getAppeared, 'chars', readonly) }}
+            </div>
+        </div>
+        <div class="tabbable tabbable-custom tabbable-custom-profile">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_1_11" data-toggle="tab">
+                        Interview
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1_11">
+                    <div class="portlet-body recruitment">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        {% if not readonly %}
+                                        <a href="#interview-modal" class="btn green" data-toggle="modal" style="float: right;">Add Interview</a>
+                                        {% endif %}
+                                    </div> 
+                                </div>
+                                <tr>
+                                    <th style="width: 50%;">
+                                        Recommendation
+                                    </th>
+                                    <th>
+                                        Comments
+                                    </th>
+                                    <th rowspan="2" style="width: 60px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="en_table_interview">
+                                {% if object.getInterview != null %}
+                                {% for interview in object.getInterview.getResult %}
+                                {% if readonly %}
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <div class="col-md-9">
+                                                <div class="radio-list">
+                                                    <label class="radio-list">
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="reject"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'reject' %}
+                                                        checked
+                                                        {% endif %} disabled 
+                                                        />Reject
+                                                    </label>
+                                                    <label class="radio-list">
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="hold_for_comparison"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'hold_for_comparison' %}
+                                                        checked
+                                                        {% endif %} disabled 
+                                                        />Hold for comparisons
+                                                    </label>
+                                                    <label class="radio-list">
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="recommended_for_further_interview"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'recommended_for_further_interview' %}
+                                                        checked
+                                                        {% endif %} disabled 
+                                                        />Recommended for further interview
+                                                    </label>
+                                                    <label class="radio-list">
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="recommended_for_the_position_applied"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'recommended_for_the_position_applied' %}
+                                                        checked
+                                                        {% endif %} disabled 
+                                                        />Recommended for the position applied
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input id="cform-interviewer_name" type="text" name="interviewer_name[]" class="form-control" value="{{interview.interviewer}}"readonly="true">
+                                                    <input type="hidden" name="interview_id[]" value="{{interview.id}}">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="input-group date date-picker" data-date-format="mm/dd/yyyy">
+                                                        <input id="cform-interviewed_date" type="text" class="form-control" name="interviewed_date[]" value="{{interview.interviewed_date}}" readonly>
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default" type="button"><i class="fa fa-calendar"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><textarea name="interview_remarks[]" class="form-control remarks" rows="6" {{ readonly?"readonly":"" }}>{{interview.comment|default('')}}</textarea></td>
+                                    <td>
+                                        {% if not readonly %}
+                                        <a href="#btn_en_add" class="btn_en_del btn_dim_del"><i class="glyphicon glyphicon-remove-circle font-red"></i></a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td class="tables">
+                                        <div class="form-group">
+                                            <label class="col-md-1 control-label"></label>
+                                            <div class="col-md-9">
+                                                <div class="radio-list">
+                                                    <label>
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="reject"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'reject' %}
+                                                        checked
+                                                        {% endif %} 
+                                                        />Reject
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="hold_for_comparison"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'hold_for_comparison' %}
+                                                        checked
+                                                        {% endif %} 
+                                                        />Hold for comparisons
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="recommended_for_further_interview"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'recommended_for_further_interview' %}
+                                                        checked
+                                                        {% endif %}  
+                                                        />Recommended for further interview
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio" name="{{interview.id}}_recommendation" id="cform-recommendation" value="recommended_for_the_position_applied"
+                                                        {% if interview.recommendation is defined and interview.recommendation == 'recommended_for_the_position_applied' %}
+                                                        checked
+                                                        {% endif %} 
+                                                        />Recommended for the position applied
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input id="cform-interviewer_name" type="text" name="interviewer_name[]" class="form-control" value="{{interview.interviewer}}"readonly="true">
+                                                    <input type="hidden" name="interview_id[]" value="{{interview.id}}">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="input-group date date-picker" data-date-format="mm/dd/yyyy">
+                                                        <input id="cform-interviewed_date" type="text" class="form-control" name="interviewed_date[]" value="{{interview.interviewed_date|default('')}}" readonly>
+                                                        <span class="input-group-btn">
+                                                            <button class="btn default" type="button"><i class="fa fa-calendar"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="tables"><textarea name="interview_remarks[]" class="form-control remarks" rows="6" {{ readonly?"readonly":"" }}>{{interview.comment|default('')}}</textarea></td>
+                                    <td>
+                                        {% if not readonly %}
+                                        <button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if object.getStatus == "Interview" %}
+        <div class="form-group">
+            <div class="col-md-9">
+                <button name="result" value="" type="submit" class="btn blue">Save</button>
+                <button name="result" value="pass" type="submit" class="btn green result">Passed</button>
+                <button name="result" value="fail" type="submit" class="btn red result fail">Failed</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </form>

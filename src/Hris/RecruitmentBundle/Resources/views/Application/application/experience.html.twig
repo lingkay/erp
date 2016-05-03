@@ -1,0 +1,71 @@
+{% if object.getStatus == constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_HIRED')%}
+{% set readonly = true %}
+{% endif %}
+<form id="add_work_exp_form" method="post" class="form-horizontal form">
+    <div class="form-group">
+        {{form.hidden('app_form','work_exp')}}
+        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+            <table class="table table-striped table-bordered table-hover">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-12">
+                        {% if not readonly %}
+                        <a href="#work-exp-modal" class="btn green" data-toggle="modal" style="float: right; margin-right: 10px; ">Add Work Experience</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Name and Address of Company</th>
+                        <th rowspan="2">Position Held</th>
+                        <th rowspan="2">Duration of Employment</th>
+                        <th colspan="2">Salary</th>
+                        <th rowspan="2">Reason for Leaving</th>
+                        <th rowspan="2" style="width: 60px"></th>
+                    </tr>
+                    <tr>
+                        <th>Start</th>
+                        <th>Last</th>
+                    </tr>
+                </thead>
+                <tbody id="en_table_work_exp">
+                    {% for entry in object.getExperience %}
+                    <tr>
+                        <td>
+                            <textarea name="company_detail[]" class="form-control company_detail tables" rows="2" readonly>{{entry.getCompanyNameAddress}}</textarea>
+                        </td>
+                        <td>
+                            <input class="form-control en_position tables" type="text" name="position[]" value="{{ entry.getPositionHeld }}" readonly>
+                        </td>
+                        <td>
+                            <input class="form-control en_duration tables" type="number" name="duration[]" value="{{ entry.getEmploymentDuration }}" readonly>
+                        </td>
+                        <td>
+                            <input class="form-control en_salary_start tables" type="number" name="salary_start[]" value="{{ entry.getStartingSalary }}"readonly>
+                        </td>
+                        <td>
+                            <input class="form-control en_salary_last tables" type="number" name="salary_last[]" value="{{ entry.getLastSalary }}" readonly>
+                        </td>
+                        <td>
+                            <textarea name="reason[]" class="form-control reason tables" rows="2" readonly>{{ entry.getReason }}</textarea>
+                        </td>
+                        <td>
+                            {% if not readonly %}
+                            <button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button>
+                            {% endif %}
+                        </td>
+                    </tr>   
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+        <div class="form-actions fluid">
+            <div class="col-md-12">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,142 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Savings for {{ object.getEmployee.getDisplayName }}</div>
+            </div>
+            <div class="portlet-body">
+                 <div class="table-toolbar">
+                    <a href="{{ path('hris_remuneration_cashbond_add_loan_form', {emp_id: object.getEmployee.getID}) }}" class="btn green">Add Loan</a>
+                </div>
+                <!-- BEGIN FORM-->
+                <form method="post" id="loan_form" class="form-horizontal form">
+                    <div class="form-body">
+                        {# {% if new == false %}
+                            <a href="" class="btn green">Print</a>
+                        {% endif %} #}
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Employee', 'employee', object.getEmployee.getDisplayName,3,4,true)}}
+                        {{ form.group_number('Balance', 'balance', object.getBalance,3,4,true)}}
+                        <h4>Contributions</h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                            <table class="table table-bordered table-hover" id="list_table">
+                             <thead>
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Description
+                                    </th>
+                                    <th >
+                                        Savings Debit
+                                    </th>
+                                    <th >
+                                        Savings Credit
+                                    </th>
+                                    <th >
+                                        Balance
+                                    </th>
+                                </thead> 
+                                <tbody>
+                                    {% for entry in object.getTransactions %}
+                                        <tr>
+                                            {% if entry.getType == 'Contribution' %}
+                                                <td>{{entry.getDateCreate|date('m/d/Y')}} </td>
+                                                <td>Payroll Contribution on {{ entry.getPayrollPeriod.getPayPeriodFormatted}}</td>
+                                            {% else %}
+                                                <td> {{ entry.getDateCreate|date('m/d/Y') }} </td>
+                                                <td>Loan</td>
+                                            {% endif %}
+                                            <td class="numeric">{{ entry.getDebit|number_format(2) }} </td>
+                                             <td class="numeric">{{ entry.getCredit|number_format(2) }} </td>
+                                             <td class="numeric">{{ entry.getBalance|number_format(2) }} </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                           </div>
+                       </div>
+                        <h4>Loans</h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                            <table class="table table-bordered table-hover" id="list_table">
+                             <thead>
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                    <th >
+                                        Amount
+                                    </th>
+                                    <th>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    {% for loan in object.getLoans %}
+                                        <tr>
+                                            <td>{{ loan.getDateCreate|date('m/d/Y') }}</td>
+                                            <td>{{ loan.getStatus }}</td>
+                                            <td class="numeric">{{ loan.getAmount }} </td>
+                                            <td>
+                                                <a href="{{  path('hris_remuneration_cashbond_edit_loan_form', { 'id': loan.getID }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                           </div>
+                       </div>
+
+                    </div>
+
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+$(document).ready(function() {
+
+   
+    $('#cform-employee').change(function() {
+        $.ajax({
+            url: "{{path('hris_remuneration_cashbond_employee_ajax')}}",
+            type: 'GET',
+            data: {'id': $(this).val()},
+            success: function(data, text_status, xhr) {
+                $('#cform-balance').val(data.balance);
+            }
+        });  
+    });  
+
+    
+
+    $('.form-horizontal .select_2').change(function () {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    // $('.date-picker .form-control').change(function() {
+    //     $('.form-horizontal').validate().element($(this));
+    // });
+
+
+}); 
+</script>
+{% endblock %}

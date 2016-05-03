@@ -1,0 +1,225 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{%block form_header%}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {% set supervisor = '' %}
+                        {% set department_head = ''%}
+
+                        {% if app.user.getEmployee != null %}
+                            {% set user = app.user.getEmployee.getID %}
+                        {% else %}
+                            {% set user = app.user.getName %}
+                        {% endif %}
+                        <h4 class="form-section">Information</h4>
+                            {% if object.getID != null %}
+                                {{ form.hidden('employee', object.getEmployee.getID)}}
+                                {{ form.group_text('Employee Name','emp',object.getEmployee.getDisplayName,3,4,true) }}
+                            {% else %}
+                                {{ form.group_select('Employee Name', 'employee',emp_opts,object.getEmployee != null? object.getEmployee.getID:'', 3, 4, readonly) }}
+                            {% endif %}
+
+                            {{ form.group_date('Date','date', object.getDate|date('m/d/Y'),3,4) }}
+                            {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                            {{ form.group_time('Time-In', 'start', object.getTimeIn, 3, 4)}}
+                            {{ form.group_time('Time-Out', 'end', object.getTimeOut, 3, 4)}}
+                        {% if object.getID != null %}
+                            {% if app.user.getEmployee != null %}
+                                {% if object.getEmployee.getSupervisor != null %}
+                                    {% set supervisor = object.getEmployee.getSupervisor.getID %}
+                                {% endif %}
+
+                                {% if object.getEmployee.getDepartment.getDeptHead != null %}
+                                    {% set department_head = object.getEmployee.getDepartment.getDeptHead.getID %}
+                                {% endif %}
+                            {% endif %}
+                            {% if object.getAdjustmentStatus != null %}
+                            
+                            <h4 class="form-section">Attendance Adjustment Request</h4>
+
+                            {{ form.group_text('Date Adjustment Request', 'date_request', object.getAdjustmentDate|date('m/d/Y'),3,4,true)}}
+
+                            {% if object.getAdjustmentStatus == constant('\\Hris\\WorkforceBundle\\Entity\\Attendance::STATUS_APPROVE')%}
+                                {% if object.getApprovedBy.getEmployee != null %}
+                                    {% set approver = object.getApprovedBy.getEmployee.getDisplayName %}
+                                {% else %}
+                                    {% set approver = object.getApprovedBy.getName %}
+                                {% endif %}
+
+                                {{ form.group_text('Date Adjustment Approved', 'date_approved', object.getDateApproved|date('m/d/Y'),3,4,true)}}
+                                {{ form.group_text('Approved By', 'approved_by', approver,3,4,true)}}
+                                  
+                            {% endif %}
+
+                            {{ form.group_time('Adjusted Time-In', 'adj_time_in', object.getAdjustTimeIn|date('g:i A'), 3, 4)}}
+                            {{ form.group_time('Adjusted Time-Out', 'adj_time_out', object.getAdjustTimeOut|date('g:i A'), 3,4)}}
+                            {{ form.group_textarea('Reason','reason', object.getReason|default(''),3,3,4,true)}}
+                            {{ form.group_upload_file('Supporting Documents','file',object.getUpload|default(''),3,4,readonly,'f')}}
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Set as Halfday</label>
+                                    <div class="checkbox-inline">
+                                        {{ form.checkbox('halfday', 0, '', object.isHalfday, 'chars', readonly) }}
+                                    </div>
+                            </div>
+                        {% endif %}
+
+                        {% if object.getOvertimeStatus != NULL %}
+                            <h4 class="form-section">Overtime</h4>
+                            {{ form.group_text('Date Filed','date_filed',object.getOvertimeDate|date('m/d/Y'),3,4,true) }}
+                            {% if object.getOvertimeStatus == constant('\\Hris\\WorkforceBundle\\Entity\\Attendance::STATUS_APPROVE') %}
+                            {{ form.group_text('Date Approved','date_approved',object.getOvertimeDate|date('m/d/Y'),3,4,true)}}
+                            {{ form.group_text('Approved Overtime','total_hrs',object.getOvertime,3,4,true) }}    
+                            {% else %}
+                            {{ form.group_text('Total Hours','total_hrs',object.getOvertimeTemp,3,4,true) }}
+                            {% endif %}
+                            {{ form.group_textarea('Reason','overtime_reason', object.getOvertimeReason|default(''),3,3,4,true)}}
+                        {% endif %}
+
+                        {% endif %}  
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if object.getID == null %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% elseif object.getAdjustmentStatus != null %}
+                                {% if app.user.hasAccess(prefix ~ '.review')%}
+                                <button type="submit" name="action_btn" value="review" class="btn blue">Review</button>
+                                {% endif %}
+                                {% if object.getAdjustmentStatus == constant('\\Hris\\WorkforceBundle\\Entity\\Attendance::STATUS_REVIEW') %}
+                                {% if app.user.hasAccess(prefix ~ '.approve')%}
+                                <button type="submit" name="action_btn" value="approve" class="btn blue">Approve Adjustment</button>
+                                {% endif %}
+                                {% if app.user.hasAccess(prefix ~ '.reject')%}
+                                <button type="submit" name="action_btn" value="reject" class="btn red">Reject Adjustment</button>
+                                {% endif %}
+                                {% endif %}
+                            {% elseif object.getOvertimeStatus != null %}
+                                {% if app.user.hasAccess(prefix ~ '.review')%}
+                                    <button type="submit" name="overtime_btn" value="review" class="btn blue">Review</button>
+                                {% endif %}
+                                {% if object.getOvertimeStatus == 'Review' %}
+                                    {% if app.user.hasAccess(prefix ~ '.approve')%}
+                                    <button type="submit" name="overtime_btn" value="approve" class="btn blue">Approve Overtime</button>
+                                    {% endif %}
+                                    {% if app.user.hasAccess(prefix ~ '.reject')%}
+                                    <button type="submit" name="overtime_btn" value="reject" class="btn red">Reject Overtime</button>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('[id=cform-date]').datepicker({
+        todayHighlight: true,
+        endDate: '0'
+        });
+        $('.calendar').prop('disabled', true);
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
+
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                error.appendTo(element.parent().last());
+                element.parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                element.parent().removeClass('has-error');
+                element.parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        },
+    });
+
+    $('.form-horizontal').validate({
+            onfocusout: function(element) {
+               this.element(element);
+            },
+            rules: {
+                emp: {
+                    required: true,
+                }
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+});
+</script>
+
+{% endblock %}

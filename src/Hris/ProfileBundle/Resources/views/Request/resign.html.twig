@@ -1,0 +1,36 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Tender Resignation</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_date('Date','date_filed',object.getDateFiled|date('m/d/Y'),3,4,true) }}
+                        {{ form.hidden('name_id', app.user.getEmployee.getID) }}
+                        {{ form.hidden('emp_id', app.user.getEmployee.getID) }}
+                        {{ form.group_text('Employee Name', 'name', app.user.getEmployee.getDisplayName, 3,4,true) }}
+                        {{ form.group_text('Department', 'department', app.user.getEmployee.getDepartment.getName, 3,4, true) }}
+                        {{ form.group_text('Supervisor', 'supervisor', app.user.getEmployee.getSupervisor is not null ? app.user.getEmployee.getSupervisor.getDisplayName:"", 3, 4, true) }}
+                        {{ form.group_upload_file('Resignation Letter','file',object.getUpload|default(''),3,4,readonly,'f')}}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn green" name="action_btn" value="resign">Submit</button>
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+<div id="oview_info" class="tab-pane active">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Personal Information</div>
+                {# <div class="actions">
+                    <a href="#" class="btn btn-default btn-sm">
+                    <i class="fa fa-pencil"></i> Edit </a>
+                </div> #}
+            </div>
+            <div class="portlet-body form">
+                <div class="form-body">
+                    <div class="row">
+                        {{ self.static_text('Employee ID',object.getEmployeeId|default('N/A'),3) }}
+                        {{ self.static_text('Birthday',object.getProfile.getBirthday|date('F d, Y')|default('N/A'),3) }}
+                        {{ self.static_text('Gender',object.getGender|default('N/A'),3) }}
+                        {{ self.static_text('Civil Status',object.getMaritalStatus|default('N/A'),3) }}
+                        {{ self.static_text('Date Hired',object.getDateHired|date('F d, Y'),3) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="oview_contact" class="tab-pane">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Contact Information</div>
+            </div>
+            <div class="portlet-body">
+                <div class="form-body">
+                    {% set address = object.getProfile.getAddress %}
+                    {% set phones = object.getProfile.getPhones %}
+                    <div class="row">
+                        {{ self.static_text('Unit/No./Street',address.getName|default('N/A'),3) }}
+                        {{ self.static_text('City',address.getCity.getName|default('N/A'),3) }}
+                        {{ self.static_text('State',address.getState.getName|default('N/A'),3) }}
+                        {{ self.static_text('Country',address.getCountry.getName|default('N/A'),3) }}
+                        {{ self.static_text('E-mail Address',object.getEmail|default('N/A'),3) }}
+                        {% for contact in phones %}
+                            {% if contact.getIsPrimary == 1 %}
+                            {{ self.static_text('Primary Number',contact.getNumber|default('N/A'),3) }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="oview_job" class="tab-pane">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Job Details</div>
+            </div>
+            <div class="portlet-body">
+                <div class="form-body">
+                    <div class="row">
+                        {{ self.static_text('Job Title',object.getJobTitle.getName|default('N/A'),3) }}
+                        {{ self.static_text('Department',object.getDepartment.getName|default('N/A'),3) }}
+                        {{ self.static_text('Employment Status',object.getEmploymentStatus|default('N/A'),3) }}
+                        {{ self.static_text('Supervisor',object.getSupervisor.getDisplayName|default('N/A'),3) }}
+                    </div>
+                    <div class="row">
+                        {{ self.static_text('Subordinate/s','N/A',6) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

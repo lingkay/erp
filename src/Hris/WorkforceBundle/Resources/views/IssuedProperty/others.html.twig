@@ -1,0 +1,5 @@
+<div id="type_others" style="display:none;">
+    {{ form.group_text('Item Name', 'item_name', object.getItemName|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Item Code', 'item_code', object.getItemCode|default(''), 3, 4, readonly) }}
+    {{ form.group_textarea('Item Description', 'item_desc', object.getItemDesc|default(''), 4, 3, 4, readonly) }}
+</div>

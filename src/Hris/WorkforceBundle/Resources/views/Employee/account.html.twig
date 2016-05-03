@@ -1,0 +1,27 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Employee Account</h4>
+    {{ form.hidden('employee_form','account')}}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+
+    {{ form.group_text('Username', 'username',object.getUser.getUsername, 3, 4, true) }}
+    {{ form.group_tip('', 'Leave passwords blank if you are not changing it', 3, 6) }}
+    {{ form.group_password('Password', 'pass1', 3, 4, readonly) }}
+    {{ form.group_password('Re-type Password', 'pass2', 3, 4, readonly) }}
+    {{ form.group_select('Account Status','enabled', account_opts, object.getUser.isEnabled,3,4, readonly) }}
+    {{ form.group_select('Send Email Notifications?','email_notify', sendmail_opts, object.getUser.isEmailNotify,3,4, readonly) }}
+
+    
+
+    <div class="form-actions fluid">
+        <div class="col-md-12">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            {% set id = object.getId %}
+            <a href="{{ path('hris_workforce_employee_resend_email', { 'id': id }) }}" class="btn green pull-right">Resend Account Details</a>
+        </div>
+    </div>
+</div>
+</form>

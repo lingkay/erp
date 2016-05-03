@@ -1,0 +1,348 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% macro form_text(label, name, value, group, label_size, body_size, readonly = false, prefix = 'c') %}
+<div id="{{ prefix }}group-{{ name }}" class="form-group">
+    <div class="col-md-{{ body_size }}">
+        <input id="{{ prefix }}form-{{ name }}" type="text" name="{{ name }}" class="form-control" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }}>
+    </div>
+</div>
+{% endmacro %}
+{% macro form_num(label, name, value, group, label_size, body_size, readonly = false, required = false, prefix = 'c') %}
+<div id="{{ prefix }}group-{{ name }}" class="form-group">
+    <div class="col-md-{{ body_size }}">
+        <input id="{{ prefix }}form-{{ name }}" type="number" name="{{ name }}" class="form-control {{ group }}" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }} {{ required ? 'required ' : '' }}>
+    </div>
+</div>
+{% endmacro %}
+{% macro textarea(label, name, value, row_size, label_size, body_size, readonly = false, prefix = 'c') %}
+<div id="{{ prefix }}group-{{ name }}" class="form-group">
+    <div class="col-md-{{ body_size }}">
+        <textarea id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" rows="{{ row_size }}" placeholder="{{ label }}" {{ readonly ? 'readonly ' : '' }} style="resize:vertical;">{{ value }}</textarea>
+    </div>
+</div>
+{% endmacro %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div id="evaluation" class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Evaluation Sheet</div>
+            </div>
+            <div class="portlet-body form" >
+                <!-- BEGIN FORM-->
+                <form id="eval_form" method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Name', 'name', emp_data.getDisplayName|default(''), 3, 4,true) }}
+                        {{ form.hidden('emp', emp_data.getID) }}
+                        {{ form.group_text('Position', 'job_title', emp_data.getJobTitle.getName()|default('') , 3, 4,true) }}
+                        {{ form.group_date_range('daterange', 'Period Covered', 'date_from', 'date_to', eval_start, eval_end, 3, 4) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Purpose of this Evaluation</label>
+                            <div class="col-md-5">
+                                <div class="radio-list">
+                                {% for id,type in eval_type %}
+                                    {{ form.radio(type, id, type, obj.getType|default('') == type ? 'checked':'', 'radio-group', true) }}
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {{ form.group_text('Quantitative Rating', 'quanti_rating', eval.getQuantiRating, 3, 2,true) }}
+                        {{ form.group_text('Qualitative Rating', 'quali_rating', eval.getQualiRating, 3, 2,true) }}
+
+                        {% if eval.getStatus == 'Completed' %}
+                            {% set readonly = true %}
+                        {% else %}
+                            {% set readonly = false %}
+                        {% endif %} 
+                        <h4 class="form-section"></h4>
+                        <div class="panel-group accordion" id="accordion1">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapse_1">I. Key Performance Indicator (KPI) Assessment (60%)</a>
+                                    </h4>
+                                </div>
+                                <div id="collapse_1" class="panel-collapse collapse" style="height: 0px;">
+                                    <div class="panel-body">
+                                        <h5 class="bold">*** List the Key Objectives agreed upon this period and put the % weight each. Total should be 60%. </h5>
+                                        <h5 class="bold">*** Please input grade rating and description for each objective. </h5>
+                                        <table class="table table-bordered table-hover" style="width: 100%; margin-bottom: 20px;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:50px;">#</th>
+                                                    <th style="width:200px;">Objective</th>
+                                                    <th style="width:150px;">% of Criteria</th>
+                                                    <th style="width:150px;">No Progress</th>
+                                                    <th style="width:150px;">Very Mininmal Progress</th>
+                                                    <th style="width:150px;">Substantial Progress</th>
+                                                    <th style="width:150px;">Objective Met<br>within Standard</th>
+                                                    <th style="width:150px;">Objective Surpassed<br>in all aspects</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% import _self as self %}
+                                                {% set KPI = eval.getKPIDetails %}
+                                                {% if KPI == false %}
+                                                {% for i in 1..obj.getPreset.getObjCount %}
+                                                <tr>
+                                                    <td>{{ i }}</td>
+                                                    <td><textarea name="KPI[{{ i }}][objective]" class="form-control kpi_objective" rows="4" style="resize: vertical;" placeholder="Objective" {{ readonly ? "readonly" : "" }}></textarea></td>
+                                                    <td>
+                                                        {{ self.form_text('percentage', 'KPI['~ i ~'][percent]', obj.getPreset.getObjPercentage|round(2, 'floor') ~ '%', 'kpi_percent', 0, 12, true) }}
+                                                        {{ self.form_num('score', 'KPI['~ i ~'][score]', '', 'kpi_score', 0, 12, readonly, true) }}
+                                                    </td>
+                                                    {% set base = obj.getPreset.getObjPercentage|round(2, 'floor') / 5 %}
+                                                    {% set count = base %}
+                                                    {% for e in 0..4 %}
+                                                    <td>
+                                                        {{ self.form_text('grade', 'KPI['~ i ~'][grade][]', e == 4 ? count|round(2, 'floor') ~ '%' : count|round ~ '%', 'kpi_grade', 0, 12, true) }}
+                                                        {{ self.textarea('description', 'KPI['~ i ~'][description][]', '', 2, 0, 12) }}
+                                                    </td>
+                                                    {% set count = count + base %}
+                                                    {% endfor %}
+                                                </tr>
+                                                {% endfor %}
+                                                {% else %}
+                                                {{ KPI|length - 1 }}
+                                                {% for key, item in KPI %}
+                                                    {% if key != 'comment' %}
+                                                    <tr>
+                                                        <td>{{ key }}</td>
+                                                        <td><textarea name="KPI[{{ key }}][objective]" class="form-control kpi_objective" rows="4" style="resize: vertical;" placeholder="Objective" {{ readonly ? "readonly" : "" }}>{{ item.objective }}</textarea></td>
+                                                        <td>
+                                                            {{ self.form_text('percentage', 'KPI['~ key ~'][percent]', item.percent, 'kpi_percent', 0, 12, true) }}
+                                                            {{ self.form_num('score', 'KPI['~ key ~'][score]', item.score, 'kpi_score', 0, 12, readonly, true) }}
+                                                        </td>
+                                                        {% for id, entries in item.grade %}
+                                                        <td>
+                                                            {{ self.form_text('grade', 'KPI['~ key ~'][grade][]', entries, 'kpi_grade', 0, 12, true) }}
+                                                            {{ self.textarea('description', 'KPI['~ key ~'][description][]', item.description[id], 2, 0, 12, true) }}
+                                                        </td>
+                                                        {% endfor %}
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                        {{ form.group_textarea('Comments', 'KPI[comment]', eval.getKPIDetails.comment|default(''), 4, 2, 8, readonly) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-group accordion" id="accordion2">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                    <a class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapse_2">II. Personal Qualities Criteria (40%)</a>
+                                    </h4>
+                                </div>
+                                <div id="collapse_2" class="panel-collapse collapse" style="height: 0px;">
+                                    <div class="panel-body">
+                                        <h5 class="bold"></h5>
+                                        <table class="table table-bordered table-hover" style="width: 100%; margin-bottom: 20px;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:50px;">#</th>
+                                                    <th style="width:200px;">Criteria</th>
+                                                    <th style="width:150px;">% of Criteria</th>
+                                                    <th style="width:150px;">Poor</th>
+                                                    <th style="width:150px;">Needs Improvement</th>
+                                                    <th style="width:150px;">Satisfactory</th>
+                                                    <th style="width:150px;">Very Satisfactory</th>
+                                                    <th style="width:150px;">Excellent</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% import _self as self %}
+                                                {% embed 'HrisWorkforceBundle:Appraisal:pqc.html.twig' %}{% endembed %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Qualitative Rating Description</th>
+                                    <th colspan="10">Point Rating System</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2"></th>
+                                    <th colspan="4">Qualitative Rating</th>
+                                    <th colspan="6">Quantitative Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2">Exceptional performance in all areas of responsibility. Planned objectives were achieved well above the established standards and accomplishments were made in unexpected areas.</td>
+                                    <td colspan="4">Excellent</td>
+                                    <td colspan="3">90%</td>
+                                    <td colspan="3">100%</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Consistently exceed established standards in most areas of responsibility. All requirements were met and objectives were achieved above the established standards.</td>
+                                    <td colspan="4">Very Satisfactory</td>
+                                    <td colspan="3">80%</td>
+                                    <td colspan="3">89%</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">All job requirements were met and planned objectives were accomplished within established standards. There were no critical areas where accomplishments were less than planned.</td>
+                                    <td colspan="4">Satisfactory</td>
+                                    <td colspan="3">60%</td>
+                                    <td colspan="3">79%</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Performance in one or more critical areas does not meet expectations. Not all planned objectives were accomplished within the established standards and some responsibilities were not completely met.</td>
+                                    <td colspan="4">Need Improvement</td>
+                                    <td colspan="3">40%</td>
+                                    <td colspan="3">59%</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Does not meet minimum job requirements. Performance is unacceptable. Responsibilities are not being met and important objectives have not been accomplished. Needs immediate improvement.</td>
+                                    <td colspan="4">Poor</td>
+                                    <td colspan="3">20%</td>
+                                    <td colspan="3">39%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="form-section">TO BE ACCOMPLISHED BY RATER</h4>
+                        {% set comment = eval.getComments %}
+                        {{ form.group_textarea('Important highlights on the employee\'s performance during the period covered.', 'comment[]', comment[0]|default(''), 4, 4, 7, readonly) }}
+                        {{ form.group_textarea('Aspects of performance which the employee would need to improve on', 'comment[]',comment[1]|default(''), 4, 4, 7, readonly) }}
+                        {{ form.group_textarea('Agreed action plans to be undertaken by employee to further improve his performance for the next evaluation period', 'comment[]',comment[2]|default(''), 4, 4, 7, readonly) }}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue" {{ readonly ? "disabled" : "" }}>Submit</button>
+                            {% set id = eval.getAppraisal.getID %}
+                            <a href="{{ path('hris_workforce_appraisals_edit_form', { 'id':id }) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>      
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-modal-sm" id="small" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: red; color: white;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" style="font-weight: 500;">There are unfinished fields!</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Please complete the evaluation before submiting!</h4>
+                <div id="unfinished"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal" id="close_modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('table.list_table').dataTable({ 
+        "bSort": false,           
+        "iDisplayLength": 15,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    ComponentsPickers.init();
+    $('button[type="submit"]').click(function(e){
+        e.preventDefault();
+        var ctr = 0;
+        var blanks = [];
+
+        $('#eval_form textarea.kpi_objective').each(function(){
+            if ($(this).val() == 0 || $(this).val() == null) {
+                var str = $(this).attr('name');
+                // alert(str.substr(4,1));
+                blanks.push('KPI Objective ' + str.substr(4,1));
+                ctr += 1;
+            };
+        });
+
+        $('#eval_form input.kpi_score').each(function(){
+            if ($(this).val() == 0 || $(this).val() == null) {
+                var str = $(this).attr('name');
+                // alert(str.substr(4,1));
+                blanks.push('KPI Objective ' + str.substr(4,1) + ' score');
+                ctr += 1;
+            };
+        });
+
+        $('#eval_form input.pqc_score').each(function(){
+            if ($(this).val() == 0 || $(this).val() == null) {
+                var str = $(this).attr('name');
+                // alert(parseInt(str.substr(4,1))+1);
+                blanks.push('PQC Objective ' + (parseInt(str.substr(4,1))+1) + ' score');
+                ctr += 1;
+            };
+        });
+
+        if (ctr == 0) {
+            $('#eval_form').submit();
+        } else {
+            $('#unfinished').append(blanks.join(', '));
+            $('#small').modal('toggle');
+        };
+    });
+
+    $('#close_modal').click(function(){
+        $('#unfinished').empty();
+    });
+
+    $('#daterange').daterangepicker(
+        {
+            // ranges: {
+                
+            //     '26th to 10th': [moment().subtract('month',1).startOf('month').add('days',25),moment().startOf('month').add('days',10)],
+            //     '10th to 25th': [moment().startOf('month').add('days',9),moment().startOf('month').add('days',24)],
+            //     'Weekly': [moment().startOf('week').add('days',3), moment().endOf('week').add('days',3)]
+            // },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#form_date_from').val(start.format('YYYYMMDD'));
+            $('#form_date_to').val(end.format('YYYYMMDD'));
+            
+            filter_redirect();
+        }
+    );
+});
+</script>
+{% endblock %}

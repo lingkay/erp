@@ -1,0 +1,7 @@
+<div id="type_phone" style="display:none;">
+    {{ form.group_text('Brand', 'phone[brand]', details.brand|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Model No.', 'phone[model]', details.model|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Color', 'phone[color]', details.color|default(''), 3, 4, readonly) }}
+    {{ form.group_text('IMEI No.', 'phone[imei]', details.imei|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Mobile No.', 'phone[number]', details.number|default(''), 3, 4, readonly) }}
+</div>

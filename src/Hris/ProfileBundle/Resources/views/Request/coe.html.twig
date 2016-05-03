@@ -1,0 +1,158 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                    	{% set employee = app.user.getEmployee %}
+                        {% if object.getStatus == NULL %}
+                            {% set readonly = false %}
+                        {% elseif object.getStatus is not same as('Pending') %}
+                            {% set readonly = true %}
+                        {% else %}
+                            {% set readonly = false %}
+                        {% endif %}
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Type of COE</label>
+                            <div class="col-md-4">
+                                <select id="form_coe_type" name="coe_type" class="form-control select_2" {{ readonly ? "disabled" : "" }} data-placeholder="-- Select COE Type --">
+
+                                {{form.options(coe_opts,notes.coe_type|default('Requirement'))}}
+
+                                {% if notes.coe_type is defined %}
+                                {% if notes.coe_type != null %}
+                                    {% if notes.coe_type != 'Compensation' and notes.coe_type != 'Job' and notes.coe_type != 'Requirement' %}
+                                        {{form.options(coe_opts,'Others')}}
+                                    {% endif %} 
+                                {% endif %}
+                                {% endif %}
+                                </select>
+                            </div>
+                            <div id="other_field">
+                            {% if notes.coe_type is defined %}
+                            {% if notes.coe_type != null %}
+                                {% if notes.coe_type != 'Compensation' and notes.coe_type != 'Job' and notes.coe_type != 'Requirement' %}
+                                    {{ form.group_text('', 'other_type', notes.other_type|default(''), 0, 4, readonly) }}
+                                {% endif %} 
+                            {% endif %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    	{{ form.group_text('Date Filed','date_filed',object.getDateFiled|date('m/d/Y'),3,4,true) }}
+                    	{% if employee == NULL %}
+                            {{ form.typeahead('Employee Name','emp',object.getEmployee is not null ? object.getEmployee.getDisplayName:'',object.getEmployee is not null ? object.getEmployee.getID:'',path('hris_workforce_employee_ajax_get'),3,4) }}
+                        {% else %}
+                            {{ form.typeahead('Employee Name','emp',object.getEmployee is not null ? object.getEmployee.getDisplayName:employee.getDisplayName,object.getEmployee is not null ? object.getEmployee.getID:employee.getID,path('hris_workforce_employee_ajax_get'),3,4,true) }}
+                        {% endif %}
+                        {% if object.getID != NULL or employee is not empty %}
+                        	{{ form.group_text('Position','emp_pos',object.getID != NULL ? object.getEmployee.getJobTitle.getName : employee.getJobTitle.getName,3,4,true) }}
+                        	{{ form.hidden('pos_id',object.getID != NULL ? object.getEmployee.getJobTitle.getID : employee.getJobTitle.getID) }}
+                        	{{ form.group_text('Department','emp_dept',object.getID != NULL ? object.getEmployee.getDepartment.getName : employee.getDepartment.getName,3,4,true) }}
+                        	{{ form.hidden('dept_id',object.getID != NULL ? object.getEmployee.getDepartment.getID : employee.getDepartment.getID) }}
+                        {% endif %}
+                        
+                        {{ form.group_textarea('Reason for COE request','reason',notes.reason|default(''),4,3,4,readonly) }}
+
+                        {% if object.getStatus != NULL %}
+                            {{ form.group_text('Status','',object.getStatus,3,4,true) }}
+                            {{ form.group_text('Date Hired','',object.getEmployee.getDateHired|date('m/d/Y'),3,4,true) }}
+                            {{ form.group_text('Salary','',object.getEmployee.getPayRate,3,4,true) }}
+                            {% set emp = object.getEmployee %}
+                            {{ form.group_text('Employee Full Name','',emp.getFirstName ~ ' ' ~ emp.getMiddleName ~ ' ' ~ emp.getLastName,3,4,true) }}
+                        {% endif %}
+
+                        {% if object.getStatus is same as('Approved') %}
+                            {{ form.wysiwyg('COE Body','coe_body',notes.coe_body|default(''),4,12) }}
+                        {% elseif object.getStatus is same as('Print') %}
+                            {{ form.wysiwyg('COE Body','coe_body',notes.coe_body,4,12,true) }}
+                        {% endif %}   
+					</div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% set status = object.getStatus %}
+                            {% if not readonly and status is not same as('Approved') and status is not same as('Reject') %}
+                            <button type="submit" name="action_btn" value="coe" class="btn green">Submit</button>
+                            {% endif %}
+                            {% if status is same as('Pending') and app.user.hasAccess('hris_profile_request.approve') %}
+                            <a href="{{ path('hris_profile_request_status', {'id': object.getID, 'type': 'coe', 'status': 'approve'}) }}" class="btn blue">Approve</a>
+                            {% endif %}
+                            {% if status is same as('Pending') and app.user.hasAccess('hris_profile_request.reject') %}
+                            <a href="{{ path('hris_profile_request_status', {'id': object.getID, 'type': 'coe', 'status': 'reject'}) }}" class="btn red">Reject</a>
+                            {% endif %}
+                            {% if object.getStatus is same as('Approved') and app.user.hasAccess('hris_profile_request.save_coe') %}
+                            <button type="submit" formaction="{{ path('hris_profile_request_status', {'id': object.getID, 'type': 'coe', 'status': 'save'}) }}" id="save_coe" class="btn default blue"><i class="fa fa-floppy-o"></i> Save </button>
+                            {% endif %}
+                            {% if object.getStatus is same as('Print') %}
+                                {% if app.user.hasAccess('hris_profile_request.edit_coe') %}
+                                <a href="{{ path('hris_profile_request_status', {'id': object.getID, 'type': 'coe', 'status': 'edit'}) }}" class="btn green"><i class="fa fa-pencil-square-o"></i> Edit</a>
+                                {% endif %}
+                                {% if app.user.hasAccess('hris_profile_request.print_coe') %}
+                                <button type="submit" formaction="{{ path('hris_profile_request_print', { 'id' : object.getID }) }}" id="print_coe" class="btn default blue"><i class="fa fa-print"></i> Print </button>
+                                {% endif %}
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+    // $(".datetime").datetimepicker({
+    //     isRTL: Metronic.isRTL(),
+    //     format: "mm/dd/yyyy HH:ii P",
+    //     showMeridian: true,
+    //     autoclose: true,
+    //     todayBtn: true
+    // });
+
+    $('select[name="coe_type"]').change(function() {
+        var item = $(this).val();
+        if(item == 'Others') {
+            var textbox = '<div class="col-md-4"><input type="text" name="other_type" class="form-control" placeholder="If others, please specify" value="" {{ readonly ? "readonly" : "" }}></div>';
+
+            $("#other_field").append(textbox);
+        }
+        else {
+
+            $("#other_field").empty();
+        }
+    });
+
+});
+</script>
+{% endblock %}

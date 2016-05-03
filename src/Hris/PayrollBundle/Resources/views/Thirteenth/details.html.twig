@@ -1,0 +1,231 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}13th Month Pay{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                Employee: 
+                            </div>
+                            <div class="col-md-10">
+                                {{payroll.getEmployee.getDisplayName}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                Year: 
+                            </div>
+                            <div class="col-md-10">
+                                {{payroll.getYear}}
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-12">
+                            <table class="table table-bordered table-hover" id="list_table">
+                                <thead>
+                                    <th  >
+                                        Pay Period
+                                    </th>
+                                    <th >
+                                        Earnings
+                                    </th>
+                                    <th >
+                                        Deductions
+                                    </th>
+                                    <th >
+                                        Total
+                                    </th>
+                                    <th >
+                                       
+                                    </th>
+
+                                </thead>
+                                <tbody>
+                                        {% for pay in payroll.getEntries %}
+                                        <tr>
+                                            <td>{{ pay.getPayrollPeriod.getStartDate|date('m/d/Y')}} - {{ pay.getPayrollPeriod.getEndDate|date('m/d/Y')}}</td>
+                                            <td class="numeric">{{ pay.getEarning|number_format(2) }}</td>
+                                            <td class="numeric">{{ pay.getDeduction|number_format(2) }}</td>
+                                            <td class="numeric">{{ pay.getTotal|number_format(2) }}</td>
+                                            <td >
+                                                {% if payroll.isLocked == false %}
+                                                <a href="{{ path('hris_payroll_thirteenth_delete_entry', { 'id': pay.getID }) }}" class="btn default btn-xs red-sunglo"><i class="fa fa-edit"></i> Remove</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">
+                                            <strong>13th Month Pay</strong>
+                                        </td>
+                                        <td class="numeric">
+                                            {{ payroll.getTotal|number_format(2)}}
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            </div>
+                        </div>
+                    </form>  
+                    </div>   
+                         <div class="form-actions fluid">
+                            <div class="col-md-6">
+                               {% if payroll.isLocked == false %}
+                               <a href="#lock_modal" class="btn red" data-toggle="modal">
+                                    Lock Payslip
+                               </a>
+                               {% endif %}
+                                   <a href="{{ path('hris_payroll_thirteenth_index') }}" class="btn default">Back</a>
+                        
+                            </div>
+                            <div class="col-md-6">
+                                <div class="pull-right">
+                                {% if payroll.isLocked == false %}
+                                <a href="#add_entry_modal" class="btn blue-hoki" data-toggle="modal">
+                                     Add Entry
+                                </a>
+                            
+                                {% endif %}
+
+                                 <a href="{{ path('hris_payroll_thirteenth_details_print' ,{'id' : payroll.getID}) }}" class="btn green">
+                                    <i class="fa fa-print"> </i>  Print 13th Month Payslip
+                                </a>
+                          
+                                </div>
+                            </div>
+                        </div>
+               
+            
+        </div>
+    </div>
+</div>
+
+
+<div id="add_entry_modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Add Entry</h4>
+            </div>
+            <div class="modal-body">
+                <form id="entry-form">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+
+                        {{ form.group_date_range('pay_period','Pay Period','pay_from','pay_to','','',3,6)}}
+                        {{ form.group_number('Earnings', 'earnings','',3,6)}}
+                        {{ form.group_number('Deduction', 'deduction','',3,6)}}
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="add_entry_submit" type="button" class="btn green">Add Entry</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="lock_modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Are you sure you want to lock this 13th month pay? Any request for changes in earnings and deductions can no longer be reverted after this.</h4>
+            </div>
+            
+            <div class="modal-footer">
+                <a class="btn green" href="{{path('hris_payroll_thirteenth_lock', {id: payroll.getID})}}">Yes</a>
+                <button type="button" data-dismiss="modal" class="btn default">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 50,
+        "sPaginationType": "bootstrap",        
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        }
+       
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); 
+
+    $('#pay_period').daterangepicker(
+        {
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+            'linkedCalendars' : true
+        },
+        function(start, end) {
+            $('#pay_period input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#cform-pay_from').val(start.format('YYYYMMDD'));
+            $('#cform-pay_to').val(end.format('YYYYMMDD'));
+        }
+    );
+
+    $('#add_entry_submit').click(function(){
+         var data = $('#entry-form').serialize();
+            var url = '{{path( "hris_payroll_thirteenth_add_entry" , {id: payroll.getID})}}'
+            $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(data, text_status, xhr) {
+                if(data.status == "Success"){
+                    location.reload();
+                }else {
+                    $('#pay_period').next('.errorTxt').html('Invalid date range for this employee');
+                }
+                
+                },
+            error: function(xhr, text_status, error) {
+            }
+          });
+     
+    });
+    
+});
+</script>
+
+{% endblock %}
+{% block css %}
+<style>
+.payroll_container {
+    margin: 0px;
+    padding: 0px !important;
+}
+
+.numeric{
+    width: 150px;
+}
+</style>
+{% endblock %}

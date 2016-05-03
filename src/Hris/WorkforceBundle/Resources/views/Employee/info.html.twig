@@ -1,0 +1,51 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Information</h4>
+    {{ form.hidden('employee_form','info')}}
+    {{ form.group_text('Employee ID', 'employee_id',object.getEmployeeId|default(''), 3, 4, readonly) }}       
+    {{ form.group_text('First Name', 'first_name', object.getFirstName|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Middle Name', 'middle_name', object.getMiddleName|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Last Name', 'last_name', object.getLastName|default(''), 3, 4, readonly) }}
+    {{ form.group_select('Gender','gender',gender_opts, object.getGender|default(''),3,4, readonly) }}
+    {{ form.group_text('Email', 'email',object.getEmail|default(''), 3, 4, readonly) }}   
+    {{ form.group_select('Department','department',dept_opts, object.getDepartment != null? object.getDepartment.getID:'' ,3,4, readonly) }}
+    {{ form.group_select('Position','job_title', '', object.getJobTitle != null? object.getJobTitle.getID:'' ,3,4, readonly) }}
+    {{ form.group_select('Job Level','job_level', level_opts, object.getJobLevel != null? object.getJobLevel.getID:'' ,3,4, readonly) }}
+    
+    {{ form.group_select('Employment Status','employment_status',status_opts , object.getEmploymentStatus|default(''),3,4, readonly) }}
+    {{ form.group_select('Schedule','schedule',sched_opts, object.getSchedule != null? object.getSchedule.getID:'' ,3,4, readonly) }}
+    {{ form.group_select('Location','location',location_opts, object.getLocation != null? object.getLocation.getID:'' ,3,4, readonly) }}
+    {{ form.typeahead('Supervisor', 'supervisor', object.getSupervisor is not null ? object.getSupervisor.getDisplayName:"",
+     object.getSupervisor is not null ? object.getSupervisor.getID:"" , path('hris_workforce_employee_ajax_get'), 3, 4) }}
+    {{ form.group_select('Pay Schedule','pay_sched',paysched_opts, object.getPaySchedule != null? object.getPaySchedule.getID : '',3,4, readonly) }}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+
+    <div id="cgroup-pay" class="form-group">
+    <label class="col-md-3 control-label">Base Pay</label>
+     <div class="col-md-4">
+        <input type="number" id="cform-pay_rate" name="pay_rate" class="form-control" placeholder="Pay Rate" value="{{object.getPayRate|default("0.00")}}" />
+     </div>
+    <div class="col-md-4">
+        <select id="cform-pay_type" name="pay_type" class="form-control select_2" data-placeholder="--Select Pay Type--">
+        {{ form.options(paytype_opts, object.getPayPeriod != null? object.getPayPeriod.getID : '') }}
+        </select>
+    </div>
+    </div>
+    {{ form.group_checkbox('Zero Exemption','exemption', 'exemption', '',object.isExempted|default(false),3,4, readonly) }}
+    
+
+    {{ form.group_date('Date Hired','date_hired',object.getDateHired|date('m/d/Y ') ,3,4, readonly) }}
+ 
+    <div class="form-actions fluid">
+        <div class="col-md-9">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            {% if object.getID != null%}
+                        {# <a href="{{ path ('hris_workforce_employee_201_print', { id: object.getID }) }}" class="btn green">Print 201 File</a> #}
+                        {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+        </div>
+    </div>
+</div>
+</form>

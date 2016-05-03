@@ -1,0 +1,57 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Savings</h4>
+    {{ form.hidden('employee_form','cashbond')}}
+    
+    {{ form.group_number('Deductible Amount','cashbond_rate',object.getCashbondRate,3,4) }}
+    {{ form.group_number('Balance','balance',cashbond.getBalance|number_format(2),3,4,true) }}
+
+    <h4>Cashbond Transactions</h4>
+    <table class="table table-bordered table-hover" id="list_table">
+     <thead>
+            <th>
+                Date
+            </th>
+            <th>
+                Description
+            </th>
+            <th >
+                Savings Debit
+            </th>
+            <th >
+                Savings Credit
+            </th>
+            <th >
+                Balance
+            </th>
+        </thead> 
+        <tbody>
+            {% for entry in cashbond.getTransactions %}
+                <tr>
+                    {% if entry.getType == 'Contribution' %}
+                        <td>{{entry.getDateCreate|date('m/d/Y')}} </td>
+                        <td>Payroll Contribution on {{ entry.getPayrollPeriod.getPayPeriodFormatted}}</td>
+                    {% else %}
+                        <td> {{ entry.getDateCreate|date('m/d/Y') }} </td>
+                        <td>Loan</td>
+                    {% endif %}
+                    <td class="numeric">{{ entry.getDebit|number_format(2) }} </td>
+                     <td class="numeric">{{ entry.getCredit|number_format(2) }} </td>
+                     <td class="numeric">{{ entry.getBalance|number_format(2) }} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="form-actions fluid">
+        <div class="col-md-12">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+         </div>
+    </div>
+
+  
+</div>
+</form>

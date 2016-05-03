@@ -1,0 +1,5 @@
+acl:
+    - category: Administration
+      entries:
+        - id: cat_admin.menu
+          label: "Menu"

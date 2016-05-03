@@ -1,0 +1,25 @@
+acl:
+    - category: Company Overview
+      entries:
+       - id: hris_com_overview.menu
+         label: "Menu"
+    - category: Company Information
+      entries:
+       - id: hris_com_info.menu
+         label: "Menu"
+       - id: hris_com_info.view
+         label: "View"
+       - id: hris_com_info.add
+         label: "Add"
+    - category: Organizational Chart
+      entries:
+       - id: hris_com_orgchart.menu
+         label: "Menu"
+       - id: hris_com_orgchart.view
+         label: "View"
+    - category: Directory
+      entries:
+       - id: hris_com_directory.menu
+         label: "Menu"
+       - id: hris_com_directory.view
+         label: "View"

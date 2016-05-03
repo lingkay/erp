@@ -1,0 +1,1 @@
+UPDATE `leave_type` SET `user_create_id` = 1

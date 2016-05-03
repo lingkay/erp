@@ -1,0 +1,7 @@
+parameters:
+#    hris_archives.example.class: Hris\ArchivesBundle\Example
+
+services:
+#    hris_archives.example:
+#        class: %hris_archives.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

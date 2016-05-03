@@ -1,0 +1,24 @@
+<div class="row profile-incidents">
+    <!-- BEGIN FORM-->
+    <form method="post" class="form-horizontal">
+        <div class="form-body">
+            {% set object = incident %}
+            {{ form.hidden('employee_form','incident_create')}}
+            {{ form.hidden('csrf_token', app.session.get('csrf_token')) }}
+            {{ form.group_date('Date of Incident','doi',object.getDateHappened|date('m/d/Y'),3,4) }}
+            {{ form.group_textarea('Brief Description of the Incident','desc',object.getNotes|default(''),3,3,4) }}
+            {{ form.group_select('Involved Department','dept',dept_opts,object.getDepartment.getID|default(''),3,4) }}
+            {{ form.typeahead('Involved Employee','emp',object.getEmployee is not null ? object.getEmployee.getDisplayName:"",object.getEmployee is not null ? object.getEmployee.getID:"0",path('hris_workforce_employee_ajax_get'),3,4) }}
+            {{ form.group_select('Involved Branch','loc',loc_opts,object.getLocation.getID|default(''),3,4) }}
+            {{ form.group_textarea('Involved SKUs/ '~company_name_abv~' Products','prod',object.getProducts|default(''),3,3,4) }}
+            {{ form.group_textarea('Justification/Other Concerns','concerns',object.getConcerns|default(''),3,3,4) }}
+        </div>
+
+        <div class="form-actions fluid">
+            <div class="col-md-9 col-md-offset-3">
+                <button type="submit" class="btn green">Submit</button>
+                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            </div>
+        </div>
+    </form>     
+</div>

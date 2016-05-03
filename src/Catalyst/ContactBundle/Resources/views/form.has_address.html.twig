@@ -1,0 +1,22 @@
+
+<div id="address-section">
+<h4 class="form-section">Addresses</h4>
+<button type="button" id="add-address" class="btn btn-primary" data-toggle="modal" data-target="#add-address-modal">Add Address</button>
+<br>
+{%set a = object.address%}
+{%if a != null%}
+    {{ f.hidden('address_id[]', a.getID) }}
+    {{ f.hidden('is_new_address[]', 'false') }}
+    {{ f.group_text('Unit / Number', 'name[]', a.getName, 3, 4) }}
+    {{ f.group_text('Street Address', 'street[]', a.getStreet, 3, 4) }}
+    {{ f.group_text('City', 'city[]', a.getCity, 3, 4) }}
+    {{ f.group_text('State', 'state[]', a.getState, 3, 4) }}
+    {{ f.group_text('Country', 'country[]', a.getCountry, 3, 4) }}
+    {{ f.group_text('Latitude', 'latitude[]', a.getLatitude, 3, 4) }}
+    {{ f.group_text('Longitude', 'longitude[]', a.getLongitude, 3, 4) }}
+    <a class="btn btn-default" href="{{ path('cnt_address_delete',{ 'id' : a.getID , 'supp_id' : object.getID }) }}">
+        Delete address
+    </a>
+    <hr>
+{%endif%}
+</div>

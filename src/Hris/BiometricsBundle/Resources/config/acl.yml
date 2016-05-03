@@ -1,0 +1,9 @@
+# acl:
+#     - category: Biometrics Settings
+#       entries:
+#        - id: hris_biometrics.menu
+#          label: "Menu"
+#        - id: hris_biometrics.view
+#          label: "View"
+#        - id: hris_biometrics.add
+#          label: "Add"

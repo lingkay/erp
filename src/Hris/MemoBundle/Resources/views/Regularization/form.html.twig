@@ -1,0 +1,170 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Memo</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <input type="hidden" name="type" id="type" value="{{type}}">
+                              {{ form.group_text('Issued by', 'issued_by', object.getUserCreate.getEmployee.getDisplayName|default(''), 3, 4, true) }}
+                                {{ form.typeahead('Employee Name','emp',object.getEmployee is not null ? object.getEmployeeName : "",
+                                           object.getEmployee is not null ? object.getEmployee.getID: "",path('hris_workforce_employee_ajax_get'),3,4, readonly)}}
+                              {{ form.group_text('Department','issued_to_dept', object.getEmployee.getDepartment.getName|default(''),3,4, true) }}
+                            
+                         
+                            {{ form.group_date('Date Issued','issued_date', object.getDateCreate|default('')|date('m/d/Y'),3,4) }}
+                        </div>
+                    </div>
+                    <hr>
+
+                        {{ form.group_text('Basic Salary From', 'basicsalary_from',object.getEmployee.getPayrate|default('0')|number_format(2), 3, 4, true) }}
+
+                        {% if readonly == true %}
+                        {{ form.group_text('Basic Salary To', 'basicsalary_to', basicsalary_to|number_format(2), 3, 4, readonly) }}
+                        {% else %}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Basic Salary To</label>
+                            <div class="col-md-4">
+                                <input type="number" id="{{ prefix }}form-basicsalary_to" name="basicsalary_to" class="form-control" placeholder="Basic Salary To" value="{{basicsalary_to|default(0.00)}}" {{ readonly ? 'readonly ' : '' }}>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {{ form.group_text('Allowance From', 'allowance_from', '0.00', 3, 4, true) }}
+
+                        {% if readonly == true %}
+                        {{ form.group_text('Allowance To', 'allowance_to', allowance_to|number_format(2), 3, 4, readonly) }}
+                        {% else %}
+                        {{ form.group_number('Allowance To', 'allowance_to', allowance_to|default(0.00), 3, 4, readonly) }}
+                        {% endif %}                    
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-6">
+                            {% if object.getStatus == 'Draft' %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="pull-right">
+                            {% if object.getID != null %}
+                                {% if object.getStatus == 'Draft' and is_hr == true %}
+                                <a href="{{ path('hris_memo_regularization_change_status', {id: object.getID, type: type, status: 'Sent'}) }}" class="btn blue-hoki">Send</a>
+                                {% endif %}
+                                {% if object.getStatus == 'Sent' and is_vp == true %}
+                                <a href="{{ path('hris_memo_regularization_change_status', {id: object.getID, type: type, status: 'Reviewed'}) }}" class="btn blue-hoki">Reviewed</a>
+                                {% endif %}
+                                {% if object.getStatus == 'Reviewed' and is_president == true %}
+                                <a href="{{ path('hris_memo_regularization_change_status', {id: object.getID, type: type, status: 'Approved'}) }}" class="btn blue-hoki">Approved</a>
+                                {% endif %}
+
+                                {% if object.getStatus == 'Approved' %}
+                                 <a href="{{ path('hris_memo_regularization_print', {id: object.getID}) }}" class="btn green">Print</a>
+                                {% endif %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(document).ready( function() {
+    $('.calendar').prop('disabled', true);
+
+     $('#cform-date_from').datepicker().on('changeDate', function (ev) {
+            $('#cform-date_to').datepicker({
+            todayHighlight: true,
+            startDate: $('#cform-date_from').val(),
+            });
+    });
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            event_name: "required",
+            emp: "required",
+            location: "required",
+            violation_committed: "required",
+            violated_policy: "required",
+            date_of_incident: "required",
+        },
+        messages: {
+            event_name: "Event name cannot be blank.",
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+
+});
+</script>
+{% endblock %}

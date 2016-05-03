@@ -1,0 +1,72 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Review Payroll</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                            <th>Employee </th>
+                            <th>Pay Period </th>
+                            <th>Gross Pay </th>
+                            <th>Net Pay </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pay in payroll %}
+                            <tr>
+                                <td>{{ pay.getEmployee.getDisplayName }}</td>
+                                <td>{{ pay.getPayrollPeriod.getStartDate|date('m/d/Y') }} - {{ pay.getPayrollPeriod.getEndDate|date('m/d/Y') }}</td>
+                                <td>{{ pay.getTotalTaxable|number_format(2)}}</td>
+                                <td>{{ pay.getTotal|number_format(2)}}</td>
+                                <td><a href="{{ path('hris_payroll_details_index', { 'id': pay.getID }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View Details</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({
+        "bProcessing": true,
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        }
+    });
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

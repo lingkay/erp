@@ -1,0 +1,187 @@
+{% set PQC = eval.getPQCDetails %}
+<tr>
+    <td>1</td>
+    <td>
+        <h5 class="bold">Quality of Work</h5>
+        <p>Ability to work with thoroughness and accuracy</p>
+    </td>
+    <td>
+        {{ self.form_text('percentage', 'PQC[0][percent]', '8%', 'pqc_percent', 0, 12, true) }}
+        {{ self.form_num('score', 'PQC[0][score]', PQC[0].score|default(''), 'pqc_score', 0, 12, readonly, true) }}
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[0][grade][]', '2%', 'pqc_grade', 0, 12, true) }}
+        <p>Poor quality of work</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[0][grade][]', '3%', 'pqc_grade', 0, 12, true) }}
+        <p>Quality of work falls below the standard expectations of the job</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[0][grade][]', '5%', 'pqc_grade', 0, 12, true) }}
+        <p>Quality of work within standard expectation</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[0][grade][]', '6%', 'pqc_grade', 0, 12, true) }}
+        <p>Quality of work exceed the standard expectations of the job</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[0][grade][]', '8%', 'pqc_grade', 0, 12, true) }}
+        <p>Exceptional quality of work</p>
+    </td>
+</tr>
+<tr>
+    <td>2</td>
+    <td>
+        <h5 class="bold">Quantity of Work</h5>
+        <p>Individual productivity, ability to complete work within alloted time</p>
+    </td>
+    <td>
+        {{ self.form_text('percentage', 'PQC[1][percent]', '8%', 'pqc_percent', 0, 12, true) }}
+        {{ self.form_num('score', 'PQC[1][score]', PQC[1].score|default(''), 'pqc_score', 0, 12, readonly, true) }}
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[1][grade][]', '2%', 'pqc_grade', 0, 12, true) }}
+        <p>Poor output/productivity; doesn't care about deadline</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[1][grade][]', '3%', 'pqc_grade', 0, 12, true) }}
+        <p>Delivers expected output but was not able to complete/submit within the deadline set; requested for extension of deadline</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[1][grade][]', '5%', 'pqc_grade', 0, 12, true) }}
+        <p>Delivers expected output/productivity within the deadline</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[1][grade][]', '6%', 'pqc_grade', 0, 12, true) }}
+        <p>Delivers expected output/productivity earlier than the deadline set</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[1][grade][]', '8%', 'pqc_grade', 0, 12, true) }}
+        <p>Exceeds expected output/productivity way beyond the deadline set</p>
+    </td>
+</tr>
+<tr>
+    <td>3</td>
+    <td>
+        <h5 class="bold">Dependability and Reliability</h5>
+        <p>Resourcefulness and Initiative. Ability to perform and complete work as instructed and when needed with minimum amount of supervision</p>
+    </td>
+    <td>
+        {{ self.form_text('percentage', 'PQC[2][percent]', '8%', 'pqc_percent', 0, 12, true) }}
+        {{ self.form_num('score', 'PQC[2][score]', PQC[3].score|default(''), 'pqc_score', 0, 12, readonly, true) }}
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[2][grade][]', '2%', 'pqc_grade', 0, 12, true) }}
+        <p>Cannot be depended and relied upon. Does not deliver and doesn't bother to complete works assigned to him</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[2][grade][]', '3%', 'pqc_grade', 0, 12, true) }}
+        <p>Needs a little prodding and follow up. Needs to be checked from time to time regarding expected work output</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[2][grade][]', '5%', 'pqc_grade', 0, 12, true) }}
+        <p>Resourcedul & has initiative. Able to perform complete work as instructed and when needed with minimum amount of supervision</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[2][grade][]', '6%', 'pqc_grade', 0, 12, true) }}
+        <p>Resourceful & has initiative. Completed work goes beyond what is expected</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[2][grade][]', '8%', 'pqc_grade', 0, 12, true) }}
+        <p>Highly dependable and reliable. Excercises creativity and delivers results beyond what is expected</p>
+    </td>
+</tr>
+<tr>
+    <td>4</td>
+    <td>
+        <h5 class="bold">Cooperation</h5>
+        <p>Ability and willingness to work harmoniously with others and ability to follow instructions</p>
+    </td>
+    <td>
+        {{ self.form_text('percentage', 'PQC[3][percent]', '6%', 'pqc_percent', 0, 12, true) }}
+        {{ self.form_num('score', 'PQC[3][score]', PQC[3].score|default(''), 'pqc_score', 0, 12, readonly, true) }}
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[3][grade][]', '1%', 'pqc_grade', 0, 12, true) }}
+        <p>A very difficult personality to deal with. Finds difficulty working with others. Requires one-on-one instructions in order to understand what he is expected to do</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[3][grade][]', '2%', 'pqc_grade', 0, 12, true) }}
+        <p>Shows signs of resistance to work with others. Requires more detailed instructions</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[3][grade][]', '4%', 'pqc_grade', 0, 12, true) }}
+        <p>Shows willingness to work harmoniously with others and able to follow instructions</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[3][grade][]', '5%', 'pqc_grade', 0, 12, true) }}
+        <p>Very cooperative and requires less instructions</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[3][grade][]', '6%', 'pqc_grade', 0, 12, true) }}
+        <p>Goes out of her way to work harmoniously with others. Exceeds what he is expected to do and requires less instructions</p>
+    </td>
+</tr>
+<tr>
+    <td>5</td>
+    <td>
+        <h5 class="bold">Personality</h5>
+        <p>Effectiveness in dealing with others, courtesy, personal grooming and pleasant disposition: able to integrate and practice spiritual values in daily life.</p>
+    </td>
+    <td>
+        {{ self.form_text('percentage', 'PQC[4][percent]', '5%', 'pqc_percent', 0, 12, true) }}
+        {{ self.form_num('score', 'PQC[4][score]', PQC[4].score|default(''), 'pqc_score', 0, 12, readonly, true) }}
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[4][grade][]', '1%', 'pqc_grade', 0, 12, true) }}
+        <p>Poor personality; arouses dislike from most employees he has dealt with; poor hygiene; needs guidance in spiritual life</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[4][grade][]', '2%', 'pqc_grade', 0, 12, true) }}
+        <p>Sometimes exhibits unpleasant personality; with certain instances of rudeness; needs to improve personal hygiene, as well as spiritual values in daily life</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[4][grade][]', '3%', 'pqc_grade', 0, 12, true) }}
+        <p>Effective in dealing with others, courteous, observes good grooming/hygiene; able to integrate & practice good personal values n daily life</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[4][grade][]', '4%', 'pqc_grade', 0, 12, true) }}
+        <p>Pleasant personality; very courteous; very neat & observes good grooming/hygiene; practices good spiritual values in daily life</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[4][grade][]', '5%', 'pqc_grade', 0, 12, true) }}
+        <p>Well-liked; very pleasant personality; very courteous with anyone he deals with; lives up to good spiritual values in his daily life</p>
+    </td>
+</tr>
+<tr>
+    <td>6</td>
+    <td>
+        <h5 class="bold">Attendance</h5>
+        <p>Regularity and punctuality; in office attendance and proper observance of work hours.</p>
+    </td>
+    <td>
+        {{ self.form_text('percentage', 'PQC[5][percent]', '5%', 'pqc_percent', 0, 12, true) }}
+        {{ self.form_num('score', 'PQC[5][score]', PQC[5].score|default(''), 'pqc_score', 0, 12, readonly, true) }}
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[5][grade][]', '1%', 'pqc_grade', 0, 12, true) }}
+        <p>Poor attendance. Always late in reporting for work and in meeting with clients and other members of the Management team; with unauthorized absences</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[5][grade][]', '2%', 'pqc_grade', 0, 12, true) }}
+        <p>Arrives a few minutes late than his official time; in the same way for appointed meetings with clients and other members of the Management team. Rushes for appointments. With a few absences & missed meetings</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[5][grade][]', '3%', 'pqc_grade', 0, 12, true) }}
+        <p>Observes punctuality in reporting for work, as well as with meetings with clients and other members of the Management team. Present in all appointments</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[5][grade][]', '4%', 'pqc_grade', 0, 12, true) }}
+        <p>Starts his working day a few minutes than his official time; arrives a few minutes earlier for appointed meetings with clients or other members of Management team</p>
+    </td>
+    <td>
+        {{ self.form_text('grade', 'PQC[5][grade][]', '5%', 'pqc_grade', 0, 12, true) }}
+        <p>Starts his working days hours earlier than his official time; arrives very early for appointments, meetings with clients and other members of the Management team</p>
+    </td>
+</tr>

@@ -1,0 +1,236 @@
+acl:
+    # Admin Menu
+    - category: Administration
+      entries:
+      - id: cat_admin.menu
+        label: "Menu"
+
+    # Omnibar
+    - category: Omnibar
+      entries:
+      - id: hris_omnibar.view
+        label: "View"
+
+    # HR Settings Menu
+    - category: HR Settings
+      entries:
+      - id: hris_admin.menu
+        label: "Menu"
+
+    # Department Sub-menu
+    - category: Department
+      entries:
+      - id: hris_admin_department.menu
+        label: "Menu"
+      - id: hris_admin_department.view
+        label: "View"
+      - id: hris_admin_department.add
+        label: "Add"
+      - id: hris_admin_department.edit
+        label: "Edit"
+      - id: hris_admin_department.delete
+        label: "Delete"
+
+    # Events Sub-menu
+    - category: Events
+      entries:
+      - id: hris_admin_events.menu
+        label: "Menu"
+      - id: hris_admin_events.view
+        label: "View"
+      - id: hris_admin_events.add
+        label: "Add"
+      - id: hris_admin_events.edit
+        label: "Edit"
+      - id: hris_admin_events.delete
+        label: "Delete"
+
+    # Position / Job Title Sub-menu
+    - category: Position
+      entries:
+      - id: hris_admin_jobtitles.menu
+        label: "Menu"
+      - id: hris_admin_jobtitles.view
+        label: "View"
+      - id: hris_admin_jobtitles.add
+        label: "Add"
+      - id: hris_admin_jobtitles.edit
+        label: "Edit"
+      - id: hris_admin_jobtitles.delete
+        label: "Delete"
+
+    # Job Level
+    - category: Job Level
+      entries:
+      - id: hris_admin_joblevel.menu
+        label: "Menu"
+      - id: hris_admin_joblevel.view
+        label: "View"
+      - id: hris_admin_joblevel.add
+        label: "Add"
+      - id: hris_admin_joblevel.edit
+        label: "Edit"
+      - id: hris_admin_joblevel.delete
+        label: "Delete"
+
+    # Location Sub-menu
+    - category: Location
+      entries:
+      - id: hris_admin_location.menu
+        label: "Menu"
+      - id: hris_admin_location.view
+        label: "View"
+      - id: hris_admin_location.add
+        label: "Add"
+      - id: hris_admin_location.edit
+        label: "Edit"
+      - id: hris_admin_location.delete
+        label: "Delete"
+
+    # Benefit Sub-menu
+    - category: Benefit
+      entries:
+      - id: hris_admin_benefit.menu
+        label: "Menu"
+      - id: hris_admin_benefit.view
+        label: "View"
+      - id: hris_admin_benefit.add
+        label: "Add"
+      - id: hris_admin_benefit.edit
+        label: "Edit"
+      - id: hris_admin_benefit.delete
+        label: "Delete"
+
+    # Time Schedule Sub-menu
+    - category: Employee Time Schedule
+      entries:
+        - id: hris_admin_schedules.menu
+          label: "Menu"
+        - id: hris_admin_schedules.menu
+          label: "Menu"
+        - id: hris_admin_schedules.view
+          label: "View"
+        - id: hris_admin_schedules.add
+          label: "Add"
+        - id: hris_admin_schedules.edit
+          label: "Edit"
+        - id: hris_admin_schedules. delete
+          label: "Delete"
+
+    # Checkist Sub-menu
+    - category: Employment Checklist
+      entries:
+      - id: hris_admin_checklist.menu
+        label: "Menu"
+      - id: hris_admin_checklist.view
+        label: "View"
+      - id: hris_admin_checklist.add
+        label: "Add"
+      - id: hris_admin_checklist.edit
+        label: "Edit"
+      - id: hris_admin_checklist.delete
+        label: "Delete"
+
+    # Holiday Sub-menu
+    - category: Holiday
+      entries:
+      - id: hris_admin_holiday.menu
+        label: "Menu"
+      - id: hris_admin_holiday.view
+        label: "View"
+      - id: hris_admin_holiday.add
+        label: "Add"
+      - id: hris_admin_holiday.edit
+        label: "Edit"
+      - id: hris_admin_holiday.delete
+        label: "Delete"
+
+    # Downloadables Sub-menu
+    - category: Downloadables
+      entries:
+      - id: hris_admin_downloadables.menu
+        label: "Menu"
+      - id: hris_admin_downloadables.view
+        label: "View"
+      - id: hris_admin_downloadables.add
+        label: "Add"
+      - id: hris_admin_downloadables.edit
+        label: "Edit"
+      - id: hris_admin_downloadables.delete
+        label: "Delete"
+
+    # Leave Settings
+    - category: Leave Settings
+      entries:
+      - id: hris_admin_leave.menu
+        label: "Menu"
+
+    # Leave Type
+    - category: Leave Type
+      entries:
+      - id: hris_admin_leave_type.menu
+        label: "Menu"
+      - id: hris_admin_leave_type.view
+        label: "View"
+      - id: hris_admin_leave_type.add
+        label: "Add"
+      - id: hris_admin_leave_type.edit
+        label: "Edit"
+      - id: hris_admin_leave_type.delete
+        label: "Delete"
+
+    # Leave Rules
+    - category: Leave Rules
+      entries:
+      - id: hris_admin_leave_rules.menu
+        label: "Menu"
+      - id: hris_admin_leave_rules.view
+        label: "View"
+      - id: hris_admin_leave_rules.add
+        label: "Add"
+      - id: hris_admin_leave_rules.edit
+        label: "Edit"
+      - id: hris_admin_leave_rules.delete
+        label: "Delete"
+
+    # Appraisal Settings
+    - category: Appraisal Settings
+      entries:
+      - id: hris_admin_appraisal_settings.menu
+        label: "Menu"
+      - id: hris_admin_appraisal_settings.view
+        label: "View"
+      - id: hris_admin_appraisal_settings.add
+        label: "Add"
+      - id: hris_admin_appraisal_settings.edit
+        label: "Edit"
+      - id: hris_admin_appraisal_settings.delete
+        label: "Delete"
+
+    # Overtime
+    - category: Overtime
+      entries:
+      - id: hris_admin_otsetting.menu
+        label: "Menu"
+      - id: hris_admin_otsetting.edit
+        label: "Edit"
+
+    # Biometrics
+    - category: Biometrics Settings
+      entries:
+       - id: hris_biometrics.menu
+         label: "Menu"
+       - id: hris_biometrics.view
+         label: "View"
+       - id: hris_biometrics.add
+         label: "Add"
+
+    # Form Codes Sub-menu
+    - category: HR Form Codes
+      entries:
+      - id: hris_admin_form_codes.menu
+        label: "Menu"
+      - id: hris_admin_form_codes.view
+        label: "View"
+      - id: hris_admin_form_codes.edit
+        label: "Edit"

@@ -1,0 +1,303 @@
+hris_memo_index:
+    path:     /memo
+    defaults: { _controller: HrisMemoBundle:Memo:index }
+
+hris_memo_create_form:
+    path:     /memo/create/{type}/{data_field}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Memo:createMemo, type: null, data_field: null }
+
+hris_memo_create_submit:
+    path:     /memo/create/{type}/{data_field}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Memo:createSubmit, type: null, data_field: null }
+
+hris_memo_print:
+    path:    /memo/print/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Memo:printMemo }
+
+hris_memo_grid:
+    path:    /memo/grid
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Memo:grid }
+
+hris_memo_edit_form:
+    path:    /memo/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Memo:editForm }
+
+hris_memo_edit_submit:
+    path:    /memo/{id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Memo:editSubmit }
+
+hris_memo_delete:
+    path:     /memo/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisMemoBundle:Memo:delete }
+
+hris_memo_get_agent:
+    path:    /memo/agency/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Memo:isContractual, id: null }
+
+hris_memo_company_index:
+    path:     /memos/companylist
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:index }
+
+hris_memo_company_add_form:
+    path:     /memos/company
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:addForm }
+
+hris_memo_company_add_submit:
+    path:     /memos/company
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:addSubmit }
+
+hris_memo_company_edit_form:
+    path:     /memos/company/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:editForm }
+
+hris_memo_company_edit_submit:
+    path:     /memos/company/{id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:editSubmit }
+
+hris_memo_company_print:
+    path:     /memos/company/{id}/print
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:printPdf }
+
+hris_memo_company_delete:
+    path:     /memos/company/{id}/delete
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:delete }
+
+hris_memo_company_grid:
+    path:     /memos/companylist/grid
+    defaults: { _controller: HrisMemoBundle:CompanyMemo:grid }
+
+
+# Violation Memo
+hris_memo_violation_index:
+    path:     /memos/violationlist
+    defaults: { _controller: HrisMemoBundle:Violation:index }
+
+hris_memo_violation_add_form:
+    path:     /memos/violation
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Violation:addForm }
+
+hris_memo_violation_add_submit:
+    path:     /memos/violation
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Violation:addSubmit }
+
+hris_memo_violation_edit_form:
+    path:     /memos/violation/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Violation:editForm }
+
+hris_memo_violation_edit_submit:
+    path:     /memos/violation/{id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Violation:editSubmit }
+
+hris_memo_violation_delete:
+    path:     /memos/violation/{id}/delete
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Violation:delete }
+
+hris_memo_violation_print:
+    path:     /memos/violation/{id}/print
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Violation:printPdf }
+
+hris_memo_violation_grid:
+    path:     /memos/violationlist/grid
+    defaults: { _controller: HrisMemoBundle:Violation:grid }
+
+
+# Disciplinary Memo
+hris_memo_disciplinary_index:
+    path:     /memos/disciplinarylist
+    defaults: { _controller: HrisMemoBundle:Disciplinary:index }
+
+hris_memo_disciplinary_add_form:
+    path:     /memos/disciplinary
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Disciplinary:addForm }
+
+hris_memo_disciplinary_add_submit:
+    path:     /memos/disciplinary
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Disciplinary:addSubmit }
+
+hris_memo_disciplinary_edit_form:
+    path:     /memos/disciplinary/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Disciplinary:editForm }
+
+hris_memo_disciplinary_edit_submit:
+    path:     /memos/disciplinary/{id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Disciplinary:editSubmit }
+
+hris_memo_disciplinary_delete:
+    path:     /memos/disciplinary/{id}/delete
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Disciplinary:delete }
+
+hris_memo_disciplinary_print:
+    path:     /memos/disciplinary/{id}/print
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Disciplinary:printPdf }
+
+hris_memo_disciplinary_grid:
+    path:     /memos/disciplinarylist/grid
+    defaults: { _controller: HrisMemoBundle:Disciplinary:grid }
+
+
+# Tardiness Memo
+hris_memo_tardiness_index:
+    path:     /memos/tardinesslist
+    defaults: { _controller: HrisMemoBundle:Tardiness:index }
+
+hris_memo_tardiness_add_form:
+    path:     /memos/tardiness/create/{data_field}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Tardiness:createTardinessMemo, data_field: null }
+
+hris_memo_tardiness_add_submit:
+    path:     /memos/tardiness/create/{data_field}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Tardiness:addSubmit, data_field: null }
+
+hris_memo_tardiness_edit_form:
+    path:     /memos/tardiness/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Tardiness:editForm }
+
+hris_memo_tardiness_edit_submit:
+    path:     /memos/tardiness/{id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Tardiness:editSubmit }
+
+hris_memo_tardiness_delete:
+    path:     /memos/tardiness/{id}/delete
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Tardiness:delete }
+
+hris_memo_tardiness_print:
+    path:     /memos/tardiness/{id}/print
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Tardiness:printPdf }
+
+hris_memo_tardiness_grid:
+    path:     /memos/tardinesslist/grid
+    defaults: { _controller: HrisMemoBundle:Tardiness:grid }
+
+
+# Promotion Memo
+hris_memo_promotion_index:
+    path:     /memos/promotionlist
+    defaults: { _controller: HrisMemoBundle:Promotion:index }
+
+hris_memo_promotion_add_form:
+    path:     /memos/promotion/create/{emp_id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Promotion:createPromotionMemo, emp_id: null }
+
+hris_memo_promotion_add_submit:
+    path:     /memos/promotion/create/{emp_id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Promotion:addSubmit }
+
+hris_memo_promotion_edit_form:
+    path:     /memos/promotion/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Promotion:editForm }
+
+hris_memo_promotion_edit_submit:
+    path:     /memos/promotion/{id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Promotion:editSubmit }
+
+hris_memo_promotion_delete:
+    path:     /memos/promotion/{id}/delete
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Promotion:delete }
+
+hris_memo_promotion_print:
+    path:     /memos/promotion/{id}/print
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Promotion:printPdf }
+
+hris_memo_promotion_grid:
+    path:     /memos/promotionlist/grid
+    defaults: { _controller: HrisMemoBundle:Promotion:grid }
+
+
+# Regularization Memo
+hris_memo_regularization_index:
+    path:     /memos/regularizationlist
+    defaults: { _controller: HrisMemoBundle:Regularization:index }
+
+hris_memo_regularization_add_form:
+    path:     /memos/regularization/create/{emp_id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Regularization:createRegMemo, emp_id: null }
+
+hris_memo_regularization_add_submit:
+    path:     /memos/regularization/create/{emp_id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Regularization:addSubmit }
+
+hris_memo_regularization_edit_form:
+    path:     /memos/regularization/{id}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Regularization:editForm }
+
+hris_memo_regularization_edit_submit:
+    path:     /memos/regularization/{id}
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Regularization:editSubmit }
+
+hris_memo_regularization_delete:
+    path:     /memos/regularization/{id}/delete
+    methods: [POST]
+    defaults: { _controller: HrisMemoBundle:Regularization:delete }
+
+hris_memo_regularization_print:
+    path:     /memos/regularization/{id}/print
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Regularization:printPdf }
+
+hris_memo_regularization_grid:
+    path:     /memos/regularizationlist/grid
+    defaults: { _controller: HrisMemoBundle:Regularization:grid }
+
+
+# Update memo status /ALL
+hris_memo_disciplinary_change_status:
+    path:     /memos/review/disciplinary/{id}/{type}/{status}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Disciplinary:updateStatus, id: null, type: null, status: null }
+
+hris_memo_violation_change_status:
+    path:     /memos/review/violation/{id}/{type}/{status}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Violation:updateStatus, id: null, type: null, status: null }
+
+hris_memo_regularization_change_status:
+    path:     /memos/review/regularization/{id}/{type}/{status}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Regularization:updateStatus, id: null, type: null, status: null }
+
+hris_memo_promotion_change_status:
+    path:     /memos/review/promotion/{id}/{type}/{status}
+    methods: [GET]
+    defaults: { _controller: HrisMemoBundle:Promotion:updateStatus, id: null, type: null, status: null }

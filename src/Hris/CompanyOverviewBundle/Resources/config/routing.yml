@@ -1,0 +1,39 @@
+hris_com_info_get_cities:
+    pattern: /cities/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation, parent_id: null}
+
+hris_com_info_get_states:
+    pattern: /states/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation, parent_id: null}
+
+hris_com_info_index:
+  path:     /cominfo
+  methods:  [GET]
+  defaults: { _controller: HrisCompanyOverviewBundle:ComInfo:index }
+
+hris_com_info_index_submit:
+  path:     /cominfo
+  methods:  [POST]
+  defaults: { _controller: HrisCompanyOverviewBundle:ComInfo:indexSubmit }
+
+hris_com_orgchart_index:
+  path:     /orgchart
+  defaults: { _controller: HrisCompanyOverviewBundle:OrgChart:index }
+
+hris_com_orgchart_ajax_employee:
+  path:     /orgchart/ajax/{id}
+  defaults: { _controller: HrisCompanyOverviewBundle:OrgChart:getEmployeeHierarchy, id: null }
+
+hris_com_orgchart_ajax_department:
+  path:     /orgchart/ajax/department/
+  defaults: { _controller: HrisCompanyOverviewBundle:OrgChart:getDepartmentHierarchy }
+
+hris_com_directory_index:
+  path:     /directory
+  defaults: { _controller: HrisCompanyOverviewBundle:Directory:index }
+
+hris_com_directory_ajax_filter:
+  path:     /directory/ajax/{id}/{department}/{job_title}
+  defaults: { _controller: HrisCompanyOverviewBundle:Directory:ajaxfilterDirectory, id: null, department: null, job_title: null}

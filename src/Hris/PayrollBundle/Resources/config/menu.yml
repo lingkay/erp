@@ -1,0 +1,64 @@
+menu_items:
+    - id: hris_payroll
+      acl: hris_payroll.menu
+      label: Payroll
+      icon: fa-money
+    - id: hris_payroll_generate_index
+      acl: hris_payroll_generate.menu
+      label: Generate Semi-monthly Payroll
+      parent: hris_payroll
+    - id: hris_payroll_weekly_generate_index
+      acl: hris_payroll_weekly_generate.menu
+      label: Generate Weekly Payroll
+      parent: hris_payroll
+    - id: hris_payroll_review_index
+      acl: hris_payroll_review.menu
+      label: Review Payroll
+      parent: hris_payroll
+    - id: hris_payroll_view_index
+      acl: hris_payroll_view.menu
+      label: View Payroll
+      parent: hris_payroll
+    - id: hris_payroll_thirteenth_index
+      acl: hris_payroll_thirteenth.menu
+      label: Generate 13th Month Pay
+      parent: hris_payroll
+    - id: hris_payroll_thirteenth_view_index
+      acl: hris_payroll_thirteenth_view.menu
+      label: View 13th Month
+      parent: hris_payroll
+ 
+    - id: payroll_menu
+      acl: hris_payroll_setting.menu
+      label: Payroll Settings
+      parent: menu_hr
+    - id: hris_payroll_setting_year_index
+      acl: hris_payroll_setting_year.menu
+      label: Annual Schedule Settings
+      parent: payroll_menu
+    - id: hris_payroll_weekly_index
+      acl: hris_payroll_weekly.menu
+      label: Weekly Payroll
+      parent: payroll_menu
+    - id: hris_payroll_semimonthly_index
+      acl: hris_payroll_semimonthly.menu
+      label: Semi-Monthly Payroll
+      parent: payroll_menu
+    - id: hris_payroll_setting_min_index
+      acl: hris_payroll_setting_min.menu
+      label: Minimum Wage Settings
+      parent: payroll_menu
+
+    - id: hris_payroll_sss_index
+      acl: hris_payroll_sss.menu
+      label: SSS Contribution Table
+      parent: payroll_menu
+    - id: hris_payroll_philhealth_index
+      acl: hris_payroll_philhealth.menu
+      label: PhilHealth Contribution Table
+      parent: payroll_menu
+    - id: hris_payroll_tax_index
+      acl: hris_payroll_tax.menu
+      label: Withholding Tax Table
+      parent: payroll_menu
+

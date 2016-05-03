@@ -1,0 +1,11 @@
+<div id="type_car" style="display:none;">
+    {{ form.group_text('MV File No.', 'car[file_num]', details.file_num|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Make/Model', 'car[model]', details.model|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Body Type', 'car[body_type]', details.body_type|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Denomination', 'car[denom]', details.denom|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Fuel', 'car[fuel]', details.fuel|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Plate No.', 'car[plate_num]', details.plate_num|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Engine No.', 'car[engine_num]', details.engine_num|default(''), 3, 4, readonly) }}
+    {{ form.group_text('OR/CR No.', 'car[or_cr_num]', details.or_cr_num|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Chassis No.', 'car[chassis_num]', details.chassis_num|default(''), 3, 4, readonly) }}    
+</div>

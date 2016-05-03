@@ -1,0 +1,518 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<form method="post" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">{% block form_header %}Recruitment Process of {{ head_title }} - {{ o_label }}{% endblock %}</div>
+                </div>
+                <div class="portlet-body">
+                    <!-- start of profile -->
+                    <div class="row profile">
+                        <div class="col-md-12">
+                            <!--BEGIN TABS-->
+                            <div class="tabbable tabbable-custom tabbable-full-width">
+                            {% if object.getID != null %}
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    {% if not readonly %}
+                                        <a href="{{ path(route_edit, { 'id': object.getID }) }}" class="btn default btn green" style="float: right;"><i class="fa fa-edit"></i> View Applicant Information</a>
+                                    {% endif %}
+                                </div> 
+                            </div>
+                            {% endif %}
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="app_process">
+                                        <h4 class="form-section" style="margin-left: 20px;">Application Status</h4>
+                                        <ol class="progtrckr" data-progtrckr-steps="6">
+                                        <a href="#tab_exam" data-toggle="tab"><li class="{{ status_exam }}">Examination</li></a>
+                                        <a href="#tab_interview" data-toggle="tab"><li class="{{ status_interview  }}">Interview</li></a>
+                                        <a href="#tab_background" data-toggle="tab"><li class="{{ status_check }}">Background Check</li></a>
+                                        <a href="#tab_offer" data-toggle="tab"><li class=" {{ status_offer }} ">Job Offer</li></a>
+                                        <a href="#tab_checklist" data-toggle="tab"><li class=" {{ status_checklist }} ">Checklist</li></a>
+                                        <a href="#tab_signing" data-toggle="tab"><li class="{{ status_sign }}">Signing of Contract</li></a>
+                                        </ol><br>
+                                        <div class="col-md-3">
+                                        <ul class="list-unstyled profile-nav">
+                                        <li>
+                                        <img src="{{ object.getUpload.getUrl|default(asset('bundles/hristemplate/images/no_image_avatar.png')) }}" class="img-responsive" alt="">
+                                        </li>
+                                        </ul>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-8 profile-info">
+                                                    <h1>{{object.getDisplayName}}</h1>
+                                                        <p>Position Applied For:</p>
+                                                    <ul class="list">
+                                                        <li>
+                                                            {{object.getChoice.first}}
+                                                        </li>
+                                                        {% if object.getChoice.second != "" %}
+                                                        <li>
+                                                            {{object.getChoice.second}}
+                                                        </li>
+                                                        {% endif %}
+                                                        {% if object.getChoice.third != "" %}
+                                                        <li>
+                                                            {{object.getChoice.third}}
+                                                        </li>
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="tab_recruitment">
+                                                <div class="tab-content">
+                                                    <div class="tab-pane tab_recruit" id="tab_exam">
+                                                        {% embed 'HrisRecruitmentBundle:Application:recruitment/examination.html.twig' %}{% endembed %}
+                                                    </div>
+                                                    <div class="tab-pane tab_recruit" id="tab_interview">
+                                                        {% embed 'HrisRecruitmentBundle:Application:recruitment/interview.html.twig' %}{% endembed %}
+                                                    </div>
+                                                    <div class="tab-pane tab_recruit" id="tab_offer">
+                                                        {% embed 'HrisRecruitmentBundle:Application:recruitment/offer.html.twig' %}{% endembed %}
+                                                    </div>
+                                                    <div class="tab-pane tab_recruit" id="tab_background">
+                                                        {% embed 'HrisRecruitmentBundle:Application:recruitment/background.html.twig' %}{% endembed %}
+                                                    </div>
+                                                    <div class="tab-pane tab_recruit" id="tab_checklist">
+                                                        {% embed 'HrisRecruitmentBundle:Application:recruitment/checklist.html.twig' %}{% endembed %}  
+                                                    </div>
+                                                    <div class="tab-pane tab_recruit" id="tab_signing">
+                                                        {% embed 'HrisRecruitmentBundle:Application:recruitment/signing.html.twig' %}{% endembed %}  
+                                                    </div>
+                                                <!-- end of tab-content recruitment --> 
+                                                </div>
+                                            </div>
+                                            <!-- end of tab-content --> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--END TABS-->
+                    </div>
+                </div>
+            </div>
+        <!-- end of portlet -->
+        </div>
+    </div>
+</form>
+{% include "HrisRecruitmentBundle:Application:modal/exam.html.twig" %}
+{% include "HrisRecruitmentBundle:Application:modal/interview.html.twig" %}
+{% endblock %}
+
+{% block js %}
+<script>
+
+$(document).ready(function() {
+
+    $('.calendar').prop('disabled', true);
+    $('#cform-background_date').datepicker({
+            todayHighlight: true,
+            endDate: '0',
+            });
+
+    $('#cform-signing_date').datepicker({
+            todayHighlight: true,
+            startDate: '0',
+            });
+
+    $('#cform-offer_date').datepicker({
+            todayHighlight: true,
+            startDate: '0',
+            });
+
+    $('#cform-interview_date').datepicker({
+            todayHighlight: true,
+            startDate: '0',
+            });
+
+
+    $('#cform-date_answered').datepicker({
+            todayHighlight: true,
+            endDate: '0',
+            });
+
+    $('[name^="date_received"]').datepicker({
+            todayHighlight: true,
+            endDate: '0',
+            });
+
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+          return this.optional(element) || value != param;
+        }, "Cannot set default value");
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                error.appendTo(element.parent().last());
+                element.parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                element.parent().removeClass('has-error');
+                element.parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        },
+    });
+    // validate form elements
+    $(".form-horizontal").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+               this.element(element);
+            },
+            rules: {
+                //BEGIN VALIDATION FOR EXAMINATION
+                exam_date: {
+                    required: true
+                },
+                'exam_id[]': {
+                    required: true,
+                },
+                'score[]': {
+                    required: true
+                },
+                exam_time: {
+                    required: true
+                },
+                //END VALIDATION FOR EXAMINATION
+
+                //BEGIN VALIDATION FOR INTERVIEW
+                interview_date: {
+                    required: true
+                },
+                interview_time: {
+                    required: true
+                },
+                //END VALIDATION FOR INTERVIEW
+
+                //BEGIN VALIDATION FOR BACKGROUND CHECK
+                background_date: {
+                    required: true
+                },
+                emp_status: {
+                    required: true,
+                    notEqual: 0
+                },
+                position: {
+                    required: true,
+                    notEqual: 0
+                },
+                reputation: {
+                    required: true,
+                    notEqual: 0
+                },
+                performance: {
+                    required: true,
+                    number: true,
+                    min: 1,
+                    max: 5
+                },
+                dependability: {
+                    required: true,
+                    number: true,
+                    min: 1,
+                    max: 5
+                },
+                attendance: {
+                    required: true,
+                    number: true,
+                    min: 1,
+                    max: 5
+                },
+                responsibility: {
+                    required: true,
+                    number: true,
+                    min: 1,
+                    max: 5
+                },
+                potential: {
+                    required: true,
+                    number: true,
+                    min: 1,
+                    max: 5
+                },
+                get_along: {
+                    required: true,
+                    number: true,
+                    min: 1,
+                    max: 5
+                },
+                name_answered: {
+                    required: true
+                },
+                position_answered: {
+                    required: true
+                },
+                date_answered: {
+                    required: true
+                },
+                //END VALIDATION FOR BACKGROUND CHECK
+
+                //BEGIN VALIDATION FOR JOB OFFER
+                offer_date: {
+                    required: true
+                },
+                offer_time: {
+                    required: true
+                },
+                job_position: {
+                    required: true
+                },
+                job_level: {
+                    required: true
+                },
+                location: {
+                    required: true
+                },
+                schedule: {
+                    required: true
+                },
+                employment_status: {
+                    required: true
+                },
+                pay_sched: {
+                    required: true
+                },
+                pay_type: {
+                    required: true
+                },
+                salary: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                allowance: {
+                    number: true,
+                },
+                //END VALIDATION FOR JOB OFFER
+
+                //BEGIN VALIDATION FOR CONTRACT SIGNING
+                signing_date: {
+                    required: true
+                },
+                //END VALIDATION FOR CONTRACT SIGNING
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+        $('.form-horizontal .select_2').change(function () {
+            $('.form-horizontal').validate().element($(this));
+        });
+
+        $('.date-picker .form-control').change(function() {
+            $('.form-horizontal').validate().element($(this));
+        });
+    });
+
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
+
+    //typeahead validations
+    $('#cinterviewer_typeahead').change(function() {
+        if ($('#cinterviewer_id').val() != '') 
+        {
+        }
+        else
+        {
+            $('#cinterviewer_typeahead').val('');
+        }
+    });
+
+    $('#en_table_exam').on('click', '.btn_en_del', function() {
+        var row = $(this).closest('tr');
+        row.remove();
+    });
+
+    $('#en_table_interview').on('click', '.btn_en_del', function() {
+        var row = $(this).closest('tr');
+        row.remove();
+    });
+
+    $('input[name="applicant_appeared"]').click( function(){
+            if($(this).prop("checked") == true){
+                $('.result').hide();
+                $('.recruitment').hide();
+            }
+            else {
+                $('.result').show();
+                $('.recruitment').show();
+            }
+    });
+
+    $('#all_form').click(function(event){
+        var date = new Date();
+        var day = date.getDate();
+        var month = date.getMonth()+1;
+        var year = date.getFullYear();
+
+        if(day < 10)
+        {
+            day = '0'+day;
+        }
+        if(month < 10)
+        {
+            month = '0'+month;
+        }
+
+        var date_today = month+'/'+day+'/'+year;
+        $('select').each(function(){
+            if($(this).val() == 'Pending')
+            {
+                $(this).select2("val",'Received');    
+            }
+        });
+        var counter = 1;
+        $('input[name^="date_received"]').each(function(){
+            if($(this).val() == '')
+            {
+                $('input[name="date_received['+counter+']"]').datepicker('setDate', date_today);
+            }
+            counter++;
+        });
+    });
+
+    //VALIDATE EXAMINATION MODAL
+    $('#exam-form').validate({
+        onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+            //BEGIN VALIDATION FOR EXAMINATION MODAL
+            exam_type: {
+                required: true,
+                notEqual: 0
+            },
+            score: {
+                required: true,
+                number: true,
+                min: 1
+            },
+            //END VALIDATION FOR EXAMINATION MODAL
+        },
+        submitHandler: function(form) {
+            //APPEND DATA TO EXAMINATION TABLE
+            var exam_name = $('#cform-exam_type option:selected').text();
+            var score = $('#cform-score').val();
+            var status_id = $('#cform-status').val();
+            var status_name = $('#cform-status option:selected').text();
+
+            var row = '<tr>';
+                row += '<td class="tables"><input type="hidden" name="exam_id[]" value="' + exam_name + '">' + exam_name + '</td>';
+                row += '<td class="tables"><input class="form-control score" type="text" name="score[]" value="' + score + '"></td>';
+                row += '<td><input type="hidden" name="status[]" value="' + status_id + '">' + status_name + '</td>';
+                row += '<td><button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button></td>';
+                row += '</tr>';
+
+            $('#en_table_exam').append(row);
+            $('#exam-modal').modal('hide');
+        }
+    });
+
+    //CLEAR EXAMINATION MODAL ON CLOSE
+    $('#exam-modal').on('hidden.bs.modal', function(){
+        var validator = $('#exam-form').validate(); 
+        validator.resetForm();
+        $('#cform-score').val('');
+        $('select[name="exam_type"]').select2("val",'0');
+        $('select[name="status"]').select2("val",'Passed');
+        $('div').removeClass('has-error');
+        $('div').removeClass('has-success');
+    });
+
+    //VALIDATE INTERVIEW MODAL
+    $('#interview-form').validate({
+        onfocusout: function(element) {
+            this.element(element);
+        },
+        ignore: [],
+        rules: {
+            //BEGIN VALIDATION FOR INTERVIEW MODAL
+            interviewer_id: {
+                required: true
+            }
+            //END VALIDATION FOR INTERVIEW MODAL
+        },
+        submitHandler: function(form) {
+        //APPEND DATA TO INTERVIEW TABLE
+        var interview_id = $('#cinterviewer_id').val();
+        var interview_name = $('#cinterviewer_typeahead').val();
+
+        var row = '<tr>';
+            row += '<td class="tables"><div class="form-group"><label class="col-md-1 control-label"></label><div class="col-md-9"><div class="radio-list"><label><input type="radio" name="'+interview_id+'_recommendation" id="cform-recommendation" value="reject" checked/>Reject</label><label><input type="radio" name="'+interview_id+'_recommendation" id="cform-recommendation" value="hold_for_comparison"/>Hold for comparisons</label><label><input type="radio" name="'+interview_id+'_recommendation" id="cform-recommendation" value="recommended_for_further_interview"/>Recommended for further interview</label><label><input type="radio" name="'+interview_id+'_recommendation" id="cform-recommendation" value="recommended_for_the_position_applied"/>Recommended for the position applied</label></div></div></div><div class="col-md-12"><div class="row"><div class="col-md-6"><input id="cform-interviewer_name" type="text" name="interviewer_name[]" class="form-control" value="'+interview_name+'"readonly="true"><input type="hidden" name="interview_id[]" value="'+interview_id+'"></div><div class="col-md-6"><div class="input-group date date-picker" data-date-format="mm/dd/yyyy"><input id="cform-interviewed_date" type="text" class="form-control" name="interviewed_date[]" value="" readonly><span class="input-group-btn"><button class="btn default" type="button"><i class="fa fa-calendar"></i></button></span></div></div></div></div></td>';
+            row += '<td><textarea name="interview_remarks[]" class="form-control remarks" rows="6"></textarea></td>';
+            row += '<td><button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button></td>';
+            row += '</tr>';
+
+            $('#en_table_interview').append(row);
+            $('.date-picker').datepicker();
+
+            $('#interview-modal').modal('hide');
+        }
+    });
+    //CLEAR INTERVIEW MODAL ON CLOSE
+    $('#interview-modal').on('hidden.bs.modal', function (){
+        var validator = $('#interview-form').validate(); 
+            validator.resetForm();
+            $('#cinterviewer_typeahead').val('');
+            $('#interviewer_id').val('');
+            $('div').removeClass('has-error');
+            $('div').removeClass('has-success');
+    });
+});
+</script>
+{% endblock %}

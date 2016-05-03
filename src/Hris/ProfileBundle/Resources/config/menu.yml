@@ -1,0 +1,21 @@
+menu_items:
+    - id: hris_profile
+      acl: hris_profile_employee.menu
+      label: Profile
+      icon: fa-user
+    - id: hris_profile_employee_index
+      acl: hris_profile_employee.menu
+      label: My Profile
+      parent: hris_profile
+    - id: hris_profile_request_index
+      acl: hris_profile_request.menu
+      label: Requests Management
+      parent: hris_profile
+    - id: hris_profile_leave_index
+      acl: hris_profile_leave.menu
+      label: Leave Management
+      parent: hris_profile
+    - id: hris_profile_attendance_index
+      acl: hris_profile_attendance.menu
+      label: Attendance Management
+      parent: hris_profile

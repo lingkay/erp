@@ -1,0 +1,217 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+            </div>
+            <div class="portlet-body">
+                <form id="pay_filter" method="post" action="{{ path('hris_report_payroll_print') }}">
+                    <div class="portlet box blue">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-filter"></i>Filters
+                            </div>
+                            <div class="tools">{# <a href="javascript:;" class="collapse"> #}</a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-horizontal">
+                                    {{ form_tools.typeahead('Employee Name','emp','','',path('hris_workforce_employee_ajax_get'),4,7)}}
+                                    {{ form_tools.group_select('Department','department',dept_opts, dept_id,4,7)}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-horizontal">
+                                    {{ form_tools.group_date_range('daterange','Date Range','date_from','date_to','','',4,7) }}
+                                    {{ form_tools.group_select('Pay Type','pay_type',pay_type,'',4,7)}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-toolbar">
+                        <a class="btn blue" id="filter_btn">Apply Filters</a>    
+                        <a class="btn red" id="filter_clr">Clear Filters</a> 
+                        <button type="submit" id="print_btn" class="btn green pull-right"><i class="fa fa-print"></i> Export to CSV</button>
+                    </div>
+                </form>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            <th>{{ col.getLabel }}</th>
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+
+    var dTable = $('#list_table').dataTable({
+        "bProcessing": true,
+        // "bServerSide": true,
+        "sAjaxSource": "{{ path('hris_report_payroll_grid') }}",
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ records",
+                    "oPaginate": {
+                        "sPrevious": "Prev",
+                        "sNext": "Next"
+                        }
+                    },
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+        ]
+    });
+
+    $('#daterange input').val('');
+    $('input[name="date_from"]').val('');
+    $('input[name="date_to"]').val('');
+
+    $('#cemp_typeahead').change(function() {
+        $("#cform-agency").val('');
+        if ($('#cemp_id').val() != '') 
+        {
+            
+        }
+        else
+        {
+            $('#cemp_typeahead').val('');
+        }
+    });
+
+    $('#filter_btn').click(function() {
+        var url = "{{ path('hris_report_payroll_grid') }}";
+        var data = $('#pay_filter').serializeArray();
+        var oTable = $('#list_table').dataTable();
+
+        // console.log(data);
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: data,
+            success: function(data, text_status, xhr) {
+                // console.log(data);
+                oSettings = oTable.fnSettings();
+
+                oTable.fnClearTable();
+
+                for (var i=0; i<data.aaData.length; i++)
+                {
+                  oTable.oApi._fnAddData(oSettings, data.aaData[i]);
+                }
+
+                oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+                oTable.fnDraw();
+            },
+            error: function(xhr, text_status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+    $('#filter_clr').click(function() {
+        $('#pay_filter input').each(function() {
+            // alert($(this).attr('type'));
+            var type = $(this).attr('type');
+            if (type == 'hidden') {
+                $(this).val('');
+            }
+            else if (type == 'text') {
+                if ($(this).hasClass('typeahead')) {
+                    $(this).val('');
+                    $(this).prop('readonly', false);
+                }
+                else if ($(this).parent('div').attr('id') == 'daterange') {
+                    $(this).val('');
+                };
+            }
+            else if (type == 'text' && $(this).hasClass('form-control')) {
+                $(this).val('');
+            }
+            else if (type == 'checkbox') {
+                $(this).parent('span').removeClass('checked');
+                $(this).prop('checked', false);
+            }
+            else if (type == 'number') {
+                $(this).val(0);
+            }
+            else {
+
+            };            
+        });
+
+        $('#pay_filter select').each(function (){
+            $(this).select2('val','');
+        });
+
+        var url = "{{ path('hris_report_payroll_grid') }}";
+        var data = $('#pay_filter').serializeArray();
+        var oTable = $('#list_table').dataTable();
+
+        // console.log(data);
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: data,
+            success: function(data, text_status, xhr) {
+                // console.log(data);
+                oSettings = oTable.fnSettings();
+
+                oTable.fnClearTable();
+
+                for (var i=0; i<data.aaData.length; i++)
+                {
+                  oTable.oApi._fnAddData(oSettings, data.aaData[i]);
+                }
+
+                oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+                oTable.fnDraw();
+            },
+            error: function(xhr, text_status, error) {
+                console.log(error);
+            }
+        });
+
+        alert('Filters are cleared!');
+    });
+
+    $('#daterange').daterangepicker(
+    {
+            ranges: {
+                'Today': [new Date(), moment().add(1, 'days')],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), new Date()],
+                'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#cform-date_from').val(start.format('YYYYMMDD'));
+            $('#cform-date_to').val(end.format('YYYYMMDD'));
+        }
+    );
+});
+</script>
+{% endblock %}

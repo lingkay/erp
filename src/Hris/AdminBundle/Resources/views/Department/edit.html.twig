@@ -1,0 +1,133 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Edit Department - {{o_label}}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                            {{ form.group_text('Department Name', 'dept_name', object.getName|default(''), 3, 4, readonly) }}
+                            {% set id = object.getID %}
+                            {{ form.typeahead('Department Head', 'dept_pos', object.getDeptHead.getDisplayName|default(''),object.getDeptHead.getID|default(''),path('hris_admin_employee_ajax_filter', { 'id': id }), 3, 4, readonly) }}
+                            <div id="cgroup-dept_under" class="form-group">
+                                <label class="col-md-3 control-label">Department Under</label>
+                                <div class="col-md-4">
+                                    <select id="cform-dept_under" name="dept_under" class="form-control select_2" data-placeholder="-- Select Department Under --">
+                                    {{ form.options(dept_opts, object.getParent != null? object.getParent.getID:'') }}
+                                    </select>
+                                </div>
+                                <button class="btn red" type="button" id="clear_dept">X</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready( function() {
+    $('#clear_dept').click(function(){
+        $('#cform-dept_under').select2("val",'');
+    });
+    $('#cdept_pos_typeahead').change(function() {
+        if ($('#cdept_pos_id').val() != '') 
+        {        }
+        else
+        {
+            $('#cdept_pos_typeahead').val('');
+        }
+    });
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            dept_name: "required",
+            dept_pos: "required"
+        },
+        messages: {
+            dept_name: "Name cannot be blank.",
+            dept_pos: "Department Head cannot be blank."
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Attendance Adjustment</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('adjustment_type','attendance')}}
+                        {{ form.group_text('Employee Name', 'name', object.getEmployee.getDisplayName, 3,4,true) }}
+                        {{ form.group_text('Status','status',object.getAdjustmentStatus|default("Draft"),3,4,true)}}
+                        {{ form.group_text('Date','date', object.getDate|date('m/d/Y'),3,4,true) }}
+                        {{ form.group_text('Time-In', 'time_in', object.getTimeIn, 3,4, true) }}
+                        {{ form.group_text('Time-Out', 'time_out', object.getTimeOut, 3, 4, true) }}
+
+                        <h4 class="form-section">Adjustments</h4>
+                            
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Date Adjustment Request', 'date_request', object.getAdjustmentDate|date('m/d/Y'),3,4,true)}}
+                        {{ form.group_time('Adjusted Time-In', 'adj_time_in', object.getAdjustTimeIn|date('g:i A'), 3, 4)}}
+                        {{ form.group_time('Adjusted Time-Out', 'adj_time_out', object.getAdjustTimeOut|date('g:i A'), 3,4)}}
+                        {{ form.group_textarea('Reason','reason', object.getReason|default(''),3,3,4)}}
+                        {{ form.group_upload_file('Supporting Documents','file',object.getUpload|default(''),3,4,readonly,'f')}}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if object.getAdjustmentStatus == null or object.getAdjustmentStatus == constant('\\Hris\\WorkforceBundle\\Entity\\Attendance::STATUS_DRAFT') %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
+});
+</script>
+
+{% endblock %}

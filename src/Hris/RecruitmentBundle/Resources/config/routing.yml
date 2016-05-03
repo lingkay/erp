@@ -1,0 +1,139 @@
+hris_applications_index:
+    path:     /applications
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:index }
+
+hris_applications_add_form:
+    path:     /application
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:addForm }
+
+hris_applications_add_submit:
+    path:     /application
+    methods:  [POST]
+    defaults: { _controller: HrisRecruitmentBundle:Application:addSubmit }
+
+hris_applications_edit_form:
+    path:     /application/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:editForm }
+
+hris_applications_edit_submit:
+    path:     /application/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisRecruitmentBundle:Application:editSubmit }
+
+hris_applications_delete:
+    path:     /application/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:delete }
+
+hris_applications_edit_progress_form:
+    path:     /appprogress/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:editProgressForm }
+
+hris_applications_edit_progress_submit:
+    path:     /appprogress/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisRecruitmentBundle:Application:editProgressSubmit }
+
+hris_applications_grid:
+    path:     /applications/grid
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:grid }
+
+hris_applications_print:
+    pattern: /applications/print/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:printApp }
+
+hris_applications_status:
+    pattern: /application/status
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:statusUpdate}
+
+hris_applications_get_cities:
+    pattern: /cities/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation}
+
+hris_applications_get_cities2:
+    pattern: /application/cities/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation}
+
+hris_applications_get_states:
+    pattern: /states/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation}
+
+hris_applications_get_states2:
+    pattern: /application/states/{parent_id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:getChildLocation}
+
+hris_applications_ajax_add:
+    path:     /application/ajax/add
+    methods: [POST]
+    defaults: { _controller: HrisRecruitmentBundle:Application:ajaxAdd }
+
+hris_applications_ajax_filter:
+    path:     /jobtitles/ajax
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Application:ajaxFilterVacancy }
+
+hris_requisition_index:
+    path:     /requisitions
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:index }
+
+hris_requisition_add_form:
+    path:     /requisition
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:addForm }
+
+hris_requisition_add_submit:
+    path:     /requisition
+    methods:  [POST]
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:addSubmit }
+
+hris_requisition_edit_form:
+    path:     /requisition/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:editForm }
+
+hris_requisition_edit_submit:
+    path:     /requisition/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:editSubmit }
+
+hris_requisition_delete:
+    pattern: /requisition/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:delete }
+
+hris_requisition_grid:
+    pattern: /requisitions/grid
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:grid }
+
+hris_requisition_print:
+    pattern: /requisitions/print/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRecruitmentBundle:Requisition:printReq }
+
+hris_checklist_index:
+    path:     /checklist
+    defaults: { _controller: HrisRecruitmentBundle:Checklist:index }
+
+hris_checklist_add_form:
+    path:     /checklist/add
+    defaults: { _controller: HrisRecruitmentBundle:Checklist:addForm }
+
+hris_checklist_edit_form:
+    path:     /checklists
+    defaults: { _controller: HrisRecruitmentBundle:Checklist:addForm }
+
+hris_checklist_print:
+    path:     /checklist/print
+    defaults: { _controller: HrisRecruitmentBundle:Checklist:print }

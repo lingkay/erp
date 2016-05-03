@@ -1,0 +1,17 @@
+menu_items:
+    - id: hris_com_overview
+      acl: hris_com_overview.menu
+      label: Company Overview
+      icon: fa-building-o
+    - id: hris_com_info_index
+      acl: hris_com_info.menu
+      label: Company Information
+      parent: hris_com_overview
+    - id: hris_com_orgchart_index
+      acl: hris_com_orgchart.menu
+      label: Organizational Chart
+      parent: hris_com_overview
+    - id: hris_com_directory_index
+      acl: hris_com_directory.menu
+      label: Directory
+      parent: hris_com_overview

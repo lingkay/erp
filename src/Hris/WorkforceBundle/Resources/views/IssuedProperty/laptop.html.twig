@@ -1,0 +1,6 @@
+<div id="type_laptop" style="display:none;">
+    {{ form.group_text('Brand', 'laptop[brand]', details.brand|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Model No.', 'laptop[model]', details.model|default(''), 3, 4, readonly) }}
+    {{ form.group_text('Color', 'laptop[color]', details.color|default(''), 3, 4, readonly) }}
+    {{ form.group_text('SNID', 'laptop[snid]', details.snid|default(''), 3, 4, readonly) }}
+</div>

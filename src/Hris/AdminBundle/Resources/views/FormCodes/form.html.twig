@@ -1,0 +1,137 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% macro dual_text(label, name, value1, value2, label_size, body_size, readonly = false, prefix = 'c') %}
+<div id="{{ prefix }}group-{{ name }}" class="form-group">
+    <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+    <div class="col-md-{{ body_size }}">
+        <input id="{{ prefix }}form-{{ name ~ '_code' }}" type="text" name="{{ name ~ '_code' }}" class="form-control" placeholder="Form Code" value="{{ value1 }}" {{ readonly ? 'readonly ' : '' }}>
+    </div>
+    <div class="col-md-{{ body_size }}">
+        <input id="{{ prefix }}form-{{ name ~ '_rev' }}" type="text" name="{{ name ~ '_rev' }}" class="form-control" placeholder="Revision No." value="{{ value2 }}" {{ readonly ? 'readonly ' : '' }}>
+    </div>
+</div>
+{% endmacro %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}Form Codes{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    {%  import _self as forms %}
+                    <div class="form-body">
+                        <h4 class="form-section">Employee Relations Forms</h4>
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ forms.dual_text('Company Memorandum','comp_memo', config.get('comp_memo_code')|default(''), config.get('comp_memo_rev')|default(''), 3, 3, readonly) }}
+                        {{ forms.dual_text('Incident Report','inc_rep', config.get('inc_rep_code')|default(''), config.get('inc_rep_rev')|default(''), 3, 3, readonly) }}
+                        {{ forms.dual_text('Notice of Disciplinary Action','note_discip', config.get('note_discip_code')|default(''), config.get('note_discip_rev')|default(''), 3, 3, readonly) }}
+                        {{ forms.dual_text('Notice of Violation','note_violate', config.get('note_violate_code')|default(''), config.get('note_violate_rev')|default(''), 3, 3, readonly) }}
+                        {{ forms.dual_text('Notice of Violation (under agency)','note_violate_agency', config.get('note_violate_agency_code')|default(''), config.get('note_violate_agency_rev')|default(''), 3, 3, readonly) }}
+                        
+                        <h4 class="form-section">Recuitment Forms</h4>
+                        {{ forms.dual_text('Personnel Requisition Form','comp_manpower', config.get('comp_manpower_code')|default(''), config.get('comp_manpower_rev')|default(''), 3, 3, readonly) }}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready( function() {
+        // set default error and success elements
+        jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // var emp_opts = $("input[name='emp_opts']");
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            name: "required",
+            notes: "required"
+        },
+        messages: {
+            name: "Name cannot be blank.",
+            notes: "Please add description."
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}
+
+
+{# <pre>
+    {{ dump(config) }}
+</pre> #}

@@ -1,0 +1,232 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% set readonly = not app.user.hasAccess('cat_user_user.edit') %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}User{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Username', 'username', object.getUsername, 3, 4, readonly) }}
+                        {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
+                        {{ form.group_email('Email', 'email', object.getEmail, 3, 4, readonly) }}
+                        {# form.group_select('Branch','warehouse_id',wh_opts,object.getWarehouse.getID|default(''),3,4, readonly)#}                     
+                        {% if not readonly %}
+                            {{ form.group_password('Password', 'pass1', 3, 4, readonly) }}
+                            {{ form.group_password('Re-type Password', 'pass2', 3, 4, readonly) }}
+                        {% endif %}
+                        {{ form.group_select('Status', 'enabled', enabled_opts, object.isEnabled, 3, 4, readonly) }}
+                        {{ form.group_checkbox_set('Roles', 'groups', group_opts, ug_opts, 3, 9,readonly) }}
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ asset('bundles/leathertemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/leathertemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+<script src="{{ asset('bundles/leathertemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
+{% if object.getUsername == '' %}
+<script>
+$(document).ready(function() {
+    FormValidation.init(); // init form validation
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            username: {
+                required: true
+            },
+            name: {
+                required: true
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            pass1: {
+                required: true
+            },
+            pass2: {
+                required: true,
+                equalTo : "#cform-pass1"
+            }
+        },
+        messages: {
+            pass2: {
+                equalTo : "Password do not match."
+            }   
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+});
+</script>
+{% else %}
+<script>
+$(document).ready(function() {
+    FormValidation.init(); // init form validation
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            username: {
+                required: true
+            },
+            name: {
+                required: true
+            },
+            email: {
+                required: true,
+                email: true
+            }
+        },
+        submitHandler: function(form) {
+            var pass1 = $("#cform-pass1");
+            var pass2 = $("#cform-pass2");
+            
+            // validate password if password field is changed
+            if(pass1.val() !== '' || pass2.val() !== '')
+            {
+                if(pass1.val() !== pass2.val())
+                {
+                    pass1.rules('add', {
+                        required: true
+                    });
+                    pass2.rules('add', {
+                        required: true,
+                        equalTo: "#cform-pass1",
+                        messages: {
+                            equalTo: "Password do not match."
+                        }
+                    });
+                    pass1.parents('.form-group').addClass('has-error');
+                    pass2.parents('.form-group').addClass('has-error');
+                    if(!$("#help").hasClass('help-block'))
+                        pass2.parent().parent().append('<span id="help" class="help-block">Password do not match.</span>');
+                }
+            }
+
+            if(pass1.val() === pass2.val())
+            {
+                form.submit();
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,138 @@
+<style>
+{% if conf.getAll['cat_color_bg_image'] is defined and conf.getAll['cat_color_bg_image'] != '' %}
+.menu-logo {
+  background-color: {{ conf.getAll['cat_color_bg_image']}} !important;
+}
+{% else %}
+.menu-logo {
+  background-color: #2B63A0 !important;
+}
+{% endif %}
+{% if theme['secondary'] == '' %}
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover,
+.page-sidebar {
+  background-color: #579FD1 !important;
+  /* Sidebar search */
+}
+{% else %}
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover,
+.page-sidebar {
+  background-color: {{ theme['secondary']}} !important;
+  /* Sidebar search */
+}
+{% endif %}
+
+.page-header.navbar {
+  background-color: {{ theme['primary']}};
+}
+
+.page-content-wrapper, .page-sidebar-menu { 
+  background-color:  {{ theme['secondary']}};
+  /*sidebar background*/
+}
+
+.page-footer{
+    background-color:  {{ theme['primary']}};
+  /**page footer*/
+}
+
+.page-sidebar .page-sidebar-menu > li:hover > a, .page-sidebar .page-sidebar-menu > li.open > a {
+  background: {{ theme['header']}};
+  color: white;
+  /*menu entry when hovered*/
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar .page-sidebar-menu > li.active.open > a  {
+    background: {{ theme['header']}};
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a, .page-sidebar .page-sidebar-menu .sub-menu > li:hover > a, .page-sidebar .page-sidebar-menu .sub-menu > li.open > a, .page-sidebar .page-sidebar-menu .sub-menu > li.active > a{
+    background: {{ theme['header']}} !important;
+}
+
+.page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar .page-sidebar-menu > li.active.open > a{
+    background: {{ theme['header']}} !important;
+}
+
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-user .dropdown-toggle{
+    background-color: {{ theme['primary']}};
+
+}
+
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a,
+.page-sidebar .page-sidebar-menu > li > a {
+    border-top: 1px solid #CFD792;
+}
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open + li > a,
+.page-sidebar .page-sidebar-menu > li.active.open + li > a {
+    border-top: 1px solid #CFD792;
+}
+/*
+.page-sidebar.navbar-collapse.collapse{
+    background-color: #1C6712;
+}
+*/
+.page-sidebar .page-sidebar-menu > li .sub-menu {
+  background-color: {{ theme['tertiary']}} !important;
+}
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+{% if conf.getAll['hris_com_logo_url'] is defined and conf.getAll['hris_com_logo_url'] != '' %}
+.menu-logo {
+  min-height: 100px;
+}
+.menu-logo a img{
+  vertical-align: middle;
+  max-height: 235px;
+}
+{% endif %}
+
+.page-breadcrumb.breadcrumb {
+  background-color: rgba(247, 247, 247, 0);
+}
+
+.page-content{
+  background-color: #fff;
+}
+
+.menu-toggler.responsive-toggler{
+  /*margin-top: 43px !important;*/
+}
+
+.portlet.box.blue-hoki > .portlet-title{
+    background-color: {{ theme['header']}};
+}
+
+.portlet.box.blue > .portlet-title {
+    background-color: {{ theme['header']}};
+}
+
+.portlet.box.blue-madison > .portlet-title {
+    background-color: {{ theme['header']}};
+    }
+
+.portlet.box.blue {
+        
+    border-top: 0;
+      border: 1px solid {{ theme['header'] }};
+        
+    }
+
+.portlet.box.blue-hoki {
+    border: 1px solid {{ theme['header'] }} ;
+}
+
+.page-header.navbar .top-menu .navbar-nav > li.dropdown.open .dropdown-toggle{
+    background-color: {{ theme['primary'] }};
+}
+
+.page-header.navbar .page-omnibar input {
+  background-color: {{ theme['secondary'] }};
+  border: 1px solid #ffffff;
+}
+</style>

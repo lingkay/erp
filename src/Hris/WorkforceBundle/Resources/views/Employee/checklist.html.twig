@@ -1,0 +1,39 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Pre-Employment Checklist</h4>
+    {{ form.hidden('employee_form','checklist')}}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+    <table id="" class="table table-striped table-bordered table-hover" aria-describedby="list_table_info">
+    <thead>
+        <tr>
+            <th style="width: 400px;">Requirement</th>
+            <th>Status</th>
+            <th style="width: 170px;">Date Received</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    <tbody id="">
+    {% for item in checklist_opts %}
+        {% set checklist = checklists[item.getID] is defined? checklists[item.getID] : null %}
+        <tr>
+            <td><strong>{{ item.getName }}</strong>
+                <br/> {{ item.getNotes }}
+                {{ form.hidden('id[]',item.getId) }}
+            </td>
+            <td>{{ form.select('checklist_status['~item.getId~']',checklist_status_opts,checklist is not null ? checklist.getStatus:'',12) }} </td>
+            <td>{{ form.date('date_received['~item.getId~']',checklist is not null ? (checklist.getDateReceived is not null ? checklist.getDateReceived|date('m/d/Y'):''):'',12)}}</td>
+            <td>{{ form.textarea('checklist_notes['~item.getId~']',checklist.getNotes|default(''),2,12)}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    <div class="form-actions fluid">
+        <div class="col-md-9">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+        </div>
+    </div>
+</div>
+</form>

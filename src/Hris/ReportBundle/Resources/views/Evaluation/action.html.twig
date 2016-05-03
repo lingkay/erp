@@ -1,0 +1,7 @@
+{% if app.user.hasAccess(prefix ~ '.view') %}
+<a href="{{ path('hris_workforce_appraisals_evaluate', { 'eval': id }) }}" class="btn default btn-xs blue-madison {{ status is same as('Pending') ? 'disabled' : '' }}"><i class="fa fa-edit"></i> View</a>
+{% endif %}
+
+{% if app.user.hasAccess(prefix ~ '.print') %}
+<a href="{{ path('hris_report_evals_print', { 'id': id }) }}" class="btn default btn-xs green {{ status is same as('Pending') ? 'disabled' : '' }}"><i class="fa fa-print"></i> Print</a>
+{% endif %}

@@ -1,0 +1,331 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue-hoki">
+			<div class="portlet-title">
+				<div class="caption"> Company Information </div>
+			</div>
+			<div class="portlet-body">
+				<div class="table-toolbar">
+				</div>
+                    <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                            {% if app.user.hasAccess(prefix ~ '.add') %}
+                                {% set access = true %}
+                            {% else %}
+                                {% set access = false %}
+                            {% endif %}
+                        
+                            {{ form_tools.hidden('check',access)}}
+                            {{ form_tools.group_text('Company Name', 'company_name', company_name is not null ? company_name: "" , 3, 4) }}
+                            {{ form_tools.group_email('E-mail Address', 'email_add', email_add is not null ? email_add: "", 3, 4) }}
+                            {{ form_tools.group_text('Website', 'website', website is not null ? website: "", 3, 4) }}
+                            {{ form_tools.group_upload_image('Company Logo','logo',logo,3,4,false,'i')}}
+                            {{ form_tools.group_upload_image('Company Icon','icon',icon,3,4,false,'x')}}
+                        <h4 class="form-section">Address</h4>
+                            {{ form.hidden('address_id',address is not null ? address.getID:"0")}}
+                            {{ form.hidden('longitude',address is not null ? address.getID:"0")}}
+                            {{ form.hidden('latitude',address is not null ? address.getID:"0")}}
+                            {{ form.group_text('Unit no', 'unit',address is not null ? address.getName:"", 3, 4) }}
+                            {{ form.group_text('Street', 'street',address is not null ? address.getStreet:"", 3, 4) }}
+                            {{ form.group_select('Country', 'country', country_opts, address.getCountry.getID|default('0'), 3, 4) }}
+                            {{ form.group_select('State', 'state', state_opts, address.getState.getID|default(''), 3, 4) }}
+                            {{ form.group_select('City', 'city', city_opts, address.getCity.getID|default(''), 3, 4) }}
+                        {% include "CatalystContactBundle::form.has_phones.html.twig" with {object:object, f:form}  %}
+                        <div class="form-actions fluid">
+                            {% if app.user.hasAccess(prefix ~ '.add') %}
+                            <div class="col-md-9">
+                                <button type="submit" class="btn blue">Submit</button>
+                                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </form>                
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="add-phone-modal" class="modal fade" role="dialog">
+    <form id="add-phone-form" method="post" action="{{ path('cnt_phone_ajax_add') }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Phone</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-body">
+                    {{ form.group_select('Type', 'name', phone_type_opts, '', 3, 8) }}
+                    {{ form.group_text('Number', 'number', '', 3, 8, false, prefix) }}                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="profile-phone-close" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="profile-phone-submit" type="submit" class="btn btn-primary">Add Phone</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+<script id="phone-template" type="x-tmpl-mustache">
+<div>
+    {{ form.hidden2('phone_id[]','{{ id }}', '') }}
+    {{ form.hidden2('contact_person_id[]','{{ contact_person_id }}', '') }}
+    {{ form.hidden2('is_new_phone[{{ id }}]','new', '') }}
+    {{ form.group_text('Type', 'p_type[{{ id }}]', '{{type}}', 3, 4, true) }}
+    {{ form.group_text('Number', 'p_number[{{ id }}]', '{{number}}', 3, 4, true) }}
+    <div class="form-group">
+        <label class="col-md-3 control-label"></label>
+        <div class="col-md-4">
+            <div class="radio-list">
+            {{ form.radio('is_primary','{{id}}','is primary no.?',false,'is_primary') }}
+            </div>
+        </div>
+    </div>
+    <a href='#' class="btn red delete-phone">Delete Phone</a>
+    <br/>
+</div>   
+</script>
+{% endblock %}
+
+{% block js %}
+<script>
+function updateCity()
+{
+    var path;
+    var state = $('#cform-state').val();
+    path = "{{path('hris_com_info_get_cities', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', state);
+
+    var $element = $('#cform-city').select2();
+    var $request = $.ajax({
+      url: path
+    });
+
+    $request.then(function (data) 
+    {
+        //clear previous options
+        $('#cform-city option').remove();
+        //loop through all returned data then append
+        $.each(data, function(k, v) {
+            $('#cform-city').append('<option value="'+v.id+'">'+v.text+'</option>');
+        });
+        //refresh element
+        $element.trigger('change');
+    });
+}
+
+function updateState()
+{
+    var path;
+    var country = $('#cform-country').val();
+    path = "{{path('hris_com_info_get_states', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', country);
+
+    var $element = $('#cform-state').select2();
+        var $request = $.ajax({
+        url: path
+        });
+
+        $request.then(function (data) 
+        {
+            //clear previous options
+            $('#cform-state option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-state').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+}
+
+$(document).ready(function() {
+
+    $('#add-phone-modal').on('hidden.bs.modal', function () {
+        $('#hris_com_infoform-number').val('');
+    })
+
+    $( "#profile-phone-close" ).click(function() {
+        $('#hris_com_infoform-number').val('');
+    });
+
+    var check = $('#cform-check').val();
+    $('#cform-state').on("change", function()
+    {
+        updateCity();
+    });
+
+    $('#cform-country').on("change", function()
+    {
+        updateState();
+    });
+
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+        if(element.parent().parent().hasClass('form-group'))
+        {
+            error.appendTo(element.parent().last());
+            element.parent().parent().addClass('has-error');
+        }
+        else if(element.parent().parent().hasClass('radio'))
+        {   
+            error.appendTo(element.parent().parent().parent().parent().last());
+            element.parent().parent().parent().parent().parent().addClass('has-error');
+        }
+        else if(element.parent().parent().hasClass('checker'))
+        {   
+            error.appendTo(element.parent().parent().parent().parent().last());
+            element.parent().parent().parent().parent().parent().addClass('has-error');
+        }
+        else if(element.parent().hasClass('tables'))
+        {   
+            error.appendTo(element.parent().last());
+            element.parent().addClass('has-error');
+        }
+        else
+        {
+            error.appendTo(element.parent().parent().last());
+            element.parent().parent().parent().addClass('has-error');
+        }
+        },
+        success: function(element) {
+        if(element.parent().parent().hasClass('form-group'))
+        {  
+            element.parent().parent().removeClass('has-error');
+            element.parent().parent().addClass('has-success');
+        }
+        else if(element.parent().parent().hasClass('checker'))
+        {   
+            element.parent().parent().parent().parent().parent().addClass('has-error');
+            element.parent().parent().parent().parent().parent().addClass('has-success');
+        }
+        else if(element.parent().parent().hasClass('radio'))
+        {   
+            element.parent().parent().parent().parent().parent().removeClass('has-error');
+            element.parent().parent().parent().parent().parent().addClass('has-success');
+        }
+        else if(element.parent().hasClass('tables'))
+        {   
+            element.parent().removeClass('has-error');
+            element.parent().addClass('has-success');
+        }
+        else
+        {  
+            element.parent().parent().parent().removeClass('has-error');
+            element.parent().parent().parent().addClass('has-success');
+        }
+
+        element.remove();
+        },
+    });
+    $("#add-phone-form").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+            number: {
+                required: true,
+                number: true,
+                minlength: 7,
+                maxlength: 13
+            },
+        },
+        submitHandler: function(form) {
+        // e.preventDefault();
+        var url = $(form).attr('action');
+        var data = $(form).serializeArray();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(data, text_status, xhr) {
+            // make phone node
+                var template = $('#phone-template').html();
+                Mustache.parse(template);   // optional, speeds up future uses
+                var rendered = Mustache.render(template, 
+                {
+                    type  :     data.data.name,
+                    number:     data.data.number,
+                    id    :     data.data.id,
+                    is_primary: data.data.is_primary
+                });
+                // copy over data and display
+                $('#phone-section').append(rendered);
+                // hide modal
+                $('#add-phone-modal').modal('hide');
+                },
+                error: function(xhr, text_status, error) {
+                }
+            });
+            return false;
+            }
+        });
+    });
+
+    $('#add-phone-modal').on('hidden.bs.modal', function(){
+        var validator = $('#add-phone-form').validate(); 
+        validator.resetForm();
+    });
+    $(".form-horizontal").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+            is_primary: {
+                required: true
+                },
+            company_name: {
+                required: true
+                },
+            country: {
+                required: true
+                },
+            state: {
+                required: true
+                },
+            city: {
+                required: true
+                },
+            website: {
+                required: true
+                },
+            email_add: {
+                required: true
+                },
+            unit: {
+                required: true
+                },
+            street: {
+                required: true
+                },
+            }
+        });
+    });
+
+    $('#phone-section').on("click",".delete-phone",function (e){
+        e.preventDefault();
+        $(this).closest('div').remove();
+    });
+    if(!check)
+    {
+        $('#idz-upload').hide();
+        $('#xdz-upload').hide();
+        $('#add-phone').hide();
+        $('.delete-phone').hide();
+        $('input[name="is_primary"]').attr("disabled",true);
+        $('input[name="is_primary"]').closest('div[class="radio"]').addClass('disabled');
+    }
+});
+</script>
+{% endblock %}

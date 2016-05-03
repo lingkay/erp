@@ -1,0 +1,47 @@
+{% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_CHECKLIST')%}
+{% set readonly = true %}
+{% endif %}
+<form method="post" class="form-horizontal form">
+	{{form.hidden('app_form','checklist')}}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+	<div class="form-group">
+		{% if not readonly %}
+		<button type="button" class="btn default btn green" style="float: right;" id="all_form"><i class="fa fa-files-o"></i> All Form's Received</button>
+		{% endif %}
+	</div>
+	<div class="form-group">	
+	    <table id="" class="table table-striped table-bordered table-hover" aria-describedby="list_table_info">
+		    <thead>
+		        <tr>
+		            <th style="width: 300px;">Requirement</th>
+		            <th>Status</th>
+		            <th style="width: 170px;">Date Received</th>
+		            <th>Remarks</th>
+		        </tr>
+		    </thead>
+		    <tbody id="">
+		    {% for item in checklist_opts %}
+		        {% set checklist = checklists[item.getID] is defined? checklists[item.getID] : null %}
+		        <tr>
+		            <td><strong>{{ item.getName }}</strong>
+		                <br/> {{ item.getNotes }}
+		                {{ form.hidden('id[]',item.getId) }}
+		            </td>
+		            <td>{{ form.select('checklist_status['~item.getId~']',checklist_status_opts,checklist is not null ? checklist.getStatus:'',12,readonly) }} </td>
+		            <td>{{ form.date('date_received['~item.getId~']',checklist is not null ? (checklist.getDateReceived is not null ? checklist.getDateReceived|date('m/d/Y'):''):'',12,readonly)}}</td>
+		            <td>{{ form.textarea('checklist_notes['~item.getId~']',checklist.getNotes|default(''),2,12,readonly)}}</td>
+		        </tr>
+		    {% endfor %}
+		    </tbody>
+		    </table>
+		{% if not readonly%}
+        <div class="form-group">
+               	{% if not readonly %}
+                <button type="submit" class="btn blue">Save</button>
+                <button name="result" value="pass" type="submit" class="btn green">Accepted</button>
+                <button name="result" value="fail" type="submit" class="btn red">Declined</a>
+                {% endif %}
+        </div>
+    	{% endif %}
+	</div>
+</form>

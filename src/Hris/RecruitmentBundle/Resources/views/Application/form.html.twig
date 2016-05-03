@@ -1,0 +1,910 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<form method="post" class="form-horizontal">
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption"> {% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body">
+<!-- start of profile -->
+<div class="row profile">
+    <div class="col-md-12">
+        <!--BEGIN TABS-->
+        <div class="tabbable tabbable-custom tabbable-full-width">
+            <!--TO DO: Add ACL for Viewing of Application Progress -->
+            {% if object.getID != null %}
+            <div class="form-group">
+                <div class="col-md-12">
+                    {% if not readonly %}
+                        <a href="{{ path('hris_applications_edit_progress_form', {'id': object.getID }) }}" class="btn default btn green" style="float: right;"><i class="fa fa-edit"></i> View Application Progress</a>
+                        {% if object.status == 'Hired' %}
+                        <a href="{{ path('hris_applications_print', {'id':object.getID}) }}" id="print_btn" class="default btn green" style="float: right; margin-right: 10px;"><i class="fa fa-print"></i> Print Applicant Details</a>
+                        {% endif %}
+                    {% endif %}
+                </div> 
+            </div>
+            {% endif %}
+            <div class="tab-content">
+                <div class="tab-pane active" id="app_form">
+                <form method="post" class="form-horizontal">
+                    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                    <div class="row profile-account">
+                        <div class="col-md-3">
+                            <ul class="ver-inline-menu tabbable margin-bottom-10">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#tab_personal">
+                                    <i class="fa fa-info"></i> Personal info </a>
+                                    <span class="after">
+                                    </span>
+                                </li>
+                                {% if object.getID != null %}
+                                <li>
+                                    <a data-toggle="tab" href="#tab_education">
+                                    <i class="fa fa-folder-open-o"></i> Educational Background </a>
+                                    <span class="after">
+                                    </span>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#tab_experience">
+                                    <i class="fa fa-briefcase"></i> Work Experience </a>
+                                    <span class="after">
+                                    </span>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#tab_skills">
+                                    <i class="fa fa-wrench"></i> Technical/Special Skills </a>
+                                    <span class="after">
+                                    </span>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#tab_reference">
+                                    <i class="fa fa-users"></i> Character References </a>
+                                    <span class="after">
+                                    </span>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#tab_other_information">
+                                    <i class="fa fa-list ul"></i> Other Information </a>
+                                    <span class="after">
+                                    </span>
+                                </li>
+                                {% endif %}
+                                <li>
+                                    <a data-toggle="tab" href="#tab_upload" id="upload_link">
+                                    <i class="fa fa-picture-o"></i> Upload Picture </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="tab-content">
+                                <div id="tab_personal" class="tab-pane active">
+                                {% include "HrisRecruitmentBundle:Application:application/profile.html.twig"%}   
+                                </div>
+                                <div id="tab_education" class="tab-pane">
+                                {% include "HrisRecruitmentBundle:Application:application/educucation.html.twig"%}
+                                </div>
+                                <div id="tab_experience" class="tab-pane">
+                                {% include "HrisRecruitmentBundle:Application:application/experience.html.twig"%}
+                                </div>
+                                <div id="tab_skills" class="tab-pane">
+                                {% include "HrisRecruitmentBundle:Application:application/skills.html.twig"%}                         
+                                </div>
+                                <div id="tab_reference" class="tab-pane">
+                                {% include "HrisRecruitmentBundle:Application:application/reference.html.twig"%}
+                                </div>
+                                <div id="tab_other_information" class="tab-pane">
+                                {% include "HrisRecruitmentBundle:Application:application/other_information.html.twig"%}  
+                                </div>
+                                <div id="tab_upload" class="tab-pane">
+                                {% embed "HrisRecruitmentBundle:Application:application/upload.html.twig"%}
+                                {% endembed %}
+                                </div>
+                            </div>
+                        <!--end col-md-9-->
+                        </div>
+                    </div>
+                <!--end tab-pane-->
+                </form>
+                </div>  
+                </div>
+            </div>
+        </div>
+        <!--END TABS-->
+    </div>
+</div>
+<!-- end of portlet -->
+</div></div>
+</form>
+{% include "HrisRecruitmentBundle:Application:modal/experience.html.twig"%}
+{% include "HrisRecruitmentBundle:Application:modal/reference.html.twig" %}
+{% include "HrisRecruitmentBundle:Application:modal/camera.html.twig" %}
+{% endblock %}
+
+{% block js %}
+<script>
+function download(dataUrl, filename) {
+    var download = document.createElement('a');
+    download.href = dataUrl;
+    download.target = '_blank';
+    download.download = filename;
+    var evt = document.createEvent('MouseEvents');
+    evt.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0,
+                       false, false, false, false, 0, null);
+    download.dispatchEvent(evt);
+}
+
+function dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ia], {type: "image/png"});
+}
+
+function updateCity(identifier)
+{
+    var $element = $('#cform-'+identifier+'_city').select2();
+        var $request = $.ajax({
+      url: 'cities/'+$('#cform-'+identifier+'_state').val()
+        });
+
+        $request.then(function (data) 
+        {
+            //clear previous options
+            $('#cform-'+identifier+'_city option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-'+identifier+'_city').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+}
+
+function updateState(identifier)
+{
+    var $element = $('#cform-'+identifier+'_state').select2();
+        var $request = $.ajax({
+      url: 'states/'+$('#cform-'+identifier+'_country').val()
+        });
+
+        $request.then(function (data) 
+        {
+            //clear previous options
+            $('#cform-'+identifier+'_state option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-'+identifier+'_state').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+}
+
+$(document).ready(function() {
+    $('#char-ref-modal').on('hidden.bs.modal', function () {
+        var salutation = $('#cform-salutation').val('');
+        var first_name = $('#cform-firstname').val('');
+        var middle_name = $('#cform-middlename').val('');
+        var last_name = $('#cform-lastname').val('');
+        var relationship = $('#cform-relationship').val('');
+        var detail = $('#cform-number').val('');
+        var validator = $('#char-ref-form').validate(); 
+            validator.resetForm();
+        $('div').removeClass('has-error');
+        $('div').removeClass('has-success');
+    });
+    $('#work-exp-modal').on('hidden.bs.modal', function () {
+        $('#cform-company_detail').val('');
+        $('#cform-position').val('');
+        $('#cform-emp_duration').val('');
+        $('#cform-salary_start').val('');
+        $('#cform-salary_last').val('');
+        $('#cform-reason').val('');
+        var validator = $('#work-exp-form').validate(); 
+        validator.resetForm();
+        $('div').removeClass('has-error');
+        $('div').removeClass('has-success');
+    });
+
+    $('#cform-home_state').on("change", function()
+    {
+        updateCity('home');
+    });
+
+    $('#cform-permanent_state').on("change", function()
+    {
+        updateCity('permanent');
+    });
+
+    $('#cform-home_country').on("change", function()
+    {
+        updateState('home');
+    });
+
+    $('#cform-permanent_country').on("change", function()
+    {
+        updateState('permanent');
+    });
+   
+   $('#cform-birth_date').datepicker({
+    todayHighlight: true,
+    endDate: '-18y',
+    });
+
+    $('#cfirst_choice_typeahead').change(function() {
+
+        if ($('#cfirst_choice_typeahead').val() == '') 
+        {
+            $('#cfirst_choice_id').val('0');
+        }
+        else
+        {
+            if ($('#cfirst_choice_id').val() != '0')
+            {
+                if (($('#cfirst_choice_id').val() == $('#csecond_choice_id').val()) || ($('#cfirst_choice_id').val() == $('#cthird_choice_id').val())) 
+                {
+                    $('#cfirst_choice_typeahead').val('');
+                    $('#cfirst_choice_id').val('0');
+                    toastr['error']('Position already selected', 'Error');
+                    $('#cfirst_choice_typeahead').prop('readonly', false);
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                $('#cfirst_choice_typeahead').val('');
+            }
+        }
+    });
+
+    $('#csecond_choice_typeahead').change(function() {
+        if ($('#csecond_choice_typeahead').val() == '') 
+        {
+            $('#csecond_choice_id').val('0');
+        }
+        else
+        {
+            if ($('#csecond_choice_id').val() != '0')
+            {
+                if (($('#csecond_choice_id').val() == $('#cfirst_choice_id').val()) || ($('#csecond_choice_id').val() == $('#cthird_choice_id').val())) 
+                {
+                    $('#csecond_choice_typeahead').val('');
+                    $('#csecond_choice_id').val('0');
+                    toastr['error']('Position already selected', 'Error');
+                    $('#csecond_choice_typeahead').prop('readonly', false);
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                $('#csecond_choice_typeahead').val('');
+            }
+        }
+    });
+
+    $('#cthird_choice_typeahead').change(function() {
+        if ($('#cthird_choice_typeahead').val() == '') 
+        {
+            $('#cthird_choice_id').val('0');
+        }
+        else
+        {
+            if ($('#cthird_choice_id').val() != '0')
+            {
+                if (($('#cthird_choice_id').val() == $('#cfirst_choice_id').val()) || ($('#cthird_choice_id').val() == $('#csecond_choice_id').val())) 
+                {
+                    $('#cthird_choice_typeahead').val('');
+                    $('#cthird_choice_id').val('0');
+                    toastr['error']('Position already selected', 'Error');
+                    $('#cthird_choice_typeahead').prop('readonly', false);
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                $('#cthird_choice_typeahead').val('');
+            }
+        }
+    });
+
+   $("#cform-no_of_child, #cform-contact_number, #cform-height, #cform-weight").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+             // Allow: Ctrl+A, Command+A
+            (e.keyCode == 65 && ( e.ctrlKey === true || e.metaKey === true ) ) || 
+             // Allow: home, end, left, right, down, up
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+
+    $('.calendar').prop('disabled', true);
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                error.appendTo(element.parent().last());
+                element.parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                element.parent().removeClass('has-error');
+                element.parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        },
+    });
+    // validate form elements
+    $(".form-horizontal").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+               this.element(element);
+            },
+            rules: {
+                //BEGIN VALIDATION FOR PERSONAL INFO
+                first_choice: {
+                    required: true,
+                },
+                first_name: {
+                    required: true,
+                    letterswithbasicpunc: true
+                },
+                middle_name: {
+                    required: true,
+                    letterswithbasicpunc: true
+                },
+                last_name: {
+                    required: true,
+                    letterswithbasicpunc: true
+                },
+                email_add: {
+                    required: true,
+                    email: true
+                },
+                birth_date: {
+                    required: true
+                },
+                birth_place: {
+                    required: true
+                },
+                height: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                weight: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                home_name: {
+                    required: true
+                },
+                home_street: {
+                    required: true
+                },
+                home_city: {
+                    required: true
+                },
+                home_state: {
+                    required: true
+                },
+                home_country: {
+                    required: true
+                },
+                permanent_name: {
+                    required: true
+                },
+                permanent_street: {
+                    required: true
+                },
+                permanent_city: {
+                    required: true
+                },
+                permanent_state: {
+                    required: true
+                },
+                permanent_country: {
+                    required: true
+                },
+                contact_person: {
+                    required: true
+                },
+                contact_phone_type: {
+                    required: true
+                },
+                contact_number: {
+                    required: true,
+                    number: true,
+                    maxlength:12
+                },
+                myphone_type: {
+                    required: true
+                },
+                my_number: {
+                    required: true,
+                    number: true,
+                    maxlength:12
+                },
+                civil_status: {
+                    required: true
+                },
+                dependent_num: {
+                    number: true
+                },
+                no_of_child: {
+                    number: true
+                },
+                father_name: {
+                    required: true,
+                    letterswithbasicpunc: true
+                },
+                mother_name: {
+                    required: true,
+                    letterswithbasicpunc: true
+                },
+
+                //END VALIDATION FOR PERSONAL INFO
+
+                //BEGIN VALIDATION FOR EDUCATIONAL BACKGROUND
+                elementary_name_course: {
+                    required: true
+                },
+                elementary_year_from: {
+                    required: true,
+                    number: true,
+                    minlength: 4,
+                    maxlength: 4,
+                    min: 1
+                },
+                elementary_year_to: {
+                    required: true,
+                    number: true,
+                    minlength: 4,
+                    maxlength: 4,
+                    min: 1
+                },
+                //END VALIDATION FOR EDUCATIONAL BACKGROUND
+
+                //BEGIN VALIDATION FOR TECHNICAL/SPECIAL SKILLS
+                'computer[]': {
+                    required: true
+                },
+                'related[]': {
+                    required: true
+                },
+                'hobbies[]': {
+                    required: true
+                },
+                //END VALIDATION FOR TECHNICAL/SPECIAL SKILLS
+
+                //BEGIN VALIDATION FOR OTHER INFORMATION
+                is_forced_resign: {
+                    required: true
+                },
+                is_convicted: {
+                    required: true
+                },
+                has_serious_disease: {
+                    required: true
+                },
+                has_driver_license: {
+                    required: true
+                },
+                //END VALIDATION FOR OTHER INFORMATION
+            },
+            submitHandler: function(form) {
+                $('#en_table_work_exp').removeClass('has-error');
+                form.submit();
+            }
+        });
+
+        $('.form-horizontal .select_2').change(function () {
+            $('.form-horizontal').validate().element($(this));
+        });
+
+        $('.date-picker .form-control').change(function() {
+            $('.form-horizontal').validate().element($(this));
+        });
+    });
+    var first_name = $('#cform-first_name').val();
+    var last_name = $('#cform-last_name').val();
+    var name = first_name+ ' ' +last_name;
+    var count = 0;
+
+    $('#en_camera_form').on('shown.bs.modal', function(event){
+        $('#webcam-container').photobooth().on("image",function( event, dataUrl ){
+            var blob = dataURItoBlob(dataUrl);
+            var fd = new FormData(document.forms['camera_form']);
+            fd.append("file", blob, "upload.png");
+            $.ajax({
+                url: "{{ path('cat_media_upload_file') }}",
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success: function(data){
+                    $('#en_camera_form').modal('hide');
+                    $('#webcam-container').data( "photobooth" ).destroy();
+                    $('#cform-picture_id').val(data.id);
+                    $('#picture_path').attr('src',data.url);
+                    $('#main-image-link').attr('href', data.url);
+                }
+            });
+        });
+    });
+
+    $('#en_camera_form').on('hidden.bs.modal',function(){
+        $('#webcam-container').data( "photobooth" ).destroy();
+    });
+
+    $('#close_camera').on('click', function(){
+        $('#en_camera_form').modal('hide');
+    });
+    ComponentsPickers.init();
+    $('.list_table').dataTable({
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+        ]
+    });
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+
+    $(".mask_philhealth").inputmask({
+        "mask": "9999-9999-9999"
+    });
+
+    $(".mask_tin").inputmask({
+        "mask": "999-999-999-999"
+    });
+
+    $(".mask_sss").inputmask({
+        "mask": "99-9999999-9"
+    });
+
+    $(".mask_pagibig").inputmask({
+        "mask": "9999-9999-9999"
+    });
+
+    $(".add_i_candidate_button").click(function(e){ //on add input button click
+        e.preventDefault();
+        var item = $('input[name="i_candidates"]').val();
+
+        $(".add_i_candidate").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" name="i_candidates[]" class="form-control" value="'+ item +'" readonly></div><button class="remove_benefit_field btn red"><i class="fa fa-minus"></i></button></div>'); //add input box
+
+        $('input[name="i_candidates"]').val("");
+        $("select").select2();
+    });
+    $(".add_computer_button").click(function(e){ //on add input button click
+        e.preventDefault();
+
+        var computer = $('input[name = "computer"]').val();
+            $(".add_computer").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" id="computer[]" name="computer[]" class="form-control" placeholder="Computer Skills" value="'+ computer +'"></div><button class="remove_computer_button btn red"><i class="fa fa-minus"></i></button></div>'); //add input box
+        $('input[name = "computer"]').val("");
+    });
+    $('.add_computer').on("click",".remove_computer_button", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+
+    $(".add_related_button").click(function(e){ //on add input button click
+        e.preventDefault();
+
+        var related = $('input[name = "related"]').val();
+            $(".add_related").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" id="related[]" name="related[]" class="form-control" placeholder="Job-Related Skills" value="'+ related +'"></div><button class="remove_related_button btn red"><i class="fa fa-minus"></i></button></div>'); //add input box
+        $('input[name = "related"]').val("");
+    });
+    $('.add_related').on("click",".remove_related_button", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+
+    $(".add_hobbies_button").click(function(e){ //on add input button click
+        e.preventDefault();
+
+        var hobbies = $('input[name = "hobbies"]').val();
+            $(".add_hobbies").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" id="hobbies[]" name="hobbies[]" class="form-control" placeholder="Hobbies and Special Interests" value="'+ hobbies +'"></div><button class="remove_hobbies_button btn red"><i class="fa fa-minus"></i></button></div>'); //add input box
+        $('input[name = "hobbies"]').val("");
+    });
+    $('.add_hobbies').on("click",".remove_hobbies_button", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
+
+    $('#en_table_char_ref').on('click', '.btn_en_del', function() {
+        var row = $(this).closest('tr');
+        row.remove();
+    });
+
+    $('#en_table_work_exp').on('click', '.btn_en_del', function() {
+        var row = $(this).closest('tr');
+        row.remove();
+    });
+    var forced_ctr = 0;
+    $('input[name="is_forced_resign"]').click(function(){
+        var value = $(this).val();
+
+        var text = "{{ form.group_textarea('If yes, Please provide details','forced_resign_details',object.getInformation.getData.forced_resign|default(''),3,3,5,readonly)|e('js') }}"
+
+        if(value == 1)
+        {
+            if(forced_ctr == 0)
+            {
+                $('#is_forced_resign_area').append(text);
+                forced_ctr++;    
+            }    
+        }
+        else
+        {
+            $('#is_forced_resign_area').empty();
+        }
+    });
+    var convicted_ctr = 0;
+    $('input[name="is_convicted"]').click(function(){
+        var value = $(this).val();
+
+        var text = "{{ form.group_textarea('If yes, Please provide details','convicted_crime_details',object.getInformation.getData.crime_convicted|default(''),3,3,5,readonly)|e('js') }}";
+
+        if(value == 1)
+        {
+            if(convicted_ctr == 0)
+            {
+                $('#is_convicted_area').append(text);
+                convicted_ctr++;
+            }  
+        }
+        else
+        {
+            $('#is_convicted_area').empty();
+        }
+    });
+    var disease_ctr = 0;
+    $('input[name="has_serious_disease"]').click(function(){
+        var value = $(this).val();
+
+        var text = "{{ form.group_textarea('If yes, Please provide details','has_serious_disease_details',object.getInformation.getData.serious_disease|default(''),3,3,5,readonly)|e('js') }}";
+
+        if(value == 1)
+        {
+            if(disease_ctr == 0)
+            {
+                $('#disease_area').append(text);
+                disease_ctr++;
+            }    
+        }
+        else
+        {
+            $('#disease_area').empty();
+        }
+    });
+    var driver_ctr = 0;
+    $('input[name="has_driver_license"]').click(function(){
+        var value = $(this).val();
+        var text = '<div class="form-group"><label class="col-md-4 control-label">If yes?</label><div class="col-md-3"><div class="radio-list"><label><input type="radio" id="cform-is_professional" name="is_professional" class="radio-group" value="0"/>Non-Professional</label><label><input type="radio" id="cform-is_professional" name="is_professional" class="radio-group" value="1"/>Professional</label></div></div></div>';
+
+        if(value == 1)
+        {
+            if(driver_ctr == 0)
+            {
+              $('#license_area').append(text);
+              driver_ctr++;  
+            }    
+        }
+        else
+        {
+            $('#license_area').empty();
+        }
+    });
+
+    $('#work-exp-form').validate({
+        onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+        //BEGIN VALIDATION FOR WORK EXPERIENCE
+            company_detail: {
+                required: true
+            },
+            position: {
+                required: true
+            },
+            emp_duration: {
+                required: true,
+                number: true,
+                min: 1
+            },
+            salary_start: {
+                required: true,
+                number: true,
+            },
+            salary_last: {
+                required: true,
+                number: true,
+            },
+            reason: {
+                required: true
+            },
+        //END VALIDATION FOR WORK EXPERIENCE
+        },
+    submitHandler: function(form) {
+    // e.preventDefault();
+        var details = $('#cform-company_detail').val();
+        var position = $('#cform-position').val();
+        var duration = $('#cform-emp_duration').val();
+        var salary_start = $('#cform-salary_start').val();
+        var salary_last = $('#cform-salary_last').val();
+        var reason = $('#cform-reason').val();
+
+        var row = '<tr>';
+        row += '<td><textarea name="company_detail[]" class="form-control company_detail tables" rows="2">'+ details + '</textarea></td>';
+        row += '<td><input class="form-control en_position tables" type="text" name="position[]" value="' + position + '"></td>';
+        row += '<td><input class="form-control en_duration tables" type="number" name="duration[]" value="' + duration + '"></td>';
+        row += '<td><input class="form-control numeric tables en_salary_start" type="number" name="salary_start[]" value="' + salary_start + '"></td>';
+        row += '<td><input class="form-control en_salary_last tables" type="number" name="salary_last[]" value="' + salary_last + '"></td>';
+        row += '<td><textarea name="reason[]" class="form-control reason tables" rows="2">'+ reason + '</textarea></td>';   
+        row += '<td><button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button></td>';
+        row += '</tr>';
+
+        $('#en_table_work_exp').append(row);
+
+        $('#work-exp-modal').modal('hide');
+        // return false;
+        }
+    });
+
+    $('#char-ref-form').validate({
+        onfocusout: function(element) {
+            this.element(element);
+        },
+        rules: {
+        //BEGIN VALIDATION FOR CHARACTER REFERENCE
+        firstname: {
+            required: true,
+            letterswithbasicpunc: true
+        },
+        middlename: {
+            required: true,
+            letterswithbasicpunc: true
+        },
+        lastname: {
+            required: true,
+            letterswithbasicpunc: true
+        },
+        salutation: {
+            required: true
+        },
+        relationship: {
+            required: true
+        },
+        number: {
+            required: true,
+            number: true,
+            minlength: 7,
+            maxlength: 12
+        },
+    },
+        //END VALIDATION FOR CHARACTER REFERENCE
+    submitHandler: function(form) {
+    // e.preventDefault();
+        var salutation = $('#cform-salutation').val();
+        var first_name = $('#cform-firstname').val();
+        var middle_name = $('#cform-middlename').val();
+        var last_name = $('#cform-lastname').val();
+        var display_name = salutation +' '+ first_name +' '+ middle_name + ' ' + last_name;
+
+        var relationship = $('#cform-relationship').val();
+        var detail = $('#cform-number').val();
+        var contact_type_id = $('#cform-phone_type').val();
+
+        var row = '<tr>';
+            row += '<td><input type="hidden" name="salutation[]" value="' + salutation + '"><input type="hidden" name="fname[]" value="' + first_name + '"><input type="hidden" name="mname[]" value="' + middle_name + '"><input type="hidden" name="lname[]" value="' + last_name + '"><input class="form-control name" type="text" name="name[]" value="' + display_name + '"></td>';
+            row += '<td><input class="form-control relationship" type="text" name="relationship[]" value="' + relationship + '"></td>';
+            row += '<td><input type="hidden" name="contact_id[]" value="' + contact_type_id + '"><input class="form-control en_detail" type="text" name="detail[]" value="' + detail + '"></td>';
+            row += '<td><button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button></td>';
+            row += '</tr>';
+
+        $('#en_table_char_ref').append(row);
+
+         var salutation = $('#cform-salutation').val('');
+         var first_name = $('#cform-firstname').val('');
+         var middle_name = $('#cform-middlename').val('');
+         var last_name = $('#cform-lastname').val('');
+         var relationship = $('#cform-relationship').val('');
+         var detail = $('#cform-number').val('');
+
+        $('#char-ref-modal').modal('hide');
+        }
+    });
+});
+</script>
+{% endblock %}

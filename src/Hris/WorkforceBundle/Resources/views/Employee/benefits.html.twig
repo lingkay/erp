@@ -1,0 +1,62 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">Employee Benefits</h4>
+    {{ form.hidden('employee_form','benefits')}}
+    
+    <div class="form-group">
+        <label class="col-md-3 control-label">Benefits</label>
+        <div class="col-md-4">
+            <select name="benefits" class="form-control select_2">
+            {{ form.options(benefits,'') }}
+            </select>
+            <span class="help-block"></span>
+        </div>
+        <button class="add_benefit_button btn green disabled">Add Benefit</button>
+    </div>
+
+    <table class="table table-bordered" id="ben_table">
+        <thead>
+            <tr>
+                <th>Benefit Name</th>
+                <th>Description</th>
+                <th style="width:165px"></th>
+            </tr>
+        </thead>
+        <tbody class="benefit_list">
+            {% if emp_ben is empty %}
+                <tr class="odd empty">
+                    <td valign="top" colspan="6" class="dataTables_empty">No Benefit added yet.</td>
+                </tr>
+            {% else %}
+                {% for e in emp_ben %}
+                <tr class="odd gradeX">
+                    {% if e.getBenefit != NULL %}
+                    <td>{{ e.getBenefit.getName }}<input type="hidden" name="benefit[]" value="{{ 'benefit-' ~ e.getBenefit.getID }}"></td>
+                    <td>{{ e.getBenefit.getNotes }}</td>
+                    <td>
+                    <buton class="btn btn-xs red remove_benefit_field" onclick="check_ben_table()">Remove</button>
+                    </td>
+                    {% endif %}
+                    {% if e.getLeave != NULL %}
+                    <td>{{ e.getLeave.getName }}<input type="hidden" name="leave[]" value="{{ 'leave-' ~ e.getLeave.getID }}"></td>
+                    <td>{{ e.getLeave.getNotes }}</td>
+                    <td>
+                    <buton class="btn btn-xs red remove_benefit_field" onclick="check_ben_table()">Remove</button>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div class="form-actions fluid">
+        <div class="col-md-9">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+        </div>
+    </div>
+</div>
+</form>

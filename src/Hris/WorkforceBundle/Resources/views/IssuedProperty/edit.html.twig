@@ -1,0 +1,128 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Edit Issued Property</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal" id="property_form">
+                    <div class="form-body">
+                    <h4 class="form-section">Employee Details</h4>
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_text('Employee Name', 'emp_name', object.getEmployeeName, 3, 4, true) }}
+                        {{ form.hidden('emp', object.getEmployee.getID) }}
+                        {{ form.group_text('Department', 'dept', object.getEmployee.getDepartment.getName, 3, 4, true) }}
+                        
+
+                    <h4 class="form-section">Issued Items</h4>
+                        {{ form.group_text('Property Type', 'type_name', prop_type[object.getItemType], 3, 4, true) }}
+                        {{ form.hidden('type', object.getItemType) }}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:car.html.twig" %}{% endembed %}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:laptop.html.twig" %}{% endembed %}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:phone.html.twig" %}{% endembed %}
+                        {% embed "HrisWorkforceBundle:IssuedProperty:others.html.twig" %}{% endembed %}
+                        {{ form.group_date('Date Issued', 'issue_date', object.getDateIssuedFormatted, 3, 4) }}
+                        {{ form.group_date('Date Returned', 'return_date', object.getDateReturnedFormatted|default(''), 3, 4) }}
+                        {{ form.group_upload_image('Item Picture','picture',object.getUpload,3,4)}}
+                        
+                    </div>
+                    <input type="hidden" id="isRet" name="isRet">
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            <a href="javascript:void(0)" data-id="returned" class="btn red status_btn">Returned</a>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                            <a href="{{ path('hris_workforce_issued_property_print', {'id': object.getID}) }}" class="btn green">Print</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+function filter_select(dept) {
+    if (dept == 0) {
+        return false;
+    }
+
+    var url = "{{ path ('hris_workforce_get_emp', { id: ':dept' }) }}";
+    url = url.replace(":dept", dept);
+
+    $('select[name="emp"]').empty();
+
+    console.log(url);
+    // get evaluator list
+    $.getJSON(url, function(data){
+        console.log(data);
+
+        $('select[name="emp"]').html('<option></option>').select2();
+        for(var index in data)
+        {
+            $('select[name="emp"]').append('<option value="'+ index + '">'+ data[index].name + ' </option>');
+        }
+    });
+}
+
+function toggle_form(id) {
+    if(id == 1) {
+        $('#type_car').show();
+        $('#type_laptop').hide();
+        $('#type_phone').hide();
+        $('#type_others').hide();
+    }
+    else if(id == 2) {
+        $('#type_laptop').show();
+        $('#type_car').hide();
+        $('#type_phone').hide();
+        $('#type_others').hide();
+    }
+    else if(id == 3) {
+        $('#type_phone').show();
+        $('#type_laptop').hide();
+        $('#type_car').hide();
+        $('#type_others').hide();
+    }
+    else {
+        $('#type_others').show();
+        $('#type_laptop').hide();
+        $('#type_car').hide();
+        $('#type_phone').hide();
+    };
+}
+
+
+$(document).ready(function() {
+    toggle_form({{ object.getItemType }});
+
+    // $('select[name="dept"]').change(function() {
+    //     filter_select($(this).val());
+    // });
+
+    // $('select[name="type"]').change(function() {
+    //     toggle_form($(this).val());
+        
+    // });
+
+    $('.status_btn').click(function(){
+
+       $('#isRet').val($(this).data('id'));
+       $('#property_form').submit();
+       
+    });
+});
+</script>
+
+{% endblock %}

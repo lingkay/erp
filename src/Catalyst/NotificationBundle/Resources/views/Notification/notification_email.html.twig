@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html style="-webkit-text-size-adjust: none;-ms-text-size-adjust: none;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{{company_name}}</title>
+<style type="text/css">
+html { -webkit-text-size-adjust:none; -ms-text-size-adjust: none;}
+@media only screen and (max-device-width: 680px), only screen and (max-width: 680px) { 
+    *[class="table_width_100"] {
+        width: 96% !important;
+    }
+    *[class="border-right_mob"] {
+        border-right: 1px solid #dddddd;
+    }
+    *[class="mob_100"] {
+        width: 100% !important;
+    }
+    *[class="mob_center"] {
+        text-align: center !important;
+    }
+    *[class="mob_center_bl"] {
+        float: none !important;
+        display: block !important;
+        margin: 0px auto;
+    }   
+    .iage_footer a {
+        text-decoration: none;
+        color: #929ca8;
+    }
+    img.mob_display_none {
+        width: 0px !important;
+        height: 0px !important;
+        display: none !important;
+    }
+    img.mob_width_50 {
+        width: 40% !important;
+        height: auto !important;
+    }
+}
+.table_width_100 {
+    width: 680px;
+}
+.myButton {
+	background-color: #03913E;
+	background-color:#44c767;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 17px;
+	font-weight:bold;
+	padding:15px 35px;
+	text-decoration:none;
+	text-shadow:0px 0px 1px #2f6627;
+}
+.myButton:hover {
+	background-color:#5cbf2a;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+</style>
+</head>
+
+<body style="padding: 0px; margin: 0px;">
+<div id="mailsub" class="notification" align="center">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="min-width: 320px;"><tr><td align="center" bgcolor="#eff3f8">
+
+
+<!--[if gte mso 10]>
+<table width="680" border="0" cellspacing="0" cellpadding="0">
+<tr><td>
+<![endif]-->
+
+<table border="0" cellspacing="0" cellpadding="0" class="table_width_100" width="100%" style="max-width: 680px;min-width: 300px;width: 680px;">
+    <!--header -->
+    
+    <!--header END-->
+
+    <!--content 1 -->
+    <tr><td align="center" bgcolor="#ffffff">
+        <table width="90%" border="0" cellspacing="0" cellpadding="0">
+            <tr><td align="center">
+                <!-- padding --><div style="height: 100px; line-height: 100px; font-size: 10px;">&nbsp;</div>
+                <div style="line-height: 44px;">
+                    <font face="Arial, Helvetica, sans-serif" size="5" color="#57697e" style="font-size: 34px;">
+                    <span style="font-family: Arial, Helvetica, sans-serif; font-size: 34px; color: #57697e;">
+                   
+                    </span></font>
+                </div>
+                <!-- padding --><div style="height: 30px; line-height: 30px; font-size: 10px;">&nbsp;</div>
+            </td></tr>
+            <tr><td align="center">
+                <div style="line-height: 30px;">
+                    <font face="Arial, Helvetica, sans-serif" size="5" color="#4db3a4" style="font-size: 17px;">
+                    <span style="font-family: Arial, Helvetica, sans-serif; font-size: 17px; color: #4db3a4;">
+                        Hi {{ name }}, you have new notifications!
+                    </span></font>
+                </div>
+                <!-- padding --><div style="height: 35px; line-height: 35px; font-size: 10px;">&nbsp;</div>
+            </td></tr>
+            <tr><td align="center">
+                        <table width="80%" align="center" border="0" cellspacing="0" cellpadding="0">
+                            <tr><td align="center">
+                                <div style="line-height: 24px;">
+                                    <font face="Arial, Helvetica, sans-serif" size="4" color="#57697e" style="font-size: 16px;">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size: 15px; color: #57697e;">
+                                    	Please follow the link below: <br>
+                                    	<a href="{{ url('cat_dashboard')|trim('/') ~ notification.link}}">{{notification.message}}</a>
+                                        <br/>
+                                        <a href="{{ url('cat_dashboard')|trim('/') ~ notification.link}}">{{url('cat_dashboard')|trim('/')  ~ notification.link}}</a>
+                                    </span></font>
+                                </div>
+                            </td></tr>
+                        </table>
+                <!-- padding --><div style="height: 45px; line-height: 45px; font-size: 10px;">&nbsp;</div>
+            </td></tr>
+            <tr><td align="center">
+                <div style="line-height:24px;">
+                    {# <a href="http://lilys.dev/login" target="_blank" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 13px;">
+                        <font face="Arial, Helvetica, sans-seri; font-size: 13px;" size="3" color="#596167"> #}
+                        	</font></a><a href="{{ url('hris_dashboard_index') }}" class="myButton" style="background-color: #44c767;-moz-border-radius: 10px;-webkit-border-radius: 10px;border-radius: 10px;display: inline-block;cursor: pointer;color: #ffffff;font-family: Arial, Helvetica, sans-serif;font-size: 17px;font-weight: bold;padding: 15px 35px;text-decoration: none;text-shadow: 0px 0px 1px #2f6627;">GO TO {{company_name}} WEBSITE</a>
+                            {# <img src="{{ asset('bundles/hristemplate/images/confirm-reg.jpg')}}" width="225" height="43" alt="CONFIRM REGISTRATION" border="0" style="display: block;"> #}
+                </div>
+                <!-- padding --><div style="height: 100px; line-height: 100px; font-size: 10px;">&nbsp;</div>
+            </td></tr>
+        </table>        
+    </td></tr>
+    <!--content 1 END-->
+
+    <!--links -->
+    {# <tr><td align="center" bgcolor="#f9fafc">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr><td align="center">
+                <!-- padding --><div style="height: 30px; line-height: 30px; font-size: 10px;">&nbsp;</div>
+        <table width="80%" align="center" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" valign="middle" style="font-size: 12px; line-height:22px;">
+                <font face="Tahoma, Arial, Helvetica, sans-serif" size="2" color="#282f37" style="font-size: 12px;">
+                                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #5b9bd1;">
+                      <a href="#" target="_blank" style="color: #5b9bd1; text-decoration: none;">GENERAL QUESTIONS</a>
+                      &nbsp;&nbsp;&nbsp;&nbsp;<img src="http://artloglab.com/metromail2/images/dot.gif" alt="|" width="6" height="9" class="mob_display_none">&nbsp;&nbsp;&nbsp;&nbsp;
+                      <a href="#" target="_blank" style="color: #5b9bd1; text-decoration: none;">TERMS &amp; CONDITIONS</a>
+                      &nbsp;&nbsp;&nbsp;&nbsp;<img src="http://artloglab.com/metromail2/images/dot.gif" alt="|" width="6" height="9" class="mob_display_none">&nbsp;&nbsp;&nbsp;&nbsp;
+                     
+              </span></font>
+            </td>
+          </tr>                                        
+        </table>
+            </td></tr>
+            <tr><td><!-- padding --><div style="height: 30px; line-height: 30px; font-size: 10px;">&nbsp;</div></td></tr>
+        </table>        
+    </td></tr> #}
+    <!--links END-->
+
+    <!--footer -->
+    <tr><td class="iage_footer" align="center" bgcolor="#eff3f8">
+        <!-- padding --><div style="height: 40px; line-height: 40px; font-size: 10px;">&nbsp;</div> 
+        
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr><td align="center">
+                <font face="Arial, Helvetica, sans-serif" size="3" color="#96a5b5" style="font-size: 13px;">
+                <span style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #96a5b5;">
+                    2015 &copy; <a href="http://quadrantalpha.com/">Qudrant Alpha Technology Solutions, Inc.</a> ALL Rights Reserved.
+                </span></font>              
+            </td></tr>          
+        </table>
+        
+        <!-- padding --><div style="height: 50px; line-height: 50px; font-size: 10px;">&nbsp;</div> 
+    </td></tr>
+    <!--footer END-->
+</table>
+<!--[if gte mso 10]>
+</td></tr>
+</table>
+<![endif]-->
+ 
+</td></tr>
+</table>
+            
+</div> 
+</body>
+</html>

@@ -1,0 +1,112 @@
+acl:
+    - category: Payroll
+      entries:
+       - id: hris_payroll.menu
+         label: "Menu"
+
+    - category: Payroll Setting
+      entries:
+       - id: hris_payroll_setting.menu
+         label: "Menu"
+
+    - category: SSS Contribution Table
+      entries:
+        - id: hris_payroll_sss.menu
+          label: "Menu"
+        - id: hris_payroll_sss.view
+          label: "View"
+        - id: hris_payroll_sss.add
+          label: "Add"
+        - id: hris_payroll_sss.edit
+          label: "Edit"
+        - id: hris_payroll_sss.delete
+          label: "Delete"
+
+    - category: PhilHealth Contribution Table
+      entries:
+        - id: hris_payroll_philhealth.menu
+          label: "Menu"
+        - id: hris_payroll_philhealth.view
+          label: "View"
+        - id: hris_payroll_philhealth.add
+          label: "Add"
+        - id: hris_payroll_philhealth.edit
+          label: "Edit"
+        - id: hris_payroll_philhealth.delete
+          label: "Delete"
+
+    - category: Withholding Tax Table
+      entries:
+        - id: hris_payroll_tax.menu
+          label: "Menu"
+        - id: hris_payroll_tax.view
+          label: "View"
+        - id: hris_payroll_tax.add
+          label: "Add"
+        - id: hris_payroll_tax.edit
+          label: "Edit"
+        - id: hris_payroll_tax.delete
+          label: "Delete"
+
+    - category: Weekly Payroll
+      entries:
+        - id: hris_payroll_weekly.menu
+          label: "Menu"
+
+    - category: Semi-Monthly Payroll
+      entries:
+        - id: hris_payroll_semimonthly.menu
+          label: "Menu"
+
+    - category: Generate Payroll
+      entries:
+        - id: hris_payroll_generate.menu
+          label: "Menu"
+        - id: hris_payroll_generate.view
+          label: "View"
+
+    - category: Generate Weekly Payroll
+      entries:
+        - id: hris_payroll_weekly_generate.menu
+          label: "Menu"
+        - id: hris_payroll_weekly_generate.view
+          label: "View"
+
+    - category: Review Payroll
+      entries:
+        - id: hris_payroll_review.menu
+          label: "Menu"
+        - id: hris_payroll_review.view
+          label: "View"
+
+    - category: View Payroll
+      entries:
+        - id: hris_payroll_view.menu
+          label: "Menu"
+        - id: hris_payroll_view.view
+          label: "View"
+        - id: hris_payroll_view.details
+          label: "Details"
+
+    - category: Generate 13th Month
+      entries:
+        - id: hris_payroll_thirteenth.menu
+          label: "Menu"
+        - id: hris_payroll_thirteenth.view
+          label: "View"
+
+    - category: View 13th Month
+      entries:
+        - id: hris_payroll_thirteenth_view.menu
+          label: "Menu"
+        - id: hris_payroll_thirteenth_view.view
+          label: "View"
+        - id: hris_payroll_thirteenth_view.details
+          label: "Details"
+
+    - category: Minimum Wage Settings
+      entries: 
+        - id: hris_payroll_setting_min.menu
+          label: "Menu"
+        - id: hris_payroll_setting_min.edit
+          label: "Edit"

@@ -1,0 +1,138 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% set view_mode = true %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">View {{type}} Memo for {{object.getEmployeeName}}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <input type="hidden" name="type" id="type" value="{{type}}">
+                            {{ form.group_text('Issued by', 'issued_by', object.getUserCreate.getName|default(''), 3, 4, view_mode) }}
+                            {{ form.group_text('Issued to','issued_to', object.getEmployeeName|default(''),3,4, view_mode) }}
+                            {{ form.group_text('Department','issued_to_dept', employee.getDepartment.getName|default(''),3,4, true) }}
+                            {% if agency is defined %}
+                                {% if agency == "0" %}
+                                {% else %}
+                                {{ form.group_text('Agency', 'agency', agency, 3, 4, true) }}
+                                {% endif %}
+                            {% endif %}
+                            {{ form.group_date('Date Issued','issued_date', object.getDateCreate|default('')|date('m/d/Y'),3,4) }}
+                        </div>
+                    </div>
+                    {% if type == 'Promotion' %}
+                        {% include "HrisMemoBundle:Memo:promotion.html.twig" %}
+                    {% elseif type == 'Tardiness' %}
+                        {% include "HrisMemoBundle:Memo:tardiness.html.twig" %}
+                    {% elseif type == 'Regularization' %}
+                        {% include "HrisMemoBundle:Memo:regularization.html.twig" %}
+                    {% elseif type == 'Violation' %}
+                        {% include "HrisMemoBundle:Memo:violation.html.twig" %}
+                    {% elseif type == 'Disciplinary' %}
+                        {% include "HrisMemoBundle:Memo:disciplinary.html.twig" %}
+                    {% elseif type == 'All' %}
+                        {% include "HrisMemoBundle:Memo:all.html.twig" %}
+                    {% endif %}
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            {# {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %}  #}
+                            <a href="{{ path ('hris_memo_print', { id: object.getID }) }}" class="btn green">Print</a>
+                            <a href="{{ path(route_list) }}" class="btn default">Back</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(document).ready( function() {
+    $('.calendar').prop('disabled', true);
+
+     $('#cform-date_from').datepicker().on('changeDate', function (ev) {
+            $('#cform-date_to').datepicker({
+            todayHighlight: true,
+            startDate: $('#cform-date_from').val(),
+            });
+    });
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            event_name: "required",
+        },
+        messages: {
+            event_name: "Event name cannot be blank.",
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

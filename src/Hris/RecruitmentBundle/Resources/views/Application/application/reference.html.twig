@@ -1,0 +1,67 @@
+{% if object.getStatus == constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_HIRED')%}
+{% set readonly = true %}
+{% endif %}
+<form id="add_char_ref_form" method="post">
+    <div class="form-group">
+    {{form.hidden('app_form','char_ref')}}
+    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+        <table class="table table-striped table-bordered table-hover">
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-12">
+                    {% if not readonly %}
+                    <a href="#char-ref-modal" class="btn green" data-toggle="modal" style="float: right; margin-right: 15px;">Add Character Reference
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Relationship With Applicant 
+                    </th>
+                    <th>
+                        Contact Number
+                    </th>
+                    <th style="width: 60px">
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="en_table_char_ref">
+            {% for reference in object.getReference %}
+            <tr>
+                <td>
+                    <input type="hidden" name="salutation[]" value="{{reference.getSalutation}}">
+                    <input type="hidden" name="fname[]" value="{{reference.getFirstName}}">
+                    <input type="hidden" name="mname[]" value="{{reference.getMiddleName}}">
+                    <input type="hidden" name="lname[]" value="{{reference.getLastName}}">
+                    <input class="form-control en_name" type="text" name="name[]" value="{{reference.getDisplayName|default('')}}" readonly>
+                </td>
+                <td>
+                    <input class="form-control en_relationship" type="text" name="relationship[]" value="{{reference.getRelationship|default('')}}" readonly>
+                </td>
+                <td>
+                    <input type="hidden" name="contact_id[]" value="{{reference.getPhone.getName|default('')}}">
+                    <input class="form-control en_detail" type="text" name="detail[]" value="{{reference.getPhone.getNumber|default('')}}" readonly>
+                </td>
+                <td>
+                    <button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+        <div class="form-actions fluid">
+            <div class="col-md-12">
+            {% if not readonly %}
+            <button type="submit" class="btn blue">Submit</button>
+            {% endif %}
+            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

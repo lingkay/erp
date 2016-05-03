@@ -1,0 +1,17 @@
+menu_items:
+    - id: hris_recruit
+      acl: hris_recruit.menu
+      label: Recruitment
+      icon: fa-search
+    - id: hris_applications_index
+      acl: hris_applications.menu
+      label: Applications
+      parent: hris_recruit
+    - id: hris_requisition_index
+      acl: hris_requisition.menu
+      label: Manpower Requisition
+      parent: hris_recruit
+    # - id: hris_checklist_index
+    #   acl: hris_checklist.menu
+    #   label: Pre-employment Checklist
+    #   parent: hris_recruit

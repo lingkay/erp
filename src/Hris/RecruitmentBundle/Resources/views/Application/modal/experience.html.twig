@@ -1,0 +1,26 @@
+<div id="work-exp-modal" class="modal fade" role="dialog">
+    <form id="work-exp-form">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Work Experience</h4>
+                </div>
+                <div class="modal-body form-horizontal">
+                    <div class="form-body">
+                        {{ form.group_textarea('Name and Address of Company','company_detail','',2,3,8)}}
+                        {{ form.group_text('Position Held','position','',3,8,readonly) }}
+                        {{ form.group_number('Duration of Employement','emp_duration','',3,8,readonly)}}
+                        {{ form.group_text('Starting Salary','salary_start','',3,8,readonly) }}
+                        {{ form.group_text('Last Salary','salary_last','',3,8,readonly) }}
+                        {{ form.group_textarea('Reason for Leaving','reason','',2,3,8)}}              
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_work_exp_submit" type="submit" class="btn green btn-primary">Add Work Experience</button>
+                    <button id="btn_work_exp_close" type="button" data-dismiss="modal" class="btn default">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

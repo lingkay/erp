@@ -1,0 +1,392 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}Weekly Payroll{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+
+                        <h4 class="form-section">Weekly Payroll</h4>
+                        
+
+                        {{ form.group_text('Employee Name', 'employee', payroll.getEmployee is not null ? payroll.getEmployee.getDisplayName:"", 3, 4,true) }}
+                        
+                        {{ form.group_date_range('daterange', 'Period Cut-Off', 'date_from', 'date_to',payroll.getPayrollPeriod.getStartDate,payroll.getPayrollPeriod.getEndDate, 3, 4,'m/d/Y','Ymd', true) }}
+                        <div class="row">
+                            <div class="col-md-12">
+                            <table class="table table-bordered table-hover" id="main_table">
+                                <thead>
+                                    <th colspan="2" width="40%" >
+                                        Earnings
+                                    </th>
+                                    <th colspan="2" width="40%">
+                                        Deductions
+                                    </th>
+                                    <th width="20%">
+                                        Total
+                                    </th>
+
+                                </thead>
+                                <tbody>
+                                    <tr class="odd">
+                                        <td colspan="2" ><strong>Taxable Earnings</strong></td>
+                                    
+                                        <td colspan="2"><strong>Taxable Deductions</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td colspan="2" class="payroll_container" >
+                                            <table class="table table-bordered table-hover" >
+                                                <tr>
+                                                    <td>Base Pay</td>
+                                                    <td class="numeric">{{ earnings['Gross Pay']|number_format(2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Overtime</td>
+                                                    <td class="numeric">{{ earnings['Overtime']|number_format(2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Holidays</td>
+                                                    <td class="numeric">{{ earnings['Holiday']|number_format(2) }}</td>
+                                                </tr>
+                                                {% if earnings['Incentive'] is defined %}
+                                                {% for i in earnings['Incentive'] %}
+                                                    <tr>
+                                                        <td>Incentive [{{ i.getNotes }}]</td>
+                                                        <td class="numeric">{{ i.getAmount|number_format(2) }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                 {% endif %}
+                                                {% if earnings['Others'] is defined %}
+                                                {% for i in earnings['Others'] %}
+                                                    {% if i.isTaxable == true %}
+                                                    <tr>
+                                                        <td>{{ i.getNotes }}
+                                                            {% if payroll.isLocked == false %}
+                                                            <div class="pull-right">
+                                                                    <a href = "{{path('hris_payroll_earning_delete', {id: i.getID})}}" class="btn red btn-xs">Remove</a>
+                                                            </div>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="numeric">{{ i.getAmount|number_format(2) }}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                            </table>
+
+                                        </td>
+                                    
+                                        <td colspan="2" class="payroll_container" >
+                                            <table class="table table-bordered table-hover" >
+                                                <tr>
+                                                    <td>Absences</td>
+                                                    <td class="numeric">{{ deductions['Absent'] is defined ? deductions['Absent']|number_format(2) : '0.00'}}</td>
+                                                </tr>
+                                                <tr>
+                                                   <td>Tardiness</td>
+                                                    <td class="numeric">{{ deductions['Tardiness'] is defined ? deductions['Tardiness']|number_format(2) : '0.00' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Undertime</td>
+                                                    <td class="numeric">{{ deductions['Undertime'] is defined ? deductions['Undertime']|number_format(2) : '0.00' }}</td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>SSS Premium</td>
+                                                    <td class="numeric">{{ deductions['SSS'] is defined ? deductions['SSS']|number_format(2) : '0.00' }}</td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>Philhealth</td>
+                                                    <td class="numeric">{{ deductions['Philhealth'] is defined ? deductions['Philhealth']|number_format(2) : '0.00' }}</td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>Pagibig</td>
+                                                    <td class="numeric">{{ deductions['Pagibig'] is defined ? deductions['Pagibig']|number_format(2) : '0.00' }}</td>
+                                                </tr>
+                                                {% if deductions['Others'] is defined %}
+                                                {% for l in deductions['Others'] %}
+                                                    {% if l.isTaxable == true %}
+                                                    <tr>
+                                                        <td>{{ l.getNotes }}
+                                                        {% if payroll.isLocked == false %}
+                                                        <div class="pull-right">
+                                                            <a href = "{{path('hris_payroll_deduction_delete', {id: l.getID})}}" class="btn red btn-xs">Remove</a>
+                                                        </div>
+                                                        {% endif %}
+                                                        </td>
+                                                        <td class="numeric">{{ l.getAmount|number_format(2) }}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                               
+                                            </table>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Total Taxable Earnings</strong></td>
+                                        <td class="numeric">{{ taxable_earning|number_format(2) }}</td>
+                                        <td></td>
+                                        <td class="numeric">({{ taxable_deduction|number_format(2) }})</td>
+                                        <td class="numeric"><strong>{{ payroll.getTotalTaxable|number_format(2) }}</strong></td>
+                                       
+                                    </tr>
+                                     <tr>
+                                        <td colspan="4"><strong>Witholding Tax</strong></td>
+                                        <td class="numeric"><strong>{{ payroll.getTax|number_format(2) }}</strong></td>
+                                    </tr>
+
+                                    <tr class="odd">
+                                        <td colspan="2" ><strong>Non Taxable Earnings</strong></td>
+                                    
+                                        <td colspan="2"><strong>Non Taxable Deductions</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td colspan="2" class="payroll_container" >
+                                            <table class="table table-bordered table-hover" >
+                                                <tr>
+                                                    <td>Reimbursements</td>
+                                                    <td class="numeric">{{ earnings['Reimbursement'] is defined ? earnings['Reimbursement']|number_format(2) : '0.00' }}</td>
+                                                </tr>
+                                                {% if earnings['Others'] is defined %}
+                                                {% for i in earnings['Others'] %}
+                                                    {% if i.isTaxable == false %}
+                                                    <tr>
+                                                        <td>{{ i.getNotes }}
+                                                            {% if payroll.isLocked == false %}
+                                                            <div class="pull-right">
+                                                                <a href = "{{path('hris_payroll_earning_delete', {id: i.getID})}}" class="btn red btn-xs">Remove</a>
+                                                            </div>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="numeric">{{ i.getAmount|number_format(2) }}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                            </table>
+
+                                        </td>
+                                    
+                                        <td colspan="2" class="payroll_container" >
+                                            <table class="table table-bordered table-hover" >
+                                                 {% if deductions['Cashbond'] is defined %}
+                                                      <tr>
+                                                        <td>Savings</td>
+                                                        <td class="numeric">{{ deductions['Cashbond']|number_format(2) }}</td>
+                                                    </tr>
+                                                 {% endif %}
+                                                {% if deductions['Loan'] is defined %}
+                                                 {% for l in deductions['Loan'] %}
+                                                    <tr>
+                                                        <td>Loan Payment [{{ l.getNotes }}]</td>
+                                                        <td class="numeric">{{ l.getAmount|number_format(2) }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% if deductions['Others'] is defined %}
+                                                {% for l in deductions['Others'] %}
+                                                    {% if l.isTaxable == false %}
+                                                    <tr>
+                                                        <td>{{ l.getNotes }}
+                                                        {% if payroll.isLocked == false %}
+                                                        <div class="pull-right">
+                                                                <a href = "{{path('hris_payroll_deduction_delete', {id: l.getID})}}" class="btn red btn-xs">Remove</a>
+                                                        </div>
+                                                        {% endif %}
+                                                        </td>
+                                                        <td class="numeric">{{ l.getAmount|number_format(2) }}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                            </table>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+
+                                   
+                                    <tr>
+                                        <td><strong>Total Non-Taxable Earnings</strong></td>
+                                        <td class="numeric">{{ nontaxable_earning|number_format(2) }}</td>
+                                        <td></td>
+                                        <td class="numeric">({{ nontaxable_deduction|number_format(2) }})</td>
+                                        <td class="numeric"><strong>{{ payroll.getTotalNonTaxable|number_format(2) }}</strong></td>
+                                       
+                                    </tr>
+                                    
+                                     <tr>
+                                        <td colspan="4"><strong>Total Pay</strong></td>
+                                        <td class="numeric"><strong>{{ payroll.getTotal|number_format(2) }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>    
+                            </div>
+                        </div>
+
+
+
+                </form>      
+
+
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-6">
+                   {% if payroll.isLocked == false %}
+                   <a href="#lock_modal" class="btn red" data-toggle="modal">
+                        Lock Payslip
+                   </a>
+                   {% endif %}
+                   <a href="{{ path('hris_payroll_details_print' ,{'id' : payroll.getID}) }}" class="btn green">
+                        <i class="fa fa-print"> </i>  Print Payslip
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <div class="pull-right">
+                    {% if payroll.isLocked == false %}
+                    <a href="#add_earning_modal" class="btn blue-hoki" data-toggle="modal">
+                         Add Earning
+                    </a>
+                    <a href="#add_deduction_modal" class="btn blue-hoki" data-toggle="modal">
+                         Add Deduction
+                    </a>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="add_earning_modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Add Earning</h4>
+            </div>
+            <div class="modal-body">
+                <form id="earning-form">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        {{ form.group_textnew('Earning Type', 'earning','',3,6,{})}}
+                        {{ form.group_number('Amount', 'earning_amount','',3,6)}}
+                        {{ form.group_select('Is Taxable', 'is_taxable',is_taxable,'',3,3)}}
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="add_earning_submit" type="button" class="btn green">Add Earning and Recompute</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="add_deduction_modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Add Deduction</h4>
+            </div>
+            <div class="modal-body">
+                <form id="deduction-form">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        {{ form.group_textnew('Deduction Type', 'earning','',3,6,{})}}
+                        {{ form.group_number('Amount', 'deduction_amount','',3,6)}}
+                        {{ form.group_select('Is Taxable', 'is_taxable',is_taxable,'',3,3)}}
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="add_deduction_submit" type="button" class="btn green">Add Deduction and Recompute</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="lock_modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Are you sure you want to lock this payslip? Any request for changes in attendance, overtime and deductions can no longer ber reverted after this.</h4>
+            </div>
+            
+            <div class="modal-footer">
+                <a class="btn green" href="{{path('hris_payroll_lock', {id: payroll.getID})}}">Yes</a>
+                <button type="button" data-dismiss="modal" class="btn default">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $('#add_earning_submit').click(function(){
+            var data = $('#earning-form').serialize();
+            var url = '{{path( "hris_payroll_earning_add_ajax" , {id: payroll.getID})}}'
+            $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(data, text_status, xhr) {
+                console.log(data);
+                location.reload();
+                },
+            error: function(xhr, text_status, error) {
+            }
+           
+        });
+        });
+
+        $('#add_deduction_submit').click(function(){
+            var data = $('#deduction-form').serialize();
+            var url = '{{path( "hris_payroll_deduction_add_ajax" , {id: payroll.getID})}}'
+            $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(data, text_status, xhr) {
+                location.reload();
+                },
+            error: function(xhr, text_status, error) {
+            }
+        });
+        });
+        
+    });
+</script>
+
+{% endblock %}
+{% block css %}
+<style>
+.payroll_container {
+    margin: 0px;
+    padding: 0px !important;
+}
+
+.numeric{
+    width: 150px;
+}
+</style>
+{% endblock %}

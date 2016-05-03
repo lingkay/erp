@@ -1,0 +1,75 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue-hoki">
+			<div class="portlet-title">
+				<div class="caption"> Organizational Chart </div>
+			</div>
+			<div class="portlet-body">
+				<div class="table-toolbar">
+				</div>
+                <div id="orgChartContainer">
+                    <div id="department">
+                        <div id="org_chart_department"></div>
+                    </div>
+                    <div id="employee">
+                        <div id="org_chart_employee"></div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function(){
+
+$.getJSON("{{path ('hris_com_orgchart_ajax_department')}}", function(data){
+    $('#org_chart_department').orgChart({ 
+        data:data,
+        onClickNode: function(node){
+            var path = "{{ path('hris_com_orgchart_ajax_employee', { 'id' : 'ID'} ) }}";
+                path = path.replace('ID', node.data.id);
+
+            $.getJSON(path, function(data){
+                $('#org_chart_employee').orgChart({ 
+                    data:data,
+                    onClickNode: function(node){ 
+                        $('#department').show();
+                        $('#org_chart_employee').empty();
+                        $('#employee').hide();
+                    } 
+                });
+            });
+            $('#department').hide();
+            $('#employee').show();
+        } 
+    });
+});
+}); 
+</script>
+{% endblock %}
+
+{% block css %}
+<style type="text/css">
+#orgChart{
+    width: auto;
+    height: auto;
+}
+
+#orgChartContainer{
+    width: auto;
+    height: auto;
+    overflow: auto;
+}
+div.node{
+    height: auto !important;
+}
+</style>
+{% endblock %}

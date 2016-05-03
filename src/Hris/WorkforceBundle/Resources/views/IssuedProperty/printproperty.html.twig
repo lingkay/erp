@@ -1,0 +1,281 @@
+<style type="text/css">
+div.container4 {
+    height: 100%;
+    width: 100%;
+    position: relative 
+}
+div.container_logo {
+	width: 100%;
+	max-height: 50px;
+    position: relative; 
+}
+.img_logo {
+	width: 300px;
+   position: absolute;
+   left: 50%;
+   margin-left: -150px;
+}
+.img_picture {
+	width: 50%;
+   left: 50%;
+}
+.page_label {
+	text-align:center;
+}
+.parag {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    text-align:center;
+    left: 50%;
+    margin-right: -50%;
+    font-size: 28px;
+}
+</style>
+<page>
+	<div class="container_logo">
+	<img class="img_logo" src="{{logo|default('bundles/catalystmedia/img/default.png')}}">
+	</div>
+	<br>
+	<br>
+	<p style="font-size: 16px; margin: 0;">Employee Details</p>
+	<hr>
+	<table>
+		<tr>
+			<td style="width: 120px; font-size: 14px;"><b>Employee Name:</b></td>
+			<td style="width: 220px; font-size: 14px;">{{object.getEmployeeName}}</td>
+		</tr>
+		<tr>
+			<td style="width: 120px; font-size: 14px;"><b>Department:</b></td>
+			<td style="width: 220px; font-size: 14px;">{{object.getEmployee.getDepartment.getName}}</td>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<p style="font-size: 16px; margin: 0;">Issued Item</p>
+	<hr>
+	{% if object.getItemType == 1 %}
+		{# {% embed "HrisWorkforceBundle:IssuedProperty:car.html.twig" %}{% endembed %} #}
+		<table>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Property Type:</b></td>
+				<td style="width: 215px; font-size: 14px;">Car</td>
+				<td style="width: 135px; font-size: 14px;"><b>MV File No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.file_num|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Make/Model:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.model|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Body Type:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.body_type|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Denomination:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.denom|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Fuel:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.fuel|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Plate No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.plate_num|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Engine No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.engine_num|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>OR/CR No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.or_cr_num|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Chassis No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.chassis_num|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Date Issued:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{object.getDateIssued}}</td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<p style="font-size: 16px; margin: 0;">Terms and Conditions</p>
+		<hr>
+		<p style="font-size: 14px;" align="justify">
+			1. <b>DRIVER’S LICENSE.</b> The Employee shall be responsible for securing proper and current
+			driver’s license for the type of vehicle to be used; a copy of which shall be furnished to
+			HRD.
+			<br>
+			<br>
+			2. <b>VEHICLE/LTO REGISTRATION.</b> The vehicle shall be registered under the name of the
+			company. All expenses pertaining to LTO registration shall be shouldered by the
+			company. The Employee or an assigned Company Representative shall be responsible
+			for vehicle registration renewal with LTO.
+			<br>
+			<br>
+			3. <b>CAR MAINTENANCE.</b> The Employee shall be responsible for ensuring that the vehicle is
+			properly maintained which includes having the vehicle serviced at regular service
+			intervals by a qualified motor shop. All expenses pertaining to regular car maintenance
+			shall be shouldered by the company.
+			<br>
+			<br>
+			4. <b>REPAIRS /DAMAGE.</b> Repairs or damage associated with the normal “wear and tear”
+			shall be shouldered by the Company. However, repairs or damage which was diagnosed
+			as a result of negligence in the use of the vehicle shall be shouldered by the Employee.
+			<br>
+			<br>
+			5. <b>CAR INSURANCE.</b> Car insurance shall be secured and shouldered by the Company.
+			<br>
+			<br>
+			6. <b>CAR ACCIDENT REPAIR & DAMAGE.</b> The Employee shall exercise preventive and safe
+			driving to ensure proper maintenance of the car. In cases when unavoidable
+			circumstances occur leading to car accidents, the cost of repair of said vehicle shall be
+			covered thru the company’s car insurance. In cases when certain repair for damage is
+			refused by the insurance which when investigated was due to the negligence or fault of
+			the employee, the cost of said damage shall be shouldered by the Employee.
+			<br>
+			<br>
+			7. <b>TRAFFIC VIOLATION FEES.</b> The Employee must follow generally accepted safe driving
+			practices and obey traffic regulations. Should there be cases when the Employee was
+			issued Traffic Violation Ticket by MMDA, the cost for said expense shall be shouldered
+			by the Employee.
+			<br>
+			<br>
+			8. <b>DRIVING UNDER THE INFLUENCE OF LIQUOR.</b> Should there be cases when the
+			Employee incurred accident under the influence of liquor, all expenses for damage for
+			such shall be shouldered by the Employee.
+			<br>
+			<br>
+			9. <b>SAFETY PRECAUTIONS.</b> The Employee shall guarantee proper observance of safety
+			precautions while driving, which includes the use of safety belts while the vehicle is in
+			motion.
+			<br>
+			<br>
+			10. <b>AUTHORIZED USE OF VEHICLE.</b> The Employee shall be responsible for the authorized
+			use of the vehicle. Said vehicle cannot be allowed to be used for personal use by non-
+			employee of the company.
+			<br>
+			<br>
+			<br>
+			<br>
+			11. <b>GASOLINE, TOLL & PARKING FEES.</b> Cost of gasoline, toll and parking fees associated with
+			company-related trips shall be shouldered by the Company. The Company shall not
+			reimburse expense related to personal trips made by the Employee.
+			<br>
+			<br>
+			12. <b>TERMINATION OF AGREEMENT.</b> The Company reserves the right to terminate this
+			agreement as it deems necessary.
+			<br>
+			<br>
+			13. <b>SURRENDER OF VEHICLE UPON RESIGNATON OR SEPARATION FROM THE COMPANY.</b>
+			The Employee shall surrender said vehicle upon resignation or separation from the
+			Company.
+		</p>
+		<p style="font-size: 14px;" align="justify">This agreement is issued {{object.getDateIssued}} and shall continue to be in effect until
+		expiration of contract, unless the term is extended by mutual agreement of both parties.</p>
+	{% elseif object.getItemType == 2 %}
+		<table>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Property Type:</b></td>
+				<td style="width: 215px; font-size: 14px;">Laptop</td>
+				<td style="width: 135px; font-size: 14px;"><b>Model No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.model|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Brand:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.brand|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Color:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.color|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>SNID:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.snid|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Date Issued:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{object.getDateIssued}}</td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<p style="font-size: 16px; margin: 0;">Terms and Conditions</p>
+		<hr>
+		<p style="font-size: 14px;" align="justify">
+			1. Lost or damaged unit will correspond penalty based on its SRP.
+			<br>
+			2. Information and documents should be kept confidential.
+			<br>
+			3. Upon resignation, laptop should be turned over to the management properly.
+		</p>
+		<p style="font-size: 14px;">This agreement is issued {{object.getDateIssued}} and shall continue to be in effect until
+		expiration of contract, unless the term is extended by mutual agreement of both parties.</p>
+	{% elseif object.getItemType == 3 %}
+		<table>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Property Type:</b></td>
+				<td style="width: 215px; font-size: 14px;">Phone</td>
+				<td style="width: 135px; font-size: 14px;"><b>Model No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.model|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Brand:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.brand|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Color:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.color|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>IMEI No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.imei|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Mobile No.:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{details.number|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Date Issued:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{object.getDateIssued}}</td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<p style="font-size: 16px; margin: 0;">Terms and Conditions</p>
+		<hr>
+		<p style="font-size: 14px;" align="justify">
+			1. Replacement of lost or damaged cellphone unit shall be paid by the employee based on
+			its suggested retail price (SRP).
+			<br>
+			2. All business/company-related information and messages shall be kept confidential.
+			<br>
+			3. Usage of cellular phone shall be within the allocated plan for the employee. Any
+			utilization in excess of the allotted plan shall be shouldered by the employee and shall
+			be made payable through salary deduction.
+			<br>
+			4. The employee shall turnover/surrender said cellphone unit to HRD upon resignation or
+			separation from the company.
+		</p>
+		<p style="font-size: 14px;" align="justify">This agreement is issued {{object.getDateIssued}} and shall continue to be in effect until
+		expiration of contract, unless the term is extended by mutual agreement of both parties.</p>
+	{% else %}
+		<table>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Property Type:</b></td>
+				<td style="width: 215px; font-size: 14px;">Others</td>
+				<td style="width: 135px; font-size: 14px;"><b>Item Name:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{object.getItemName|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Item Code:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{object.getItemCode|default('')}}</td>
+				<td style="width: 135px; font-size: 14px;"><b>Description</b></td>
+				<td style="width: 215px; font-size: 14px;">{{object.getItemDesc|default('')}}</td>
+			</tr>
+			<tr>
+				<td style="width: 135px; font-size: 14px;"><b>Date Issued:</b></td>
+				<td style="width: 215px; font-size: 14px;">{{object.getDateIssued}}</td>
+			</tr>
+		</table>
+	{% endif %}
+	<br>
+	<br>
+	<p style="font-size: 16px; margin: 0;">Issued Item Picture</p>
+	<hr>
+	<br>
+	<img class="img_picture" src="{{picture|default('bundles/catalystmedia/img/no_image.jpg')}}">
+	<br>
+	<page_footer>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions, Inc.')}}</b></p></div>
+    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 10th Floor, Legaspi Suites, Salcedo Street, Legaspi Village, Makati City, Philippines')}}</p></div>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 14px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+</page_footer>
+</page>

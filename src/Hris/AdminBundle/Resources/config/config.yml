@@ -1,0 +1,53 @@
+config:
+    - category: "Human Resource"
+      entries:
+        - id: hris_hr_department
+          label: "HR Department"
+          type: select
+          options_service: hris_settings
+          options_method: getDepartmentOptions
+        - id: hris_hr_compen_ben
+          label: "HR Compensation and Benefits"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_hr_emp_rel
+          label: "HR Employee Relations"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_hr_recruit
+          label: "HR Recruitment"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_request_approver
+          label: "Manpower Request Approver"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_president
+          label: "President/CEO"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_vp_operations
+          label: "VP for Operations"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_memo_reviewer
+          label: "Company Memo Reviewer"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_memo_noted
+          label: "Company Memo Noted By"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions
+        - id: hris_memo_approver
+          label: "Company Memo Approver"
+          type: select
+          options_service: hris_settings
+          options_method: getJobTitleOptions

@@ -1,0 +1,5 @@
+menu_items:
+    - id: menu_admin
+      acl: cat_admin.menu
+      label: Administration
+      icon: fa-laptop

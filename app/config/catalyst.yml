@@ -1,0 +1,65 @@
+catalyst_menu:
+    bundle_menu:
+        - CatalystDashboardBundle
+        #- CatalystAdminBundle
+        - HrisAdminBundle
+        - CatalystConfigurationBundle
+        - CatalystUserBundle
+        - HrisBiometricsBundle
+        - HrisWorkforceBundle
+        - HrisRemunerationBundle
+        - HrisRecruitmentBundle
+        #- HrisEmployeeSatisfactionBundle
+        #- HrisTrainingBundle
+        - HrisCompanyOverviewBundle
+        - HrisPayrollBundle
+        - HrisProfileBundle
+        #- HrisArchivesBundle
+        - HrisReportBundle
+
+catalyst_user:
+    acl_entries:
+        - id: HrisDashboardBundle
+          label: Dashboard
+        # - id: CatalystAdminBundle
+        #   label: Administration
+        - id: CatalystConfigurationBundle
+          label: Settings
+        - id: CatalystUserBundle
+          label: User
+        - id: HrisAdminBundle
+          label: HR Settings
+        - id: HrisWorkforceBundle
+          label: WorkForce Management
+        - id: HrisRemunerationBundle
+          label: Remuneration
+        - id: HrisRecruitmentBundle
+          label: Recruitment
+        - id: HrisEmployeeSatisfactionBundle
+          label: Employee Satisfaction
+        - id: HrisTrainingBundle
+          label: Trainings
+        - id: HrisCompanyOverviewBundle
+          label: Company Overview
+        - id: HrisPayrollBundle
+          label: Payroll
+        - id: HrisProfileBundle
+          label: Profile
+        - id: HrisArchivesBundle
+          label: Archives
+        - id: HrisReportBundle
+          label: Report
+
+catalyst_configuration:
+    bundles:
+        - CatalystTemplateBundle
+        - HrisAdminBundle
+        # - HrisWorkforceBundle
+        # - HrisProfileBundle
+        # - HrisPayrollBundle
+
+catalyst_media:
+    upload_storage:
+        type: "local_file"
+        folder: "%kernel.root_dir%/../web/uploads"
+#        base_url: null

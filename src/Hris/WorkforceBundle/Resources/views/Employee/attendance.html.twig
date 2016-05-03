@@ -1,0 +1,163 @@
+<form method="post" class="form-horizontal form">
+    <div class="form-body">
+            {{ form.hidden('employee_form','profile')}}
+            {{ form.hidden('employee', object.getID) }}
+            <!-- START CALENDAR -->
+            <!-- BEGIN PORTLET-->
+            <div class="portlet box blue-madison calendar">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-calendar"></i>Employee Attendance
+                    </div>
+                </div>
+                <div class="portlet-body light-grey">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div id="calendar" class="has-toolbar">
+                            </div>
+                            <div class="portlet-body">
+                                <div style="margin: 20px 0 10px 30px">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Total Late</label>
+                                            <div class="col-md-2">
+                                                <input id="late" type="text" name="late" class="form-control" placeholder="Total Late" value="" readonly>
+                                            </div>
+                                            <label class="col-md-2 control-label">Total Undertime</label>
+                                            <div class="col-md-2">
+                                                <input id="undertime" type="text" name="undertime" class="form-control" placeholder="Total Undertime" value="" readonly>
+                                            </div>
+                                            <label class="col-md-1 control-label">Total Absent</label>
+                                            <div class="col-md-2">
+                                                <input id="absent" type="text" name="absent" class="form-control" placeholder="Total Absent" value="" readonly>
+                                            </div>
+                                        </div>
+                                        {% if hr is same as('true') %}
+                                        <a href="{{ path('hris_memo_tardiness_add_form') }}" id="gen_memo" class="btn default green" style="float: left;"><i class="fa fa-edit"></i> Create Tardiness Memo</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- END PORTLET-->
+    </div>
+</form>
+{% block js%}
+<script>
+function generatePath() 
+{
+    var id = $('#cform-employee').val();
+    var moment = $('#calendar').fullCalendar('getDate');
+    var month = moment.format('M');
+    var year = moment.format('YYYY');
+    var paths = "{{ path('hris_workforce_emplyoee_total', { 'id' : 'ID', 'month' : 'MONTH', 'year' : 'YEAR'} ) }}";
+
+    var d = new Date();
+    var monthBefore = d.getMonth();
+
+        paths = paths.replace('ID', id);
+        paths = paths.replace('MONTH', month);
+        paths = paths.replace('YEAR', year);
+
+        $.getJSON(paths, function(data) {
+
+        if ((data.total_late >= 5 && month == monthBefore) || data.total_late >= 5)
+        {
+            document.getElementById('gen_memo').style.visibility = 'visible';
+        }
+        else
+        {
+            document.getElementById('gen_memo').style.visibility = 'hidden';
+        }
+
+        });
+
+    return paths;
+}
+$(document).ready(function() {
+
+    
+
+    var m = new Date();
+    type = 'Tardiness';
+    data_field = '{{object.getID}},'+(m.getUTCMonth()+1)+','+m.getUTCFullYear();
+    path = "{{ path('hris_memo_tardiness_add_form', { 'type' : 'TYPE', 'data_field' : 'DATA_FIELD'})}}";
+            path = path.replace('TYPE', type);
+            path = path.replace('DATA_FIELD', data_field);
+            $('#gen_memo').attr('href',path);
+
+    var id = $('#cform-employee').val();
+
+    var path = "{{ path('hris_workforce_attendance_ajax', { 'id' : 'ID', 'date_from' : 'DFROM' , 'date_to' : 'DTO' } ) }}";
+        path = path.replace('ID', id);
+
+    $('#calendar').fullCalendar({
+
+        // put your options and callbacks here
+        // weekends: false, will hide Saturdays and Sundays
+
+         dayClick: function(date, jsEvent, view) {
+
+            },
+        events: path,
+        firstDay: 1,
+        height: 'auto',
+        selectable: true,
+        displayEventEnd: true,
+
+        eventRender: function(event, element) {
+            if(event.late != '0 Minute(s)' && event.late != null)
+            {
+                element.find(".fc-content").append("<br/><b>Late</b>:" + event.late);
+            }
+            if(event.undertime != '0 Minute(s)' && event.undertime != null)
+            {
+                element.find(".fc-content").append("<br/><b>Undertime</b>:" + event.undertime);
+            }
+        },
+    });
+
+    paths = generatePath();
+
+    $.getJSON(paths, function(data) {
+        $('#undertime').val(data.total_undertime);
+        $('#late').val(data.total_late);
+        $('#absent').val(data.total_absent);
+    });
+
+    //on click change the list of holidays
+    $('.fc-button-group').click(function(event){
+
+        paths = generatePath();
+
+        $.getJSON(paths, function(data) {
+            $('#undertime').val(data.total_undertime);
+            $('#late').val(data.total_late);
+            $('#absent').val(data.total_absent);
+            var moment = $('#calendar').fullCalendar('getDate');
+            type = 'Tardiness';
+            data_field = '{{object.getID}},'+moment.format('M')+','+moment.format('YYYY');
+            path = "{{ path('hris_memo_tardiness_add_form', { 'type' : 'TYPE', 'data_field' : 'DATA_FIELD'})}}";
+            path = path.replace('TYPE', type);
+            path = path.replace('DATA_FIELD', data_field);
+            $('#gen_memo').attr('href',path);
+            //console.log(moment.format('M'));
+        });
+    });
+
+    $('.fc-today-button').click(function(event){
+
+        paths = generatePath();
+
+        $.getJSON(paths, function(data) {
+            $('#undertime').val(data.total_undertime);
+            $('#late').val(data.total_late);
+            $('#absent').val(data.total_absent);
+        });
+    });
+});
+</script>
+{% endblock %}

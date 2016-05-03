@@ -1,0 +1,65 @@
+cat_user_user_index:
+    pattern: /users
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:User:index }
+
+cat_user_user_add_form:
+    pattern: /user
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:User:addForm }
+
+cat_user_user_add_submit:
+    pattern: /user
+    methods: [POST]
+    defaults: { _controller: CatalystUserBundle:User:addSubmit }
+
+cat_user_user_edit_form:
+    pattern: /user/{id}
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:User:editForm }
+
+cat_user_user_edit_submit:
+    pattern: /user/{id}
+    methods: [POST]
+    defaults: { _controller: CatalystUserBundle:User:editSubmit }
+
+cat_user_user_delete:
+    pattern: /user/{id}/delete
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:User:delete }
+
+cat_user_user_grid:
+    pattern: /users/grid
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:User:grid }
+
+
+cat_user_group_index:
+    pattern: /groups
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:Group:index }
+
+cat_user_group_add_form:
+    pattern: /group
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:Group:addForm }
+
+cat_user_group_add_submit:
+    pattern: /group
+    methods: [POST]
+    defaults: { _controller: CatalystUserBundle:Group:addSubmit }
+
+cat_user_group_edit_form:
+    pattern: /group/{id}
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:Group:editForm }
+
+cat_user_group_edit_submit:
+    pattern: /group/{id}
+    methods: [POST]
+    defaults: { _controller: CatalystUserBundle:Group:editSubmit }
+
+cat_user_group_delete:
+    pattern: /group/{id}/delete
+    methods: [GET]
+    defaults: { _controller: CatalystUserBundle:Group:delete }

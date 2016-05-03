@@ -1,0 +1,24 @@
+<hr>
+
+{{ form.group_text('Basic Salary From', 'basicsalary_from', employee.getPayrate|number_format(2), 3, 4, true) }}
+
+{% if view_mode == true %}
+{{ form.group_text('Basic Salary To', 'basicsalary_to', basicsalary_to|number_format(2), 3, 4, view_mode) }}
+{% else %}
+{# {{ form.group_number('Basic Salary To', 'basicsalary_to', basicsalary_to|default(0.00), 3, 4, view_mode) }} #}
+{# {% macro group_number(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %} #}
+<div class="form-group">
+    <label class="col-md-3 control-label">Basic Salary To</label>
+    <div class="col-md-4">
+        <input type="number" id="{{ prefix }}form-basicsalary_to" name="basicsalary_to" class="form-control" placeholder="Basic Salary To" value="{{basicsalary_to|default(0.00)}}" min="{{employee.getPayrate}}" {{ readonly ? 'readonly ' : '' }}>
+    </div>
+</div>
+{% endif %}
+
+{{ form.group_text('Allowance From', 'allowance_from', '0.00', 3, 4, true) }}
+
+{% if view_mode == true %}
+{{ form.group_text('Allowance To', 'allowance_to', allowance_to|number_format(2), 3, 4, view_mode) }}
+{% else %}
+{{ form.group_number('Allowance To', 'allowance_to', allowance_to|default(0.00), 3, 4, view_mode) }}
+{% endif %}

@@ -1,0 +1,62 @@
+<div id="attendance_management" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Attendance Management</h4>
+            </div>
+            <div class="modal-body">
+                    <div class="portlet-body form">
+                        <!-- BEGIN FORM-->
+                    <form id="request_add_form" class="form-horizontal" method="post">
+                                <div class="form-body">
+                                    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                                    <div class="col-md-12">
+                                        <div class="row"> 
+                                            <div class="form-group">
+                                            <button class="btn green request" type="button" data-toggle = "false" data-type="attendance">Request Attendance Adjustment</button>
+                                            <button class="btn green request" type="button" data-toggle= "false" data-type="overtime">Request Overtime</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{ form.hidden('employees','')}}
+                                    {{ form.group_text('Date','date', '',3,7,true) }}
+                                    {{ form.group_text('Time-In', 'time_in','' , 3,7, true) }}
+                                    {{ form.group_text('Time-Out', 'time_out', '', 3, 7, true) }}
+
+                                    <div id="adjustment">
+                                    <button type="button" class="close" id="close_attendance"></button>
+                                    <h4 class="form-section">Adjustments</h4>
+                                    {{ form.hidden('adjustment_type[]','attendance')}}
+                                    {{ form.group_text('Date Adjustment Request', 'attendance_request', '',3,7,true)}}
+                                    {{ form.group_time('Adjusted Time-In', 'adj_time_in', '', 3, 7)}}
+                                    {{ form.group_time('Adjusted Time-Out', 'adj_time_out', '', 3,7)}}
+                                    {{ form.group_textarea('Reason','reason', '',3,3,7)}}
+                                    {{ form.group_upload_file('Supporting Documents','file','',3,7,readonly,'f')}}
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Set as Halfday</label>
+                                                <div class="checkbox-inline">
+                                                    {{ form.checkbox('halfday', 0, '', '', 'chars', readonly) }}
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="overtime">
+                                    <button type="button" class="close" id="close_overtime"></button>
+                                    <h4 class="form-section">Overtime</h4>
+                                    {{ form.hidden('adjustment_type[]','overtime')}}   
+                                    {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                                    {{ form.group_text('Date Overtime Request', 'overtime_request', '',3,7,true)}}
+                                    {{ form.group_text('Total Hours', 'total_hrs', '', 3, 7)}}
+                                    {{ form.group_textarea('Reason','overtime_reason', '',3,3,7)}}
+                                    </div>
+                                </div>               
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn blue" id="add-request-submit">Submit</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

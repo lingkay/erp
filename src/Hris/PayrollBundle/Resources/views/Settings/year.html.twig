@@ -1,0 +1,35 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Annual Schedule Settings</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4>Weekly Payroll</h4>
+                        {{ form.group_day('Year Start','week_start', week_start|date('m/d') ,3,4) }}
+                        {{ form.group_day('Year End','week_end', week_end|date('m/d'),3,4) }}
+                        
+                        <h4>Semi-Monthly Payroll</h4>
+                        {{ form.group_day('Year Start','semi_start', semi_start|date('m/d') ,3,4) }}
+                        {{ form.group_day('Year End','semi_end', semi_end|date('m/d'),3,4) }}
+                
+                        
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            <button type="submit" value="generate" name="generate" class="btn green">Generate Payroll Period</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

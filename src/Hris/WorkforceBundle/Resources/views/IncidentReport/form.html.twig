@@ -1,0 +1,133 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token', app.session.get('csrf_token')) }}
+                        {{ form.group_date('Date of Incident','doi',object.getDateHappened|date('m/d/Y'),3,4,readonly) }}
+                        {{ form.group_textarea('Brief Description of the Incident','desc',object.getNotes|default(''),3,3,4,readonly) }}
+                        {{ form.group_select('Involved Department','dept',dept_opts,object.getDepartment.getID|default(''),3,4,readonly) }}
+                        {{ form.typeahead('Involved Employee','emp',object.getEmployee is not null ? object.getEmployee.getDisplayName:"",object.getEmployee is not null ? object.getEmployee.getID:"0",path('hris_workforce_employee_ajax_get'),3,4,readonly) }}
+                        {{ form.group_select('Involved Branch','loc',loc_opts,object.getLocation.getID|default(''),3,4,readonly) }}
+                        {{ form.group_textarea('Involved SKUs/ '~company_name_abv~' Products','prod',object.getProducts|default(''),3,3,4,readonly) }}
+                        {{ form.group_textarea('Justification/Other Concerns','concerns',object.getConcerns|default(''),3,3,4,readonly) }}
+                        {% if app.user.hasAccess('hris_workforce_incident.review') %}
+                            {{ form.group_select('Corrective Action','c_action',action,object.getAction|default(''),3,4,readonly) }}
+                        {% endif %}
+
+                        {% if object.getAction is not same as(null) and app.user.hasAccess('hris_workforce_incident.review') %}
+                        {% set action = object.getAction %}
+                        <div class="row"><div class="col-md-9 col-md-offset-3">
+                            <a href="{{ path('hris_memo_create_form') }}" id="gen_memo" class="btn default blue"><i class="fa fa-edit"></i> Create Memo</a>
+                        </div></div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn green">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+
+    type = '{{object.getAction}}';
+    data_field = "{{object.getEmployee.getID|default('')}},{{object.getDateHappened|date('m-d-Y')}},{{object.getLocation.getName|default('')}}";
+    path = "{{ path('hris_memo_create_form', { 'type' : 'TYPE', 'data_field' : 'DATA_FIELD'})}}";
+            path = path.replace('TYPE', type);
+            path = path.replace('DATA_FIELD', data_field);
+            $('#gen_memo').attr('href',path);
+
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            emp: "required",
+            c_action: "required",
+            loc: "required",
+            dept: "required",
+        },
+        messages: {
+            event_name: "Event name cannot be blank.",
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+});
+</script>
+{% endblock %}

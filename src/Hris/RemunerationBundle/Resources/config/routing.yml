@@ -1,0 +1,194 @@
+## incentives
+
+hris_remuneration_incentive_index:
+    path:    /incentives
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:index }
+
+hris_remuneration_incentive_add_form:
+    pattern: /incentive
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:addForm }
+
+hris_remuneration_incentive_add_submit:
+    pattern: /incentive
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:addSubmit }
+
+hris_remuneration_incentive_edit_form:
+    pattern: /incentive/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:editForm }
+
+hris_remuneration_incentive_edit_submit:
+    pattern: /incentive/{id}
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:editSubmit }
+
+hris_remuneration_incentive_delete:
+    pattern: /incentive/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:delete }
+
+hris_remuneration_incentive_grid:
+    pattern: /incentives/grid
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:grid }
+
+hris_remuneration_incentive_ajax_get:
+    pattern: /ajax/incentives/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:ajaxGet }
+
+hris_remuneration_incentive_ajax_add:
+    pattern: /ajax/incentives/add
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:ajaxAdd }
+
+hris_remuneration_incentive_status:
+    pattern: /incentive/{id}/status/{status}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Incentive:statusUpdate}
+
+hris_remuneration_incentive_ajax_grid:
+    pattern: /incentives/ajax/{id}/{date_from}/{date_to}
+    defaults: { _controller: HrisRemunerationBundle:Incentive:gridIncentive}
+
+
+## Loans
+
+
+hris_remuneration_loan_index:
+    path:    /loans
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Loan:index }
+
+hris_remuneration_loan_add_form:
+    pattern: /loan
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Loan:addForm }
+
+hris_remuneration_loan_add_submit:
+    pattern: /loan
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Loan:addSubmit }
+
+hris_remuneration_loan_edit_form:
+    pattern: /loan/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Loan:editForm }
+
+hris_remuneration_loan_edit_submit:
+    pattern: /loan/{id}
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Loan:editSubmit }
+
+hris_remuneration_loan_delete:
+    pattern: /loan/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Loan:delete }
+
+hris_remuneration_loan_grid:
+    pattern: /loans/grid
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Loan:grid }
+
+hris_remuneration_loan_ajax_get:
+    pattern: /ajax/loans/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Loan:ajaxGet }
+
+hris_remuneration_loan_ajax_add:
+    pattern: /ajax/loans/add
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Loan:ajaxAdd }
+
+hris_remuneration_loan_status:
+    pattern: /loan/{id}/status/{status}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Loan:statusUpdate}
+
+hris_remuneration_loan_ajax_grid:
+    pattern: /loans/ajax/{id}/{date_from}/{date_to}
+    defaults: { _controller: HrisRemunerationBundle:Loan:gridLoan}
+
+
+hris_remuneration_loan_payment_add_form:
+    pattern: /loan/payment/new/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:LoanPayment:add }
+
+hris_remuneration_loan_payment_add_submit:
+    pattern: /loan/payment/new/{id}
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:LoanPayment:addSubmit }
+
+hris_remuneration_loan_payment_edit_form:
+    pattern: /loan/payment/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:LoanPayment:editForm }
+
+hris_remuneration_loan_payment_edit_submit:
+    pattern: /loan/payment/{id}
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:LoanPayment:editSubmit }
+
+hris_remuneration_loan_payment_delete:
+    pattern: /loan/payment/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:LoanPayment:delete }
+
+## cash bond
+
+hris_remuneration_cashbond_index:
+    path:    /savingslist
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:index }
+
+hris_remuneration_cashbond_edit_form:
+    pattern: /savings/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:editForm }
+
+hris_remuneration_cashbond_edit_submit:
+    pattern: /savings/{id}
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:editSubmit }
+
+hris_remuneration_cashbond_delete:
+    pattern: /savings/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:delete }
+
+hris_remuneration_cashbond_grid:
+    pattern: /savingslist/grid
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:grid }
+
+
+hris_remuneration_cashbond_add_loan_form:
+    pattern: /savings-loan/{emp_id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:addLoan }
+
+hris_remuneration_cashbond_add_loan_submit:
+    pattern: /savings-loan/{emp_id}
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:addLoanSubmit }
+
+hris_remuneration_cashbond_edit_loan_form:
+    pattern: /savings-loan-view/{id}
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:editLoan }
+
+hris_remuneration_cashbond_edit_loan_submit:
+    pattern: /savings-loan-view/{id}
+    methods: [POST]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:editLoanSubmit }
+
+
+hris_remuneration_cashbond_employee_ajax:
+    pattern: /savings-employee
+    methods: [GET]
+    defaults: { _controller: HrisRemunerationBundle:Cashbond:getCashbondByEmployeeAjax }
+

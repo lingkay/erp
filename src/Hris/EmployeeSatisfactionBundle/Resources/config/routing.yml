@@ -1,0 +1,6 @@
+hris_discounts_index:
+    path:     /discounts
+    defaults: { _controller: HrisEmployeeSatisfactionBundle:Discount:index }
+hris_discounts_add_form:
+    path:     /adddiscounts
+    defaults: { _controller: HrisEmployeeSatisfactionBundle:Discount:addForm }

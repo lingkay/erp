@@ -1,0 +1,6 @@
+{% if app.user.hasAccess(prefix ~ '.view') %}
+<a href="{{ path(route_view, { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View 201</a>
+{% endif %}
+{# {% if app.user.hasAccess(prefix ~ '.delete') %}
+<a href="{{ path(route_delete, { 'id': id }) }}" class="btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i> Delete</a>
+{% endif %} #}

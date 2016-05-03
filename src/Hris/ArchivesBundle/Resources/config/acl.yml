@@ -1,0 +1,13 @@
+acl:
+    - category: Archives
+      entries:
+       - id: hris_archives.menu
+         label: "Menu"
+    - category: Employee Database
+      entries:
+       - id: hris_employeedb.menu
+         label: "Menu"
+       - id: hris_employeedb.add
+         label: "Add"
+       - id: hris_employeedb.view
+         label: "View"      

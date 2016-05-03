@@ -1,0 +1,61 @@
+acl:
+    - category: Remuneration
+      entries:
+       - id: hris_cash.menu
+         label: "Menu"
+
+    - category: Cash Incentives
+      entries:
+        - id: hris_remuneration_incentive.menu
+          label: "Menu"
+        - id: hris_remuneration_incentive.view
+          label: "View"
+        - id: hris_remuneration_incentive.add
+          label: "Add"
+        - id: hris_remuneration_incentive.edit
+          label: "Edit"
+        - id: hris_remuneration_incentive.delete
+          label: "Delete"
+
+    - category: Loans
+      entries:
+        - id: hris_remuneration_loan.menu
+          label: "Menu"
+        - id: hris_remuneration_loan.view
+          label: "View"
+        - id: hris_remuneration_loan.add
+          label: "Add"
+        - id: hris_remuneration_loan.edit
+          label: "Edit"
+        - id: hris_remuneration_loan.delete
+          label: "Delete"
+
+    - category: Reimbursements
+      entries:
+        - id: hris_workforce_reimbursement.menu
+          label: "Menu"
+        - id: hris_workforce_reimbursement.view
+          label: "View"
+        - id: hris_workforce_reimbursement.add
+          label: "Add"
+        - id: hris_workforce_reimbursement.edit
+          label: "Edit"
+        - id: hris_workforce_reimbursement.delete
+          label: "Delete"
+        - id: hris_workforce_reimbursement.review
+          label: "Review"
+        - id: hris_workforce_reimbursement.approve
+          label: "Approve"
+        - id: hris_workforce_reimbursement.reject
+          label: "Reject"
+
+    - category: Savings
+      entries:
+        - id: hris_remuneration_cashbond.menu
+          label: "Menu"
+        - id: hris_remuneration_cashbond.view
+          label: "View"
+        - id: hris_remuneration_cashbond.add
+          label: "Add"
+        - id: hris_remuneration_cashbond.edit
+          label: "Edit"

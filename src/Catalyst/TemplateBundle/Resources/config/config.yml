@@ -1,0 +1,21 @@
+config:
+    - category: "Template"
+      entries:
+        - id: cat_color_primary
+          label: "Header and Footer Color"
+          type: color
+        - id: cat_color_secondary
+          label: "Side menu Color"
+          type: color
+        - id: cat_color_tertiary
+          label: "Sub menu Color"
+          type: color
+        - id: cat_color_header
+          label: "Highlights and Panel Headers Color"
+          type: color
+        - id: cat_color_bg_image
+          label: Logo Background Color 
+          type: color
+        - id: cat_color_login
+          label: Login Background Color 
+          type: color

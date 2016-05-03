@@ -1,0 +1,70 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+        <div class="portlet-body form">
+        <!-- BEGIN FORM-->
+            <form method="post" class="form-horizontal">
+                <div class="form-body">
+                    <div class="form-group">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_number('Minimum Amount','min_amount', object.getMinimum|default('0.00'),3,4, readonly) }}
+                        {{ form.group_number('Maximum Amount','max_amount', object.getMaximum|default('0.00'),3,4, readonly) }}
+                        {{ form.group_number('Monthly Salary Credit','salary_credit', object.getSalaryCredit|default('0.00'),3,4, readonly) }}
+                        {{ form.group_number('Employee Contribution','ee', object.getEmployee|default('0.00'),3,4, readonly) }}
+                        {{ form.group_number('Employer Contribution','er', object.getEmployer|default('0.00'),3,4, readonly) }}
+                        {{ form.group_number('Total Contribution','total', object.getTotal|default('0.00'),3,4, true) }}
+                   
+                    </div> 
+                <div class="form-actions fluid">
+                    <div class="col-md-offset-3 col-md-12">
+                        {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                        {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        <!-- END FORM-->
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js%}
+<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="http://cdn.datatables.net/plug-ins/1.10.7/sorting/num-html.js"></script>
+<!-- datepicker -->
+
+<script>
+function compute_contribution () {
+
+    var min = parseFloat($('#cform-ee').val());
+    var max = parseFloat($('#cform-er').val());
+
+    var total = min + max;
+
+    $('#cform-total').val(total);
+}
+$(document).ready(function() {
+    $('#cform-ee').change(function() {
+        compute_contribution();
+    });
+    $('#cform-er').change(function() {
+        compute_contribution();
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Semi Monthly Settings</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4>Payroll Schedule</h4>
+                        {{ form.group_select('Cutoff Start 1','sched[cutoff_start1]', dates_opts, sched != null ? sched.cutoff_start1 : '0',3,4) }}
+                        {{ form.group_select('Cutoff End 1','sched[cutoff_end1]', dates_opts, sched != null ? sched.cutoff_end1: '0',3,4) }}
+                        {{ form.group_select('Cutoff Pay 1','sched[cutoff_pay1]', dates_opts, sched != null ? sched.cutoff_pay1: '0',3,4) }}
+
+                        {{ form.group_select('Cutoff Start 2','sched[cutoff_start2]', dates_opts, sched != null ? sched.cutoff_start2 : '0',3,4) }}
+                        {{ form.group_select('Cutoff End 2','sched[cutoff_end2]', dates_opts, sched != null ? sched.cutoff_end2: '0',3,4) }}
+                        {{ form.group_select('Cutoff Pay 2','sched[cutoff_pay2]', dates_opts, sched != null ? sched.cutoff_pay2: '0',3,4) }}
+
+                        <h4>Deduction Schedule</h4>
+                        <table class="table table-striped table-bordered table-hover dataTable">
+                            <thead>
+                                <th>Payroll</th>
+                                <th>Cutoff 1</th>
+                                <th>Cutoff 2</th>
+                            </thead>
+                            <tbody>
+                               {#  <tr>
+                                    <td>Tax Deduction</td>
+                                    <td>
+                                        {{ form.select('payroll[percent][]', percent_opts,payroll_percent != null ? payroll_percent[0]: '0',12) }}
+                                    </td>
+                                    <td>
+                                        {{ form.select('payroll[percent][]', percent_opts,payroll_percent != null ? payroll_percent[1]: '0',12) }}
+                                    </td>
+                                </tr> #}
+                                <tr>
+                                    <td>SSS Deduction</td>
+                                    <td>
+                                        {{ form.radio('sss', '0', '',sss=='0'? true : false, 'payroll[sss]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('sss', '1', '',sss=='1'? true : false, 'payroll[sss]') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Philhealth Deduction</td>
+                                     <td>
+                                        {{ form.radio('philhealth', '0', '', philhealth=='0'? true : false, 'payroll[philhealth]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('philhealth', '1', '', philhealth=='1'? true : false, 'payroll[philhealth]') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Pagibig Deduction</td>
+                                     <td>
+                                        {{ form.radio('pagibig', '0', '', pagibig=='0'? true : false, 'payroll[pagibig]') }}
+                                    </td>
+                                    <td>
+                                        {{ form.radio('pagibig', '1', '', pagibig=='1'? true : false, 'payroll[pagibig]') }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

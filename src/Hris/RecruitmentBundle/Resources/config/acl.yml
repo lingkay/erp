@@ -1,0 +1,47 @@
+acl:
+    - category: Recruitment
+      entries:
+       - id: hris_recruit.menu
+         label: "Menu"
+
+    #  APPLICATIONS 
+    - category: Applications
+      entries:
+       - id: hris_applications.menu
+         label: "Menu"
+       - id: hris_applications.view
+         label: "View"
+       - id: hris_applications.add
+         label: "Add"
+       - id: hris_applications.edit
+         label: "Edit"
+       - id: hris_applications.delete
+         label: "Delete"
+
+    # RECRUITMENT
+    - category: Recruitment Process
+      entries:
+       - id: hris_applications_edit_progress.view
+         label: "View"
+       - id: hris_applications_edit_progress.edit
+         label: "Edit"
+
+    # REQUISITION
+    - category: Manpower Requisition
+      entries:
+       - id: hris_requisition.menu
+         label: "Menu"
+       - id: hris_requisition.view
+         label: "View"
+       - id: hris_requisition.add
+         label: "Add"
+       - id: hris_requisition.edit
+         label: "Edit"
+       - id: hris_requisition.delete
+         label: "Delete"
+       - id: hris_requisition.review
+         label: "Review"
+       - id: hris_requisition.approve
+         label: "Approve"
+       - id: hris_requisition.reject
+         label: "Reject"

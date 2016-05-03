@@ -1,0 +1,119 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption"> {{ list_title }} </div>
+            </div>
+            <div class="portlet-body">
+                <form id="payroll_form" method="post" class="form-horizontal" action="{{ path('hris_payroll_generate_submit')}}">
+                    {# {{ form.group_select('For Employees with Payroll Schedule', 'pay_sched', sched_opts, '', 4, 3) }} #}
+                    <div id="daterange-container">
+                    {{ form.group_date_range('daterange', 'Period Cut-Off', 'date_from', 'date_to', 0, 0, 4, 3) }}
+                    </div>
+
+        			<div class="form-group">
+	                    <div class="col-md-3 col-md-offset-4" >
+	                    		<button id="btn_generate" type="submit" class="btn green">Generate Payroll</button>
+	        			</div>
+	        		</div>
+                    
+                    <table class="table table-striped table-bordered table-hover" id="list_table">
+                        <thead>
+                            <tr>
+                            {% for col in grid_cols %}
+                                <th>{{ col.getLabel }}</th>
+                            {% endfor %}
+                            	<th style="width: 100px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for pay in payroll %}
+                        	<tr>
+                        		<td>{{ pay.getEmployee.getDisplayName }}</td>
+                        		<td class="numeric">{{ pay.getTotalTaxable|number_format(2, '.', ',')}}</td>
+                        		<td class="numeric">{{ pay.getTotal|number_format(2, '.', ',')}}</td>
+                        		<td>
+                        			<a href="{{ path('hris_payroll_details_index', { 'id': pay.getID }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View Details</a>
+                        		</td>
+                        	</tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",        
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+         "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [{{ grid_cols|length}}] },
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+<script>
+$(document).ready(function() {
+    $('#daterange input').val('');
+    $('#daterange').daterangepicker(
+        {
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#cform-date_from').val(start.format('YYYYMMDD'));
+            $('#cform-date_to').val(end.format('YYYYMMDD'));
+        }
+    );
+
+    $('#payroll_form').validate({
+        // onfocusout: function(element) {
+        //    this.element(element);
+        // },
+        rules: {
+            wdate_from_wdate_to: {
+                required: true
+            },
+        
+        },
+        errorLabelContainer: '.errorTxt',
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+    
+});
+</script>
+{% endblock %}
+{% block css %}
+<style>
+.ranges ul li:last-child{
+    display :none;
+}
+</style>
+{% endblock %}
+

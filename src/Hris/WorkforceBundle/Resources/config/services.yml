@@ -1,0 +1,27 @@
+parameters:
+#    hris_workforce_management.example.class: Hris\WorkforceBundle\Example
+
+services:
+    hris_workforce:
+        class: Hris\WorkforceBundle\Model\WorkforceManager
+        arguments: [ "@doctrine.orm.entity_manager","@service_container", "@security.context" ]
+
+    hris_attendance:
+        class: Hris\WorkforceBundle\Model\AttendanceManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"
+
+    hris_appraisal:
+        class: Hris\WorkforceBundle\Model\AppraisalManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"
+
+    hris_cashflow:
+        class: Hris\WorkforceBundle\Model\CashflowManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"
+
+    hris_request:
+        class: Hris\WorkforceBundle\Model\RequestManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"

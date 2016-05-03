@@ -1,0 +1,231 @@
+<div class="row profile-account">
+    <div class="col-md-3">
+        <!-- ACCOUNT TAB SUB-MENU -->
+        <ul class="ver-inline-menu tabbable margin-bottom-10">
+            <li class="active">
+                <a data-toggle="tab" href="#acct_profile">
+                <i class="fa fa-info"></i> Profile </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#acct_user">
+                <i class="fa fa-key"></i> User Account </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#acct_appraisal">
+                <i class="fa fa-comments"></i> Appraisals </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#acct_attendance">
+                <i class="fa fa-calendar"></i> Attendance </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#acct_benefits">
+                <i class="fa fa-legal"></i> Benefits </a>
+            </li>
+        </ul>
+        <!-- END ACCOUNT TAB SUB-MENU -->
+    </div>
+    <div class="col-md-9">
+        <div class="tab-content">
+            <div id="acct_profile" class="tab-pane active">
+                <form method="post" class="form-horizontal form">
+                    <div class="form-body">
+                        <h4 class="form-section">My Profile Details</h4>
+                        {{ form.hidden('employee_form','acct_profile')}}
+                        {% set profile = object.getProfile %}
+                        {{ form.group_upload_image('Profile Picture','picture',profile.getUpload,3,4)}}
+                        {{ form.group_date('Birthday','birthday',profile.getBirthday|date("m/d/Y"),3,4) }}
+                        {{ form.group_text('TIN','tin',profile.getTin,3,4) }}
+                        {{ form.group_text('SSS','sss',profile.getSss,3,4) }}
+                        {{ form.group_text('Philhealth','philhealth',profile.getPhilhealth,3,4) }}
+                        {{ form.group_text('Pag-Ibig','pagibig',profile.getPagibig,3,4) }}
+                        <h4 class="form-section">Address</h4>
+                        
+                        {{ form.hidden('address_id',profile.getAddress is not null ? profile.getAddress.getID:"0")}}
+                        {{ form.hidden('longitude',profile.getAddress is not null ? profile.getAddress.getID:"0")}}
+                        {{ form.hidden('latitude',profile.getAddress is not null ? profile.getAddress.getID:"0")}}
+                        {{ form.group_text('Unit no', 'unit',profile.getAddress is not null ? profile.getAddress.getName:"", 3, 4) }}
+                        {{ form.group_text('Street', 'street',profile.getAddress is not null ? profile.getAddress.getStreet:"", 3, 4) }}
+                        {# {{ form.group_text('City', 'city',profile.getAddress is not null ? profile.getAddress.getCity.getName:"", 3, 4) }}
+                        {{ form.group_text('State', 'state',profile.getAddress is not null ? profile.getAddress.getState.getName:"", 3, 4) }}
+                        {{ form.group_text('Country', 'country',profile.getAddress is not null ? profile.getAddress.getCountry.getName:"", 3, 4) }} #}
+                        {{ form.group_select('Country', 'country', country_opts, profile.getAddress.getCountry.getID|default(0), 3, 4) }}
+                        {{ form.group_select('State', 'state', state_opts, profile.getAddress.getState.getID|default(''), 3, 4) }}
+                        {{ form.group_select('City', 'city', city_opts, profile.getAddress.getCity.getID|default(''), 3, 4) }}
+
+                        {% include "CatalystContactBundle::form.has_phones.html.twig" with {object:profile, f:form}  %}
+
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                <button type="submit" class="btn blue">Submit</button>
+                                {% set id = object.getID %}
+                                <a href="{{ path('hris_profile_employee_edit', { 'id' : id }) }}" class="btn default">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                {% include "CatalystContactBundle::modal.has_phones.html.twig" with {object:profile}  %}
+            </div>
+
+            <div id="acct_user" class="tab-pane">
+                <form method="post" class="form-horizontal form">
+                <div class="form-body">
+                    <h4 class="form-section">My User Account</h4>
+                    {{ form.hidden('employee_form','acct_user')}}
+                    {{ form.group_text('Username', 'username',object.getUser.getUsername, 3, 4, true) }}
+                    {{ form.group_tip('', 'Leave passwords blank if you are not changing it', 3, 6) }}
+                    {{ form.group_password('Password', 'pass1', 3, 4) }}
+                    {{ form.group_password('Re-type Password', 'pass2', 3, 4) }}
+                    {{ form.group_select('Send Email Notifications?','email_notify', sendmail_opts, object.getUser.isEmailNotify,3,4) }}
+
+                    {# {{ form.group_select('Account Status','enabled', account_opts, object.getUser.isEnabled,3,4) }} #}
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Save</button>
+                            <a href="{{ path('hris_profile_employee_edit', { 'id' : id }) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+
+            <div id="acct_attendance" class="tab-pane">
+                <form method="post" class="form-horizontal form">
+                <div class="form-body">
+                        {{ form.hidden('employee_form','profile')}}
+                        {{ form.hidden('employee', object.getID) }}
+                        <!-- START CALENDAR -->
+                        <!-- BEGIN PORTLET-->
+                        <div class="portlet box blue-madison calendar">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-calendar"></i>Employee Attendance
+                                </div>
+                            </div>
+                            <div class="portlet-body light-grey">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div id="calendar" class="has-toolbar">
+                                        </div>
+                                        <div class="portlet-body">
+                                            <div style="margin: 20px 0 10px 30px">
+                                                <div class="row">
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 control-label">Total Late</label>
+                                                        <div class="col-md-2">
+                                                            <input id="late" type="text" name="late" class="form-control" placeholder="Total Late" value="" readonly>
+                                                        </div>
+                                                        <label class="col-md-2 control-label">Total Undertime</label>
+                                                        <div class="col-md-2">
+                                                            <input id="undertime" type="text" name="undertime" class="form-control" placeholder="Total Undertime" value="" readonly>
+                                                        </div>
+                                                        <label class="col-md-1 control-label">Total Absent</label>
+                                                        <div class="col-md-2">
+                                                            <input id="absent" type="text" name="absent" class="form-control" placeholder="Total Absent" value="" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END PORTLET-->
+                </div>
+                </form>
+            </div>
+
+            <div id="acct_appraisal" class="tab-pane">
+                <form method="post" class="form-horizontal form">
+                <div class="form-body">
+                    <h4 class="form-section">My Evaluations</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Evaluator Name</th>
+                                <th>Department</th>
+                                <th>Evaluation Period</th>
+                                <th>Status</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if evals is empty %}
+                            <tr class="odd"><td valign="top" colspan="6" class="dataTables_empty">No Appraisals/Evaluation yet.</td></tr>
+                        {% else %}
+                        {% for a in appr %}
+                            {% for result in appr_result %}
+                            {% if result.id == a.getID %}
+                            <tr class="odd gradeX" style="background-color: #BFBFBF;">
+                                <td colspan="2">Type - {{ a.getType }}</td>
+                                <td colspan="2">Overall Rating - {{ result.rating|default('N/A') }}</td>
+                                <td colspan="2">Overall Grade - {{ result.grade|default('N/A') }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            {% for eval in evals %}
+                                {% for e in eval %}
+                                {% if e.getAppraisal.getID == a.getID %}
+                                <tr class="odd gradeX">
+                                    <td>{{ e.getEmployee.getDisplayName }}</td>
+                                    <td>{{ e.getEmployee.getDepartment.getName ~ ' (' ~ e.getEmployee.getJobTitle.getName ~ ')' }}</td>
+                                    <td>{{ e.getAppraisal.getDateStart|date('m/d/Y') ~ '-' ~ e.getAppraisal.getDateEnd|date('m/d/Y') }}</td>
+                                    <td>{{ e.getStatus }}</td>
+                                    <td>{{ e.getQualiRating }}</td>                        
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                </form>
+            </div>
+
+            <div id="acct_benefits" class="tab-pane">
+                <form method="post" class="form-horizontal form">
+                <div class="form-body">
+                    <h4 class="form-section">My Benefits</h4>
+                    {{ form.hidden('employee_form','acct_benefits')}}
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Benefit</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="benefit_list">
+                            {% if emp_ben is empty %}
+                                <tr class="odd empty">
+                                    <td valign="top" colspan="6" class="dataTables_empty">No Benefit added yet.</td>
+                                </tr>
+                            {% else %}
+                                {% for e in emp_ben %}
+                                <tr class="odd gradeX">
+                                    {% if e.getBenefit != null %}
+                                        {% set benefit_id = e.getBenefit.getID %}
+                                        {% set benefit_name = e.getBenefit.getName %}
+                                        {% set benefit_notes = e.getBenefit.getNotes %}
+                                    {% else %}
+                                        {% set benefit_id = e.getLeave.getID %}
+                                        {% set benefit_name = e.getLeave.getName %}
+                                        {% set benefit_notes = e.getLeave.getNotes %}
+                                    {% endif %}
+                                    <td>{{benefit_name}}<input type="hidden" name="benefit[]" value="{{ benefit_id }}"></td>
+                                    <td>{{ benefit_notes }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

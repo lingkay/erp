@@ -1,0 +1,232 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {# {% if new == false %}
+                            <a href="" class="btn green">Print</a>
+                        {% endif %} #}
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_date('Date Filed','date_filed',object.getDateFiled|date('m/d/Y'),3,4, true) }}
+                        {{ form.group_text('Date Approved', 'date_approved', object.getDateApproved is empty ? "" : object.getDateApproved|date('m/d/Y'), 3, 4, true) }}
+                        {{ form.group_text('Status', 'status', object.getDisplayStatus, 3, 4, true) }}    
+                        {{ form.group_text('Code', 'code', object.getCode|default(""), 3, 4, true) }}
+                        {{ form.typeahead('Employee', 'name', object.getEmployee is not null ? object.getEmployee.getDisplayName:"",object.getEmployee is not null ? object.getEmployee.getID:"0" ,path('hris_workforce_employee_ajax_get'), 3, 4, readonly) }}
+                        {# {{ form.group_select('Type', 'type',type_opts ,object.getType, 3, 4, readonly) }} #}
+                       <div class="form-group">
+                            <label class="col-md-3 control-label">Type</label>
+                            <div class="col-md-4">
+                                <select id="form_type" name="type" class="form-control select_2" {{ readonly ? "disabled" : "" }}>
+
+                                {% if object.getType != null and type_opts[object.getType] is not defined %}
+                                    {{form.options(type_opts,'Others')}}
+                                {% else %}
+                                    {{form.options(type_opts,object.getType)}}
+                                {% endif %}
+
+                                </select>
+                            </div>
+                            <div id="other_field">
+                            {% if object.getType != null and type_opts[object.getType] is not defined %}
+                                    {{ form.group_text('', 'other_type', object.getType|default(''), 0, 4, readonly) }}
+                            {% endif %}
+                        
+                            </div>
+                        </div>
+                
+                        {{ form.group_number('Amount', 'cost',object.getCost|default(''), 3, 4, readonly) }}
+                        
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                             {% if  object.getDisplayStatus == "Pending"%}
+                                <button type="submit" class="btn green">Submit</button>
+                            {% endif %}
+                            {% if object.getID is not null and  object.getDisplayStatus == "Pending"%}
+                            <a href="{{ path('hris_remuneration_incentive_status', {'id': object.getID, 'status': 'Approved'}) }}" class="btn blue">Approve</a>
+                            <a href="{{ path('hris_remuneration_incentive_status', {'id': object.getID, 'status': 'Reject'}) }}" class="btn red">Reject</a>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function toggle_form(id) {
+    if(id == 'Transportation') {
+        $('#others').hide();
+        $('#transpo').show();
+    }
+    else if(id == 0) {
+        $('#others').hide();
+        $('#transpo').hide();
+    }
+    else {
+        $('#others').show();
+        $('#transpo').hide();
+    };
+}
+
+$(document).ready(function() {
+
+    $('#cname_typeahead').change(function() {
+        if ($('#cname_id').val() != '0') 
+        {
+        }
+        else
+        {
+            $('#cname_typeahead').val('');
+        }
+    });
+
+    toggle_form($('select[name="type"]').val());
+
+    $('select[name="type"]').change(function() {
+        toggle_form($(this).val());
+    });
+
+    $('[id=cform-date_filed]').datepicker({
+        todayHighlight: true,
+        endDate: '0'
+        });
+        $('.calendar').prop('disabled', true);
+    // set default error and success elements
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+          return this.optional(element) || value != param;
+        }, "Cannot set default value");
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                error.appendTo(element.parent().last());
+                element.parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                element.parent().removeClass('has-error');
+                element.parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        },
+    });
+    // validate form elements
+    $(".form-horizontal").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+               this.element(element);
+            },
+            rules: {
+                date_filed: {
+                    required: true
+                },
+                name: {
+                    required: true
+                },
+                receipt_no: {
+                    required: true,
+                },
+                type: {
+                    required: true,
+                    notEqual: 0
+                },
+                other_type: {
+                    required: true,
+                },
+                cost: {
+                    required: true,
+                    number: true,
+                    min: 1
+                }
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+    });
+
+    $('.form-horizontal .select_2').change(function () {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('.date-picker .form-control').change(function() {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('select[name="type"]').change(function() {
+        var item = $(this).val();
+
+        if(item == 'Others') {
+
+            var textbox = '<div class="col-md-4"><input type="text" name="other_type" class="form-control" placeholder="If others, please specify" value="" {{ readonly ? "readonly" : "" }}></div>';
+
+            $("#other_field").append(textbox);
+        }
+        else {
+
+            $("#other_field").empty();
+        }
+    });
+}); 
+</script>
+{% endblock %}

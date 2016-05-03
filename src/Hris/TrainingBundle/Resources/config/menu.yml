@@ -1,0 +1,9 @@
+# menu_items:
+#     - id: hris_training
+#       acl: hris_training.menu
+#       label: Trainings
+#       icon: fa-book
+#     - id: hris_etrain_index
+#       acl: hris_etrain.menu
+#       label: Training
+#       parent: hris_training

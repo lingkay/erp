@@ -1,0 +1,81 @@
+menu_items:
+    - id: hris_workforce
+      acl: hris_workforce.menu
+      label: Workforce Management
+      icon: fa-group
+    - id: hris_workforce_employee_index
+      acl: hris_workforce_employee.menu
+      label: Employees
+      parent: hris_workforce
+    - id: hris_workforce_attendance_index
+      acl: hris_workforce_attendance.menu
+      label: Attendance
+      parent: hris_workforce
+    - id: hris_workforce_leave_index
+      acl: hris_workforce_leave.menu
+      label: Leave
+      parent: hris_workforce
+    - id: hris_workforce_appraisals_index
+      acl: hris_workforce_appraisals.menu
+      label: Appraisals
+      parent: hris_workforce
+    - id: hris_workforce_issued_property_index
+      acl: hris_workforce_issued_property.menu
+      label: Issued Properties
+      parent: hris_workforce
+      parent: hris_workforce
+    - id: hris_workforce_onboard_index
+      acl: hris_workforce_onboard.menu
+      label: On Boarding
+      parent: hris_workforce
+    - id: hris_workforce_cashadvance_index
+      acl: hris_workforce_cashadvance.menu
+      label: Cash Advance
+      parent: hris_workforce
+    - id: hris_workforce_resign_index
+      acl: hris_workforce_resign.menu
+      label: Resignations
+      parent: hris_workforce
+    - id: hris_workforce_overtime_index
+      acl: hris_workforce_overtime.menu
+      label: Overtime
+      parent: hris_workforce
+    - id: hris_workforce_201_index
+      acl: hris_workforce_201.menu
+      label: Employee 201
+      parent: hris_workforce
+
+    - id: hris_memo_index
+      acl: hris_memo.menu
+      label: Memo
+      parent: hris_workforce
+    - id: hris_memo_company_index
+      acl: hris_memo.menu
+      label: Company Memo
+      parent: hris_memo_index
+    - id: hris_memo_violation_index
+      acl: hris_memo_violation.menu
+      label: Notice of Violation
+      parent: hris_memo_index
+    - id: hris_memo_disciplinary_index
+      acl: hris_memo_disciplinary.menu
+      label: Notice of Disciplinary Action
+      parent: hris_memo_index
+    - id: hris_memo_tardiness_index
+      acl: hris_memo_tardiness.menu
+      label: Notice of Tardiness
+      parent: hris_memo_index
+    - id: hris_memo_promotion_index
+      acl: hris_memo_promotion.menu
+      label: Notice of Promotion
+      parent: hris_memo_index
+    - id: hris_memo_regularization_index
+      acl: hris_memo_regularization.menu
+      label: Notice of Regularization
+      parent: hris_memo_index
+
+
+    - id: hris_workforce_incident_index
+      acl: hris_workforce_incident.menu
+      label: Incident Report
+      parent: hris_memo_index

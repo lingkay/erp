@@ -1,0 +1,25 @@
+<div id="position_modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">New Position</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        <form id="position_form">
+                        {{ form.group_text('Name', 'name',"", 3, 8, readonly, 'a') }}
+                        {{ form.group_select('Department', 'dept', department_opts, '', 3, 8, readonly, 'a') }}
+                        {{ form.group_textarea('Responsibilities', 'notes', "", 3, 3,8, readonly, 'a') }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_jobtitle_submit" type="button" class="btn green">Add Position</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

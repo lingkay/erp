@@ -1,0 +1,3 @@
+{% if app.user.hasAccess(prefix ~ '.view') %}
+<a href="{{ path(route_edit, { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View</a>
+{% endif %}

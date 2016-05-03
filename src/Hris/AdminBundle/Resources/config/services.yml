@@ -1,0 +1,15 @@
+parameters:
+#    catalyst_admin.example.class: Catalyst\AdminBundle\Example
+
+services:
+    hris_settings:
+        class: Hris\AdminBundle\Model\SettingsManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"
+            container: "@service_container"
+
+    hris_events:
+        class: Hris\AdminBundle\Model\EventsManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"
+            container: "@service_container"

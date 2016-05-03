@@ -1,0 +1,201 @@
+acl:
+    - category: Workforce Management
+      entries:
+       - id: hris_workforce.menu
+         label: "Menu"
+    - category: Employees
+      entries:
+        - id: hris_workforce_employee.menu
+          label: "Menu"
+        - id: hris_workforce_employee.view
+          label: "View"
+        - id: hris_workforce_employee.add
+          label: "Add"
+        - id: hris_workforce_employee.edit
+          label: "Edit"
+    - category: Attendance
+      entries:
+        - id: hris_workforce_attendance.menu
+          label: "Menu"
+        - id: hris_workforce_attendance.view
+          label: "View"
+        - id: hris_workforce_attendance.add
+          label: "Add"
+        - id: hris_workforce_attendance.edit
+          label: "Edit"
+        - id: hris_workforce_attendance.review
+          label: "Review"
+        - id: hris_workforce_attendance.approve
+          label: "Approve"
+        - id: hris_workforce_attendance.reject
+          label: "Reject"
+    - category: Leave
+      entries:
+        - id: hris_workforce_leave.menu
+          label: "Menu"
+        - id: hris_workforce_leave.view
+          label: "View"
+        - id: hris_workforce_leave.add
+          label: "Add"
+        - id: hris_workforce_leave.edit
+          label: "Edit"
+        - id: hris_workforce_leave.approve
+          label: "Approve"
+        - id: hris_workforce_leave.reject
+          label: "Reject"
+        - id: hris_workforce_leave.review
+          label: "Review"
+    - category: Appraisals
+      entries:
+        - id: hris_workforce_appraisals.menu
+          label: "Menu"
+        - id: hris_workforce_appraisals.view
+          label: "View"
+        - id: hris_workforce_appraisals.add
+          label: "Add"
+        - id: hris_workforce_appraisals.edit
+          label: "Edit"
+        - id: hris_workforce_appraisals.delete
+          label: "Delete"
+        - id: hris_workforce_appraisals.evaluate
+          label: "Evaluate"
+        - id: hris_workforce_appraisals.create
+          label: "Create Memo"
+    - category: Issued Properties
+      entries:
+        - id: hris_workforce_issued_property.menu
+          label: "Menu"
+        - id: hris_workforce_issued_property.view
+          label: "View"
+        - id: hris_workforce_issued_property.add
+          label: "Add"
+        - id: hris_workforce_issued_property.edit
+          label: "Edit"
+    - category: Memo
+      entries:
+        - id: hris_memo.menu
+          label: "Menu"
+        - id: hris_memo.view
+          label: "View"
+        - id: hris_memo.add
+          label: "Add"
+        - id: hris_memo.edit
+          label: "Edit"
+    - category: Company Memo
+      entries:
+        - id: hris_memo_company.menu
+          label: "Menu"
+        - id: hris_memo_company.view
+          label: "View"
+        - id: hris_memo_company.add
+          label: "Add"
+        - id: hris_memo_company.edit
+          label: "Edit"
+    - category: Disciplinary Memo
+      entries:
+        - id: hris_memo_disciplinary.menu
+          label: "Menu"
+        - id: hris_memo_disciplinary.view
+          label: "View"
+        - id: hris_memo_disciplinary.add
+          label: "Add"
+        - id: hris_memo_disciplinary.edit
+          label: "Edit"
+    - category: Tardiness Memo
+      entries:
+        - id: hris_memo_tardiness.menu
+          label: "Menu"
+        - id: hris_memo_tardiness.view
+          label: "View"
+        - id: hris_memo_tardiness.add
+          label: "Add"
+        - id: hris_memo_tardiness.edit
+          label: "Edit"
+    - category: Violation Memo
+      entries:
+        - id: hris_memo_violation.menu
+          label: "Menu"
+        - id: hris_memo_violation.view
+          label: "View"
+        - id: hris_memo_violation.add
+          label: "Add"
+        - id: hris_memo_violation.edit
+          label: "Edit"
+    - category: Promotion Memo
+      entries:
+        - id: hris_memo_promotion.menu
+          label: "Menu"
+        - id: hris_memo_promotion.view
+          label: "View"
+        - id: hris_memo_promotion.add
+          label: "Add"
+        - id: hris_memo_promotion.edit
+          label: "Edit"
+    - category: Regularization Memo
+      entries:
+        - id: hris_memo_regularization.menu
+          label: "Menu"
+        - id: hris_memo_regularization.view
+          label: "View"
+        - id: hris_memo_regularization.add
+          label: "Add"
+        - id: hris_memo_regularization.edit
+          label: "Edit"
+    - category: Incident Report
+      entries:
+        - id: hris_workforce_incident.menu
+          label: "Menu"
+        - id: hris_workforce_incident.view
+          label: "View"
+        - id: hris_workforce_incident.add
+          label: "Add"
+        - id: hris_workforce_incident.edit
+          label: "Edit"
+        - id: hris_workforce_incident.review
+          label: "Review"
+    - category: Resignations
+      entries:
+        - id: hris_workforce_resign.menu
+          label: "Menu"
+        - id: hris_workforce_resign.edit
+          label: "Edit"
+        - id: hris_workforce_resign.view
+          label: "View"
+    - category: On Boarding
+      entries:
+        - id: hris_workforce_onboard.menu
+          label: "Menu"
+        - id: hris_workforce_onboard.view
+          label: "View"
+        - id: hris_workforce_onboard.edit
+          label: "Edit"
+    - category: Cash Advance
+      entries:
+        - id: hris_workforce_cashadvance.menu
+          label: "Menu"
+        - id: hris_workforce_cashadvance.view
+          label: "View"
+        - id: hris_workforce_cashadvance.add
+          label: "Add"
+        - id: hris_workforce_cashadvance.edit
+          label: "Edit"
+        - id: hris_workforce_cashadvance.delete
+          label: "Delete"
+    - category: Overtime
+      entries:
+        - id: hris_workforce_overtime.menu
+          label: "Menu"
+        - id: hris_workforce_overtime.view
+          label: "View"
+        - id: hris_workforce_overtime.edit
+          label: "Edit"
+    - category: Employee 201 File
+      entries:
+        - id: hris_workforce_201.menu
+          label: "Menu"
+        - id: hris_workforce_201.view
+          label: "View"
+        - id: hris_workforce_201.edit
+          label: "Edit"
+        - id: hris_workforce_201.print
+          label: "Print"

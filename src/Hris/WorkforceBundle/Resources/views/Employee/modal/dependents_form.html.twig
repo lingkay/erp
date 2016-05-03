@@ -1,0 +1,40 @@
+<div id="dependent_form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Add New Dependent</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        <form id = "dependent-form" class="form-horizontal">
+                        {{ form.group_text('Name','dependent','',3,8,readonly) }}
+                        {{ form.group_select('Relationship','relationship',relationship_opts,'',3,8,readonly)}}
+                        {{ form.group_date('Birthday', 'dep_birthday','', 3, 8, readonly) }}
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Is Qualified?</label>
+                            <div class="col-md-9">
+                                <div class="radio-list">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="qualified" id="cform-qualified" value="qualified"/>Yes
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="qualified" id="cform-not-qualified" value="not qualified" checked/>No
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form.group_select('Special Cases','condition', condition_opts,'',3,8,readonly)}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn_dependent_submit" type="button" class="btn green">Add Dependent</button>
+                    <button type="button" data-dismiss="modal" class="btn default">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

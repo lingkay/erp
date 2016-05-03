@@ -1,0 +1,458 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% import _self as self %}
+
+{% macro text(name,value,label_size,body_size,readonly = false,prefix = 'c') %}
+<div id="{{ prefix }}group-{{ name }}" class="form-group">
+    <label class="col-md-{{ label_size }} control-label"></label>
+    <div class="col-md-{{ body_size }}">
+        <input id="{{ prefix }}form-{{ name }}" type="text" name="{{ name }}" class="form-control" value="{{ value }}" {{ readonly ? 'readonly ' : '' }}>
+    </div>
+    <button class="remove_benefit_field btn red" {{ readonly ? 'disabled' : '' }}><i class="fa fa-minus"></i></button>
+</div>
+{% endmacro %}
+{% if object.getStatus == "Denied" %}
+    {% set readonly = true %}
+{% endif %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4 class="form-section">Information</h4>
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_date('Date Issued', 'date_issue',object is not null ? object.getDateCreate|date('m/d/Y'):""|date('m/d/Y'), 3, 3, true) }}
+
+                        {# 
+
+                            Test:
+                            * If user is admin, all access is TRUE. readonly if status is not 'Draft'.
+                            * If dept_head, dh_hasAccess is TRUE, else if vp_ops, vp_hasAccess is TRUE, else all access is FALSE.
+                            * If user is same as creator and status is 'Draft', readonly is TRUE, else FALSE.
+
+                         #}
+                        {% if object.getID is not null %}
+                            {% set dept_head = object.getDepartment.getDeptHead.getID %}
+                            {% if app.user.getUsername is same as('admin') %}
+                                {% if object.getStatus is same as('Draft') %}
+                                    {% set readonly = false %}
+                                {% else %}
+                                    {% set readonly = true %}
+                                {% endif %}
+                            {% else %}
+                                {% if object.getUserCreate.getUsername is same as('admin') %}
+                                    {% set readonly = true %}
+                                {% elseif (app.user.getEmployee.getID == object.getUserCreate.getEmployee.getID) and object.getStatus is same as('Draft') %}
+                                    {% set readonly = false %}
+                                {% else %}
+                                    {% set readonly = true %}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\ManpowerRequest::STATUS_DRAFT') %}
+                        {{ form.group_date('Date Reviewed', 'date_receive',object.getDateReceived is not null ? object.getDateReceived|date('m/d/Y'):"", 3, 3, true) }}                        
+                        {% if object.getStatus == constant('\\Hris\\RecruitmentBundle\\Entity\\ManpowerRequest::STATUS_APPROVED') %}
+                        {{ form.group_date('Date Approved', 'date_approve',object.getDateApproved is not null ? object.getDateApproved|date('m/d/Y'):"", 3, 3,true) }}
+                        {% endif %}
+                        {% endif %}
+                        {% if object.getID != null %}
+                        {{ form.group_text('Status', 'status',object.getStatus|default('Draft'), 3, 3,true) }}
+                        {% endif %}
+                        {{ form.group_select('Department','department',department_opts, object.getDepartment.getID|default(''),3,4, readonly) }}
+
+                        <div id="cgroup-position" class="form-group">
+                            <label class="col-md-3 control-label">Position Title</label>
+                            {{ form.select_bare('position', '', object.getPosition.getID|default(''), 4, readonly) }}
+                            <div class="col-md-3 ">
+                                 <a href="#position_modal" class="btn green" data-toggle="modal" {{ readonly ? 'disabled' : '' }}>Add New Position</a>
+                            </div>
+                        </div>
+                        {{ form.group_number('Number of Vacancies','vacancies',object.getVacancy|default('0'),3,4,readonly)}}
+                        {{ form.group_checkbox_set('Gender','gender',gender_opts, object.getGender,3,4,readonly) }}
+                       
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Age Range</label>
+                            <div class="col-md-4 row">
+                            <div class="col-md-5">
+                                <input type="number" size="5" id="age_min" name="age_from" class = "form-control control-label" placeholder="From" value="{{object.getAgeFrom}}" {{ readonly ? 'readonly' : '' }}>
+                            </div>
+                            <label class="col-md-2 control-label">-</label>
+                            <div class="col-md-5">
+                                <input type="number" id="age_max" name="age_to" class = "form-control control-label" placeholder="To" value="{{object.getAgeTo}}" {{ readonly ? 'readonly' : '' }}>
+                            </div>
+                            </div>  
+                        </div>
+
+                        {{ form.group_checkbox_set('Years of Work Experience','experience',experience_opts,object.getExperience,3,4,readonly) }}
+                        {{ form.group_checkbox_set('Educational Background (Please check all that apply)','education',education_opts,object.getEducation,3,8,readonly)}}
+                        
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">Required Course</label>
+                            <div class="col-md-4">
+                                <input type="text" name="required_course" class="form-control" placeholder="Required Course" value="" {{ readonly ? 'readonly ' : '' }}>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="add_course_button btn green" {{ readonly ? 'disabled' : '' }}>Add Required Course</button>
+                            </div>
+                        </div>
+
+                        <div class="add_course">
+                        {% for course in object.getRequiredCourses %}
+                            {{ self.text('required_course[]',course,3,4,true) }}
+                        {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">Skills And Training Needed</label>
+                            <div class="col-md-4">
+                                <input type="text" name="skills" class="form-control" placeholder="Skills and Training Needed" value="" {{ readonly ? 'readonly ' : '' }}>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="add_skills_button btn green" {{ readonly ? 'disabled' : '' }}>Add Skills/Training</button>
+                            </div>
+                        </div>
+
+                        <div class="add_skills">
+                        {% for skill in object.getSkills %}
+                            {{ self.text('skills[]',skill,3,4,true) }}
+                        {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Terms Of Employment</label>
+                            <div class="col-md-6">
+                                <div class="checkbox-list">
+                                    {{ form.checkbox_set('terms',terms_opts,object.getTermsOfEmployment,readonly) }}
+                                </div>
+                                {{ form.group_number('No. of months:','agency_months',0,3,4,true) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Purpose</label>
+                            <div class="col-md-6">
+                                <div class="checkbox-list">
+                                    {{ form.checkbox_set('purpose',purpose_opts,object.getPurpose,readonly) }}
+                                </div>
+                                {{ form.group_text('Please Specify:','other_purpose','',3,4,true) }}
+                            </div>
+                        </div>
+                        
+                        {{ form.group_checkbox_set('Personnel Type','personnel_type',personnel_opts,object.getPersonnelType,3,8,readonly)}}
+
+                        <h4 class="form-section">Sourcing</h4>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Sourcing Type</label>
+                            <div class="col-md-9">
+                                <div class="checkbox-list">
+                                    <div class="input-group form-group col-md-7">
+                                        <span class="input-group-addon" style="background-color: white; border: none; padding-left: 0px; color: black;">                                         
+                                            <input type="checkbox" name="flag_service[]" value="1" aria-label="..." {{ object.getInternalSourceCode is not null and object.getInternalSourceCode != "" ? 'checked' : '' }} {{ readonly ? 'disabled' : '' }}> Internal Sourcing
+                                        </span>
+                                        <div class="col-md-8">
+                                            <input type="text" name="i_source_code" class="form-control" placeholder="Sourcing No." aria-label="..." value="{{ object.getInternalSourceCode }}" {{ object.getInternalSourceCode is not null and object.getInternalSourceCode != "" ? '' : 'readonly' }} {{ readonly ? 'readonly' : '' }}>
+                                        </div>
+                                    </div>      
+                                    <div class="input-group form-group col-md-7">
+                                        <span class="input-group-addon" style="background-color: white; border: none; padding-left: 0px; color: black;">   
+                                            <input type="checkbox" name="flag_service[]" value="2" aria-label="..." {{ object.getExternalSourceCode is not null and object.getExternalSourceCode != "" ? 'checked' : '' }} {{ readonly ? 'disabled' : '' }}> External Sourcing
+                                        </span>
+                                        <div class="col-md-8">
+                                            <input type="text" name="e_source_code" class="form-control" placeholder="Sourcing No." aria-label="..." value="{{ object.getExternalSourceCode }}" {{ object.getExternalSourceCode is not null and object.getExternalSourceCode != "" ? '' : 'readonly' }} {{ readonly ? 'readonly' : '' }}>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+
+                        {# <div class="form-group">
+                           <label class="col-md-3 control-label">Internal Candidates</label>
+                            <div class="col-md-4">
+                                <input type="text" name="i_candidates" class="form-control" placeholder="Internal Candidates" value="" {{ readonly ? 'readonly ' : '' }}>
+                            </div>
+                            <button class="add_i_candidate_button btn green">Add Candidate</button>
+                        </div> #}
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Internal Candidates</label>
+                            <div class="col-md-4">
+                                <input type="text" name="i_candidates" placeholder="LN, FN MI" id="c-i_candidates_typeahead" data-path="{{ path('hris_workforce_employee_ajax_get') }}" class="form-control typeahead" autocomplete="off"  {{ readonly ? 'readonly ' : '' }}/>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="add_i_candidate_button btn green" {{ readonly ? 'disabled' : '' }}>Add Candidate</button>
+                            </div>
+                        </div>
+
+                        <div class="add_i_candidate">
+                        {% for i_candidates in object.getInternalCandidates %}
+                            {{ self.text('i_candidates[]',i_candidates,3,4,true) }}
+                        {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                           <label class="col-md-3 control-label">External Candidates</label>
+                            <div class="col-md-4">
+                                <input type="text" name="e_candidates" class="form-control" placeholder="LN, FN MI" value="" {{ readonly ? 'readonly ' : '' }}>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="add_e_candidate_button btn green" {{ readonly ? 'disabled' : '' }}>Add Candidate</button>
+                            </div>
+                        </div>
+
+                        <div class="add_e_candidate">
+                        {% for e_candidates in object.getExternalCandidates %}
+                            {{ self.text('e_candidates[]',e_candidates,3,4,true) }}
+                        {% endfor %}
+                        </div>
+                        {{ form.group_textarea('Remarks/Justification','notes',object.getNotes|default(""), 3 ,3,4, readonly) }}
+                        {% if object.getID != null %}
+                        <h4 class="form-section">Request Details</h4>
+                        {{ form.group_text('Requested By','requested_by', object.getUserCreate.getName|default(""),3,4, true) }}
+                            {% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\ManpowerRequest::STATUS_DRAFT') %}
+                        {{ form.group_text('Recommended By','recommended_by',object.getRecommendedBy.getDisplayName|default(""),3,4, true) }}
+                                {% if object.getStatus == constant('\\Hris\\RecruitmentBundle\\Entity\\ManpowerRequest::STATUS_APPROVED')%}
+                        {{ form.group_text('Approved By','approved_by',object.getApprovedBy.getDisplayName|default(""),3,4, true) }}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {# {% if not readonly or current_user is same as(object.getUserCreate.getName|default('')) %} #}
+                            {% if not readonly %}
+                            <button type="submit" name="action_btn" value="Save" class="btn blue">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                            {% if object.getId is not null %}
+                                {% if app.user.hasAccess(prefix ~ '.review') and object.getStatus is same as('Draft') %}
+                                    <button type="submit" name="action_btn" value="Reviewed" class="btn green">Recommend</button>
+                                {% endif %}
+
+                                {% if app.user.hasAccess(prefix ~ '.approve') and object.getStatus is same as('Reviewed') %}
+                                    <button type="submit" name="action_btn" value="Approved" class="btn green">Approve</button>
+                                {% endif %}
+
+                                {% if app.user.hasAccess(prefix ~ '.reject') and  (object.getStatus is not same as('Approved') or object.getStatus is not same as('Denied')) %}
+                                    {% if app.user.getUsername is same as('admin') %}
+                                        <button type="submit" name="action_btn" value="Reject" class="btn red">Reject</button>
+                                    {% elseif dept_head == app.user.getEmployee.getID and object.getStatus is same as('Draft') %}
+                                        <button type="submit" name="action_btn" value="Reject" class="btn red">Reject</button>
+                                    {% elseif app.user.getEmployee.getJobTitle.getName is same as('VP Operations') and object.getStatus is same as('Reviewed') %}
+                                        <button type="submit" name="action_btn" value="Reject" class="btn red">Reject</button>
+                                    {% else %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if object.getStatus == 'Approved' %}
+                                    <a href="{{ path('hris_requisition_print', {'id':object.getID}) }}" id="print_btn" class="btn green">Print</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "HrisRecruitmentBundle:Requisition:modal/job_title.modal.html.twig" with {form:form} %}
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+function toggleReadOnly(html, element) {
+    if ( $(element).is('[readonly]') ) {
+        $(element).attr('readonly', false);
+    }
+    else {
+        $(element).attr('readonly', true);
+    };
+}
+
+function filter_select(dept) {
+    if (dept == 0) {
+        return false;
+    }
+
+    var url = "{{ path ('hris_admin_jobtitles_ajax_filter_dept', { id: ':dept' }) }}";
+    url = url.replace(":dept", dept);
+    var sel = {{ object.getPosition.getID|default(0) }};
+
+    $('select[name="position"]').empty();
+
+    // console.log(url);
+    // get evaluator list
+    $.getJSON(url, function(data){
+        // console.log(data);
+
+        $('select[name="position"]').html('<option></option>').select2();
+        i=0;
+        for(var index in data)
+        {
+            $('select[name="position"]').append('<option value="'+ data[index].id + '">'+ data[index].name + ' </option>');
+        }
+        // set selected index value
+        if (sel !== 0) {
+            $('select[name="position"]').val(sel).trigger('change');   
+        };
+    });
+}
+</script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    filter_select($('select[name="department"]').val());
+    
+    $('select[name="department"]').change(function() {
+        filter_select($(this).val());
+    });
+
+    $("input[name='flag_service[]']").click(function(){
+        var html = $(this);
+        if ($(this).val() == 1) {
+            var toChange = $('input[name="i_source_code"]');
+        }
+        else {
+            var toChange = $('input[name="e_source_code"]');
+        };
+
+        toggleReadOnly(html, toChange);
+    });
+
+    $("input[name='purpose[]']:last").click(function(){
+        var html = $(this);
+        var toChange = $('input[name="other_purpose"]');
+        toggleReadOnly(html, toChange);
+    });
+
+    $("input[name='terms[]']:last").click(function(){
+        var html = $(this);
+        var toChange = $('input[name="agency_months"]');
+        toggleReadOnly(html, toChange);
+    });
+
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    // $('#cform-date_issue').datepicker();
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+
+    //on add input button click
+    $(".add_course_button").click(function(e){ 
+        e.preventDefault();
+        var item = $('input[name="required_course"]').val();
+
+        //add readonly input box
+        $(".add_course").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" name="required_course[]" class="form-control" value="'+ item +'" readonly></div><button class="remove_benefit_field btn red"><i class="fa fa-minus"></i></button></div>');
+
+        // clear input box
+        $('input[name="required_course"]').val("");
+        // $("select").select2();
+    });
+
+    //user click on remove text
+    $('.add_course').on("click",".remove_benefit_field", function(e){
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+
+    //on add input button click
+    $(".add_skills_button").click(function(e){ 
+        e.preventDefault();
+        var item = $('input[name="skills"]').val();
+
+        //add input box
+        $(".add_skills").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" name="skills[]" class="form-control" placeholder="Skills and Training Needed" value="'+ item +'" readonly></div><button class="remove_benefit_field btn red"><i class="fa fa-minus"></i></button></div>');
+
+        // clear input box
+        $('input[name="skills"]').val(""); 
+        $("select").select2();
+    });
+
+    //user click on remove text
+    $('.add_skills').on("click",".remove_benefit_field", function(e){ 
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+
+    $(".add_e_candidate_button").click(function(e){ //on add input button click
+        e.preventDefault();
+        var item = $('input[name="e_candidates"]').val();
+
+        $(".add_e_candidate").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" name="e_candidates[]" class="form-control" value="'+ item +'" readonly></div><button class="remove_benefit_field btn red"><i class="fa fa-minus"></i></button></div>'); //add input box
+
+        $('input[name="e_candidates"]').val("");
+        $("select").select2();
+    });
+
+    $('.add_e_candidate').on("click",".remove_benefit_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+
+    $(".add_i_candidate_button").click(function(e){ //on add input button click
+        e.preventDefault();
+        var item = $('input[name="i_candidates"]').val();
+
+        $(".add_i_candidate").append('<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4"><input type="text" name="i_candidates[]" class="form-control" value="'+ item +'" readonly></div><button class="remove_benefit_field btn red"><i class="fa fa-minus"></i></button></div>'); //add input box
+
+        $('input[name="i_candidates"]').val("");
+        $("select").select2();
+    });
+    $('.add_i_candidate').on("click",".remove_benefit_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove();
+    });
+
+    $('#btn_jobtitle_submit').click(function(){
+        data = $("#position_form").serialize();
+        $.ajax({
+                type: "POST",
+                cache: false,
+                data: data,
+                url: "{{ path('hris_admin_jobtitles_ajax') }}",
+                dataType: "json",
+                success: function (res) {
+                    $("#position_modal").modal("hide");
+                    //updateMenu(res);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                  
+                }
+        });
+        
+        filter_select($('select[name="department"]').val());
+    });
+
+    $('#cform-position').select2({
+        placeholder: "-- Select Position Title --",
+        allowClear: true
+    });
+}); 
+</script>
+
+{% endblock %}

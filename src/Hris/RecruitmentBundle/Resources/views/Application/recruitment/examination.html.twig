@@ -1,0 +1,88 @@
+{% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_EXAM')%}
+{% set readonly = true %}
+{% endif %}
+
+<form id="recruitment" method="post" class="form-horizontal">
+	<div class="form-group">
+		{{ form.hidden('app_form','exam')}}
+		{{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+		{{ form.group_date('Scheduled Examination','exam_date', object.getExam !=null? object.getExam.getDate|date('m/d/Y'),3,5,readonly) }} 
+		<div class="form-group">
+			<label class="col-md-3 control-label">Time of Examination</label>
+			<div class ="col-md-5">
+				<div class="input-group">
+					<input type="text" class="form-control timepicker timepicker-no-seconds" name="exam_time" placeholder="Time of Examination" value="{{object.getExam != null? object.getExam.getTime}}" readonly>
+					<span class="input-group-btn">
+						<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label">Applicant appeared?</label>
+
+				<div class="checkbox-inline">
+					{{ form.checkbox('applicant_appeared', 0, 'No', object.getAppeared, 'chars', readonly) }}
+				</div>
+		</div>
+		<div class="tabbable tabbable-custom tabbable-custom-profile">
+			<ul class="nav nav-tabs">
+				<li class="active">
+					<a href="#tab_1_11" data-toggle="tab">
+					Examinations
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="tab_1_11">
+					<div class="portlet-body recruitment">
+					<table class="table table-striped table-bordered table-hover">
+						<thead>
+						<div class="form-group">
+							<div class="col-md-12">
+								{% if not readonly %}
+								<a href="#exam-modal" class="btn green" data-toggle="modal" style="float: right;">Add Exam Result</a> 
+								{% endif %}
+							</div> 
+						</div>
+							<tr>
+								<th>Exam Type</th>
+								<th>Score</th>
+								<th>Status</th>
+								<th rowspan="2" style="width: 60px"></th>
+							</tr>
+						</thead>
+						<tbody id="en_table_exam">
+						{% if object.getExam.getResult is defined %}
+						{% for exam in object.getExam.getResult %}
+					        <tr>
+					            <td><input type="hidden" name="exam_id[]" value="{{exam.type}}">{{exam.type}}</td>
+					            <td><input class="form-control score" type="number" name="score[]" value="{{exam.score}}" {{ readonly?"readonly":"" }} /td>
+					        	<td><input type="hidden" name="status[]" value="{{exam.result}}">{{exam.result}}</td>
+					        	<td>
+					        		{% if not readonly %}
+									<button class="btn btn-xs red btn_en_del"><i class="fa fa-minus-circle"></i> Remove</button>
+					        		{% endif %}
+					        	</td>
+					        </tr>
+						{% endfor %}
+						{% endif %}
+						</tbody>
+						<tfoot>
+						</tfoot>
+					</table>
+					</div> 
+				</div>
+			</div>
+		</div>
+		{% if object.getStatus == "Examination" %}
+		<div class="form-group">
+			<div class="col-md-9">
+				<button name="result" value="" type="submit" class="btn blue">Save</button>
+				<button name="result" value="pass" type="submit" class="btn green result">Passed</button>
+				<button name="result" value="fail" type="submit" class="btn red result">Failed</a>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</form>

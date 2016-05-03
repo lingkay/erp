@@ -1,0 +1,115 @@
+<page>
+	<img src="{{logo|default('bundles/catalystmedia/img/default.png')}}" style="width:30%;margin-left: 225px;"/>
+	<br>
+	<br>
+	<p style="font-size: 18px; margin: 0px;">Request Information</p>
+	<hr>
+	<table style="font-size: 14px;">
+		<tr>
+			<td style="width: 150px;"><b>Status:</b></td>
+			<td style="width: 250px;">{{request.getStatus|default('')}}</td>
+			<td style="width: 120px;"><b>Date Issued:</b></td>
+			<td style="width: 250px;">{{request.getDateFiled|date('F d, Y')}}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Department:</b></td>
+			<td style="width: 250px;">{{request.getDepartment.getName|default('')}}</td>
+			<td style="width: 120px;"><b>Date Reviewed:</b></td>
+			<td style="width: 250px;">{{request.getDateReceived|date('F d, Y')}}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Position Title:</b></td>
+			<td style="width: 250px;">{{request.getPosition.getName|default('')}}</td>
+			<td style="width: 120px;"><b>Date Approved:</b></td>
+			<td style="width: 250px;">{{request.getDateApproved|date('F d, Y')}}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Number of Vacancies:</b></td>
+			<td style="width: 250px;">{{request.getVacancy|default('')}}</td>
+			<td style="width: 120px;"><b>Gender:</b></td>
+			<td style="width: 250px;">{% for gender in request.getGender%}{% if loop.last %}{{gender}}{% else %}{{gender}}/{% endif %}{% endfor %}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Age Range:</b></td>
+			<td style="width: 250px;">{{request.getAgeFrom}} - {{request.getAgeTo}}</td>
+			<td style="width: 120px;"><b>Work Experience:</b></td>
+			<td style="width: 250px;">{% for exp in request.getExperience%}{% if loop.last %}{{exp}}{% else %}{{exp}}/{% endif %}{% endfor %}</td>
+		</tr>
+	</table>
+	<br>
+	<table style="font-size: 14px;">
+		<tr>
+			<td style="width: 150px;"><b>Educational Background:</b></td>
+			<td style="width: 450px;">{% for educ in request.getEducation%}{% if loop.last %}{{educ}}{% else %}{{educ}}/{% endif %}{% endfor %}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Required Course:</b></td>
+			<td style="width: 450px;">{% for course in request.getRequiredCourses%}{% if loop.last %}{{course}}{% else %}{{course}} and {% endif %}{% endfor %}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Skills And Training:</b></td>
+			<td style="width: 450px;">{% for skill in request.getSkills%}{% if loop.last %}{{skill}}{% else %}{{skill}} and {% endif %}{% endfor %}</td>
+		</tr>
+	</table>
+	<br>
+	<table style="font-size: 14px;">
+		<tr>
+			<td style="width: 150px;"><b>Terms Of Employment:</b></td>
+			<td style="width: 250px;">{% for term in request.getTermsOfEmployment%}{% if loop.last %}{{term}}{% else %}{{term}}/{% endif %}{% endfor %}</td>
+			<td style="width: 90px;"><b>Purpose:</b></td>
+			<td style="width: 250px;">{% for purpose in request.getPurpose%}{% if loop.last %}{{purpose}}{% else %}{{purpose}}/{% endif %}{% endfor %}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Personnel Type:</b></td>
+			<td style="width: 250px;">{% for type in request.getPersonnelType%}{% if loop.last %}{{type}}{% else %}{{type}}/{% endif %}{% endfor %}</td>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<p style="font-size: 18px; margin: 0px;">Sourcing</p>
+	<hr>
+	<table style="font-size: 14px;">
+		<tr>
+			<td style="width: 150px;"><b>Internal Sourcing:</b></td>
+			<td style="width: 250px;">{{request.getInternalSourceCode|default('')}}</td>
+			<td style="width: 150px;"><b>External Sourcing:</b></td>
+			<td style="width: 250px;">{{request.getExternalSourceCode|default('')}}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Internal Candidates:</b></td>
+			<td style="width: 250px;">{% for ic in request.getInternalCandidates%}{% if loop.last %}{{ic}}{% else %}{{ic}}, {% endif %}{% endfor %}</td>
+			<td style="width: 150px;"><b>External Candidates:</b></td>
+			<td style="width: 250px;">{% for ec in request.getExternalCandidates%}{% if loop.last %}{{ec}}{% else %}{{ec}}, {% endif %}{% endfor %}</td>
+		</tr>
+	</table>
+	<br>
+	<table style="font-size: 14px;">
+		<tr>
+			<td style="width: 170px;"><b>Remarks/Justifications:</b></td>
+			<td style="width: 400px;">{{request.getNotes|default('')}}</td>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<p style="font-size: 18px; margin: 0px;">Request Details</p>
+	<hr>
+	<table style="font-size: 14px;">
+		<tr>
+			<td style="width: 120px;"><b>Requested By:</b></td>
+			<td style="width: 250px;">{{request.getUserCreate.getName|default('')}}</td>
+		</tr>
+		<tr>
+			<td style="width: 150px;"><b>Recommended By:</b></td>
+			<td style="width: 250px;">{{request.getRecommendedBy.getDisplayName|default('')}}</td>
+		</tr>
+		<tr>
+			<td style="width: 120px;"><b>Approved By:</b></td>
+			<td style="width: 250px;">{{request.getApprovedBy.getDisplayName|default('')}}</td>
+		</tr>
+	</table>
+	<page_footer>
+	    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions Inc.')}}</b></p></div>
+	    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 Legaspi Suites, Brgy. San Lorenzo, Makati City')}}</p></div>
+	    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+	</page_footer>
+</page>

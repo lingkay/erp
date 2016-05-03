@@ -1,0 +1,14 @@
+<form method="post" class="form-horizontal form">
+<div class="form-body">
+    <h4 class="form-section">New Employee Checklist</h4>
+    {{ form.hidden('employee_form','newchecklist')}}
+    <a href="{{ asset('bundles/hristemplate/forms/new_employee_checklist.pdf')}} " class="btn green">Print New Employee Checklist</a>
+    <div class="form-actions fluid">
+        <div class="col-md-9">
+            {% if object.isNew %}
+                <button type="submit" class="btn blue">Employee Briefed</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</form>

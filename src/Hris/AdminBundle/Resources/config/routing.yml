@@ -1,0 +1,677 @@
+## Departments
+
+hris_admin_department_index:
+    path:  /departments
+    defaults: { _controller: HrisAdminBundle:Department:index }
+
+hris_admin_department_add_form:
+    pattern: /department
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Department:addForm }
+
+hris_admin_department_add_submit:
+    pattern: /department
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Department:addSubmit }
+
+hris_admin_department_edit_form:
+    pattern: /department/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Department:editForm }
+
+hris_admin_department_edit_submit:
+    pattern: /department/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Department:editSubmit }
+
+hris_admin_department_delete:
+    pattern: /department/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Department:delete }
+
+hris_admin_department_grid:
+    pattern: /departments/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Department:grid }
+
+hris_admin_department_ajax_get:
+    pattern: /ajax/department/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Department:ajaxGet }
+
+hris_admin_employee_ajax_filter:
+    pattern: /ajax/departmenthead/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Department:ajaxFilterDepartmentHead, id: null }
+
+
+## Departments
+
+hris_admin_appraisal_settings_index:
+    path:  /appraisal/settings
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:index }
+
+hris_admin_appraisal_settings_add_form:
+    pattern: /appraisal/setting
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:addForm }
+
+hris_admin_appraisal_settings_add_submit:
+    pattern: /appraisal/setting
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:addSubmit }
+
+hris_admin_appraisal_settings_edit_form:
+    pattern: /appraisal/setting/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:editForm }
+
+hris_admin_appraisal_settings_edit_submit:
+    pattern: /appraisal/setting/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:editSubmit }
+
+hris_admin_appraisal_settings_delete:
+    pattern: /appraisal/setting/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:delete }
+
+hris_admin_appraisal_settings_grid:
+    pattern: /appraisal/settings/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:grid }
+
+hris_admin_appraisal_settings_ajax_get:
+    pattern: /ajax/appraisal/setting/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:AppraisalSettings:ajaxGet }
+
+
+
+## Events
+
+hris_admin_events_index:
+    path:  /events
+    defaults: { _controller: HrisAdminBundle:Events:index }
+
+hris_admin_events_add_form:
+    pattern: /event
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Events:addForm }
+
+hris_admin_events_add_submit:
+    pattern: /event
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Events:addSubmit }
+
+hris_admin_events_edit_form:
+    pattern: /event/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Events:editForm }
+
+hris_admin_events_edit_submit:
+    pattern: /event/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Events:editSubmit }
+
+hris_admin_events_delete:
+    pattern: /event/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Events:delete }
+
+hris_admin_events_grid:
+    pattern: /events/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Events:grid }
+
+hris_admin_events_ajax_get:
+    pattern: /ajax/events/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Events:ajaxGet }
+
+hris_admin_events_get_event_all:
+    path:     /get/events/all
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Events:getAllEvents}
+
+## Downloadables
+
+hris_admin_downloadables_index:
+    path:  /downloadables
+    defaults: { _controller: HrisAdminBundle:Downloadables:index }
+
+hris_admin_downloadables_add_form:
+    pattern: /downloadable
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Downloadables:addForm }
+
+hris_admin_downloadables_add_submit:
+    pattern: /downloadable
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Downloadables:addSubmit }
+
+hris_admin_downloadables_edit_form:
+    pattern: /downloadable/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Downloadables:editForm }
+
+hris_admin_downloadables_edit_submit:
+    pattern: /downloadable/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Downloadables:editSubmit }
+
+hris_admin_downloadables_delete:
+    pattern: /downloadable/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Downloadables:delete }
+
+hris_admin_downloadables_grid:
+    pattern: /downloadables/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Downloadables:grid }
+
+hris_admin_downloadables_ajax_get:
+    pattern: /ajax/downloadable/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Downloadables:ajaxGet }
+
+
+## Benefits
+
+hris_admin_benefit_index:
+    path:  /benefits
+    defaults: { _controller: HrisAdminBundle:Benefit:index }
+
+hris_admin_benefit_add_form:
+    pattern: /benefit
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Benefit:addForm }
+
+hris_admin_benefit_add_submit:
+    pattern: /benefit
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Benefit:addSubmit }
+
+hris_admin_benefit_edit_form:
+    pattern: /benefit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Benefit:editForm }
+
+hris_admin_benefit_edit_submit:
+    pattern: /benefit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Benefit:editSubmit }
+
+hris_admin_benefit_delete:
+    pattern: /benefit/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Benefit:delete }
+
+hris_admin_benefit_grid:
+    pattern: /benefits/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Benefit:grid }
+
+hris_admin_benefit_ajax_get:
+    pattern: /ajax/benefit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Benefit:ajaxGet }
+
+
+## Job Titles
+
+hris_admin_jobtitles_index:
+    path:  /jobtitles
+    defaults: { _controller: HrisAdminBundle:JobTitle:index }
+
+hris_admin_jobtitles_add_form:
+    path:  /jobtitle
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobTitle:addForm }
+
+hris_admin_jobtitles_add_submit:
+    path:  /jobtitle
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:JobTitle:addSubmit }
+
+hris_admin_jobtitles_edit_form:
+    path:  /jobtitle/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobTitle:editForm }
+
+hris_admin_jobtitles_edit_submit:
+    path:  /jobtitle/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:JobTitle:editSubmit }
+
+hris_admin_jobtitles_delete:
+    path:  /jobtitle/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobTitle:delete }
+
+hris_admin_jobtitles_grid:
+    path:  /jobtitles/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobTitle:grid }
+
+hris_admin_jobtitles_ajax_get:
+    path:  /ajax/jobtitle/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobTitle:ajaxGet }
+
+hris_admin_jobtitles_ajax_filter:
+    path:     /jobtitles/ajax
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobTitle:ajaxFilterJobTitle }
+
+hris_admin_jobtitles_ajax_filter_dept:
+    path:   /jobtitles/ajax/dept/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobTitle:ajaxFilterPosbyDept }
+
+hris_admin_jobtitles_ajax:
+    path:  /ajax/jobtitle
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:JobTitle:ajaxAdd }
+
+## Job Levels
+
+hris_admin_joblevel_index:
+    path:  /joblevels
+    defaults: { _controller: HrisAdminBundle:JobLevel:index }
+
+hris_admin_joblevel_add_form:
+    path:  /joblevel
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobLevel:addForm }
+
+hris_admin_joblevel_add_submit:
+    path:  /joblevel
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:JobLevel:addSubmit }
+
+hris_admin_joblevel_edit_form:
+    path:  /joblevel/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobLevel:editForm }
+
+hris_admin_joblevel_edit_submit:
+    path:  /joblevel/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:JobLevel:editSubmit }
+
+hris_admin_joblevel_delete:
+    path:  /joblevel/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobLevel:delete }
+
+hris_admin_joblevel_grid:
+    path:  /joblevels/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobLevel:grid }
+
+hris_admin_joblevel_ajax_get:
+    path:  /ajax/joblevel/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobLevel:ajaxGet }
+
+hris_admin_joblevel_ajax_filter:
+    path:     /joblevels/ajax
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:JobLevel:ajaxFilterJobTitle }
+
+## Location
+
+hris_admin_location_index:
+    path:  /locations
+    defaults: { _controller: HrisAdminBundle:Location:index }
+
+hris_admin_location_add_form:
+    path:  /location
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Location:addForm }
+
+hris_admin_location_add_submit:
+    path:  /location
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Location:addSubmit }
+
+hris_admin_location_edit_form:
+    path:  /location/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Location:editForm }
+
+hris_admin_location_edit_submit:
+    path:  /location/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Location:editSubmit }
+
+hris_admin_location_delete:
+    path:  /location/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Location:delete }
+
+hris_admin_location_grid:
+    path:  /locations/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Location:grid }
+
+hris_admin_location_ajax_get:
+    path:  /ajax/location/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Location:ajaxGet }
+
+## Address
+
+hris_admin_address_index:
+    path:  /addresses
+    defaults: { _controller: HrisAdminBundle:Address:index }
+
+hris_admin_address_add_form:
+    path:  /address
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Address:addForm }
+
+hris_admin_address_add_submit:
+    path:  /address
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Address:addSubmit }
+
+hris_admin_address_edit_form:
+    path:  /address/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Address:editForm }
+
+hris_admin_address_edit_submit:
+    path:  /address/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Address:editSubmit }
+
+hris_admin_address_delete:
+    path:  /address/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Address:delete }
+
+hris_admin_address_grid:
+    path:  /addresses/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Address:grid }
+
+hris_admin_address_ajax_get:
+    path:  /ajax/address/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Address:ajaxGet }
+
+## Schedules
+
+hris_admin_schedules_index:
+    path:  /schedules
+    defaults: { _controller: HrisAdminBundle:Schedules:index }
+
+hris_admin_schedules_add_form:
+    path:  /schedule
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Schedules:addForm }
+
+hris_admin_schedules_add_submit:
+    path:  /schedule
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Schedules:addSubmit }
+
+hris_admin_schedules_edit_form:
+    path:  /schedule/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Schedules:editForm }
+
+hris_admin_schedules_edit_submit:
+    path:  /schedule/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Schedules:editSubmit }
+
+hris_admin_schedules_delete:
+    path:  /schedule/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Schedules:delete }
+
+hris_admin_schedules_grid:
+    path:  /schedules/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Schedules:grid }
+
+hris_admin_schedules_ajax_get:
+    path:  /ajax/schedule/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Schedules:ajaxGet }
+
+## Checklist
+
+hris_admin_checklist_index:
+    path:  /checklist/list
+    defaults: { _controller: HrisAdminBundle:Checklist:index }
+
+hris_admin_checklist_add_form:
+    pattern: /checklist
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Checklist:addForm }
+
+hris_admin_checklist_add_submit:
+    pattern: /checklist
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Checklist:addSubmit }
+
+hris_admin_checklist_edit_form:
+    pattern: /checklist/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Checklist:editForm }
+
+hris_admin_checklist_edit_submit:
+    pattern: /checklist/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Checklist:editSubmit }
+
+hris_admin_checklist_delete:
+    pattern: /checklist/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Checklist:delete }
+
+hris_admin_checklist_grid:
+    pattern: /checklists/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Checklist:grid }
+
+hris_admin_checklist_ajax_get:
+    pattern: /ajax/checklist/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Checklist:ajaxGet }
+
+## Holiday
+
+hris_admin_holiday_index:
+    path:    /holidays
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Holiday:index }
+
+hris_admin_holiday_add_form:
+    path:    /holiday
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Holiday:addForm }
+
+hris_admin_holiday_add_submit:
+    path:    /holiday
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Holiday:addSubmit }
+
+hris_admin_holiday_edit_form:
+    path:    /holiday/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Holiday:editForm }
+
+hris_admin_holiday_edit_submit:
+    path:    /holiday/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Holiday:editSubmit }
+
+hris_admin_holiday_delete:
+    path:    /holiday/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Holiday:delete }
+
+hris_admin_holiday_grid:
+    path:    /holidays/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Holiday:grid }
+
+hris_admin_holiday_ajaxHoliday:
+    path:     /holidays/{month}/{year}
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Holiday:ajaxHoliday, month: null, year: null}
+
+hris_admin_holiday_ajax_holiday_all:
+    path:     /ajax/holidays/all
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Holiday:ajaxAllHoliday}
+
+hris_admin_otsetting_index:
+    path:     /settings/overtime
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Setting:overtimeIndex }
+
+hris_admin_otsetting_submit:
+    path:     /settings/overtime
+    methods:  [POST]
+    defaults: { _controller: HrisAdminBundle:Setting:overtimeSubmit }
+
+
+# Leave Types
+
+hris_admin_leave_type_index:
+    path:     /leave/types
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveType:index }
+
+hris_admin_leave_type_add_form:
+    path:     /leave/type
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveType:addForm }
+
+hris_admin_leave_type_add_submit:
+    path:     /leave/type
+    methods:  [POST]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveType:addSubmit }
+
+hris_admin_leave_type_edit_form:
+    path:     /leave/type/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveType:editForm }
+
+hris_admin_leave_type_edit_submit:
+    path:     /leave/type/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveType:editSubmit }
+
+hris_admin_leave_type_delete:
+    path:     /leave/type/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveType:delete }
+
+hris_admin_leave_type_grid:
+    path:     /leave/types/grid
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveType:grid }
+
+
+# Leave Rules
+
+hris_admin_leave_rules_index:
+    path:     /leave/rules
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveRules:index }
+
+hris_admin_leave_rules_add_form:
+    path:     /leave/rule
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveRules:addForm }
+
+hris_admin_leave_rules_add_submit:
+    path:     /leave/rule
+    methods:  [POST]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveRules:addSubmit }
+
+hris_admin_leave_rules_edit_form:
+    path:     /leave/rule/{id}
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveRules:editForm }
+
+hris_admin_leave_rules_edit_submit:
+    path:     /leave/rule/{id}
+    methods:  [POST]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveRules:editSubmit }
+
+hris_admin_leave_rules_delete:
+    path:     /leave/rule/{id}/delete
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveRules:delete }
+
+hris_admin_leave_rules_grid:
+    path:     /leave/rules/grid
+    methods:  [GET]
+    defaults: { _controller: HrisAdminBundle:Leave\LeaveRules:grid }
+
+##Biometrics Settings
+hris_biometrics_homepage:
+    path:     /biometrics/index
+    methods:  [GET]
+    defaults: { _controller: HrisBiometricsBundle:Biometrics:index }
+
+hris_biometrics_index:
+    path:     /biometrics/index
+    methods:  [GET]
+    defaults: { _controller: HrisBiometricsBundle:Biometrics:index }
+
+hris_biometrics_homepage_submit:
+    path:     /biometrics/index
+    methods:  [POST]
+    defaults: { _controller: HrisBiometricsBundle:Biometrics:indexSubmit }
+
+
+## Form Codes
+
+hris_admin_form_codes_index:
+    path:    /form-code
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:FormCodes:index }
+
+# hris_admin_form_codes_add_form:
+#     pattern: /form-code
+#     methods: [GET]
+#     defaults: { _controller: HrisAdminBundle:FormCodes:addForm }
+
+hris_admin_form_codes_add_submit:
+    pattern: /form-code
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:FormCodes:submit }
+
+hris_admin_form_codes_edit_form:
+    pattern: /form-code/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:FormCodes:editForm }
+
+hris_admin_form_codes_edit_submit:
+    pattern: /form-code/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:FormCodes:editSubmit }
+
+hris_admin_form_codes_delete:
+    pattern: /form-code/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:FormCodes:delete }
+
+hris_admin_form_codes_grid:
+    pattern: /form-codes/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:FormCodes:grid }
+
+hris_admin_form_codes_ajax_get:
+    pattern: /ajax/form-code/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:FormCodes:ajaxGet }

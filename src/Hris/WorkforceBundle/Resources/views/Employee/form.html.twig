@@ -1,0 +1,629 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Employee Details</div>
+            </div>
+            <div class="portlet-body">
+            <!-- start of profile -->
+                <div class="row profile">
+                    <div class="col-md-12">
+                    <!--BEGIN TABS-->
+                        <div class="tabbable tabbable-custom tabbable-full-width">
+
+                                    <form method="post" class="form-horizontal form">
+                                    <div class="row profile-account">
+                                        <div class="col-md-3">
+                                            <ul class="ver-inline-menu tabbable margin-bottom-10">
+                                                <li class="active">
+                                                    <a data-toggle="tab" href="#tab_info">
+                                                    <i class="fa fa-info"></i> Personal info </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                            {% if object.getID != null %}
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_profile">
+                                                    <i class="fa fa-folder-open-o"></i> Profile </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_dependents">
+                                                    <i class="fa fa-home"></i> Status and Dependents </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_account">
+                                                    <i class="fa fa-key"></i> Account </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_appraisal">
+                                                    <i class="fa fa-wrench"></i> Appraisals </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_attendance">
+                                                    <i class="fa fa-users"></i> Attendance </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_payroll">
+                                                    <i class="fa fa-money"></i> Payroll </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_memo">
+                                                    <i class="fa fa-exclamation-circle"></i> Memos </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_benefits">
+                                                    <i class="fa fa-trophy"></i> Benefits </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_checklist">
+                                                    <i class="fa fa-list ul"></i> Pre-Employment Checklist </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                {% if object.isNew %}
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_newchecklist">
+                                                    <i class="fa fa-list ul"></i> New Employee Checklist </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                {% endif %}
+                                                {% if hasSavings %}
+                                                <li>
+                                                    <a data-toggle="tab" href="#tab_cashbond">
+                                                    <i class="fa fa-list ul"></i> Savings </a>
+                                                    <span class="after">
+                                                    </span>
+                                                </li>
+                                                {% endif %}
+                                            {% endif %}
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade active in" id="tab_info">
+                                                    {% embed 'HrisWorkforceBundle:Employee:info.html.twig' %}{% endembed %}
+                                                </div>
+                                                <div class="tab-pane fade" id="tab_profile">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:profile.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="tab-pane fade" id="tab_dependents">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:dependents.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="tab-pane fade" id="tab_account">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:account.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="tab-pane fade" id="tab_appraisal">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:appraisal.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="tab-pane fade" id="tab_attendance">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:attendance.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="tab-pane fade" id="tab_memo">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:memo.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="tab-pane fade" id="tab_benefits">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:benefits.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="tab-pane fade" id="tab_payroll">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:payroll.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="tab-pane fade" id="tab_checklist">
+                                                    {% if object.getID != null %}
+                                                    {% embed 'HrisWorkforceBundle:Employee:checklist.html.twig' %}{% endembed %}
+                                                    {% endif %}
+                                                </div>
+                                                {% if object.getID != null and object.isNew %}
+                                                <div class="tab-pane fade" id="tab_newchecklist">
+                                                    {% embed 'HrisWorkforceBundle:Employee:newchecklist.html.twig' %}{% endembed %}
+                                                </div>
+                                                {% endif %}
+
+                                               {% if  object.getID != null and hasSavings %}
+                                                <div class="tab-pane fade" id="tab_cashbond">
+                                                    {% embed 'HrisWorkforceBundle:Employee:cashbond.html.twig' %}{% endembed %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        <!--end col-md-9-->
+                                        </div>
+                                    </div>
+                                    <!--end tab-pane-->
+                                    </form>
+                             
+                        </div>
+                    </div>
+                <!--END TABS-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+function check_ben_table()
+{
+    var rowCount = $('#ben_table tr').length;
+    if (rowCount <= 2) {
+
+        var html = '<tr class="odd empty">';
+            html += '<td valign="top" colspan="6" class="dataTables_empty">No Benefit added yet.</td>';
+
+            $(".benefit_list").append(html); //add input box
+    
+    } else {
+        //do nothing
+    }
+}
+
+function filter_select(dept) {
+    if (dept == 0) {
+        return false;
+    }
+
+    var url = "{{ path ('hris_admin_jobtitles_ajax_filter_dept', { id: ':dept' }) }}";
+    url = url.replace(":dept", dept);
+    var sel = {{ object.getJobTitle.getID|default(0) }};
+
+    $('select[name="job_title"]').empty();
+
+    console.log(url);
+    // get evaluator list
+    $.getJSON(url, function(data){
+        console.log(data);
+
+        $('select[name="job_title"]').html('<option></option>').select2();
+        i=0;
+        for(var index in data)
+        {
+            $('select[name="job_title"]').append('<option value="'+ data[index].id + '">'+ data[index].name + ' </option>');
+        }
+        // set selected index value
+        if (sel !== 0) {
+            $('select[name="job_title"]').val(sel).trigger('change');   
+        };
+    });
+}
+
+function updateCity()
+{
+    var path;
+    var state = $('#cform-state').val();
+    path = "{{path('hris_workforce_get_cities', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', state);
+
+    var $element = $('#cform-city').select2();
+    var $request = $.ajax({
+      url: path
+    });
+
+    $request.then(function (data) 
+    {
+        //clear previous options
+        $('#cform-city option').remove();
+        //loop through all returned data then append
+        $.each(data, function(k, v) {
+            $('#cform-city').append('<option value="'+v.id+'">'+v.text+'</option>');
+        });
+        //refresh element
+        $element.trigger('change');
+    });
+}
+
+function updateState()
+{
+    var path;
+    var country = $('#cform-country').val();
+    path = "{{path('hris_workforce_get_states', {'parent_id': 'PARENT'})}}";
+    path = path.replace('PARENT', country);
+
+    var $element = $('#cform-state').select2();
+        var $request = $.ajax({
+        url: path
+        });
+
+        $request.then(function (data) 
+        {
+            //clear previous options
+            $('#cform-state option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-state').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+}
+
+
+$(document).ready(function() {
+
+    $('#add-phone-modal').on('hidden.bs.modal', function () {
+        $('#hris_workforce_employeeform-number').val('');
+        $('name').val('');
+    })
+
+    $( "#profile-phone-close" ).click(function() {
+        $('#hris_workforce_employeeform-number').val('');
+        $('name').val('');
+    });
+
+    $('[id=cform-birthday]').datepicker({
+    todayHighlight: true,
+    endDate: '-18y'
+    });
+
+    $('[id=cform-dep_birthday]').datepicker({
+    todayHighlight: true,
+    endDate: '0'
+    });
+
+    $('.calendar').prop('disabled', true);
+
+
+    $('#cform-country').on("change", function()
+    {
+        updateState();
+    });
+
+    $('#cform-state').on("change", function()
+    {
+        updateCity();
+    });
+
+    $('#csupervisor_typeahead').change(function() {
+        if ($('#csupervisor_id').val() != '') 
+        {        }
+        else
+        {
+            $('#csupervisor_typeahead').val('');
+        }
+    });
+
+    $("input[name^='date_received']").datepicker({
+        todayHighlight: true,
+        endDate: '0',
+        });
+
+ 
+// set default error and success elements
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+          return this.optional(element) || value != param;
+        }, "Cannot set default value");
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                error.appendTo(element.parent().last());
+                element.parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                element.parent().removeClass('has-error');
+                element.parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        },
+    });
+    // validate form elements
+    $(".form-horizontal").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+               this.element(element);
+            },
+            rules: {
+                employee_id: {
+                    required: true
+                },
+                first_name: {
+                    required: true
+                },
+                middle_name: {
+                    required: true
+                },
+                last_name: {
+                    required: true
+                },
+                gender: {
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                department: {
+                    required: true
+                },
+                job_title: {
+                    required: true
+                },
+                job_level: {
+                    required: true
+                },
+                employment_status: {
+                    required: true
+                },
+                schedule: {
+                    required: true
+                },
+                location: {
+                    required: true
+                },
+                pay_sched: {
+                    required: true
+                },
+                pay_type: {
+                    required: true
+                },
+                is_primary: {
+                    required: true
+                },
+                pay_rate: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                dependent: {
+                    required: true
+                },
+                relationship: {
+                    required: true
+                },
+                // benefits: {
+                //     required: true,
+                //     min: 1
+                // },
+                city: {
+                    required: true
+                },
+                state: {
+                    required: true
+                },
+                country: {
+                    required: true
+                },
+                unit: {
+                    required: true
+                },
+                street: {
+                    required: true
+                }
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+    });
+
+    
+
+    $('.form-horizontal .select_2').change(function () {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('.date-picker .form-control').change(function() {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $("#profile-phone-form").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+                this.element(element);
+            },
+            rules: {
+                name: {
+                    required: true
+                },
+                number: {
+                    required: true
+                },
+            },
+            submitHandler: function(form) {
+                // e.preventDefault();
+                var url = $(form).attr('action');
+                var data = $(form).serializeArray();
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    success: function(data, text_status, xhr) {
+                        // make phone node
+                        var template = $('#phone-template').html();
+                        Mustache.parse(template);   // optional, speeds up future uses
+                        var rendered = Mustache.render(template, 
+                            {
+                                type  :     data.data.name,
+                                number:     data.data.number,
+                                id    :     data.data.id,
+                                is_primary: data.data.is_primary
+                            });
+
+                        // copy over data and display
+                        $('#phone-section').append(rendered);
+                        // hide modal
+                        $('#add-phone-modal').modal('hide');
+                    },
+                    error: function(xhr, text_status, error) {
+                    }
+                });
+                return false;
+            }
+        });
+    });
+
+    $('#profile-phone-form .select_2').change(function () {
+        $('#profile-phone-form').validate().element($(this));
+    });
+
+    $(".mask_philhealth").inputmask({
+        "mask": "9999-9999-9999"
+    });
+
+    $(".mask_tin").inputmask({
+        "mask": "999-999-999-999"
+    });
+
+    $(".mask_sss").inputmask({
+        "mask": "99-9999999-9"
+    });
+
+    $(".mask_pagibig").inputmask({
+        "mask": "9999-9999-9999"
+    });
+
+    var url = document.location.toString();
+
+    if (url.match('#')) {
+        $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+    }
+
+    filter_select($('select[name="department"]').val());
+    
+    $('select[name="department"]').change(function() {
+        filter_select($(this).val());
+    });
+
+    $('select[name="benefits"]').change(function() {
+        // $('.form-horizontal').validate().element($(this));
+        if ($('select[name="benefits"]').select2("val") == 0) 
+        {
+            $('.add_benefit_button').addClass('disabled');
+        }
+        else
+        {
+            $('.add_benefit_button').removeClass('disabled');
+        }
+    });
+
+    $('.add_benefit_button').on('click', function(e){ //on add input button click
+        e.preventDefault();
+        var ben_id = $('select[name="benefits"]').val();
+        var ben_text = $('select[name="benefits"] option:selected').text();
+
+        if ($('#ben_table tr > td:contains('+ben_text+')').length > 0) 
+        {
+            toastr['error']('Selected benefit already added', 'Error');
+        }
+        else
+        {
+            $('span[class="help-block"]').text('');
+            $('.empty').remove();
+
+            var html = '<tr class="odd gradeX">';
+            html += '<td>'+ ben_text +'<input type="hidden" name="benefit[]" value="'+ ben_id +'"></td>';
+            html += '<td></td>';
+            html += '<td><buton class="btn btn-xs red remove_benefit_field" onclick="check_ben_table()">Remove</button></td>';
+
+            $(".benefit_list").append(html); //add input box
+        }
+        $('select[name="benefits"]').select2("val", 0);
+        $('.add_benefit_button').addClass('disabled');
+    });
+
+    $('.benefit_list').on("click",".remove_benefit_field", function(e){ //user click on remove text
+        e.preventDefault();
+        $(this).closest('tr').remove();
+    });
+
+    $('#phone-section').on("click",".delete-phone",function (e){
+        e.preventDefault();
+        $(this).closest('div').remove();
+    });
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href");
+
+      if(target == '#tab_attendance')
+      {
+        $('#calendar').fullCalendar('render');
+      }
+    });
+}); 
+</script>
+{% endblock %}

@@ -1,0 +1,115 @@
+<style type="text/css">
+div.container4 {
+    height: 100%;
+    width: 100%;
+    position: relative 
+}
+div.container_logo {
+    width: 100%;
+    max-height: 50px;
+    position: relative; 
+}
+.img_logo {
+  width: 300px;
+   position: absolute;
+   left: 50%;
+   margin-left: -150px;
+}
+.page_label {
+    text-align:center;
+}
+.parag {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    text-align:center;
+    left: 50%;
+    margin-right: -50%;
+    font-size: 28px;
+}
+.name {
+    display: block;
+    width:150px;
+}
+span {
+    display: block;
+}
+</style>
+<page>
+{# <img src="{{ logo.getURL }}" style="width:30%;margin-left: 225px;"/> #}
+<div class="container_logo">
+    <img class="img_logo" src="{{logo|default('bundles/catalystmedia/img/default.png')}}">
+    </div>
+<br>
+<br>
+<h3 align="center"><strong>MEMORANDUM</strong></h3>
+<br>
+<strong>
+    <table border="none" cellpadding="3">
+        <tr>
+            <td width="100">No:</td><td>{{ data.number}}</td>
+        </tr>
+        <tr>
+            <td>TO:</td><td>{{ data.to}}</td>
+        </tr>
+        <tr>
+            <td>ATTN. TO:</td><td>{{ data.attn_to}}</td>
+        </tr>
+        <tr>
+            <td>CC:</td><td>{{ data.cc}}</td>
+        </tr>
+        <tr>
+            <td>FROM:</td><td>{{ data.from}}</td>
+        </tr>
+        <tr>
+            <td>RE:</td><td>{{ data.title}}</td>
+        </tr>
+
+    </table>
+
+</strong>
+<hr>
+<p>
+{{ data.message|raw }}
+</p>
+{% if obj.getUserCreate.getEmployee != null %}
+<div style="position:absolute; top: 675px; width: 300px; ">
+Prepared By:<br/><br/>
+____________________________<br/>
+{{ obj.getUserCreate.getEmployee.getDisplayName }}<br/>
+{{ obj.getUserCreate.getEmployee.getJobTitle.getName }}
+</div>
+{% endif %}
+
+{% if obj.getReviewedBy != null %}
+<div style="position:absolute; left: 400px; top: 675px; width: 300px; ">
+Reviewed By:<br/><br/>
+____________________________<br/>
+{{ obj.getReviewedBy.getDisplayName }}<br/>
+{{ obj.getReviewedBy.getJobTitle.getName }}
+</div>
+{% endif %}
+
+{% if obj.getNotedBy != null %}
+<div style="position:absolute; top: 800px; width: 300px; ">
+Noted By:<br/><br/>
+____________________________<br/>
+{{ obj.getNotedBy.getDisplayName }}<br/>
+{{ obj.getNotedBy.getJobTitle.getName }}
+</div>
+{% endif %}
+
+{% if obj.getApprovedBy != null %}
+<div style="position:absolute; left: 400px; top: 800px; width: 300px; ">
+Approved By:<br/><br/>
+____________________________<br/>
+{{ obj.getApprovedBy.getDisplayName }}<br/>
+{{ obj.getApprovedBy.getJobTitle.getName }}
+</div>
+{% endif %}
+<page_footer>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions, Inc.')}}</b></p></div>
+    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 10th Floor, Legaspi Suites, Salcedo Street, Legaspi Village, Makati City, Philippines')}}</p></div>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 14px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+</page_footer>
+</page>

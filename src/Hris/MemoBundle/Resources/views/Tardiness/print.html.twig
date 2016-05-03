@@ -1,0 +1,102 @@
+<style type="text/css">
+div.container4 {
+    height: 100%;
+    width: 100%;
+    position: relative 
+}
+div.container_logo {
+    width: 100%;
+    max-height: 50px;
+    position: relative; 
+}
+.img_logo {
+    width: 300px;
+   position: absolute;
+   left: 50%;
+   margin-left: -150px;
+}
+.page_label {
+    text-align:center;
+}
+.parag {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    text-align:center;
+    left: 50%;
+    margin-right: -50%;
+    font-size: 28px;
+}
+</style>
+<page>
+{# <img src="{{ logo.getURL }}" style="width:30%;margin-left: 225px;"/> #}
+<div class="container_logo">
+    <img class="img_logo" src="{{logo|default('bundles/catalystmedia/img/default.png')}}">
+    </div>
+<br>
+<br>
+
+<br>
+<p style="margin-top: 1px; font-size: 16px;">TO: {{object.getEmployeeName}} ({{object.getEmployee.getJobTitle.getName}})</p>
+<p style="margin-top: 1px; font-size: 16px;">FROM: {{object.getUserCreate.getName}}</p>
+<p style="margin-top: 1px; font-size: 16px;">DATE: {{object.getDateCreate|date('m/d/Y')}}</p>
+<p style="margin-top: 1px; font-size: 16px;">SUBJECT: <b>{{object.getType}}</b></p>
+<hr>
+<p style="font-size: 16px;" align="justify">
+This letter serves as an official verbal warning for excessive tardiness. The following date(s) of tardiness are:
+<br>
+<br>
+<div align="center">
+<table style="border: 1px solid black; border-collapse: collapse; font-size: 16px;" align="center" border="1">
+    <thead>
+        <tr><th colspan="4">Tardiness Summary</th></tr>
+        <tr>
+            <th width="140">Date</th>
+            <th width="140">Time in</th>
+            <th width="140">Time out</th>
+            <th width="140">Minutes Late</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dt in dates_tardy %}
+            <tr>
+                <td align="center">{{dt['date']}}</td>
+                <td align="center">{{dt['in']}}</td>
+                <td align="center">{{dt['out']}}</td>
+                <td align="center">{{dt['late']}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<br>
+<br>
+</p>
+<div>
+<table align="left">
+    <tr>
+        <td style="width: 310px;"><b>Statement of Expectations</b></td>
+        <td style="text-align: justify; width: 360px;">{{message}}</td>
+    </tr>
+</table>
+<br>
+<br>
+<br>
+<br>
+<table align="left">
+<tr>
+        <td style="width: 310px;"><b>Consequence of future behavior</b></td>
+        <td style="text-align: justify; width: 360px;">{{consequence}}</td>
+</tr>
+
+</table>
+
+<p style="font-size: 16px; padding-top: 80px;" align="right">_________________________<br>Sign and submit this to H.R.</p>
+</div>
+
+<page_footer>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions, Inc.')}}</b></p></div>
+    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 10th Floor, Legaspi Suites, Salcedo Street, Legaspi Village, Makati City, Philippines')}}</p></div>
+    <div align="center" style="margin: 0;"><p style="color: green; font-size: 14px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+</page_footer>
+</page>

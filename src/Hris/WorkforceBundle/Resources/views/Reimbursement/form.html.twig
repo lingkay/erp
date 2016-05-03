@@ -1,0 +1,271 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {# {{app.user.getUserName}} #}
+                        {% if app.user.getUserName is not same as('admin') %}
+                            {% if app.user.getID != object.getEmployee.getUser.getID %}
+                                {% set readonly = true %}
+                            {% endif %}
+                        {% endif %}
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_date('Date','date_filed',object.getDateFiled|default('')|date('m/d/Y'),3,4) }}
+                        {% if object.getDisplayStatus is same as('Approved') %}
+                            {{ form.group_text('Approved By','approved_by',object.getApprovedBy.getName|default(""),3,4, true) }}
+                            {{ form.group_text('Date Approved', 'date_approved', object.getDateApproved|default('') is empty ? "" : object.getDateApproved|default('')|date('m/d/Y'), 3, 4, true) }}
+                        {% endif %}
+                        {{ form.group_text('Status', 'status', object.getDisplayStatus|default(''), 3, 4, true) }}    
+                        {{ form.group_text('Code', 'code', object.getCode|default(""), 3, 4, true) }}
+                        {{ form.typeahead('Employee', 'name', object.getEmployee|default(null) is not null ? object.getEmployee.getDisplayName|default(''):"",object.getEmployee|default(null) is not null ? object.getEmployee.getID:"0" ,path('hris_workforce_employee_ajax_get'), 3, 4, readonly) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Expense Type</label>
+                            <div class="col-md-4">
+                                <select id="form_expense_type" name="expense_type" class="form-control select_2" {{ readonly ? "disabled" : "" }}>
+
+                                {{form.options(expense_opts,object.getExpense|default(''))}}
+
+                                {% if object.getExpense|default(null) != null %}
+                                    {% if object.getExpense != 'Meal' and object.getExpense != 'Travel' and object.getExpense != 'Transportation' %}
+                                        {{form.options(expense_opts,'Others')}}
+                                    {% endif %} 
+                                {% endif %}
+
+                                </select>
+                            </div>
+                            <div id="other_field">
+                            {% if object.getExpense|default(null) != null %}
+                                {% if object.getExpense != 'Meal' and object.getExpense != 'Travel' and object.getExpense != 'Transportation' %}
+                                    {{ form.group_text('', 'other_type', object.getExpense|default(''), 0, 4, readonly) }}
+                                {% endif %} 
+                            {% endif %}                 
+                            </div>
+                        </div>
+                        <div id="others" style="display:none;">
+                            {{ form.group_text('Receipt No.', 'receipt_no', object.getReceipt|default(''), 3, 4, readonly) }}
+                            {{ form.group_upload_image('Scanned Copy','picture',object.getUpload|default(''),3,4,readonly,'i')}}
+                        </div>
+                        <div id="transpo" style="display:none;">
+                            {{ form.group_text('Car Serial No.', 'serial_no', object.getReceipt|default(''), 3, 4, readonly) }}
+                            {{ form.group_upload_file('Accomplished Form (with supporting Documents)','file',object.getUpload|default(''),3,4,readonly,'f')}}
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-md-4">
+                                    <span class="help-block">** Download <strong>COMPANY VEHICLE'S TRANSPORTATION EXPENSE REIMBURSEMENT FORM</strong> in your profile, in Downloadable Forms.</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form.group_number('Cost', 'cost',object.getCost|default(''), 3, 4, readonly) }}
+                        
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% set status = object.getDisplayStatus %}
+                            {% if object.getID|default(null) == null %}
+                                <button type="submit" name="action_btn" value="reimburse" class="btn green">Submit</button>
+                            {% elseif status == "Pending" %}
+                                {% if readonly == false %}
+                                <button type="submit" class="btn green">Save</button>
+                                {% endif %}
+                                {% if app.user.hasAccess(prefix ~ '.review') %}
+                                <a href="{{ path('hris_workforce_reimbursement_status', {'id': object.getID, 'status': 'Reviewed'}) }}" class="btn blue">Reviewed</a>
+                                {% endif %}
+                            {% elseif status == "Reviewed" %}
+                                {% if app.user.hasAccess(prefix ~ '.approve') %}
+                                <a href="{{ path('hris_workforce_reimbursement_status', {'id': object.getID, 'status': 'Approved'}) }}" class="btn blue">Approve</a>
+                                {% endif %}
+                            {% endif %}
+                            {% if object.getID|default(null) != null and status is not same as('Reject') and status is not same as('Approved') %}
+                                {% if app.user.hasAccess(prefix ~ '.reject') %}
+                                <a href="{{ path('hris_workforce_reimbursement_status', {'id': object.getID, 'status': 'Reject'}) }}" class="btn red">Reject</a>
+                                {% endif %}
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function toggle_form(id) {
+    if(id == 'Transportation') {
+        $('#others').hide();
+        $('#transpo').show();
+    }
+    else if(id == 0) {
+        $('#others').hide();
+        $('#transpo').hide();
+    }
+    else {
+        $('#others').show();
+        $('#transpo').hide();
+    };
+}
+
+$(document).ready(function() {
+
+    var is_new = '{{new}}';
+    if (is_new == 'archived') 
+    {
+        window.location.replace("{{ path('hris_workforce_reimbursement_index') }}");
+    }
+
+    $('#cname_typeahead').change(function() {
+        if ($('#cname_id').val() != '0') 
+        {
+        }
+        else
+        {
+            $('#cname_typeahead').val('');
+        }
+    });
+
+    toggle_form($('select[name="expense_type"]').val());
+
+    $('select[name="expense_type"]').change(function() {
+        toggle_form($(this).val());
+    });
+
+    $('[id=cform-date_filed]').datepicker({
+        todayHighlight: true,
+        endDate: '0'
+        });
+        $('.calendar').prop('disabled', true);
+    // set default error and success elements
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+          return this.optional(element) || value != param;
+        }, "Cannot set default value");
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                error.appendTo(element.parent().last());
+                element.parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().hasClass('tables'))
+            {   
+                element.parent().removeClass('has-error');
+                element.parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        },
+    });
+    // validate form elements
+    $(".form-horizontal").each( function (){
+        $(this).validate({
+            onfocusout: function(element) {
+               this.element(element);
+            },
+            rules: {
+                date_filed: {
+                    required: true
+                },
+                name: {
+                    required: true
+                },
+                receipt_no: {
+                    required: true,
+                },
+                expense_type: {
+                    required: true,
+                    notEqual: 0
+                },
+                other_type: {
+                    required: true,
+                },
+                cost: {
+                    required: true,
+                    number: true,
+                    min: 1
+                }
+            },
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
+    });
+
+    $('.form-horizontal .select_2').change(function () {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('.date-picker .form-control').change(function() {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('select[name="expense_type"]').change(function() {
+        var item = $(this).val();
+
+        if(item == 'Others') {
+
+            var textbox = '<div class="col-md-4"><input type="text" name="other_type" class="form-control" placeholder="If others, please specify" value="" {{ readonly ? "readonly" : "" }}></div>';
+
+            $("#other_field").append(textbox);
+        }
+        else {
+
+            $("#other_field").empty();
+        }
+    });
+}); 
+</script>
+{% endblock %}

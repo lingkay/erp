@@ -1,0 +1,216 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                            {{ form.group_text('Employee Group Name', 'name', object.getName|default(''), 3, 4, readonly) }}
+                            
+                            <!-- FLEXI TIME OPTIONS -->
+                            {{ form.group_select('Type','schedule_type',schedule_types, object.getType|default(''),3,4) }}
+
+                            <div id="flexi">
+                                {{ form.group_text('Required hours per day', 'required_hours', object.getRequiredHours|default('') , 3, 4) }}
+                            </div>
+                            <div id="semi-flexi">
+                                {{ form.group_text('Required hours per day', 'semi_required_hours', object.getRequiredHours|default('') , 3, 4) }}
+                                <!-- <div class="row"> -->
+                                <div class="form-group">
+                                    <div class="col-md-3">&nbsp;</div>
+                                    <div class="col-md-4">
+                                        <h4 class="form-section">Core Hours</h4>
+                                    </div>
+                                    <div class="col-md-5">&nbsp;</div>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                             <div id="range">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Starts</label>
+                                    <div class ="col-md-4">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker timepicker-no-seconds" name="start" placeholder="Start" value="{{object.getStart}}" readonly>
+                                            <span class="input-group-btn">
+                                                <button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">End</label>
+                                    <div class ="col-md-4">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker timepicker-no-seconds" name="end" placeholder="End" value="{{object.getEnd}}" readonly>
+                                            <span class="input-group-btn">
+                                                <button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            {{ form.group_number('Grace Period', 'grace_minutes', object.getGracePeriod, 3, 4, readonly) }}
+                            {{ form.group_number('Minutes Late before marked as Halfday','halfday_minutes', object.getHalfday,3,4,readonly) }}
+                            {{ form.group_select('Day Start','day_start', days_opts, object.getDayStart|default('Monday'),3,4) }}
+                            {{ form.group_select('Day End','day_end', days_opts, object.getDayEnd|default('Friday'),3,4) }}
+                       
+                        </div>
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js%}
+<script>
+function update_form()
+{
+    if ($('#cform-schedule_type').val() == "flexi") 
+    {
+        $('#flexi').show();
+        $('#semi-flexi').hide();
+        $('#range').hide();
+    }
+    else if ($('#cform-schedule_type').val() == "semi-flexi") 
+    {
+        $('#flexi').hide();
+        $('#semi-flexi').show();
+        $('#range').show();
+    }
+    else
+    {
+        $('#flexi').hide();
+        $('#semi-flexi').hide();
+        $('#range').show();
+    }
+}
+$(document).ready(function() {
+
+    update_form();
+    $('#cform-schedule_type').on("change", function()
+    {
+        if ($(this).val() == "flexi") 
+        {
+            $('#flexi').show();
+            $('#semi-flexi').hide();
+            $('#range').hide();
+        }
+        else if ($(this).val() == "semi-flexi") 
+        {
+            $('#flexi').hide();
+            $('#semi-flexi').show();
+            $('#range').show();
+        }
+        else
+        {
+            $('#flexi').hide();
+            $('#semi-flexi').hide();
+            $('#range').show();
+        }
+    });
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            name: "required",
+            start: "required",
+            end: "required",
+            grace_minutes: "required",
+            halfday_minutes: "required",
+        },
+        messages: {
+            name: "Employee Group name cannot be blank.",
+            start: "Please set start time.",
+            end: "Please set end time.",
+            grace_minutes: "Please set Grace Period in minutes.",
+            halfday_minutes: "This field is required",
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Minimum Wage Settings</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.group_textnew('Minimum Wage (NCR)','min', min ,3,4,{class:'numeric'}) }}
+                        {{ form.group_textnew('Minimum Wage (Agri)','min_agri', min_agri,3,4, {class:'numeric'}) }}
+                        {{ form.group_textnew('ECOLA','ecola', ecola,3,4, {class:'numeric'}) }}
+
+                     
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

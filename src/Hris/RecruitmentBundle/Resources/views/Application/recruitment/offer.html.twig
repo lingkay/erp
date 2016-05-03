@@ -1,0 +1,64 @@
+{% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_OFFER')%}
+{% set readonly = true %}
+{% endif %}
+<form method="post" class="form-horizontal form">
+    {{form.hidden('app_form','offer')}}
+    <div class="form-group">
+       {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+       {{ form.group_date('Date scheduled for job offer','offer_date',object.getJobOffer !=null? object.getJobOffer.date.date|date('m/d/Y'),3,5,readonly) }} 
+        <div class="form-group">
+            <label class="col-md-3 control-label">Time set for job offer</label>
+            <div class ="col-md-5">
+                <div class="input-group">
+                    <input type="text" class="form-control timepicker timepicker-no-seconds" name="offer_time" placeholder="Time of Interview" value="{{ object.getJobOffer != null? object.getJobOffer.time.date|date('g:i A') }}" readonly>
+                    <span class="input-group-btn">
+                        <button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label">Applicant appeared?</label>
+        <div class="checkbox-inline">
+        <div>
+        {{ form.checkbox('applicant_appeared', 0, 'No', object.getAppeared, 'chars', readonly) }}
+        </div>
+        </div>
+    </div>
+    <div class="tabbable tabbable-custom tabbable-custom-profile">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_1_11" data-toggle="tab">
+                Job Offer
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1_11">
+                <div class="portlet-body recruitment">
+                {{ form.group_select('Position', 'job_position', jobtitle_opts,object.getJobOffer.position|default(''),3,5, readonly) }}
+                {{ form.group_select('Job Level', 'job_level',level_opts, object.getJobOffer.level|default(''),3,5, readonly) }}
+                {{ form.group_select('Location', 'location', location_opts, object.getJobOffer.location|default(''),3,5,readonly) }}
+                {{ form.group_select('Schedule','schedule',sched_opts, object.getJobOffer.schedule|default(''),3,5, readonly) }}
+                {{ form.group_select('Employment Status','employment_status',employment_status_opts , object.getJobOffer.employment_status|default(''),3,5, readonly) }}
+                {{ form.group_select('Pay Schedule','pay_sched',paysched_opts, object.getJobOffer.pay_schedule|default(''),3,5, readonly) }}
+                {{ form.group_select('Pay Type','pay_type',paytype_opts, object.getJobOffer.pay_type|default(''),3,5, readonly) }}
+                {{ form.group_number('Basic Salary', 'salary', object.getJobOffer.salary|default('0'),3,5, readonly) }}
+                {{ form.group_number('Allowance', 'allowance', object.getJobOffer.allowance|default('0'),3,5, readonly) }}
+                {{form.group_textarea('Remarks', 'remark', object.getJobOffer.remark|default(''),3,3,5, readonly)}}
+                </div>
+            </div>
+        </div>
+    </div>    
+    {% if object.getStatus == "Job Offer" %}
+	<div class="form-group">
+		<div class="col-md-9">
+                <button name="result" value="" type="submit" class="btn blue">Save</button>
+                <button name="result" value="pass" type="submit" class="btn green result">Accept</button>
+                <button name="result" value="fail" type="submit" class="btn red result">Decline</a>
+		</div>
+	</div>
+    {% endif %}
+    
+</div>
+</form>

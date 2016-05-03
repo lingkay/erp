@@ -1,0 +1,37 @@
+<hr>
+{% if view_mode == true %}
+	{# ADD #}
+{{ form.group_text('Date of Incident', 'date_of_incident', date_of_incident|date("m/d/Y"), 3, 4, view_mode) }}
+{{ form.group_textarea('Location', 'location', location, 3, 3, 4, view_mode) }}
+{{ form.group_textarea('Nature of Violation Commited', 'violation_committed', violation_committed|default(''), 3, 3, 4, view_mode) }}
+{{ form.group_textarea('Particular Company Policy Violated', 'violated_policy', violated_policy|default(''), 3, 3, 4, view_mode) }}
+{{ form.group_select('Reason','reason',reason_opts, reason|default(''),3,4, view_mode) }}
+{{ form.group_text('Date Submitted/Expected','date_of_exp', date_of_exp,3,4,view_mode) }}
+{{ form.group_select('Action','action',action_opts, action|default(''),3,4, view_mode) }}
+{% if action == 1 %}
+{{ form.group_text('Date Start', 'date_start', date_start, 3, 4, view_mode) }}
+{{ form.group_text('Date End', 'date_end', date_end, 3, 4, view_mode) }}
+{% elseif action == 2 %}
+{{ form.group_textarea('', 'other_actions', other_actions|default(''), 3, 3, 4, view_mode) }}
+{% endif %}
+{% else %}
+{{ form.group_date('Date of Incident','date_of_incident', date_of_incident|default('')|date("m/d/Y"),3,4) }}
+{{ form.group_textarea('Location', 'location', message|default(''), 3, 3, 4, view_mode) }}
+{{ form.group_textarea('Nature of Violation Commited', 'violation_committed', message|default(''), 3, 3, 4, view_mode) }}
+{{ form.group_textarea('Particular Company Policy Violated', 'violated_policy', message|default(''), 3, 3, 4, view_mode) }}
+{{ form.group_select('Reason','reason',reason_opts, object.getDepartment.getID|default(''),3,4, readonly) }}
+{{ form.group_date('Date Submitted/Expected','date_of_exp', "now"|date("m/d/Y"),3,4) }}
+{{ form.group_select('Action','action',action_opts, object.getDepartment.getID|default(''),3,4, readonly) }}
+<div id="suspension_form">
+{{ form.group_date('Date Start','date_start', "now"|date("m/d/Y"),3,4) }}
+{{ form.group_date('Date End','date_end', "now"|date("m/d/Y"),3,4) }}
+</div>
+<div id="others_form">
+{{ form.group_textarea('', 'other_actions', message|default(''), 3, 3, 4, view_mode) }}
+</div>
+<br>
+<br>
+{% endif %}
+
+
+

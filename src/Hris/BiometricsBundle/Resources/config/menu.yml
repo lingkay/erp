@@ -1,0 +1,5 @@
+menu_items:
+    - id: hris_biometrics_homepage
+      acl: hris_biometrics.menu
+      label: Biometrics Settings
+      parent: menu_hr

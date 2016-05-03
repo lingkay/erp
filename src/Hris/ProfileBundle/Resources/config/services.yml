@@ -1,0 +1,7 @@
+parameters:
+#    hris_profile.example.class: Hris\ProfileBundle\Example
+
+services:
+#    hris_profile.example:
+#        class: %hris_profile.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

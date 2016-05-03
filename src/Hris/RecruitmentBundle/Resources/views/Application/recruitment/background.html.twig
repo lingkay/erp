@@ -1,0 +1,66 @@
+{% if object.getStatus != constant('\\Hris\\RecruitmentBundle\\Entity\\Application::STATUS_CHECK')%}
+{% set readonly = true %}
+{% endif %}
+
+<form method="post" class="form-horizontal form">
+    {{form.hidden('app_form','background')}}
+	<div class="form-group">
+        <div class="tabbable tabbable-custom tabbable-custom-profile">
+    
+            <ul id="list" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_1_11" data-toggle="tab">
+                    Background Check
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1_11">
+                    <div class="portlet-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_date('Date Background Check Form Received','background_date',object.getBackgroundCheck != null ? object.getBackgroundCheck.date.date|date('m/d/Y'),3,5,readonly) }}
+                        {{form.group_select('Status','emp_status',employment_opts,object.getBackgroundCheck.status|default(''),3,5,readonly)}}
+                        {{form.group_select('Position','position',job_level_opts,object.getBackgroundCheck.position|default(''),3,5,readonly)}}
+                        {{form.group_select('Reputation','reputation',reputation_opts,object.getBackgroundCheck.reputation|default(''),3,5,readonly)}}
+                    <h4 class="form-section">Subject's Employment Rating</h4>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.group_number('Overall Work Performance','performance', object.getBackgroundCheck.performance|default('0'),6,3, readonly) }}
+                                {{ form.group_number('Dependability','dependability', object.getBackgroundCheck.dependability|default('0'),6,3, readonly) }}
+                                {{ form.group_number('Attendance','attendance', object.getBackgroundCheck.attendance|default('0'),6,3, readonly) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.group_number('Ability to accept responsibility','responsibility', object.getBackgroundCheck.responsibility|default('0'),6,3, readonly) }}
+                                {{ form.group_number('Potential for advancement','potential', object.getBackgroundCheck.potential|default('0'),6,3, readonly) }}
+                                {{ form.group_number('Ability to get along with others','get_along', object.getBackgroundCheck.get_along|default('0'),6,3, readonly) }}
+                            </div>
+                        </div>
+                    </div>
+                    {{form.group_textarea('Amount of supervision need', 'supervision', object.getBackgroundCheck.supervision|default(''),3,2,7, readonly)}}
+                    {{form.group_textarea('Strong and Weak Points', 'points', object.getBackgroundCheck.points|default(''),3,2,7, readonly)}}
+                    {{form.group_textarea('Reason for Leaving', 'leaving', object.getBackgroundCheck.leaving|default(''),3,2,7, readonly)}}
+                    {{form.group_textarea('Other Comments', 'comments', object.getBackgroundCheck.comments|default(''),3,2,7, readonly)}}
+                    {{form.group_textarea('If ever, would you still want to hire him back? Why?', 'hire_back', object.getBackgroundCheck.hire_back|default(''),3,2,7, readonly)}}
+
+                    <h4 class="form-section">Accomplished By:</h4>
+
+                    {{ form.group_text('Name', 'name_answered', object.getBackgroundCheck.name_answered|default(''),3,5, readonly) }}
+                    {{ form.group_text('Position', 'position_answered', object.getBackgroundCheck.position_answered|default(''),3,5, readonly) }} 
+                    {{ form.group_date('Date','date_answered',object.getBackgroundCheck.date_answered is defined ? object.getBackgroundCheck.date_answered.date|date('m/d/Y'),3,5,readonly) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if object.getStatus == "Background Check" %}
+		<div class="form-group">
+			<div class="col-md-9">
+                <button name="result" value=""  type="submit" class="btn blue">Save</button>
+                <button name="result" value="pass" type="submit" class="btn green">Passed</button>
+                <button name="result" value="fail" type="submit" class="btn red">Failed</a>
+			</div>
+		</div>
+        {% endif %}
+	</div>
+</form>

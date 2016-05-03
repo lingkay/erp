@@ -1,0 +1,30 @@
+<div id="char-ref-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <form id="char-ref-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Character Reference</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        {{ form.group_text('First Name','firstname','',3,8,readonly) }}
+                        {{ form.group_text('Middle Name', 'middlename', '', 3, 8) }}
+                        {{ form.group_text('Last Name', 'lastname', '', 3, 8) }}
+                        {{ form.group_text('Salutation', 'salutation', '', 3, 8) }}
+                        {{ form.group_text('Relationship with Applicant', 'relationship', '', 3, 8) }}
+
+                        {{ form.group_select('Type', 'phone_type', phone_type_opts, '', 3, 8) }}
+                        {{ form.group_text('Number', 'number', '', 3, 8, readonly) }}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_char_ref_submit" type="submit" class="btn green">Add Character Reference</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>

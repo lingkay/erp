@@ -1,0 +1,3 @@
+hris_notification_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: HrisNotificationBundle:Default:index }

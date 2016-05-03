@@ -1,0 +1,4 @@
+services:
+   hris_cashbond:
+       class: Hris\RemunerationBundle\Model\CashbondManager
+       arguments: [ "@doctrine.orm.entity_manager","@service_container"]

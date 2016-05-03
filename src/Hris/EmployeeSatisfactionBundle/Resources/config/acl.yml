@@ -1,0 +1,11 @@
+acl:
+    - category: Employee Satisfaction
+      entries:
+       - id: hris_emp_satisfaction.menu
+         label: "Menu"
+    - category: Discounts and Perks
+      entries:
+       - id: hris_discounts.menu
+         label: "Menu"
+       - id: hris_discounts.add
+         label: "Add"

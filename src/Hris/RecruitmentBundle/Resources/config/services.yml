@@ -1,0 +1,8 @@
+parameters:
+#    hris_workforce_management.example.class: Hris\WorkforceBundle\Example
+
+services:
+    hris_recruitment:
+        class: Hris\RecruitmentBundle\Model\RecruitmentManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"

@@ -1,0 +1,107 @@
+hris_biometrics:
+    resource: "@HrisBiometricsBundle/Resources/config/routing.yml"
+    prefix:   /biometrics
+
+hris_biometrics_attendance_auth:
+    path:    /biometrics/login
+    defaults: { _controller: HrisBiometricsBundle:Biometrics:authTransmission }
+
+hris_biometrics_attendance_trasmit:
+    path:    /biometrics/transmit
+    defaults: { _controller: HrisBiometricsBundle:Biometrics:beginTransmission }
+
+hris_biometrics_attendance_receive:
+    path:    /biometrics/receive
+    defaults: { _controller: HrisBiometricsBundle:Biometrics:receiveBiometricsData }
+
+hris_biometrics_attendance_pair:
+    path:    /biometrics/pair
+    defaults: { _controller: HrisBiometricsBundle:Biometrics:pairAttendanceRecords }
+
+hris_remuneration:
+    resource: "@HrisRemunerationBundle/Resources/config/routing.yml"
+    prefix:   /cash
+
+hris_memo:
+    resource: "@HrisMemoBundle/Resources/config/routing.yml"
+    prefix:   /
+
+hris_notification:
+    resource: "@HrisNotificationBundle/Resources/config/routing.yml"
+    prefix:   /
+
+catalyst_notification:
+    resource: "@CatalystNotificationBundle/Resources/config/routing.yml"
+    prefix:   /notifications
+
+catalyst_media:
+    resource: "@CatalystMediaBundle/Resources/config/routing.yml"
+    prefix:   /media
+
+hris_admin:
+    resource: "@HrisAdminBundle/Resources/config/routing.yml"
+    prefix:   /
+
+hris_payroll:
+    resource: "@HrisPayrollBundle/Resources/config/routing.yml"
+    prefix:   /payroll
+
+hris_report:
+    resource: "@HrisReportBundle/Resources/config/routing.yml"
+    prefix:   /report
+
+hris_dashboard:
+    resource: "@HrisDashboardBundle/Resources/config/routing.yml"
+    prefix:   /
+
+hris_profile:
+    resource: "@HrisProfileBundle/Resources/config/routing.yml"
+    prefix:   /profile
+
+hris_company_overview:
+    resource: "@HrisCompanyOverviewBundle/Resources/config/routing.yml"
+    prefix:   /company
+
+hris_training:
+    resource: "@HrisTrainingBundle/Resources/config/routing.yml"
+    prefix:   /training
+
+hris_employee_satisfaction:
+    resource: "@HrisEmployeeSatisfactionBundle/Resources/config/routing.yml"
+    prefix:   /employeesatisfaction
+
+hris_archives:
+    resource: "@HrisArchivesBundle/Resources/config/routing.yml"
+    prefix:   /archive
+
+hris_recruitment:
+    resource: "@HrisRecruitmentBundle/Resources/config/routing.yml"
+    prefix:   /recruitment
+
+hris_workforce_management:
+    resource: "@HrisWorkforceBundle/Resources/config/routing.yml"
+    prefix:   /workforce
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+    prefix: /
+
+catalyst_dashboard:
+    resource: "@CatalystDashboardBundle/Resources/config/routing.yml"
+    prefix:   /
+
+catalyst_configuration:
+    resource: "@CatalystConfigurationBundle/Resources/config/routing.yml"
+    prefix:   /configuration
+
+catalyst_user:
+    resource: "@CatalystUserBundle/Resources/config/routing.yml"
+    prefix: /user
+
+catalyst_report:
+    resource: "@CatalystReportBundle/Resources/config/routing.yml"
+    prefix: /report
+
+catalyst_contact:
+    resource: "@CatalystContactBundle/Resources/config/routing.yml"
+    prefix:   /contact

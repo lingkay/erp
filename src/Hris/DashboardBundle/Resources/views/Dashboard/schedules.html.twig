@@ -1,0 +1,115 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue-hoki">
+			<div class="portlet-title">
+				<div class="caption"> {{list_title }} </div>
+			</div>
+			<div class="portlet-body">
+                    <div class="table-toolbar"style="height:30px">
+                        <div class="col-md-3"></div>
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Type of Schedule</label>
+                                    <div class ="col-md-6">
+                                        <select id="en_product_id" class="form-control" name="prod_id">
+                                        <option value=""></option>
+                                        <option value="exam">Examination</option>
+                                        <option value="interview">Interview</option>
+                                        <option value="contract_signing">Contract Signing</option>
+                                        </select>
+                                    </div>
+                                </div>  
+                            </div>
+                    </div>
+                    <br>
+                    <div id="datepaginator_sample_1">
+                    </div>
+                    <br>
+                    <h4 class="form-section">Summary Detail:</h4>
+
+                        <div class="col-md-9">
+                        {{ form_tools.group_text('Total Examinations', 'name','', 3, 4 ) }}  
+                        </div>
+                        <br><br><br>
+                        <div class="col-md-9">
+                        {{ form_tools.group_text('Total Interview', 'name','', 3, 4 ) }}  
+                        </div>                        
+                        <br><br><br>
+                        <div class="col-md-9">
+                        {{ form_tools.group_text('Total Contract Signing', 'name','', 3, 4 ) }}  
+                        </div>                        
+                        <br><br><br>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                            <th style="width: 90px">{{ col.getLabel }}</th>
+                            {% else %}
+                            <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>  
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({            
+        "iDisplayLength": 10,
+        // "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+           
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+    $('#datepaginator_sample_1').datepaginator();
+    $('#en_product_id').select2();
+});
+</script>
+{% endblock %}
+
+{% block css %}
+
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+
+<!-- date picker -->
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker3.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css') }}"/>
+
+<!-- metronic profile css -->
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/profile.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/tasks.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-multi-select/css/multi-select.css') }}" rel="stylesheet" type="text/css" />
+
+<!-- BEGIN DATE PAGINATOR PLUGIN -->
+<link href="{{asset('bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker.css')}}" rel="stylesheet" type="text/css"/>
+<!-- END DATE PAGINATOR PLUGIN -->
+{% endblock %}

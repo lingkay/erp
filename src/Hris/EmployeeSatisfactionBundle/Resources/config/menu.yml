@@ -1,0 +1,9 @@
+menu_items:
+#     - id: hris_emp_satisfaction
+#       acl: hris_emp_satisfaction.menu
+#       label: Employee Satisfaction
+#       icon: fa-thumbs-o-up
+#     - id: hris_discounts_index
+#       acl: hris_discounts.menu
+#       label: Discounts and Perks
+#       parent: hris_emp_satisfaction

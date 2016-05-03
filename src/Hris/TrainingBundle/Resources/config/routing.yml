@@ -1,0 +1,6 @@
+hris_etrain_index:
+    path:     /etraining
+    defaults: { _controller: HrisTrainingBundle:Etrain:index }
+hris_etrain_add_form:
+    path:     /etraining/add
+    defaults: { _controller: HrisTrainingBundle:Etrain:addForm }

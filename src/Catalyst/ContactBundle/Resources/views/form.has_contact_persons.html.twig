@@ -1,0 +1,73 @@
+<div id="phone-section">
+    <button type="button" id="add-contact-person-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-contact-person">
+        Add Contact Person
+    </button>
+
+    {{ f.hidden2('cform-unique-class', '', '') }}
+    {{ f.hidden2('cform-hidden_person_id', '', '') }}
+
+    {% for ct in object.getContactPersons %}
+
+    <h4 class="form-section">Contact Person {{ loop.index }}</h4>
+    <div class="contact-class-outer">    
+        <div class="contact{{loop.index}}">
+            {{ f.hidden2('', 'contact'~loop.index, 'contact-class') }}
+            {{ f.hidden2('', ct.getID, 'contact-person-id') }}
+
+            {{ f.hidden2('is_person_new[]', 'false') }}
+            {{ f.hidden2('person_id[]', ct.getID) }}
+            {{ f.group_text('First Name', 'person_first_name[]', ct.getFirstName, 3, 4) }}
+            {{ f.group_text('Middle Name', 'person_middle_name[]', ct.getMiddleName, 3, 4) }}
+            {{ f.group_text('Last Name', 'person_last_name[]', ct.getLastName, 3, 4) }}
+            {{ f.group_text('Email', 'person_email[]', ct.getEmail, 3, 4) }}
+          
+            {% if ct.getIsPrimary == true %}
+                {% set person_checked = 'checked' %}
+            {% else %}
+                {% set person_checked = '' %}                                    
+            {% endif %}
+
+            <div class="form-group">
+                <label class="col-md-3"></label>
+                <div class="col-md-5">
+                    {{ f.checkbox('contact_person_is_primary[]', 1 , 'Set as Primary Contact Person', person_checked , '', true)}}
+                </div>
+            </div>
+            <a class="btn btn-default" href="{{ path('cnt_contact_person_delete',{ 'id' : ct.getID , 'supp_id' : object.getID }) }}">
+                Delete Contact Person
+            </a>
+            <br/><br/>
+
+            <button type="button" id="add-phone" class="phone-button btn btn-primary" data-toggle="modal" data-target="#add-phone-modal">Add Phone</button>
+
+            {% for p in ct.getPhones %}
+                {{ f.hidden2('phone_id[]', p.getID) }}
+                {{ f.hidden2('contact_person_id[]', ct.getID) }}
+                {{ f.hidden2('is_new_phone[]', 'false') }}
+                {{ f.group_text('Type', 'p_type[]', p.getPhoneType.getName, 3, 4) }}
+                {{ f.group_text('Number', 'p_number[]', p.getNumber, 3, 4) }}
+
+                {% if p.getIsPrimary == true %}
+                    {% set checked = 'checked' %}
+                {% else %}
+                    {% set checked = '' %}                                    
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="col-md-3"></label>
+                    <div class="col-md-5">
+                        {{ f.checkbox('phone_is_primary[]', 1 , 'Set as Primary Number', checked , '', true)}}
+                    </div>
+                </div>
+
+                <a class="btn btn-default" href="{{ path('cnt_phone_delete',{ 'id' : p.getID , 'supp_id' : object.getID }) }}">
+                    Delete Phone
+                </a>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    {% endfor %}
+    <br>
+</div>

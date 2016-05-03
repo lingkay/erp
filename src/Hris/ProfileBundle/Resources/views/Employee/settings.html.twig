@@ -1,0 +1,138 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Profile Settings</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-actions top fluid ">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn green">Submit</button>
+                        </div>
+                    </div>
+                    <div class="form-body">
+                        <div class="table-toolbar" style="float: right;">
+                            <button type="button" class="btn green">Activate Account</button>
+                        </div>
+                        <h4 class="form-section">Employment</h4>
+                        {{ form_tools.group_select('Status', 'emp-status', '', '', 3, 5) }}
+                        {{ form_tools.group_select('Work Site', 'emp-worksite', '', '', 3, 5) }}
+                        {{ form_tools.group_select('Job Level', 'emp-level', '', '', 3, 5) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Job</label>
+                            <div class="col-md-4">
+                                <input id="cform-name" type="text" name="name" class="form-control" placeholder="" value="Developer" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <select name="job" class="form-control select_2">
+                                    <option value="0">Junior</option>
+                                    <option value="0">Mid-Level</option>
+                                    <option value="0">Senior</option>
+                                </select>
+                            </div>
+                        </div>
+                        {{ form_tools.group_text_readonly('Paygrade', 'emp-paygrade', '', 3, 5) }}
+
+                        <h4 class="form-section">Payroll</h4>
+                        {{ form_tools.group_text('Basic Salary', 'emp-salary', '', 3, 5) }}
+                        {{ form_tools.group_select('Frequency', 'pay-frequency', '', '', 3, 5) }}
+                        {{ form_tools.group_select('Cut-off', 'pay-cutoff', '', '', 3, 5) }}
+                        {{ form_tools.group_time('Work Hours Start', 'emp-workhours-s', '', 3, 5) }}
+                        {{ form_tools.group_time('Work Hours End', 'emp-workhours-e', '', 3, 5) }}
+                        {{ form_tools.group_select('Working Days', 'emp-workdays', '', '', 3, 5) }}
+                        {{ form_tools.group_select('Time-in Grace Period', 'emp-gracetime', '', '', 3, 5) }}
+
+                        
+                        <h4 class="form-section">Benefits</h4>
+                        <div class="row" style="margin-bottom: 10px;">
+                            <div class="col-md-12">
+                                <a href="#en_form" class="btn green" data-toggle="modal" style="float: right;">Add Benefits</a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table table-striped table-bordered table-advance table-hover" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Benefits
+                                        </th>
+                                        <th>
+                                            Description
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="en_table">
+                                <td>Pag-IBIG Benefits</td>
+                                <td>
+                                The Home Development Mutual Fund, otherwise known as Pag-IBIG (Pagtutulungan sa kinabukasan: Ikaw, Bangko, Industriya at Gobyerno) Fund is a mutual provident savings system for private and government employees and other earning groups, supported by matching mandatory contributions of their respective employers with housing as the primary investment.
+                                </td>
+                                </tbody>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Save Changes</button>
+                            <!-- <a href="#" class="btn default">Cancel</a> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="en_form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Add Benefits</h4>
+            </div>
+            <div class="modal-body form">
+                <!-- BEGIN FORM-->
+                <form action="index.html" class="form-horizontal form-row-seperated">
+                    <div class="form-body">
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">Benefits</label>
+                            <div class="col-md-9">
+                                <select multiple="multiple" class="multi-select" id="my_multi_select2" name="my_multi_select2[]">
+                                    <optgroup label="Government Mandated Benefits">
+                                    <option>Employee Compensation</option>
+                                    <option>Social Security Benefits and Privileges</option>
+                                    <option>Pag-IBIG Fund</option>
+                                    <option>Philhealth Insurance</option>
+                                    <option>13th Month Pay</option>
+                                    <option>Service Incentive Leave</option>
+                                    <option>Solo Parent Leave</option>
+                                    <option>Paternity Leave</option>
+                                    <option>Maternity Leave</option>
+                                    <option>Special Leave for Women (Magna Carta)</option>
+                                    <option>Leave on AVAWC (Act of Violence Against Women and Children)</option>
+                                    </optgroup>
+                                    <optgroup label="Other Benefits">
+                                    <option>Vacation Leave</option>
+                                    <option>Sick Leave</option>
+                                    <option>Allowances</option>
+                                    <option>Health Card</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn_en_submit" type="button" class="btn green">Add Benefits</button>
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>

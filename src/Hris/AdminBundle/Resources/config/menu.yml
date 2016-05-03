@@ -1,0 +1,80 @@
+menu_items:
+    - id: menu_admin
+      acl: cat_admin.menu
+      label: Administration
+      icon: fa-laptop
+
+    - id: menu_hr
+      acl: hris_admin.menu
+      label: HR Settings
+      icon: fa-gears
+    - id: hris_admin_department_index
+      acl: hris_admin_department.menu
+      label: Department
+      parent: menu_hr
+    - id: hris_admin_jobtitles_index
+      acl: hris_admin_jobtitles.menu
+      label: Position
+      parent: menu_hr
+    - id: hris_admin_joblevel_index
+      acl: hris_admin_joblevel.menu
+      label: Job Level
+      parent: menu_hr
+    - id: hris_admin_location_index
+      acl: hris_admin_location.menu
+      label: Location
+      parent: menu_hr
+    - id: hris_admin_benefit_index
+      acl: hris_admin_benefit.menu
+      label: Benefit
+      parent: menu_hr
+    - id: hris_admin_schedules_index
+      acl: hris_admin_schedules.menu
+      label: Employee Time Schedule
+      parent: menu_hr
+    - id: hris_admin_checklist_index
+      acl: hris_admin_checklist.menu
+      label: Employment Checklist
+      parent: menu_hr
+
+    - id: hris_admin_appraisal_settings_index
+      acl: hris_admin_appraisal_settings.menu
+      label: Appraisal Settings
+      parent: menu_hr
+    - id: hris_admin_events_index
+      acl: hris_admin_events.menu
+      label: Events
+      parent: menu_hr
+    - id: hris_admin_holiday_index
+      acl: hris_admin_holiday.menu
+      label: Holiday
+      parent: menu_hr
+    - id: hris_admin_downloadables_index
+      acl: hris_admin_downloadables.menu
+      label: Downloadable Files/Forms
+      parent: menu_hr
+    - id: hris_admin_form_codes_index
+      acl: hris_admin_form_codes.menu
+      label: HR Form Codes
+      parent: menu_hr
+    - id: hris_admin_otsetting_index
+      acl: hris_admin_otsetting.menu
+      label: Overtime
+      parent: menu_hr
+    # - id: hris_biometrics_homepage
+    #   acl: hris_biometrics.menu
+    #   label: Biometrics Settings
+    #   parent: menu_hr
+
+    - id: hris_admin_leave
+      acl: hris_admin_leave.menu
+      label: Leave Settings
+      parent: menu_hr
+    - id: hris_admin_leave_type_index
+      acl: hris_admin_leave_type.menu
+      label: Leave Types
+      parent: hris_admin_leave
+    - id: hris_admin_leave_rules_index
+      acl: hris_admin_leave_rules.menu
+      label: Leave Rules
+      parent: hris_admin_leave

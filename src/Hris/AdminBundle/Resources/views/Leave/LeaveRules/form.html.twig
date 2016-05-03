@@ -1,0 +1,122 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ action }} {{ head_title }} {{ action == "Edit" ? '- ' ~ o_label : '' }}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.group_textarea('Description','desc',object.getNotes|default(''),3,3,4) }}
+                        {{ form.group_select('Leave Type','type',type_opts,object.getLeaveType.getID|default('0'),3,4) }}
+                        {{ form.typeahead('Employee Name', 'emp', object.getEmployee is not null ? object.getEmployee.getDisplayName:"", object.getEmployee is not null ? object.getEmployee.getID:"" , path('hris_workforce_employee_ajax_get'), 3, 4) }}
+                        {{ form.group_select('Department','dept',dept_opts,object.getDepartment.getID|default('0'),3,4) }}
+                        {{ form.group_select('Job Level','job_level',level_opts,object.getJobLevel.getID|default('0'),3,4) }}
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Gender</label>
+                            <div class="col-md-5">
+                                {{ form.checkbox_set('gender', gender_opts, object.getGender) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Employment Status</label>
+                            <div class="col-md-5">
+                                {{ form.checkbox_set('emp_status', emp_status_opts, object.getEmpStatus) }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Leave Accrued</label>
+                            <div class="col-md-4">
+                                {{ form.radio_set('accrued_enabled',accrued_opts,object.getAccrueEnabled|default(0)) }}   
+                            </div>
+                        </div>
+                        <div id="accrue_settings" {{ object.getAccrueEnabled == 0 ? 'style="display:none;"' : "" }}>
+                            {{ form.group_number('Accrued Time (in minutes)','accrue_time',object.AccrueCount|default('0'),4,4) }}
+                            {{ form.group_select('Accrual Rule','accrue_rule',accrue_rule_opts,object.getAccrueRule|default(''),4,4) }}
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Leave Carried</label>
+                            <div class="col-md-4">
+                                {{ form.radio_set('carried_enabled',carried_opts,object.getCarriedEnabled|default(0),object.getAccrueEnabled == 0 ? true : false) }}   
+                            </div>
+                        </div>
+                        <div id="carried_settings" {{ object.getCarriedEnabled == 0 ? 'style="display:none;"' : "" }}>
+                            {{ form.group_number('Percentage Carried Forward','carry_percentage','',4,4) }}
+                            {{ form.group_number('Availability Period (in weeks)','carry_period','',4,4) }}
+                        </div>
+                        {{ form.group_number('Leaves Per Year (in days)','leave_count',object.getLeaveCount|default(0),3,4) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-4">
+                                {{ form.radio_set('count_type',count_type,object.getCountType|default('per Year')) }}   
+                            </div>
+                        </div>
+                        {{ form.group_number('Months of Service required (minimum)','service_months',object.getServiceMonths|default(0),3,4) }}
+                        {{ form.group_select('Payment Type','payment_type',payment_type,object.getPaymentType|default('0'),3,4) }}
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Implementation</label>
+                            <div class="col-md-4">
+                                {{ form.radio_set('override_setting',override_opts,object.getOverride|default('Override')) }}   
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready( function() {
+
+    $('input[name="accrued_enabled"]').click(function() {
+        var val = $(this).val();
+        if (val == 1) {
+            $('#accrue_settings').show();
+            $('input[name="carried_enabled"]').attr('disabled',false);
+            $('input[name="carried_enabled"]').closest('div').removeClass('disabled');
+        } else{
+            $('#accrue_settings').hide();
+            $('input[name="carried_enabled"]').attr('disabled',true);
+            $('input[name="carried_enabled"]').closest('div[class="radio"]').addClass('disabled');
+            $('input[name="carried_enabled"][value="' + 0 + '"]').prop('checked', true);
+            $('input[name="carried_enabled"][value="' + 0 + '"]').parent('span').addClass('checked');
+            $('input[name="carried_enabled"][value="' + 1 + '"]').parent('span').removeClass('checked');
+            $('#carried_settings').hide();
+        };
+    });
+
+    $('input[name="carried_enabled"]').click(function() {
+        var val = $(this).val();
+        if (val == 1) {
+            $('#carried_settings').show();
+        } else{
+            $('#carried_settings').hide();
+        };
+    });
+
+});
+</script>
+{% endblock %}

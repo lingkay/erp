@@ -1,0 +1,235 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Add New Appraisal</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                        {{ form.typeahead('Employee Name','emp','','',path('hris_workforce_employee_ajax_get'),3,4)}}
+
+                        <div id="evaluators">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Evaluator/s</label>
+                                <div class="col-md-4"><a class="btn green" data-toggle="modal" data-target="#add_evaluator"><i class="fa fa-plus"></i> Add Evaluator</a></div>
+                            </div>
+                        </div>
+                        {{ form.group_select('Appraisal Preset', 'appraisal_preset', preset_list, 0, 3, 4) }}
+                        {{ form.group_select('Appraisal/Evaluation Type', 'type', type_list, 0, 3, 4) }}
+                        {{ form.group_date_range('daterange', 'Evaluation Period', 'date_from', 'date_to', '', '', 3, 5) }}
+                        
+                    </div>
+                    
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %} 
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Evaluator Modal -->
+<div class="modal fade" id="add_evaluator" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Add Evaluator</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-body">
+                    {{ form.group_select('Department', 'dept', dept_list, 0, 3, 5) }}
+                    {{ form.group_select('Evaluator', 'eval', '', 0, 3, 5) }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn blue" id="add_eval">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function filter_select(dept, emp) {
+    if (dept == 0) {
+        return false;
+    }
+
+    var url = "{{ path ('hris_workforce_get_evaluator', { id: ':dept' }) }}";
+    url = url.replace(":dept", dept);
+
+    $('select[name="eval"]').empty();
+
+    console.log(url);
+    // get evaluator list
+    $.getJSON(url, function(data){
+        console.log(data);
+
+        $('select[name="eval"]').html('<option></option>').select2();
+        i=0;
+        for(var index in data)
+        {
+            if (index != emp) {
+                i++;
+                $('select[name="eval"]').append('<option value="'+ index + '">'+ data[index].name + ' </option>');
+            };
+        }
+    });
+}
+
+
+$(document).ready(function() {
+    // $('button[type="submit"]').click(function(e){
+    //     e.preventDefault();
+    //     if ($('input[name="evaluator[]"]').length) {
+    //         alert('has evaluators');
+    //     } else{
+    //         alert('no evaluators');
+    //     };
+    // });
+
+    $('#cemp_typeahead').change(function() {
+        if ($('#cemp_id').val() != '') 
+        {
+            
+        }
+        else
+        {
+            $('#cemp_typeahead').val('');
+        }
+    });
+
+    $('select[name="dept"]').change(function() {
+        filter_select($(this).val(), $('input[name="emp_id"]').val());
+        $('select[name="dept"] option:first').attr('selected', true);
+        $('select[name="eval"]').prop('selectedIndex',0);
+    });
+
+    $('#add_eval').click(function() {
+        var name = $('select[name="eval"] option:selected').html();
+        var id = $('select[name="eval"] option:selected').val();
+        var html;
+
+        $('#add_evaluator').modal('toggle')
+        html = '<div class="form-group"><label class="col-md-3 control-label"></label><div class="col-md-4">';
+        html += '<input type="text" name="evaluator['+ id +']" class="form-control" placeholder="Name" value="'+ name +'" readonly>'
+        html += '</div></div>';
+
+        $('#evaluators').append(html);
+    });
+
+    $('#daterange').daterangepicker({
+            ranges: {
+                'Next 7 Days': [new Date(), moment().add('days', 6)],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#cform-date_from').val(start.format('YYYYMMDD'));
+            $('#cform-date_to').val(end.format('YYYYMMDD'));
+    });
+
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('radio'))
+            {   
+                element.parent().parent().parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            emp: "required",
+            type: "required",
+            daterange: "required",
+            appraisal_preset: "required",
+        },
+        messages: {
+            emp: "Please select Employee.",
+            type: "Please select Type of Evaluation.",
+            daterange: "Please specify Duration of Evaluation.",
+            appraisal_preset: "Please select a preset for Evaluation.",
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+    $('.form-horizontal .select_2').change(function () {
+        $('.form-horizontal').validate().element($(this));
+    });
+
+    $('.date-picker .form-control').change(function() {
+        $('.form-horizontal').validate().element($(this));
+    });
+});
+</script>
+
+{% endblock %}

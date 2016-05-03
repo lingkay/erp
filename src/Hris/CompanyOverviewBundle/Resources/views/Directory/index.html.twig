@@ -1,0 +1,155 @@
+{% extends "CatalystTemplateBundle::base.html.twig" %}
+{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption"> Directory </div>
+            </div>
+            <div class="portlet-body">
+                <!-- BEGIN FORM-->
+                <div class="form-horizontal">
+                    <form method="#">
+                        <div class="row" style="background: #f9f9f9; margin: 0px;">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        {{ form_tools.typeahead_noclear('Employee Name','emp','','',path('hris_workforce_employee_ajax_get'),4,8)}}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form_tools.group_select('Department','department',dept_opts, '',4,8) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ form_tools.group_select('Position','job_title', title_opts, '',3,9) }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row" style="float: right; padding-right: 50px;"> 
+                                            <div class="form-group">
+                                            <button class="btn blue" type="button" id="filter_button">Search</button>
+                                            <button class="btn red" type="button" id="clear_filter">Clear</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="directory" id="directory">
+                                </div>
+                            </div>
+                        </div>
+                    </form>   
+                </div>             
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function filter_select(dept) {
+    if (dept == ''){
+        dept = 0;
+    }
+    var url = "{{ path ('hris_admin_jobtitles_ajax_filter_dept', { id: ':dept' }) }}";
+    url = url.replace(":dept", dept);
+    var sel = {{ object.getJobTitle.getID|default(0) }};
+
+    $('select[name="job_title"]').empty();
+
+    // get evaluator list
+    $.getJSON(url, function(data){
+
+        $('select[name="job_title"]').html('<option></option>').select2();
+        i=0;
+        for(var index in data)
+        {
+            $('select[name="job_title"]').append('<option value="'+ data[index].id + '">'+ data[index].name + ' </option>');
+        }
+        // set selected index value
+        // if (sel !== 0) {
+            $('select[name="job_title"]').val(sel).trigger('change');   
+        // };
+    });
+}
+$(document).ready(function(){
+    $('#clear_filter').click(function (){
+        $('#cemp_typeahead').val('');
+        $('select[name="department"]').select2("val",'');
+        filter_select('');
+        $('#cemp_id').val('');
+        $('#cemp_typeahead').prop('readonly', false);
+        $('#directory').empty();
+    });
+
+    $('#filter_button').click(function (){
+
+        var id = $('#cemp_typeahead').val();
+        var department = $('select[name="department"]').val();
+        var job_title = $('select[name="job_title"]').val();
+
+        if(id == '')
+        {
+            id = null;
+        }
+        if(department == '')
+        {
+            department = 0;
+        }
+        if(job_title == '')
+        {
+            job_title = 0;
+        }
+        
+        var path = "{{ path('hris_com_directory_ajax_filter', {id: 'ID', department: 'DEPARTMENT', job_title:'JT'})}}";
+            path = path.replace('ID', id);
+            path = path.replace('DEPARTMENT', department);
+            path = path.replace('JT', job_title);
+        $('#directory').empty();   
+        $.getJSON(path, function(data) {
+            $('#directory').empty(); 
+            $.each(data, function(key,val){
+                var picture;
+                var contact_number;
+                var is_dept_head;
+
+                if(val.picture == 'null')
+                {
+                    picture = '{{asset("bundles/hristemplate/images/no_photo.png")}}';
+                }
+                else
+                {
+                    picture = val.picture;
+                }
+
+                if(val.contact_number == "")
+                {
+                    contact_number = '<i>Not Available</i>';
+                }
+                else
+                {
+                    contact_number = val.contact_number;
+                }
+                if (val.dept_head) {
+                    is_dept_head = ' (Department Head)';
+                } else{
+                    is_dept_head = '';
+                };
+
+                $('#directory').append('<div class="col-md-3" style="padding-top: 5px;"><div class="thumbnail"><img src='+picture+' alt="" style="width: 80%; height: 80%;"><div class="caption"><h4 class="form-section"><strong>'+val.emp_name+'</strong><br><span style="font-style: italic; font-size: 80%">'+val.position+is_dept_head+'</span></h4><div style="overflow: auto;"><strong>Contact Number</strong>'+'<br> '+ contact_number +'<br><strong>Email</strong>'+'<br> '+ val.email +'<br><strong>Department</strong>'+'<br> '+ val.department +'<br><strong>Location</strong>'+'<br> '+ val.locations +'</div></div></div></div>');
+            });
+        });
+    });
+
+    $('select[name="department"]').change(function() {
+        filter_select($(this).val());
+    });
+});
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,29 @@
+<div class="portlet-body">
+    <table class="table table-striped table-bordered table-hover" id="list_table">
+        <thead>
+            <tr>
+                <th>Forms/Files</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if downloadable is empty %}
+            <tr class="odd empty">
+                <td valign="top" colspan="6" class="dataTables_empty">No Downloadable Form/s</td>
+            </tr>
+        {% else %}
+            {% for file in downloadable %}
+                <tr class="odd gradeX">
+                    <td>{{ file.getName }}</td>
+                    <td>{{ file.getNotes }}</td>
+                    <td>
+                    {% set upload = file.getUpload %}
+                    <a target="_blank" href="{{ upload.getURL|replace({'\\': '/'}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-download"></i> Download</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
