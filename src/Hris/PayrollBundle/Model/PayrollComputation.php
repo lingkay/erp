@@ -400,45 +400,43 @@ class PayrollComputation
         $this->em->persist($payroll);
         $this->em->flush();
         // Governement Deductions add check here
-        $deductions = $this->getDeductions($payroll);
-        foreach ($deductions as $key => $deduction) {
-          error_log($key);
-            switch ($key) {
-                case self::DED_SSS: $dedEntry = new PayDeductionEntry();
-                            $dedEntry->setAmount($deduction)
-                            ->setType(PayDeductionEntry::TYPE_SSS);
-                             $payroll->addDeductionEntry($dedEntry);
-                            break;
-                case self::DED_PHILHEALTH: $dedEntry = new PayDeductionEntry();
-                            $dedEntry->setAmount($deduction)
-                            ->setType(PayDeductionEntry::TYPE_PHILHEALTH);
-                             $payroll->addDeductionEntry($dedEntry);
-                            break;
-                case self::DED_PAGIBIG:  $dedEntry = new PayDeductionEntry();
-                            $dedEntry->setAmount($deduction)
-                            ->setType(PayDeductionEntry::TYPE_PAGIBIG);
-                             $payroll->addDeductionEntry($dedEntry);
-                            break;
-                case self::DED_CASHBOND:  $dedEntry = new PayDeductionEntry();
-                            $dedEntry->setAmount($deduction)
-                            ->setType(PayDeductionEntry::TYPE_CASHBOND)
-                            ->setTaxable(false);
-                             $payroll->addDeductionEntry($dedEntry);
-                            break;
-                 case self::DED_LOAN:
-                            foreach($deduction as $loan){
-                              $dedEntry = new PayDeductionEntry();
-                              $dedEntry->setAmount($loan->getPayment())
-                               ->setType(PayDeductionEntry::TYPE_COMPANYLOAN)
-                               ->setNotes($loan->getLoan()->getType())
-                               ->setTaxable(false);
-                               $payroll->addDeductionEntry($dedEntry);
-                            }
-                            break;
-            }
-
-           
-        }
+        //$deductions = $this->getDeductions($payroll);
+        // foreach ($deductions as $key => $deduction) {
+        //   error_log($key);
+        //     switch ($key) {
+        //         case self::DED_SSS: $dedEntry = new PayDeductionEntry();
+        //                     $dedEntry->setAmount($deduction)
+        //                     ->setType(PayDeductionEntry::TYPE_SSS);
+        //                      $payroll->addDeductionEntry($dedEntry);
+        //                     break;
+        //         case self::DED_PHILHEALTH: $dedEntry = new PayDeductionEntry();
+        //                     $dedEntry->setAmount($deduction)
+        //                     ->setType(PayDeductionEntry::TYPE_PHILHEALTH);
+        //                      $payroll->addDeductionEntry($dedEntry);
+        //                     break;
+        //         case self::DED_PAGIBIG:  $dedEntry = new PayDeductionEntry();
+        //                     $dedEntry->setAmount($deduction)
+        //                     ->setType(PayDeductionEntry::TYPE_PAGIBIG);
+        //                      $payroll->addDeductionEntry($dedEntry);
+        //                     break;
+        //         case self::DED_CASHBOND:  $dedEntry = new PayDeductionEntry();
+        //                     $dedEntry->setAmount($deduction)
+        //                     ->setType(PayDeductionEntry::TYPE_CASHBOND)
+        //                     ->setTaxable(false);
+        //                      $payroll->addDeductionEntry($dedEntry);
+        //                     break;
+        //          case self::DED_LOAN:
+        //                     foreach($deduction as $loan){
+        //                       $dedEntry = new PayDeductionEntry();
+        //                       $dedEntry->setAmount($loan->getPayment())
+        //                        ->setType(PayDeductionEntry::TYPE_COMPANYLOAN)
+        //                        ->setNotes($loan->getLoan()->getType())
+        //                        ->setTaxable(false);
+        //                        $payroll->addDeductionEntry($dedEntry);
+        //                     }
+        //                     break;
+        //     }           
+        // }
 
 
         //Attendance based earnings and deductions
@@ -513,6 +511,8 @@ class PayrollComputation
                 'payroll_period' => $pay_period)
             );
 
+
+
         if($payroll == null){
             $payroll = new PayPayroll();
             $payroll->setPayrollPeriod($pay_period)
@@ -573,6 +573,7 @@ class PayrollComputation
         $employees = $wm->getEmployees(array('pay_sched'=> $schedule, 'enabled' => true, 'employment_status' => array('Probationary','Contractual','Regular')));
         $pay_period = $this->generatePayPeriod($schedule, $date_from, $date_to);
 
+
         //Load payroll configs to object
         if($pay_period->getPayPeriod()->getName() == PayPeriod::TYPE_SEMIMONTHLY){
             $this->config['sched'] = json_decode($config->get('hris_payroll_semimonthly_sched'), true);
@@ -587,10 +588,11 @@ class PayrollComputation
         }
         $employee_payroll = [];
         foreach ($employees as $employee) {
-            $payroll = $this->generateEmployeePayroll($employee, $pay_period);
-            $this->applyTax($payroll);
+            $payroll = $this->generateEmployeePayroll($employee, $pay_period);//trace this
+            //$this->applyTax($payroll);
             $employee_payroll[] = $payroll;
         }
+
 
         return $employee_payroll;
     }

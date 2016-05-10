@@ -454,55 +454,60 @@ class BiometricsController extends CrudController
         $end_sched = $schedule->getEnd();
         $type = $am->checkHolidayType($employee_obj,new DateTime($data['DATE']));
 
-        if ($data['TIME_IN'] != null && $data['TIME_IN'] != 'null') 
-        {
-            $new_in = new DateTime($data['TIME_IN']);
-            $time_in = (strtotime($new_in->format('g:i A')) - strtotime($start_sched)) / 60;
-        }
-
-        if ($data['TIME_OUT'] != null && $data['TIME_OUT'] != 'null') 
-        {
-            $new_out = new DateTime($data['TIME_OUT']);
-            $time_out = (strtotime($new_out->format('g:i A')) - strtotime($end_sched)) / 60;
-        }
-
-        if(intval($time_in) > 0)
-        {
-            if ($time_in <= $schedule->getGracePeriod())
+        if (isset($data['TIME_IN'])) {
+            //
+            if ($data['TIME_IN'] != null && $data['TIME_IN'] != 'null') 
             {
-                $late = 0;
-            } 
+                $new_in = new DateTime($data['TIME_IN']);
+                $time_in = (strtotime($new_in->format('g:i A')) - strtotime($start_sched)) / 60;
+            }
+
+            if ($data['TIME_OUT'] != null && $data['TIME_OUT'] != 'null') 
+            {
+                $new_out = new DateTime($data['TIME_OUT']);
+                $time_out = (strtotime($new_out->format('g:i A')) - strtotime($end_sched)) / 60;
+            }
+
+            if(intval($time_in) > 0)
+            {
+                if ($time_in <= $schedule->getGracePeriod())
+                {
+                    $late = 0;
+                } 
+                else
+                {
+                    if($time_in >= $schedule->getHalfday())
+                    {
+                        $type = Attendance::STATUS_HALFDAY;
+                    }
+                    $late = $time_in;
+                }
+            }
             else
             {
-                if($time_in >= $schedule->getHalfday())
-                {
-                    $type = Attendance::STATUS_HALFDAY;
-                }
-                $late = $time_in;
+                $late = 0;
             }
-        }
-        else
-        {
-            $late = 0;
-        }
 
-        if($time_out < 0)
-            $to = abs($time_out);
-         else
-             $to = 0;
+            if($time_out < 0)
+                $to = abs($time_out);
+             else
+                 $to = 0;
 
-        if ($value == "late") 
-        {
-            return $late;
+            if ($value == "late") 
+            {
+                return $late;
+            }
+            elseif ($value == "type")
+            {
+                return $type;
+            }
+            elseif ($value == "undertime")
+            {
+                return $to;
+            }
+            //
         }
-        elseif ($value == "type")
-        {
-            return $type;
-        }
-        elseif ($value == "undertime")
-        {
-            return $to;
-        }
+        
     }
 }
 
