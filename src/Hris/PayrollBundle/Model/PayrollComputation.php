@@ -354,26 +354,26 @@ class PayrollComputation
 
 
         $period = $payroll->getPayrollPeriod()->getPayPeriod();
-        $query = 'SELECT tm FROM HrisPayrollBundle:PayTaxMatrix tm INNER JOIN 
-           HrisPayrollBundle:PayTaxRate tr WITH tm.rate_id = tr.id 
-           WHERE (tr.amount_from <= :salary AND tr.amount_to >= :salary) AND tr.status = :status AND tm.period = :period';
+        // $query = 'SELECT tm FROM HrisPayrollBundle:PayTaxMatrix tm INNER JOIN 
+        //    HrisPayrollBundle:PayTaxRate tr WITH tm.rate_id = tr.id 
+        //    WHERE (tr.amount_from <= :salary AND tr.amount_to >= :salary) AND tr.status = :status AND tm.period = :period';
 
         
-        $qry = $this->em->createQuery($query)
-                ->setParameter('salary', $salary['taxable'] < 0 ? 2 : $salary['taxable'])
-                ->setParameter('status', $code)
-                ->setParameter('period', $period);
-        $tax = $qry->getSingleResult();
+        // $qry = $this->em->createQuery($query)
+        //         ->setParameter('salary', $salary['taxable'] < 0 ? 2 : $salary['taxable'])
+        //         ->setParameter('status', $code)
+        //         ->setParameter('period', $period);
+        // $tax = $qry->getSingleResult();
 
         // print_r($tax);
         // die();
         
-        $base_tax = $tax->getTaxRate()->getTax();
-        $base_amount = $tax->getBaseAmount();
-        $excess = $tax->getTaxRate()->getExcess();
+        $base_tax = 0;
+        $base_amount = 0;
+        $excess = 0;
 
-        $excess_tax = ($salary['taxable'] - $base_amount) * ($excess/100);
-        $computed_tax = $base_tax + $excess_tax;
+        //$excess_tax = ($salary['taxable'] - $base_amount) * ($excess/100);
+        $computed_tax = 0;
 
         $payroll->setTax($computed_tax);
         $payroll->setTotalTaxable($salary['taxable']);
@@ -589,7 +589,7 @@ class PayrollComputation
         $employee_payroll = [];
         foreach ($employees as $employee) {
             $payroll = $this->generateEmployeePayroll($employee, $pay_period);//trace this
-            //$this->applyTax($payroll);
+            $this->applyTax($payroll);
             $employee_payroll[] = $payroll;
         }
 

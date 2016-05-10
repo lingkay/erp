@@ -100,6 +100,12 @@ class LeaveController extends CrudController
                 $params['vp'] = 'false';
             }
         }
+        else
+        {
+            $params['hr'] = 'false';
+            $params['dh'] = 'false';
+            $params['vp'] = 'false';
+        }
 
         return $params;
     }

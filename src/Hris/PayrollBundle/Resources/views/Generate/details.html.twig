@@ -15,10 +15,17 @@
 
                         <h4 class="form-section">Payroll</h4>
                         
-
-                        {{ form.group_text('Employee Name', 'employee', payroll.getEmployee is not null ? payroll.getEmployee.getDisplayName:"", 3, 4,true) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.group_text('Employee Name', 'employee', payroll.getEmployee is not null ? payroll.getEmployee.getDisplayName:"", 4, 6,true) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.group_date_range('daterange', 'Period Cut-Off', 'date_from', 'date_to',payroll.getPayrollPeriod.getStartDate,payroll.getPayrollPeriod.getEndDate, 4, 6,'m/d/Y','Ymd', true) }}
+                            </div>
+                        </div>
                         
-                        {{ form.group_date_range('daterange', 'Period Cut-Off', 'date_from', 'date_to',payroll.getPayrollPeriod.getStartDate,payroll.getPayrollPeriod.getEndDate, 3, 4,'m/d/Y','Ymd', true) }}
+                        <br />
+                        
                         <div class="row">
                             <div class="col-md-12">
                             <table class="table table-bordered table-hover" id="main_table">
@@ -132,7 +139,7 @@
                                         <td></td>
                                     </tr>
 
-                                    <tr>
+                                    {#<tr>
                                         <td><strong>Total Taxable Earnings</strong></td>
                                         <td class="numeric">{{ taxable_earning|number_format(2) }}</td>
                                         <td></td>
@@ -150,7 +157,7 @@
                                     
                                         <td colspan="2"><strong>Non Taxable Deductions</strong></td>
                                         <td></td>
-                                    </tr>
+                                    </tr>#}
                                     <tr class="odd">
                                         <td colspan="2" class="payroll_container" >
                                             <table class="table table-bordered table-hover" >
@@ -216,14 +223,14 @@
                                     </tr>
 
                                    
-                                    <tr>
+                                    {#<tr>
                                         <td><strong>Total Non-Taxable Earnings</strong></td>
                                         <td class="numeric">{{ nontaxable_earning|number_format(2) }}</td>
                                         <td></td>
                                         <td class="numeric">({{ nontaxable_deduction|number_format(2) }})</td>
                                         <td class="numeric"><strong>{{ payroll.getTotalNonTaxable|number_format(2) }}</strong></td>
                                        
-                                    </tr>
+                                    </tr>#}
                                     
                                      <tr>
                                         <td colspan="4"><strong>Total Pay</strong></td>
