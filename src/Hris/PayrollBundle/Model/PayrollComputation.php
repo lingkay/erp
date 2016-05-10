@@ -224,6 +224,7 @@ class PayrollComputation
         
 
         $attendance = $this->getAttendance($employee, $pay_period->getStartDate(), $pay_period->getEndDate());
+
         $daily_rate = $employee->getDailyRate();
         $earnings = ['total' => 0, 'overtime' => 0, 'tardiness'=>0, 'absence' => 0, 'extra' => 0];
         foreach ($attendance as $day) {
@@ -592,6 +593,8 @@ class PayrollComputation
             $this->applyTax($payroll);
             $employee_payroll[] = $payroll;
         }
+        //die();
+        //die to see results
 
 
         return $employee_payroll;

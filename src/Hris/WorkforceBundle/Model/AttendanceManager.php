@@ -37,16 +37,50 @@ class AttendanceManager
     {
         //Change this to be more flexible. currently just checks for sundays. should check an employee's schedule
         //Checks for sundays
-        if($date->format('N') == 7){
+        // if($date->format('N') == 7){
+        //     return false;
+        // }
+        // return true;
+
+        $schedule = $employee->getSchedule();
+        $start_day = date('N', strtotime($schedule->getDayStart()));
+        $end_day = date('N', strtotime($schedule->getDayEnd()));
+
+
+        if ($date->format('N') >= $start_day && $date->format('N') <= $end_day) {
+            return true;
+        } else {
             return false;
         }
-        return true;
+
+
     }
 
     protected function isOnLeave(Employee $employee, DateTime $date)
     {
-        //$employee->getLeaves()->getApprovedLeaves();
-        return false; //for now;
+
+        $leaves = $this->em->getRepository('HrisWorkforceBundle:Leave')->findBy(array('employee' => $employee->getID()));
+            foreach ($leaves as $leave) {
+
+                $l_start = new DateTime($leave->getDateStart()->format('m/d/Y')." 00:00:00");
+                $l_end = new DateTime($leave->getDateEnd()->format('m/d/Y')." 23:59:59");
+                $curr = new DateTime($date->format('m/d/Y')." 00:00:00");
+
+
+                if (($curr >= $l_start) && ($curr <= $l_end)) {
+                    return true;
+                    //echo 'LEAVE'.$leave->getID();
+                }
+                else
+                {
+                    // echo "EMP NAME: ".$employee->getFirstName().'<br />';
+                    // echo 'LEAVE'.$leave->getID().'<br />';
+                    // echo 'LEAVE START: '.$l_start->format('m/d/Y h:i:s').'<br />';
+                    // echo 'LEAVE END: '.$l_end->format('m/d/Y h:i:s').'<br />';
+                    // echo 'CURR DATE: '.$date->format('m/d/Y h:i:s').'<br />'; 
+                    return false;
+                }
+            }     
     }
 
 
