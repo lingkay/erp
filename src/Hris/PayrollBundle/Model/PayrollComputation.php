@@ -89,6 +89,7 @@ class PayrollComputation
     protected function checkDeductionSched($benefit_sched , $sched, $payPeriod){
 
         $payEnd = $payPeriod->getEndDate();
+        //echo "checkDeductionSched function";
 
         // For weekly paid payroll, always deduct on the last pay of the month
         if($payPeriod->getPayPeriod()->getName() == PayPeriod::TYPE_WEEKLY){
@@ -102,12 +103,14 @@ class PayrollComputation
              }
 
         }elseif($payPeriod->getPayPeriod()->getName() == PayPeriod::TYPE_SEMIMONTHLY){
-            
             $curr = new DateTime();
             $end1 = clone $curr;
-            $end1->setDate($end1->format('Y'), $end1->format('m'), $sched['cutoff_end1']);
+            $end1->setDate($end1->format('Y'), $payEnd->format('m'), $sched['cutoff_end1']);
             $end2 = clone $curr;
-            $end2->setDate($end1->format('Y'), $end2->format('m'), $sched['cutoff_end2']);
+            $end2->setDate($end1->format('Y'), $payEnd->format('m'), $sched['cutoff_end2']);
+
+            //what if im generating payroll for the past month?
+
             
             if($end1 > $curr){
                 $end1->modify('-1 month');
@@ -133,7 +136,6 @@ class PayrollComputation
     protected function checkEmployeeBenefit($employee, $benefit)
     {
         $wm = $this->container->get('hris_workforce');
-
         switch ($benefit) {
             case self::DED_SSS:
                 return $wm->hasEmployeeBenefit($employee, Benefit::NAME_SSS);
@@ -166,10 +168,13 @@ class PayrollComputation
         //     return $deductions;
         // }
 
+
         if($this->checkDeductionSched($this->config['sss_sched'], $this->config['sched'], $pay_period) && $this->checkEmployeeBenefit($employee, self::DED_SSS))
             $deductions[self::DED_SSS] = SSSDeduction::getDeductionAmount($employee, $this->em);
+        
         if($this->checkDeductionSched($this->config['philhealth_sched'], $this->config['sched'], $pay_period)  && $this->checkEmployeeBenefit($employee, self::DED_PHILHEALTH))
             $deductions[self::DED_PHILHEALTH] = PhilhealthDeduction::getDeductionAmount($employee, $this->em);
+        
         if($this->checkDeductionSched($this->config['pagibig_sched'], $this->config['sched'], $pay_period) &&  $this->checkEmployeeBenefit($employee, self::DED_PAGIBIG))
             $deductions[self::DED_PAGIBIG] = PagibigDeduction::getDeductionAmount($employee, $this->em);
 
@@ -366,8 +371,7 @@ class PayrollComputation
         //         ->setParameter('period', $period);
         // $tax = $qry->getSingleResult();
 
-        // print_r($tax);
-        // die();
+
         
         $base_tax = 0;
         $base_amount = 0;
@@ -401,43 +405,43 @@ class PayrollComputation
         $this->em->persist($payroll);
         $this->em->flush();
         // Governement Deductions add check here
-        //$deductions = $this->getDeductions($payroll);
-        // foreach ($deductions as $key => $deduction) {
-        //   error_log($key);
-        //     switch ($key) {
-        //         case self::DED_SSS: $dedEntry = new PayDeductionEntry();
-        //                     $dedEntry->setAmount($deduction)
-        //                     ->setType(PayDeductionEntry::TYPE_SSS);
-        //                      $payroll->addDeductionEntry($dedEntry);
-        //                     break;
-        //         case self::DED_PHILHEALTH: $dedEntry = new PayDeductionEntry();
-        //                     $dedEntry->setAmount($deduction)
-        //                     ->setType(PayDeductionEntry::TYPE_PHILHEALTH);
-        //                      $payroll->addDeductionEntry($dedEntry);
-        //                     break;
-        //         case self::DED_PAGIBIG:  $dedEntry = new PayDeductionEntry();
-        //                     $dedEntry->setAmount($deduction)
-        //                     ->setType(PayDeductionEntry::TYPE_PAGIBIG);
-        //                      $payroll->addDeductionEntry($dedEntry);
-        //                     break;
-        //         case self::DED_CASHBOND:  $dedEntry = new PayDeductionEntry();
-        //                     $dedEntry->setAmount($deduction)
-        //                     ->setType(PayDeductionEntry::TYPE_CASHBOND)
-        //                     ->setTaxable(false);
-        //                      $payroll->addDeductionEntry($dedEntry);
-        //                     break;
-        //          case self::DED_LOAN:
-        //                     foreach($deduction as $loan){
-        //                       $dedEntry = new PayDeductionEntry();
-        //                       $dedEntry->setAmount($loan->getPayment())
-        //                        ->setType(PayDeductionEntry::TYPE_COMPANYLOAN)
-        //                        ->setNotes($loan->getLoan()->getType())
-        //                        ->setTaxable(false);
-        //                        $payroll->addDeductionEntry($dedEntry);
-        //                     }
-        //                     break;
-        //     }           
-        // }
+        $deductions = $this->getDeductions($payroll);
+        foreach ($deductions as $key => $deduction) {
+          error_log($key);
+            switch ($key) {
+                case self::DED_SSS: $dedEntry = new PayDeductionEntry();
+                            $dedEntry->setAmount($deduction)
+                            ->setType(PayDeductionEntry::TYPE_SSS);
+                             $payroll->addDeductionEntry($dedEntry);
+                            break;
+                case self::DED_PHILHEALTH: $dedEntry = new PayDeductionEntry();
+                            $dedEntry->setAmount($deduction)
+                            ->setType(PayDeductionEntry::TYPE_PHILHEALTH);
+                             $payroll->addDeductionEntry($dedEntry);
+                            break;
+                case self::DED_PAGIBIG:  $dedEntry = new PayDeductionEntry();
+                            $dedEntry->setAmount($deduction)
+                            ->setType(PayDeductionEntry::TYPE_PAGIBIG);
+                             $payroll->addDeductionEntry($dedEntry);
+                            break;
+                case self::DED_CASHBOND:  $dedEntry = new PayDeductionEntry();
+                            $dedEntry->setAmount($deduction)
+                            ->setType(PayDeductionEntry::TYPE_CASHBOND)
+                            ->setTaxable(false);
+                             $payroll->addDeductionEntry($dedEntry);
+                            break;
+                 case self::DED_LOAN:
+                            foreach($deduction as $loan){
+                              $dedEntry = new PayDeductionEntry();
+                              $dedEntry->setAmount($loan->getPayment())
+                               ->setType(PayDeductionEntry::TYPE_COMPANYLOAN)
+                               ->setNotes($loan->getLoan()->getType())
+                               ->setTaxable(false);
+                               $payroll->addDeductionEntry($dedEntry);
+                            }
+                            break;
+            }           
+        }
 
 
         //Attendance based earnings and deductions
@@ -619,8 +623,6 @@ class PayrollComputation
                 ->setParameter('period', $period);
         $tax = $qry->getSingleResult();
 
-        // print_r($tax);
-        // die();
         
         $base_tax = $tax->getTaxRate()->getTax();
         $base_amount = $tax->getBaseAmount();
