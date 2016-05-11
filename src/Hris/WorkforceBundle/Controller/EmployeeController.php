@@ -948,6 +948,7 @@ class EmployeeController extends CrudController
         $fg = $grid->newFilterGroup();
 
         $qry = "o.enabled != false";
+        $qry = "o.employment_status != 'Resigned'";
 
         return $fg->where($qry); 
     }
