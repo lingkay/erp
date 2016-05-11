@@ -440,7 +440,7 @@ class BiometricsController extends CrudController
     }
 
     private function getValues($value, $employee_obj, $data)
-    {
+    {   
         $new_in = 0;
         $new_out = 0;
         $time_in = 0;
@@ -455,20 +455,40 @@ class BiometricsController extends CrudController
         $type = $am->checkHolidayType($employee_obj,new DateTime($data['DATE']));
 
         if (isset($data['TIME_IN'])) {
-            //
+
+            //FOR TIME-IN
             if ($data['TIME_IN'] != null && $data['TIME_IN'] != 'null') 
             {
                 $new_in = new DateTime($data['TIME_IN']);
                 $time_in = (strtotime($new_in->format('g:i A')) - strtotime($start_sched)) / 60;
             }
-
-            if ($data['TIME_OUT'] != null && $data['TIME_OUT'] != 'null') 
-            {
-                $new_out = new DateTime($data['TIME_OUT']);
-                $time_out = (strtotime($new_out->format('g:i A')) - strtotime($end_sched)) / 60;
+            
+            //COMPUTATION FOR TIME-OUT
+            if ($schedule->getType() == 'semi-flexi' || $schedule->getType() == 'flexi') {
+                //for semi-flexi
+                if ($data['TIME_OUT'] != null && $data['TIME_OUT'] != 'null') 
+                {   
+                    $new_out = new DateTime($data['TIME_OUT']);
+                    //compute [required hours] and calculate for new $end_sched
+                    $required_hours = $schedule->getRequiredHours()*60;
+                    //new end_sched
+                    $start_schedx = new DateTime($start_sched);
+                    $end_sched = $start_schedx->add(new DateInterval('PT'.$required_hours.'M'));
+                    //add condition if end sched less than core end, set end sched to core end
+                    $time_out = (strtotime($new_out->format('g:i A')) - strtotime($end_sched->format('g:i A'))) / 60;
+                }
+            } else {
+                //for fixed
+                if ($data['TIME_OUT'] != null && $data['TIME_OUT'] != 'null') 
+                {   
+                    $new_out = new DateTime($data['TIME_OUT']);
+                    $time_out = (strtotime($new_out->format('g:i A')) - strtotime($end_sched)) / 60;
+                }
             }
 
-            if(intval($time_in) > 0)
+            
+
+            if(intval($time_in) > 0 && ($schedule->getType() != 'flexi'))
             {
                 if ($time_in <= $schedule->getGracePeriod())
                 {
@@ -476,6 +496,7 @@ class BiometricsController extends CrudController
                 } 
                 else
                 {
+                    //getHalfDay is minutes allowed before set as half day
                     if($time_in >= $schedule->getHalfday())
                     {
                         $type = Attendance::STATUS_HALFDAY;
@@ -495,6 +516,7 @@ class BiometricsController extends CrudController
 
             if ($value == "late") 
             {
+                //no late for flexible
                 return $late;
             }
             elseif ($value == "type")
