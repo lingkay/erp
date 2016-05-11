@@ -59,8 +59,11 @@
                                 </div>
                             </div>
                             <br />
-                            {{ form.group_number('Grace Period', 'grace_minutes', object.getGracePeriod, 3, 4, readonly) }}
-                            {{ form.group_number('Minutes Late before marked as Halfday','halfday_minutes', object.getHalfday,3,4,readonly) }}
+                            <div id="graces">
+                                {{ form.group_number('Grace Period', 'grace_minutes', object.getGracePeriod, 3, 4, readonly) }}
+                                {{ form.group_number('Minutes Late before marked as Halfday','halfday_minutes', object.getHalfday,3,4,readonly)}}    
+                            </div>
+                            
                             {{ form.group_select('Day Start','day_start', days_opts, object.getDayStart|default('Monday'),3,4) }}
                             {{ form.group_select('Day End','day_end', days_opts, object.getDayEnd|default('Friday'),3,4) }}
                        
@@ -91,17 +94,20 @@ function update_form()
         $('#flexi').show();
         $('#semi-flexi').hide();
         $('#range').hide();
+        $('#graces').hide();
     }
     else if ($('#cform-schedule_type').val() == "semi-flexi") 
     {
         $('#flexi').hide();
         $('#semi-flexi').show();
         $('#range').show();
+        $('#graces').show();
     }
     else
     {
         $('#flexi').hide();
         $('#semi-flexi').hide();
+        $('#graces').show();
         $('#range').show();
     }
 }
@@ -115,18 +121,21 @@ $(document).ready(function() {
             $('#flexi').show();
             $('#semi-flexi').hide();
             $('#range').hide();
+            $('#graces').hide();
         }
         else if ($(this).val() == "semi-flexi") 
         {
             $('#flexi').hide();
             $('#semi-flexi').show();
             $('#range').show();
+            $('#graces').show();
         }
         else
         {
             $('#flexi').hide();
             $('#semi-flexi').hide();
             $('#range').show();
+            $('#graces').show();
         }
     });
     // set default error and success elements

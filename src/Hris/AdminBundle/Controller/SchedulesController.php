@@ -43,22 +43,26 @@ class SchedulesController extends CrudController
         // $o->setHalfday($data['halfday_minutes']);
         $o->setName($data['name']);
         $this->updateTrackCreate($o, $data, $is_new);
-        
+        // print_r($data);
+        // die();
         
         $o->setDayStart($data['day_start']);
         $o->setDayEnd($data['day_end']);
-        $o->setGracePeriod($data['grace_minutes']);
-        $o->setHalfday($data['halfday_minutes']);
+        
         $o->setType($data['schedule_type']);
 
         if ($data['schedule_type'] == 'flexi') 
         {
             $o->setRequiredHours($data['required_hours']);
-            $o->setStart(null);
-            $o->setEnd(null);
+            $o->setGracePeriod(0);
+            $o->setHalfday(0);
+            $o->setStart(new DateTime());
+            $o->setEnd(new DateTime());
         }
         else
         {
+            $o->setGracePeriod($data['grace_minutes']);
+            $o->setHalfday($data['halfday_minutes']);
             if (isset($data['semi_required_hours'])) 
             {
                 $o->setRequiredHours($data['semi_required_hours']);

@@ -23,10 +23,10 @@ class Schedules
     use HasName;
     use TrackCreate;
 
-    /** @ORM\Column(type="datetime") */
+    /** @ORM\Column(type="datetime", nullable=true) */
     protected $start;
 
-    /** @ORM\Column(type="datetime") */
+    /** @ORM\Column(type="datetime", nullable=true) */
     protected $end;
 
     /** @ORM\Column(type="string", length=10) */
@@ -112,7 +112,12 @@ class Schedules
 
     public function getDisplaySchedule()
     {
-        return $this->start->format('g:i A').' - '.$this->end->format('g:i A');
+        if ($this->type == 'flexi') {
+            return 'N/A';
+        } else {
+            return $this->start->format('g:i A').' - '.$this->end->format('g:i A');    
+        }
+        
     }
 
     public function setGracePeriod($grace)
