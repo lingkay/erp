@@ -156,16 +156,19 @@ class BiometricsController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $date = $request->request->get('DATE');
         $date = new DateTime($date);
+        //for user_create
         $user_obj = $em->getRepository('CatalystUserBundle:User')->findOneBy(array('username' => "admin" ));
+
         $data = array();
         $data['DATE'] = $data_post['DATE'];
+        //get employees with attendance for specific date
         $employee_ids = $this->getEmployeeIDs($date);
         foreach ($employee_ids as $emp_id)
         {
             $employee_obj = $em->getRepository('HrisWorkforceBundle:Employee')->findOneBy(array('id' => $emp_id ));
             if ($employee_obj != null) 
             {
-                //GET FIRST ENTRY IF O 
+                //GET FIRST ENTRY IF OUT (if employee worked overnight)
                 $first_entry = $em->getRepository('HrisBiometricsBundle:BiometricsAttendance')->findOneBy(array('date' => $date, 'employee' => $emp_id), array('checktime' => 'ASC'));
                 if (count($first_entry) > 0 && $first_entry->getCheckType() == "O") 
                 {
@@ -175,7 +178,7 @@ class BiometricsController extends CrudController
                 }
                 else
                 {
-                    //FIRST ENTRY FOR THE DAY IS NOT OUT
+                    //FIRST ENTRY FOR THE DAY IS NOT OUT. PROCEED WITH NORMAL FETCHING
                 }
 
                 //QUERY FOR IN & OUT (LILO)
@@ -204,24 +207,24 @@ class BiometricsController extends CrudController
                             $xCmpTimeIn = new DateTime($time_in_x->getCheckTime());
                             if ($cmpTimeIn != $xCmpTimeIn) 
                             {
-                                //TIME OUT FOUND IS EARLIER .NO OUT MODE. SET LAST CHECKIN AS CHECKIN TIME
+                                //TIME OUT FOUND IS EARLIER .NO C-OUT MODE. SET LAST C-IN AS CHECKIN TIME
                                 $resp = new Response($this->insertAttendanceEntry('normal', $data_post['DATE'], $xTimeIn, $user_obj, $employee_obj, $sTimeOut));
                             }
                             else
                             {
-                                //TIME OUT FOUND IS EARLIER .NO OUT MODE. SET LAST CHECKIN AS CHECKIN TIME
+                                //TIME OUT FOUND IS EARLIER .NO C-OUT MODE. SET LAST C-IN AS CHECKIN TIME
                                 $resp = new Response($this->insertAttendanceEntry('no_out', $data_post['DATE'], $sTimeIn, $user_obj, $employee_obj));
                             }
                         }
                     }
                     else
                     {                                                                                   
-                        //NO CHECKOUT FOUND, QUERY FOR POSSIBLE OTHER TIME IN (FILO)
+                        //NO CHECKOUT FOUND, QUERY FOR POSSIBLE OTHER C-IN (FILO)
                         $time_in_l2 = $em->getRepository('HrisBiometricsBundle:BiometricsAttendance')->findOneBy(array('date' => $date, 'checktype' => 'I', 'employee' => $emp_id), array('checktime' => 'ASC'));
                         if (count($time_in_l2) > 0)
                         {
                             $sTimeIn2 = $time_in_l2->getCheckTime();
-                            //QUERY FOR TIME IN TO BE SET AS OUT
+                            //QUERY FOR TIME IN TO BE SET AS C-OUT
                             $time_out_l2 = $em->getRepository('HrisBiometricsBundle:BiometricsAttendance')->findOneBy(array('date' => $date, 'checktype' => 'I', 'employee' => $emp_id), array('checktime' => 'DESC'));
                             if (count($time_out_l2) > 0) 
                             {
@@ -230,7 +233,6 @@ class BiometricsController extends CrudController
                                 $cmpTimeOut2 = new DateTime($time_out_l2->getCheckTime());
                                 if ($cmpTimeOut2 > $cmpTimeIn2)
                                 {
-                                    //$resp = new Response('p_insert_normal');
                                     $resp = new Response($this->insertAttendanceEntry('normal', $data_post['DATE'], $sTimeIn2, $user_obj, $employee_obj, $sTimeOut2));
                                 }
                                 else
@@ -245,13 +247,13 @@ class BiometricsController extends CrudController
                         }
                         else
                         {
-
+                            //NO C-IN FOUND
                         }
                     }
                 }
                 else
                 {
-                    //NO TIME IN FOUND
+                    //NO C-IN FOUND
                 }
             }
             else
@@ -325,6 +327,7 @@ class BiometricsController extends CrudController
 
     private function backTrackAttendance($employee_obj, $data)
     {
+        //for those working overnight
         $em = $this->getDoctrine()->getManager();
         $late = $this->getValues('late', $employee_obj, $data);
         $to = $this->getValues('undertime', $employee_obj, $data);
@@ -528,6 +531,11 @@ class BiometricsController extends CrudController
                 return $to;
             }
             //
+        }
+        else
+        {
+            //NO data[TIME_IN] set.
+            //05-10-2016: error when employee's first entry is C-OUT
         }
         
     }
