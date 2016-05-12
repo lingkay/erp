@@ -1,0 +1,144 @@
+<page>
+ {#{% if logo != null %}
+    <img src="{{logo|default('bundles/catalystmedia/img/default.png')}}" style="width:30%; margin-left: 250px;"  />
+    <p style="font-size: 20px; margin-left: 270px; margin-top: 0; margin-bottom: 0;"><b>Payslip</b></p>
+    <br>
+    <hr>
+{% else %}
+    <div style="width: 721px; margin: 0px;" border="1">
+    <img src="bundles/catalystmedia/img/default.png" style="width:40%; margin-left: 50px; margin-top: 5px;" align="left" />
+    <p style="font-size: 20px; margin-left: 50px; margin-top: 25px;"><b>13th Month Pay</b></p>
+    </div>
+    <br>
+    <br>
+    <hr>
+{% endif %}#}
+{#<p style="font-size: 14px;">
+    <b>Employee:&nbsp;{{payroll.getEmployee.getDisplayName}}</b>
+    <br>
+    <b>Year:&nbsp; {{ payroll.getYear }}</b>
+    <br>
+    
+</p>#}
+<p style="font-size: 18px; text-align: left;"><b>QUADRANT ALPHA TECHNOLOGY SOLUTIONS INC.</b>
+<br /><br />PAYROLL
+<br />PERIOD: {{data[0].getPayrollPeriod.getPayPeriodFormatted}}</p>
+<p style="font-size: 14px;">
+    <table class="table table-bordered table-hover" border="1" cellpadding="3"  cellspacing="0" style=" font-size: 14px;" id="main_table">
+        <tr>
+            <th  style="width:160px;padding: 1px; word-wrap:break-word;" >
+                Employee
+            </th>
+            <th  style="width:65px;padding: 1px; word-wrap:break-word;" >
+                Monthly Salary
+            </th>
+            <th  style="width:65px;padding: 1px; word-wrap:break-word;">
+                Basic Salary
+            </th>
+            <th style="width:65px;padding: 1px; word-wrap:break-word;" >
+                Allowance /Others
+            </th>
+            <th style="width:65px;padding: 1px; word-wrap:break-word;" >
+                Overtime
+            </th>
+            <th style="width:60px;padding: 1px; word-wrap:break-word;" >
+                Tardiness /Absences
+            </th>
+            <th style="width:60px;padding: 1px; word-wrap:break-word;" >
+                Gross
+            </th>
+            <th style="width:60px;padding: 1px; word-wrap:break-word;" >
+                Office Loan
+            </th>
+            <th style="width:60px;padding: 1px; word-wrap:break-word;" >
+                SSS
+            </th>
+            <th style="width:60px;padding: 1px; word-wrap:break-word;" >
+                PhilHealth
+            </th>
+            <th style="width:60px;padding: 1px; word-wrap:break-word;" >
+                XXX
+            </th>
+            <th style="width:60px;padding: 1px; word-wrap:break-word;" >
+                W/TAX
+            </th>
+            <th style="width:80px;padding: 1px; word-wrap:break-word;" >
+                NET PAY
+            </th>
+        </tr>
+        
+        {% for d in data%}
+            {% set sss = 0 %}
+            {% set ph = 0 %}
+            {% set pg = 0 %}
+            {% set ot = 0 %}
+            {% set late = 0 %}
+            {% set ut = 0 %}
+
+            {% set gross = 0 %}
+
+            {% set wt = 0 %}
+            {% set allowance = 0 %}
+            {% set ol = 0 %}
+        <tr>
+            {% for d_sss in d.getDeductionEntries %}
+                {% if d_sss.getNotes == 'SSS' %}
+                    {% set sss = sss + d_sss.getAmount %}
+                {% elseif d_sss.getNotes == 'Philhealth' %}
+                    {% set ph = ph + d_sss.getAmount %}
+                {% elseif d_sss.getNotes == 'Pagibig' %}
+                    {% set pg = pg + d_sss.getAmount %}
+                {% elseif d_sss.getType == 'Tardiness' or d_sss.getType == 'Absent' or d_sss.getType == 'Undertime' %}
+                    {% set late = late + d_sss.getAmount %}
+                {% elseif d_sss.getNotes == 'W/TAX' %}
+                    {% set wt = wt + d_sss.getAmount %}
+                {% endif %}
+            {% endfor %}
+            {% for earn in d.getEarningEntries %}
+                {% if earn.getType == 'Overtime' %}
+                    {% set ot = ot + earn.getAmount %}
+                {% elseif earn.getNotes == 'Allowance' %}
+                    {% set allowance = allowance + earn.getAmount %}
+                {% endif %}
+            {% endfor %}
+
+            {% set gross =  (((d.getEmployee.getPayRate() / 2) + allowance + ot) - late) %}
+            <td>{{d.getEmployee.getLastName}}, {{d.getEmployee.getFirstName}}</td>
+            <td style="text-align: right;">{{d.getEmployee.getMonthlyRate|number_format(2)}}</td>
+            <td style="text-align: right;">{{(d.getEmployee.getPayRate() / 2)|number_format(2)}}</td>
+            <td style="text-align: right;">{{allowance|number_format(2)}}</td>
+            <td style="text-align: right;">{{ot|number_format(2)}}</td>
+            <td style="text-align: right;">{{late|number_format(2)}}</td>
+            <td>{{gross|number_format(2)}}</td>
+            <td style="text-align: right;">{{ol|number_format(2)}}</td>
+            <td style="text-align: right;">{{sss|number_format(2)}}</td>
+            <td style="text-align: right;">{{ph|number_format(2)}}</td>
+            <td style="text-align: right;">{{pg|number_format(2)}}</td>
+            <td style="text-align: right;">{{wt|number_format(2)}}</td>
+            <td style="text-align: right;">{{d.getTotal|number_format(2)}}</td>
+        </tr>
+        {% endfor %}
+        
+        
+            
+   
+    </table>    
+
+    
+</p>
+<page_footer>
+    <table class="table table-bordered table-hover" border="0" cellpadding="3"  cellspacing="0" style=" font-size: 14px;" id="mainx_table">
+        <tr>
+            <th style="width: 350px;">Prepared by:</th>
+            <th style="width: 350px;">Approved by:</th>
+        </tr>
+        <tr>
+            <td>Lea Martin</td>
+            <td>Ashley Jorge Co Kehyeng</td>
+        </tr>
+    </table>
+       {#  <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('')}}</b></p></div>
+        <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('')}}</p></div>
+        <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_website|default('')}}</b></p></div> #}
+    </page_footer>
+</page>

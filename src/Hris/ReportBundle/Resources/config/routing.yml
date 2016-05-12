@@ -292,3 +292,7 @@ hris_report_payroll_grid:
 hris_report_payroll_print:
     pattern:  /payroll/print
     defaults: { _controller: HrisReportBundle:PayrollReport:printPay }
+
+hris_report_payroll_print_rep:
+    pattern:  /payroll/print_rep
+    defaults: { _controller: HrisReportBundle:PayrollReport:printReport }

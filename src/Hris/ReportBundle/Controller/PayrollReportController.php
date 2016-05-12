@@ -534,4 +534,39 @@ class PayrollReportController extends CrudController
         }
         return $attend;
     }
+
+    public function printReportAction()
+    {
+        $twig = "HrisReportBundle:Payroll:pdf.html.twig";
+        $em = $this->getDoctrine()->getManager();
+        $conf = $this->get('catalyst_configuration');
+        $media = $this->get('catalyst_media');
+
+
+        //$params = $this->padDetailsParam($id);
+        // $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
+        // $params['company_website'] = $conf->get('hris_com_info_website');
+        // $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+        
+        if ($conf->get('hris_com_logo') != '') 
+        {
+            $path = $media->getUpload($conf->get('hris_com_logo'));
+
+            $str = $path->getURL();
+            $str = parse_url($str, PHP_URL_PATH);
+            $str = ltrim($str, '/');
+
+            $params['logo'] = $str;
+        }
+        else
+        {
+            $params['logo'] = '';
+        }
+        $params['data'] = $this->getCSVdata(null);
+
+        $pdf = $this->get('catalyst_pdf');
+        $pdf->newPdf('page_payroll');
+        $html = $this->render($twig, $params);
+        return $pdf->printPdf($html->getContent());
+    }
 }
