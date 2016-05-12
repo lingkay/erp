@@ -474,8 +474,9 @@ class BiometricsController extends CrudController
                     $new_out = new DateTime($data['TIME_OUT']);
                     //compute [required hours] and calculate for new $end_sched
                     $required_hours = $schedule->getRequiredHours()*60;
-                    //new end_sched
-                    $start_schedx = new DateTime($start_sched);
+                    //start sched should be c-in time
+                    $start_schedx = new DateTime($data['TIME_IN']);
+                    //new end_sched based from c-in time
                     $end_sched = $start_schedx->add(new DateInterval('PT'.$required_hours.'M'));
                     //add condition if end sched less than core end, set end sched to core end
                     $time_out = (strtotime($new_out->format('g:i A')) - strtotime($end_sched->format('g:i A'))) / 60;
