@@ -227,10 +227,11 @@ class PayrollComputation
         $attendance = $this->getAttendance($employee, $pay_period->getStartDate(), $pay_period->getEndDate());
 
         $daily_rate = $employee->getDailyRate();
-        $earnings = ['total' => 0, 'overtime' => 0, 'tardiness'=>0, 'absence' => 0, 'extra' => 0];
+        $earnings = ['total' => 0, 'overtime' => 0, 'tardiness'=>0, 'absence' => 0, 'extra' => 0, 'undertime' => 0]; //add undertime
         foreach ($attendance as $day) {
             $final_rate = 0;
             $tardiness = 0;
+            $undertime = 0;
             $overtime = 0;
             $holiday_pay = 0;
             $absence = 0;
@@ -300,7 +301,8 @@ class PayrollComputation
 
                 $final_rate = $daily_rate * $multiplier;
                 $tardiness = $this->getMinuteRate($final_rate, $day->getLate());
-
+                $undertime = $this->getMinuteRate($final_rate, $day->getUndertime());
+                
                 if($extra){
                     $holiday_pay = $final_rate;
                 }
@@ -316,6 +318,7 @@ class PayrollComputation
             $earnings['overtime'] += $overtime;
             $earnings['absence'] += $absence;
             $earnings['extra'] += $holiday_pay;
+            $earnings['undertime'] += $undertime;
             //$earnings['nightshift'] += $nightshift;
         }
 
@@ -454,6 +457,12 @@ class PayrollComputation
                 case 'tardiness': $entry = new PayDeductionEntry();
                              $entry->setAmount($earning)
                             ->setType(PayDeductionEntry::TYPE_TARDINESS);
+                            $payroll->addDeductionEntry($entry);
+                            break;
+
+                case 'undertime': $entry = new PayDeductionEntry();
+                             $entry->setAmount($earning)
+                            ->setType(PayDeductionEntry::TYPE_UNDERTIME);
                             $payroll->addDeductionEntry($entry);
                             break;
 
