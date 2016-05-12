@@ -29,6 +29,9 @@ class PayDeductionEntry
     const TYPE_CASHBOND = "Cashbond";
     const TYPE_ABSENT = "Absent";
     const TYPE_OTHERS = "Others";
+
+    const TYPE_OFFICE_LOAN = "Office Loan";
+    const TYPE_WITHHOLDING_TAX = "Withhtolding Tax";
     
     /** @ORM\Column(type="decimal", precision=10, scale=2) */
     protected $amount;
