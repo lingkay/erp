@@ -307,7 +307,7 @@ class PayrollComputation
                     $holiday_pay = $final_rate;
                 }
                 if($ot_threshold != null && $day->getOvertime() >= $ot_threshold){
-                    $overtime = $ot_multipler * $this->getMinuteRate($final_rate, $day->getOvertime());
+                    $overtime = $ot_multipler * $this->getMinuteRate($final_rate, ($day->getOvertime()*60));
                 }
                 //$nightshift = 1.1 * $this->getMinuteRate($final_rate, $day->getNightshit());
 
