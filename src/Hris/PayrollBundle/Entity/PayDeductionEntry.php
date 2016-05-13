@@ -30,8 +30,10 @@ class PayDeductionEntry
     const TYPE_ABSENT = "Absent";
     const TYPE_OTHERS = "Others";
 
+    //To be added on generated pay slip
     const TYPE_OFFICE_LOAN = "Office Loan";
-    const TYPE_WITHHOLDING_TAX = "Withhtolding Tax";
+    const TYPE_WITHHOLDING_TAX = "Withholding Tax";
+    const TYPE_ATTENDANCE_ADJ_DED = "Attendance Adj. Deduction";
     
     /** @ORM\Column(type="decimal", precision=10, scale=2) */
     protected $amount;

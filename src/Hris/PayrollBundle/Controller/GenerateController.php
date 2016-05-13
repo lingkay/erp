@@ -164,6 +164,8 @@ class GenerateController extends BaseController
         $params['date_from'] = $date_from;
         $params['date_to'] = $date_to;
 
+        
+
         $settings = $this->get('hris_settings');
         $payroll = $this->get('hris_payroll');
 
@@ -225,6 +227,9 @@ class GenerateController extends BaseController
         
         $params = $this->getViewParams('List');
         $params['payroll'] = $pm->getPayPayroll($id);
+
+        $params['deduction_opts'] = array(PayDeductionEntry::TYPE_OFFICE_LOAN => PayDeductionEntry::TYPE_OFFICE_LOAN, PayDeductionEntry::TYPE_WITHHOLDING_TAX => PayDeductionEntry::TYPE_WITHHOLDING_TAX, PayDeductionEntry::TYPE_ATTENDANCE_ADJ_DED => PayDeductionEntry::TYPE_ATTENDANCE_ADJ_DED, PayDeductionEntry::TYPE_SSS => PayDeductionEntry::TYPE_SSS, PayDeductionEntry::TYPE_PHILHEALTH => PayDeductionEntry::TYPE_PHILHEALTH, PayDeductionEntry::TYPE_PAGIBIG => PayDeductionEntry::TYPE_PAGIBIG);
+        $params['earning_opts'] = array();
         
         $params['taxable_earning'] = 0;
         $params['nontaxable_earning'] = 0;

@@ -314,7 +314,8 @@
                 <form id="deduction-form">
                 <div class="row form-horizontal form">
                     <div class="form-body">
-                        {{ form.group_textnew('Deduction Type', 'earning','',3,6,{})}}
+                        {#{{{ form.group_textnew('Deduction Type', 'earning','',3,6,{})}}#}
+                        {{ form.group_select('Deduction Type', 'earning',deduction_opts,'',3,6)}}
                         {{ form.group_number('Amount', 'deduction_amount','',3,6)}}
                         {{ form.group_select('Is Taxable', 'is_taxable',is_taxable,'',3,3)}}
                     </div>
