@@ -13,7 +13,187 @@
 		<br>
 		<hr>
 	{% endif %}
- #}<p style="font-size: 14px;">
+ #}
+<table>
+    <tr>
+        <th colspan="2" style="width: 400px;"><img src="{{logo|default('bundles/catalystmedia/img/default.png')}}" style="width:30%; height: 90px; width: 400px;"  /></th>
+    </tr>
+</table>
+<br />
+<p style="font-size: 14px; margin-left: 25px;">
+    <b>Employee:</b>&nbsp;{{payroll.getEmployee.getDisplayName}}
+    <br>
+    <b>Pay Period:</b>&nbsp;{{payroll.getPayrollPeriod.getStartDate|date('m/d/Y') }} - {{ payroll.getPayrollPeriod.getEndDate|date('m/d/Y') }}
+    
+</p>
+
+<table class="table table-bordered table-hover" style="font-size: 14px; margin-left: 25px;" id="main_table">
+        <tr>
+            <th colspan="2" style="width:300px" >
+                Earnings
+            </th>
+        </tr>
+        <tr class="odd">
+            <td colspan="2" class="payroll_container" style="vertical-align:top" >
+                <table class="table table-bordered table-hover" >
+                    <tr>
+                        <td style="width: 200px;" >BASIC PAY</td>
+                        <td style="text-align:right; width:100px">{{ earnings['Gross Pay']|number_format(2) }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">OVERTIME PAY/ OTHERS</td>
+                        <td style="text-align:right">{{ earnings['Overtime']|number_format(2) }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">ECOLA</td>
+                        <td style="text-align:right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">ABSENCES</td>
+                        <td style="text-align:right">({{ deductions['Absent'] is defined ? deductions['Absent']|number_format(2) : ' - '}})</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">TARDINESS</td>
+                        <td style="text-align:right">({{ deductions['Tardiness'] is defined ? deductions['Tardiness']|number_format(2) : ' - ' }})</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">UNDERTIME</td>
+                        <td style="text-align:right">({{ deductions['Undertime'] is defined ? deductions['Undertime']|number_format(2) : ' - ' }})</td>
+                    </tr>
+                    {#{% if earnings['Incentive'] is defined %}
+                    {% for i in earnings['Incentive'] %}
+                        <tr>
+                            <td>Incentive [{{ i.getNotes }}]</td>
+                            <td style="text-align:right">{{ i.getAmount|number_format(2) }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% endif %}#}
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 200px;"><strong>GROSS PAY</strong></td>
+            <td style="text-align:right">{{ taxable_earning|number_format(2) }}</td>
+            <!-- <td style="text-align:right">({{ taxable_deduction|number_format(2) }})</td>
+            <td style="text-align:right"><strong>{{ payroll.getTotalTaxable|number_format(2) }}</strong></td> -->
+           
+        </tr>
+        {#<tr>
+            <td colspan="2" class="payroll_container" style="vertical-align:top" >
+                <table>
+                    <tr>
+                        <td style="width: 200px;">Reimbursements</td>
+                        <td style="text-align:right; width: 100px;">{{ earnings['Reimbursement'] is defined ? earnings['Reimbursement']|number_format(2) : '0.00' }}</td>
+                    </tr>
+                  
+                </table>
+
+            </td>
+        </tr>#}
+        {#<tr>
+            <td style="width: 200px;"><strong>Total Non-Taxable Earnings</strong></td>
+            <td style="text-align:right">{{ nontaxable_earning|number_format(2) }}</td>
+        </tr>#}
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <th colspan="2" style="width:300px">
+                Deductions
+            </th>
+        </tr>
+        {#<tr class="odd">
+            <td colspan="2"><strong>Taxable Deductions</strong></td>
+        
+            
+        </tr>#}
+        <tr>
+            <td colspan="2" class="payroll_container" style="vertical-align:top" >
+                <table class="table table-bordered table-hover" >
+                    {#<tr>
+                        <td style="width: 200px;">Absences</td>
+                        <td style="text-align:right; width: 100px">{{ deductions['Absent'] is defined ? deductions['Absent']|number_format(2) : '0.00'}}</td>
+                    </tr>
+                    <tr>
+                       <td>Tardiness</td>
+                        <td style="text-align:right">{{ deductions['Tardiness'] is defined ? deductions['Tardiness']|number_format(2) : '0.00' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Undertime</td>
+                        <td style="text-align:right">{{ deductions['Undertime'] is defined ? deductions['Undertime']|number_format(2) : '0.00' }}</td>
+                    </tr>#}
+                    <tr>
+                        <td style="width: 200px;">W/ TAX</td>
+                        <td style="text-align:right; width:100px">{{ payroll.getTax|number_format(2) }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">SSS PREMIUM</td>
+                        <td style="text-align:right">{{ deductions['SSS'] is defined ? deductions['SSS']|number_format(2) : '0.00' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">PHIL. HELATH</td>
+                        <td style="text-align:right">{{ deductions['Philhealth'] is defined ? deductions['Philhealth']|number_format(2) : '0.00' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">PAG IBIG</td>
+                        <td style="text-align:right">{{ deductions['Pagibig'] is defined ? deductions['Pagibig']|number_format(2) : '0.00' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">PAG IBIG LOAN</td>
+                        <td style="text-align:right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">OFFICE LOAN</td>
+                        <td style="text-align:right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px;">BAL. VALE</td>
+                        <td style="text-align:right">0.00</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        {#<tr>
+<!--             <td style="width: 200px;"><strong>Total Taxable Earnings</strong></td>
+            <td style="text-align:right">{{ taxable_earning|number_format(2) }}</td> -->
+            <td style="text-align:right">({{ taxable_deduction|number_format(2) }})ssss</td>
+            <td style="text-align:right"><strong>{{ payroll.getTotalTaxable|number_format(2) }}</strong></td>
+           
+        </tr>#}
+         <tr>
+            <td><strong>Witholding Tax</strong></td>
+            <td style="text-align:right"><strong>{{ payroll.getTax|number_format(2) }}</strong></td>
+        </tr>
+        <tr class="odd">
+            <td colspan="2" class="payroll_container" style="vertical-align:top">
+                <table class="table table-bordered table-hover" >
+                    {% if deductions['Loan'] is defined %}
+                     {% for l in deductions['Loan'] %}
+                        <tr>
+                            <td style="width: 200px;">Loan Payment [{{ l.getNotes }}]</td>
+                            <td style="text-align:right;  width: 100px;">{{ l.getAmount|number_format(2) }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+            </td>
+        </tr>
+        {#<tr>
+            
+            <td style="width: 200px;"></td>
+            <td style="text-align:right">({{ nontaxable_deduction|number_format(2) }})</td>
+            <td style="text-align:right"><strong>{{ payroll.getTotalNonTaxable|number_format(2) }}</strong></td>    
+        </tr>#}
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Total Pay</strong></td>
+            <td style="text-align:right"><strong>{{ payroll.getTotal|number_format(2) }}</strong></td>
+        </tr>
+    </table>    
+
+ {#<p style="font-size: 14px;">
 	<b>Employee:</b>&nbsp;{{payroll.getEmployee.getDisplayName}}
 	<br>
 	<br>
@@ -21,143 +201,8 @@
 	
 </p>
 <p style="font-size: 14px;">
-	<table class="table table-bordered table-hover" style="border: 1px solid black; border-collapse: collapse; font-size: 12px;" id="main_table">
-        <tr>
-            <th colspan="2" style="width:300px" >
-                Earnings
-            </th>
-            <th colspan="2" style="width:300px">
-                Deductions
-            </th>
-            <th  style="text-align: right" >
-                Total
-            </th>
-
-        </tr>
-     
-            <tr class="odd">
-                <td colspan="2" ><strong>Taxable Earnings</strong></td>
-            
-                <td colspan="2"><strong>Taxable Deductions</strong></td>
-                <td></td>
-            </tr>
-            <tr class="odd">
-                <td colspan="2" class="payroll_container" style="vertical-align:top" >
-                    <table class="table table-bordered table-hover" >
-                        <tr>
-                            <td style="width: 200px;" >Base Pay</td>
-                            <td style="text-align:right; width:100px">{{ earnings['Gross Pay']|number_format(2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 200px;">Overtime</td>
-                            <td style="text-align:right">{{ earnings['Overtime']|number_format(2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 200px;">Holidays</td>
-                            <td style="text-align:right">{{ earnings['Holiday']|number_format(2) }}</td>
-                        </tr>
-                        {% if earnings['Incentive'] is defined %}
-                        {% for i in earnings['Incentive'] %}
-                            <tr>
-                                <td>Incentive [{{ i.getNotes }}]</td>
-                                <td style="text-align:right">{{ i.getAmount|number_format(2) }}</td>
-                            </tr>
-                        {% endfor %}
-                        {% endif %}
-                    </table>
-
-                </td>
-            
-                <td colspan="2" class="payroll_container" style="vertical-align:top" >
-                    <table class="table table-bordered table-hover" >
-                        <tr>
-                            <td style="width: 200px;">Absences</td>
-                            <td style="text-align:right; width: 100px">{{ deductions['Absent'] is defined ? deductions['Absent']|number_format(2) : '0.00'}}</td>
-                        </tr>
-                        <tr>
-                           <td>Tardiness</td>
-                            <td style="text-align:right">{{ deductions['Tardiness'] is defined ? deductions['Tardiness']|number_format(2) : '0.00' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Undertime</td>
-                            <td style="text-align:right">{{ deductions['Undertime'] is defined ? deductions['Undertime']|number_format(2) : '0.00' }}</td>
-                        </tr>
-                         <tr>
-                            <td>SSS Premium</td>
-                            <td style="text-align:right">{{ deductions['SSS'] is defined ? deductions['SSS']|number_format(2) : '0.00' }}</td>
-                        </tr>
-                         <tr>
-                            <td>Philhealth</td>
-                            <td style="text-align:right">{{ deductions['Philhealth'] is defined ? deductions['Philhealth']|number_format(2) : '0.00' }}</td>
-                        </tr>
-                         <tr>
-                            <td>Pagibig</td>
-                            <td style="text-align:right">{{ deductions['Pagibig'] is defined ? deductions['Pagibig']|number_format(2) : '0.00' }}</td>
-                        </tr>
-                       
-                    </table>
-                </td>
-                <td></td>
-            </tr>
-
-            <tr>
-                <td style="width: 200px;"><strong>Total Taxable Earnings</strong></td>
-                <td style="text-align:right">{{ taxable_earning|number_format(2) }}</td>
-                <td></td>
-                <td style="text-align:right">({{ taxable_deduction|number_format(2) }})</td>
-                <td style="text-align:right"><strong>{{ payroll.getTotalTaxable|number_format(2) }}</strong></td>
-               
-            </tr>
-             <tr>
-                <td colspan="4"><strong>Witholding Tax</strong></td>
-                <td style="text-align:right"><strong>{{ payroll.getTax|number_format(2) }}</strong></td>
-            </tr>
-
-
-            <tr class="odd">
-                <td colspan="2" class="payroll_container" style="vertical-align:top" >
-                    <table class="table table-bordered table-hover" >
-                        <tr>
-                            <td style="width: 200px;">Reimbursements</td>
-                            <td style="text-align:right; width: 100px;">{{ earnings['Reimbursement'] is defined ? earnings['Reimbursement']|number_format(2) : '0.00' }}</td>
-                        </tr>
-                      
-                    </table>
-
-                </td>
-            
-                <td colspan="2" class="payroll_container" style="vertical-align:top">
-                    <table class="table table-bordered table-hover" >
-                        {% if deductions['Loan'] is defined %}
-                         {% for l in deductions['Loan'] %}
-                            <tr>
-                                <td style="width: 200px;">Loan Payment [{{ l.getNotes }}]</td>
-                                <td style="text-align:right;  width: 100px;">{{ l.getAmount|number_format(2) }}</td>
-                            </tr>
-                        {% endfor %}
-                        {% endif %}
-                    </table>
-                </td>
-                <td></td>
-            </tr>
-
-           
-            <tr>
-                <td style="width: 200px;"><strong>Total Non-Taxable Earnings</strong></td>
-                <td style="text-align:right">{{ nontaxable_earning|number_format(2) }}</td>
-                <td style="width: 200px;"></td>
-                <td style="text-align:right">({{ nontaxable_deduction|number_format(2) }})</td>
-                <td style="text-align:right"><strong>{{ payroll.getTotalNonTaxable|number_format(2) }}</strong></td>
-               
-            </tr>
-            
-             <tr>
-                <td colspan="4"><strong>Total Pay</strong></td>
-                <td style="text-align:right"><strong>{{ payroll.getTotal|number_format(2) }}</strong></td>
-            </tr>
-   
-    </table>    
-</p>
+	
+</p>#}
 <page_footer>
 	   {#  <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('')}}</b></p></div>
 	    <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('')}}</p></div>

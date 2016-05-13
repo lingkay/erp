@@ -212,7 +212,7 @@ class GenerateController extends BaseController
 
 
         $pdf = $this->get('catalyst_pdf');
-        $pdf->newPdf('A4');
+        $pdf->newPdf('payslip');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());
    
@@ -243,6 +243,10 @@ class GenerateController extends BaseController
         }
 
         foreach ($params['payroll']->getDeductionEntries() as $entry) {
+
+            if ($entry->getType() == PayDeductionEntry::TYPE_UNDERTIME || $entry->getType() == PayDeductionEntry::TYPE_TARDINESS || $entry->getType() == PayDeductionEntry::TYPE_ABSENT) {
+                $params['taxable_earning'] -= $entry->getAmount();
+            }
 
             if($entry->getType() == PayDeductionEntry::TYPE_COMPANYLOAN || $entry->getType() == PayDeductionEntry::TYPE_OTHERS)
                 $params['deductions'][$entry->getType()][] = $entry;
