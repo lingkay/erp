@@ -1,5 +1,5 @@
 PATH=/usr/bin/php
-* * * * * php app/console catalyst:payroll:generate
+* * * * * php app/console gist:payroll:generate
 59 23 * * * php app/console hris:workforce:attendance
 00 04 * * * php app/console hris:admin:events
 00 04 * * * php app/console hris:workforce:check-appraisals

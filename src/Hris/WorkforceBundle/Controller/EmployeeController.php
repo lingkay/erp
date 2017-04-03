@@ -2,8 +2,8 @@
 
 namespace Hris\WorkforceBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
@@ -11,10 +11,10 @@ use Hris\WorkforceBundle\Entity\Employee;
 use Hris\WorkforceBundle\Entity\EmployeeChecklist;
 use Hris\WorkforceBundle\Entity\EmployeeBenefits;
 use Hris\WorkforceBundle\Entity\EmployeeLeaves;
-use Catalyst\ContactBundle\Entity\Address;
-use Catalyst\UserBundle\Entity\User;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\ContactBundle\Template\Controller\HasPhones;
+use Gist\ContactBundle\Entity\Address;
+use Gist\UserBundle\Entity\User;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\ContactBundle\Template\Controller\HasPhones;
 
 use DateTime;
 
@@ -48,7 +48,7 @@ class EmployeeController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Employee Name', 'getDisplayName', 'last_name'),
             $grid->newColumn('Job Title', 'getName', 'name','j'),
@@ -60,7 +60,7 @@ class EmployeeController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('j', 'job_title', 'getJobTitle'),
             $grid->newJoin('d', 'department', 'getDepartment'),
@@ -266,7 +266,7 @@ class EmployeeController extends CrudController
         $profile = $o->getProfile();
         $em = $this->getDoctrine()->getManager();
         $settings = $this->get('hris_settings');
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $profile->setSss($data['sss']);
         $profile->setTin($data['tin']);
@@ -339,7 +339,7 @@ class EmployeeController extends CrudController
     protected function updateAddress($o,$data,$is_new)
     {
         $em = $this->getDoctrine()->getManager();
-        $contact = $this->get('catalyst_contact');
+        $contact = $this->get('gist_contact');
 
         if($data['address_id'] == 0 || $data['address_id'] == ""){
             $address = $contact->newAddress();
@@ -392,7 +392,7 @@ class EmployeeController extends CrudController
     protected function sendRegistrationEmail(User $user)
     {
         $em = $this->getDoctrine()->getManager();
-        $config  = $this  ->get('catalyst_configuration');
+        $config  = $this  ->get('gist_configuration');
 
         if ($config->get('hris_com_info_company_name') != null) 
         {
@@ -414,14 +414,14 @@ class EmployeeController extends CrudController
 
         if ($config->get('hris_com_info_company_address') != null) 
         {
-            $company_address = $em->getRepository('CatalystContactBundle:Address')->find($config->get('hris_com_info_company_address'));
+            $company_address = $em->getRepository('GistContactBundle:Address')->find($config->get('hris_com_info_company_address'));
         }
         else
         {
             $company_address = "Unit 102 10th Floor, Legaspi Suites, Salcedo Street, Legaspi Village, Makati City";
         }
 
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
         if ($config->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($config->get('hris_com_logo'));
@@ -801,8 +801,8 @@ class EmployeeController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $twig = "HrisWorkforceBundle:Employee:print201.html.twig";
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_info_company_name') != null) 
         {
             $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
@@ -815,7 +815,7 @@ class EmployeeController extends CrudController
 
         if ($conf->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
         
         if ($conf->get('hris_com_logo') != '') 
@@ -936,14 +936,14 @@ class EmployeeController extends CrudController
         $params['all'] = $data;
         ///////////////////////////////////////////////////////////////////////////
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());
     }
 
     protected function filterGrid(){
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
 
         $fg = $grid->newFilterGroup();
 

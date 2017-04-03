@@ -1,0 +1,10 @@
+parameters:
+#    Gist_log.example.class: Gist\LogBundle\Example
+
+services:
+    Gist_log:
+        class: Gist\LogBundle\Model\LogManager
+        arguments: ["@service_container"]
+#    Gist_log.example:
+#        class: %Gist_log.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

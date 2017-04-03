@@ -2,14 +2,14 @@
 
 namespace Hris\RecruitmentBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Hris\RecruitmentBundle\Entity\ManpowerRequest;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 use DateTime;
 
 class RequisitionController extends CrudController
@@ -38,7 +38,7 @@ class RequisitionController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Date Filed', 'getDateFiled','date_filed'),
             $grid->newColumn('Position Title', 'getName', 'name', 'p'),
@@ -51,7 +51,7 @@ class RequisitionController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('d', 'department', 'getDepartment'),
             $grid->newJoin('u', 'user_create', 'getUserCreate'),
@@ -89,7 +89,7 @@ class RequisitionController extends CrudController
         // die();
         $settings = $this->get('hris_settings');
         $wf = $this->get('hris_workforce');
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
 
 
         $this->updateTrackCreate($o, $data, $is_new);
@@ -216,7 +216,7 @@ class RequisitionController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $settings = $this->get('hris_settings');
         $wf = $this->get('hris_workforce');
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $hr = $settings->getDepartment($config->get('hris_hr_department'));
         
         $pos_name = $obj->getPosition()->getName();
@@ -551,7 +551,7 @@ class RequisitionController extends CrudController
         //params here
         $data = $this->getRequest()->query->all();
         $em = $this->getDoctrine()->getManager();
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
         if ($conf->get('hris_com_info_company_name') != null) 
         {
             $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
@@ -564,13 +564,13 @@ class RequisitionController extends CrudController
 
         if ($conf->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
 
         $params['request'] = $em->getRepository('HrisRecruitmentBundle:ManpowerRequest')->find($id);
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -587,7 +587,7 @@ class RequisitionController extends CrudController
         }
 
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

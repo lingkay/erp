@@ -2,11 +2,11 @@
 
 namespace Hris\AdminBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 // use Hris\AdminBundle\Entity\FormCodes;
 
 class FormCodesController extends CrudController
@@ -42,7 +42,7 @@ class FormCodesController extends CrudController
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
         $params['readonly'] = false;
-        $params['config'] = $this->get('catalyst_configuration');
+        $params['config'] = $this->get('gist_configuration');
 
         return $this->render($twig_file, $params);
     }
@@ -51,7 +51,7 @@ class FormCodesController extends CrudController
     {
         $this->checkAccess('cat_config.edit');
 
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $data = $this->getRequest()->request->all();
         $em = $this->getDoctrine()->getManager();
 

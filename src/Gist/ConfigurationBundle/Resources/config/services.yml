@@ -1,0 +1,11 @@
+#parameters:
+#    Gist_configuration.example.class: Gist\ConfigurationBundle\Example
+
+services:
+    Gist_configuration:
+        class: Gist\ConfigurationBundle\Model\ConfigurationManager
+        arguments: ["@service_container"]
+
+#    Gist_configuration.example:
+#        class: %Gist_configuration.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

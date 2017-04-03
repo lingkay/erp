@@ -3,7 +3,7 @@
 namespace Hris\DashboardBundle\Controller;
 
 // use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Catalyst\TemplateBundle\Model\CrudController as Controller;
+use Gist\TemplateBundle\Model\CrudController as Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Hris\RecruitmentBundle\Entity\ManpowerRequest;
@@ -47,7 +47,7 @@ class JobVacancyController extends Controller
 
     protected function getGridVacancy()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Position Title', 'getName', 'name', 'p'),
             $grid->newColumn('Department', 'getName','name', 'd'),
@@ -57,7 +57,7 @@ class JobVacancyController extends Controller
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('d', 'department', 'getDepartment'),
             $grid->newJoin('p', 'position', 'getPosition')
@@ -66,7 +66,7 @@ class JobVacancyController extends Controller
 
     protected function setupGridVacancy()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $data = $this->getRequest()->query->all();
         $em = $this->getDoctrine()->getManager();
 
@@ -116,7 +116,7 @@ class JobVacancyController extends Controller
         $gl = $this->setupGridVacancy();
         $qry = array();
 
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
         $qry[] = "(o.status = 'Approved')";
         

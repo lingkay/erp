@@ -2,7 +2,7 @@
 
 namespace Hris\RecruitmentBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use DateTime;
@@ -51,7 +51,7 @@ class ChecklistController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Name of Applicant', '', ''),
             $grid->newColumn('Job Title', '', ''),

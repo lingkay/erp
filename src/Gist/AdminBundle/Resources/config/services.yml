@@ -1,0 +1,7 @@
+parameters:
+#    gist_admin.example.class: Gist\AdminBundle\Example
+
+services:
+#    gist_admin.example:
+#        class: %gist_admin.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

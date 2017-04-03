@@ -2,17 +2,17 @@
 
 namespace Hris\ReportBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 use Hris\PayrollBundle\Entity\PayPeriod;
 use Hris\PayrollBundle\Entity\PayEarningEntry as Earn;
 use Hris\PayrollBundle\Entity\PayDeductionEntry as Deduct;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\WorkforceBundle\Entity\Attendance;
 use DateTime;
 use SplFileObject;
@@ -80,7 +80,7 @@ class PayrollReportController extends CrudController
         $gl = $this->setupGridLoader();
         $qry = array();
 
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
 
         if (isset($data['emp_id']) and $data['emp_id'] != NULL) {
@@ -143,7 +143,7 @@ class PayrollReportController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('period', 'payroll_period', 'getPayrollPeriod', 'left'),
             $grid->newJoin('employee', 'employee', 'getEmployee'),
@@ -153,7 +153,7 @@ class PayrollReportController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array( 
             $grid->newColumn('Employee', 'getDisplayName', 'last_name','employee'),
             $grid->newColumn('Payroll Period', 'getPayrollPeriod', '','o', array($this,'formatPaySchedule')),
@@ -484,7 +484,7 @@ class PayrollReportController extends CrudController
                 $ot_multipler = 1.3;
                 $ot_threshold = 0;
                 $overtime = 0;
-                $config = $this->container->get('catalyst_configuration');
+                $config = $this->container->get('gist_configuration');
                 $ot_threshold = $config->get('hris_setting_overtime_threshold');
                 $final_rate = $daily_rate * $multiplier;
                 $tardiness = $this->getMinuteRate($final_rate, $day->getLate());
@@ -539,14 +539,14 @@ class PayrollReportController extends CrudController
     {
         $twig = "HrisReportBundle:Payroll:pdf.html.twig";
         $em = $this->getDoctrine()->getManager();
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
 
 
         //$params = $this->padDetailsParam($id);
         // $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
         // $params['company_website'] = $conf->get('hris_com_info_website');
-        // $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+        // $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         
         if ($conf->get('hris_com_logo') != '') 
         {
@@ -564,7 +564,7 @@ class PayrollReportController extends CrudController
         }
         $params['data'] = $this->getCSVdata(null);
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('page_payroll');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

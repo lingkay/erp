@@ -2,8 +2,8 @@
 
 namespace Hris\PayrollBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 
@@ -39,7 +39,7 @@ class PayScheduleController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('p', 'period', 'getPeriod')
         );
@@ -47,7 +47,7 @@ class PayScheduleController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Schedule Name', 'getName', 'name'),
             $grid->newColumn('Payroll Period', 'getName', 'name','p'),

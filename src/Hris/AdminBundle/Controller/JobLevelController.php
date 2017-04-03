@@ -2,12 +2,12 @@
 
 namespace Hris\AdminBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\AdminBundle\Entity\JobLevel;
 
 class JobLevelController extends CrudController
@@ -40,7 +40,7 @@ class JobLevelController extends CrudController
 
 	protected function getGridColumns()
 	{
-		$grid = $this->get('catalyst_grid');
+		$grid = $this->get('gist_grid');
 
 		return array(
 			$grid->newColumn('Job Level','getName','name'),

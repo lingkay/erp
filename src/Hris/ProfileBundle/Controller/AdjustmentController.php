@@ -2,8 +2,8 @@
 
 namespace Hris\ProfileBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,9 +11,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Doctrine\ORM\EntityManager;
 
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use Hris\WorkforceBundle\Entity\Attendance;
 
@@ -81,7 +81,7 @@ class AdjustmentController extends CrudController
     protected function updateAttendance($o,$data,$is_new)
     {
         $setting = $this->get('hris_settings');
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
         $adj_in = new DateTime($data['adj_time_in']);
         $adj_out = new DateTime($data['adj_time_out']);
 
@@ -179,7 +179,7 @@ class AdjustmentController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $am = $this->get('hris_attendance');
         $payroll = $this->get('hris_payroll');
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
         $employee = $am->getEmployee($id);
         $date = new DateTime($date);
         $attendance = $em->getRepository('HrisWorkforceBundle:Attendance')
@@ -275,7 +275,7 @@ class AdjustmentController extends CrudController
     protected function hookPostSave($obj, $is_new = false)
     {
         $settings = $this->get('hris_settings');
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         if($obj->getAdjustmentStatus() != null and $obj->getAdjustmentStatus() == Attendance::STATUS_DRAFT)
         {
             $request = 'Attendance Adjustment';

@@ -15,7 +15,7 @@ use Hris\PayrollBundle\Entity\PayPeriod;
 
 use Hris\WorkforceBundle\Entity\Attendance;
 use Hris\AdminBundle\Entity\Benefit;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 
 use DateTime;
 
@@ -52,7 +52,7 @@ class Pay13thMonth
 
     public function generate13thMonthEntity($employee)
     {
-        $config = $this->container->get('catalyst_configuration');
+        $config = $this->container->get('gist_configuration');
         $yrend = $config->get('hris_payroll_weekly_year_end');
         
         $end = new DateTime();
@@ -311,7 +311,7 @@ class Pay13thMonth
     public function generate13th($start,$end,$year)
     {
         $wm = $this->container->get('hris_workforce');
-        $config = $this->container->get('catalyst_configuration');
+        $config = $this->container->get('gist_configuration');
         //$pm = $this->container->get('hris_payroll');
                 
 

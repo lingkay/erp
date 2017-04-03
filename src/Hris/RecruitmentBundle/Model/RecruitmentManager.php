@@ -5,7 +5,7 @@ namespace Hris\RecruitmentBundle\Model;
 use Doctrine\ORM\EntityManager;
 use Hris\WorkforceBundle\Entity\Employee;
 use Hris\WorkforceBundle\Entity\Profile;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 use Hris\RecruitmentBundle\Entity\ManpowerRequest;
 use Hris\RecruitmentBundle\Entity\Application;
 

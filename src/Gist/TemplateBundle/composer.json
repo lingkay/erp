@@ -1,0 +1,30 @@
+{
+    "name": "gist/template-bundle",
+    "type": "symfony-bundle",
+    "description": "Gist TemplateBundle",
+    "keywords": ["Gist Template Bundle"],
+    "homepage": "http://quadrantalpha.com",
+    "license": "closed",
+    "authors": [
+        {
+            "name": "Wally Noveno",
+            "email": "wally@quadrantalpha.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "~2.3",
+        "symfony/twig-bundle": "~2.3",
+        "doctrine/doctrine-bundle": "*",
+        "symfony/yaml": "~2.3"
+    },
+    "autoload": {
+        "psr-4": { "Gist\\TemplateBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
+}

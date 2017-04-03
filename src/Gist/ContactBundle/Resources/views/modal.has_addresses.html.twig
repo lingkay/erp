@@ -1,0 +1,50 @@
+{% import "GistTemplateBundle::form.html.twig" as f %}
+<!-- add address modal -->
+<div id="add-address-modal" class="modal fade" role="dialog">
+    <form id="add-address-form" method="post" action="{{ path('cnt_address_ajax_add') }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Address</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-body">
+                    {% set prefix = 'aa' %}
+                    {{ f.group_text('Unit / Number', 'name', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('Street Address', 'street', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('City', 'city', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('State', 'state', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('Country', 'country', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('Latitude', 'latitude', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('Longitude', 'longitude', '', 3, 8, false, prefix) }}
+                    <div class="form-group">
+                        <label class="col-md-3"></label>
+                        <div class="col-md-5">
+                            {{ f.checkbox('is_primary', 1, 'Set as Primary Address', '', '')}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="add-address-submit" type="button" class="btn btn-primary">Add Address</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+                        
+<script id="address-template" type="x-tmpl-mustache">
+    {{ f.hidden('address_id[]', '{{id}}') }}
+    {{ f.hidden('is_new_address[]', 'new') }}
+    {{ f.group_text('Unit / Number', 'name[]','{{name}}', 3, 4, true) }}
+    {{ f.group_text('Street Address', 'street[]', '{{street}}', 3, 4, true) }}
+    {{ f.group_text('City', 'city[]', '{{city}}', 3, 4, true) }}
+    {{ f.group_text('State', 'state[]', '{{state}}', 3, 4, true) }}
+    {{ f.group_text('Country', 'country[]', '{{country}}', 3, 4, true) }}
+    {{ f.group_text('Latitude', 'latitude[]', '{{latitude}}', 3, 4, true) }}
+    {{ f.group_text('Longitude', 'longitude[]', '{{longitude}}', 3, 4, true) }}
+
+    <hr>
+</script>

@@ -2,16 +2,16 @@
 
 namespace Hris\BiometricsBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 use Hris\WorkforceBundle\Entity\Attendance;
 use Hris\BiometricsBundle\Entity\AuthToken;
 use Hris\BiometricsBundle\Entity\BiometricsAttendance;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Symfony\Component\HttpFoundation\Request;
 use DateTime;
 use DateInterval;
@@ -49,12 +49,12 @@ class BiometricsController extends CrudController
         $this->checkAccess($this->route_prefix . '.view');
         
         $params = $this->getViewParams('List', 'hris_biometrics_homepage');
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
         $params['username'] = $conf->get('hris_biometrics_username');
         $params['password'] = $conf->get('hris_biometrics_password');
-        $cm = $this->get('catalyst_contact');
+        $cm = $this->get('gist_contact');
         $em = $this->getDoctrine()->getManager();
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         return $this->render('HrisBiometricsBundle:Biometrics:index.html.twig', $params);
     }
@@ -63,8 +63,8 @@ class BiometricsController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
 
         $conf->set('hris_biometrics_username', $data['username']);
         $conf->set('hris_biometrics_password', $data['password']);
@@ -81,7 +81,7 @@ class BiometricsController extends CrudController
         $username = $request->request->get('username');
         $password = $request->request->get('password');
 
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
         $conf_username = $conf->get('hris_biometrics_username');
         $conf_password = $conf->get('hris_biometrics_password');
 
@@ -123,7 +123,7 @@ class BiometricsController extends CrudController
         if ($token_obj != null) 
         {
             $employee_obj = $em->getRepository('HrisWorkforceBundle:Employee')->findOneBy(array('employee_code' => $data['ID'] ));
-            $user_obj = $em->getRepository('CatalystUserBundle:User')->findOneBy(array('username' => "admin" ));
+            $user_obj = $em->getRepository('GistUserBundle:User')->findOneBy(array('username' => "admin" ));
             if ($employee_obj != null) 
             {
                 $bio_att = new BiometricsAttendance();
@@ -157,7 +157,7 @@ class BiometricsController extends CrudController
         $date = $request->request->get('DATE');
         $date = new DateTime($date);
         //for user_create
-        $user_obj = $em->getRepository('CatalystUserBundle:User')->findOneBy(array('username' => "admin" ));
+        $user_obj = $em->getRepository('GistUserBundle:User')->findOneBy(array('username' => "admin" ));
 
         $data = array();
         $data['DATE'] = $data_post['DATE'];
@@ -373,7 +373,7 @@ class BiometricsController extends CrudController
         if ($token_obj != null) 
         {
             $employee_obj = $em->getRepository('HrisWorkforceBundle:Employee')->findOneBy(array('employee_code' => $data['ID'] ));
-            $user_obj = $em->getRepository('CatalystUserBundle:User')->findOneBy(array('username' => "admin" ));
+            $user_obj = $em->getRepository('GistUserBundle:User')->findOneBy(array('username' => "admin" ));
             if ($employee_obj != null) 
             {
                 if ($OPERATION == "backtrack")

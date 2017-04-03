@@ -13,7 +13,7 @@ class PaySettings
     public function __construct($container)
     {
         $this->container = $container;
-        $this->conf = $this->container->get('catalyst_configuration');
+        $this->conf = $this->container->get('gist_configuration');
     }
 
     protected function getLastWeekCutoff()

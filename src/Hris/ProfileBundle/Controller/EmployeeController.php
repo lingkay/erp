@@ -2,8 +2,8 @@
 
 namespace Hris\ProfileBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
@@ -11,12 +11,12 @@ use Doctrine\ORM\EntityManager;
 use Hris\WorkforceBundle\Entity\Employee;
 use Hris\WorkforceBundle\Entity\EmployeeChecklist;
 use Hris\WorkforceBundle\Entity\EmployeeBenefits;
-use Catalyst\ContactBundle\Entity\Address;
-use Catalyst\UserBundle\Entity\User;
+use Gist\ContactBundle\Entity\Address;
+use Gist\UserBundle\Entity\User;
 use Hris\WorkforceBundle\Entity\IncidentReport;
 
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\ContactBundle\Template\Controller\HasPhones;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\ContactBundle\Template\Controller\HasPhones;
 
 use DateTime;
 
@@ -155,7 +155,7 @@ class EmployeeController extends CrudController
         $profile = $o->getProfile();
         $em = $this->getDoctrine()->getManager();
         $settings = $this->get('hris_settings');
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $profile->setSss($data['sss']);
         $profile->setTin($data['tin']);
@@ -192,7 +192,7 @@ class EmployeeController extends CrudController
     protected function updateAddress($o,$data,$is_new)
     {
         $em = $this->getDoctrine()->getManager();
-        $contact = $this->get('catalyst_contact');
+        $contact = $this->get('gist_contact');
 
         if($data['address_id'] == 0 || $data['address_id'] == ""){
             $address = $contact->newAddress();
@@ -295,7 +295,7 @@ class EmployeeController extends CrudController
     protected function padFormParams(&$params, $object = NULL)
     {
         $em = $this->getDoctrine()->getManager();
-        $config = $this  ->get('catalyst_configuration');
+        $config = $this  ->get('gist_configuration');
         $comp_name = $config->get('hris_com_info_company_name');
         $acronym = "";
 

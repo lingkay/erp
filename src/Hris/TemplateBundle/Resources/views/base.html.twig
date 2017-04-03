@@ -1,5 +1,5 @@
-{% import "CatalystTemplateBundle::menu.html.twig" as menu %}
-{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% import "GistTemplateBundle::menu.html.twig" as menu %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
@@ -19,25 +19,25 @@
 <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
 
 {% stylesheets
-    'bundles/catalysttemplate/assets/global/plugins/font-awesome-4.4.0/css/font-awesome.min.css'
-    'bundles/catalysttemplate/assets/global/plugins/simple-line-icons/simple-line-icons.min.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap/css/bootstrap.min.css'
-    'bundles/catalysttemplate/assets/global/plugins/uniform/css/uniform.default.css'
-    'bundles/catalysttemplate/assets/global/plugins/select2/select2.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'
-    'bundles/catalysttemplate/assets/global/css/photobooth.css'
-    'bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css'
-    'bundles/catalysttemplate/assets/global/plugins/fullcalendar-2.3.1/fullcalendar.css'
-    'bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.css'
-    'bundles/catalysttemplate/assets/admin/pages/css/portfolio.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-toastr/toastr.min.css'
-    'bundles/catalysttemplate/assets/global/plugins/dropzone/css/dropzone.css'
-    'bundles/catalysttemplate/assets/global/plugins/jquery.orgchart-master/jquery.orgchart.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-colorpicker/css/colorpicker.css'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-summernote/summernote.css'
+    'bundles/gisttemplate/assets/global/plugins/font-awesome-4.4.0/css/font-awesome.min.css'
+    'bundles/gisttemplate/assets/global/plugins/simple-line-icons/simple-line-icons.min.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap/css/bootstrap.min.css'
+    'bundles/gisttemplate/assets/global/plugins/uniform/css/uniform.default.css'
+    'bundles/gisttemplate/assets/global/plugins/select2/select2.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'
+    'bundles/gisttemplate/assets/global/css/photobooth.css'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css'
+    'bundles/gisttemplate/assets/global/plugins/fullcalendar-2.3.1/fullcalendar.css'
+    'bundles/gisttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.css'
+    'bundles/gisttemplate/assets/admin/pages/css/portfolio.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-toastr/toastr.min.css'
+    'bundles/gisttemplate/assets/global/plugins/dropzone/css/dropzone.css'
+    'bundles/gisttemplate/assets/global/plugins/jquery.orgchart-master/jquery.orgchart.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-colorpicker/css/colorpicker.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-summernote/summernote.css'
     filter='cssrewrite'
 %}
     <link rel="stylesheet" href="{{ asset_url }}" />
@@ -49,12 +49,12 @@
 {% block css %}{% endblock %}
 <!-- BEGIN THEME STYLES -->
 {% stylesheets
-    'bundles/catalysttemplate/assets/global/css/components.css'
-    'bundles/catalysttemplate/assets/global/css/plugins.css'
-    'bundles/catalysttemplate/assets/admin/layout/css/layout.css'
-    'bundles/catalysttemplate/assets/admin/layout/css/themes/default.css'
-    'bundles/catalysttemplate/assets/admin/layout/css/custom.css'
-    'bundles/catalystmedia/css/lightbox.css'
+    'bundles/gisttemplate/assets/global/css/components.css'
+    'bundles/gisttemplate/assets/global/css/plugins.css'
+    'bundles/gisttemplate/assets/admin/layout/css/layout.css'
+    'bundles/gisttemplate/assets/admin/layout/css/themes/default.css'
+    'bundles/gisttemplate/assets/admin/layout/css/custom.css'
+    'bundles/gistmedia/css/lightbox.css'
     filter='cssrewrite'
 %}
     <link rel="stylesheet" href="{{ asset_url }}" />
@@ -63,7 +63,7 @@
  
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="{{ conf.getAll['hris_com_favicon_url'] is defined and conf.getAll['hris_com_favicon_url'] != '' ?conf.getAll['hris_com_favicon_url'] : asset('bundles/hristemplate/images/quadrant-logo.png') }}"/>
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
 
 </head>
 <!-- END HEAD -->
@@ -108,7 +108,7 @@
         <div class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
         </div>
         <!-- END RESPONSIVE MENU TOGGLER -->
-        {% embed "CatalystTemplateBundle::top_nav_menu.html.twig" %}{% endembed %}
+        {% embed "GistTemplateBundle::top_nav_menu.html.twig" %}{% endembed %}
     </div>
     <!-- END HEADER INNER -->
 </div>
@@ -200,7 +200,7 @@
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
     <div class="page-footer-inner">
-         2015 &copy; <img src="{{ asset('bundles/catalysttemplate/assets/global/img/quadrant-logo.png') }}" alt="qa-logo"/>uadrant Alpha
+         2015 &copy; <img src="{{ asset('bundles/gisttemplate/assets/global/img/quadrant-logo.png') }}" alt="qa-logo"/>uadrant Alpha
     </div>
     <div class="page-footer-tools">
         <span class="go-top">
@@ -212,23 +212,23 @@
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/respond.min.js') }}"></script>
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/excanvas.min.js') }}"></script> 
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/respond.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/excanvas.min.js') }}"></script> 
 <![endif]-->
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/jquery-migrate-1.2.1.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-migrate-1.2.1.min.js') }}" type="text/javascript"></script>
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
 
 {% javascripts
-    'bundles/catalysttemplate/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap/js/bootstrap.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery.blockui.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery.cokie.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/uniform/jquery.uniform.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/mustache.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap/js/bootstrap.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery.blockui.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery.cokie.min.js'
+    'bundles/gisttemplate/assets/global/plugins/uniform/jquery.uniform.min.js'
+    'bundles/gisttemplate/assets/global/plugins/mustache.min.js'
 %}
        <script src="{{ asset_url }}" type="text/javascript"></script>
 {% endjavascripts %}
@@ -236,50 +236,50 @@
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 {% javascripts
 
-    'bundles/catalysttemplate/assets/global/scripts/metronic.js'
-    'bundles/catalysttemplate/assets/admin/layout/scripts/layout.js'
-    'bundles/catalysttemplate/assets/global/plugins/select2/select2.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js'
-    'bundles/catalysttemplate/assets/global/scripts/validation.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js'
-    'bundles/catalystnotification/js/notification.js'
-    'bundles/catalysttemplate/assets/global/scripts/template.js'
+    'bundles/gisttemplate/assets/global/scripts/metronic.js'
+    'bundles/gisttemplate/assets/admin/layout/scripts/layout.js'
+    'bundles/gisttemplate/assets/global/plugins/select2/select2.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js'
+    'bundles/gisttemplate/assets/global/scripts/validation.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js'
+    'bundles/gistnotification/js/notification.js'
+    'bundles/gisttemplate/assets/global/scripts/template.js'
 
-    'bundles/catalystcontact/js/catalyst.has_phones.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-typeahead/bootstrap-typeahead.min.js'
-    'bundles/catalystmedia/js/lightbox.min.js'
-    'bundles/catalysttemplate/assets/admin/pages/scripts/components-pickers.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/clockface/js/clockface.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/moment.min.js'
+    'bundles/gistcontact/js/gist.has_phones.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-typeahead/bootstrap-typeahead.min.js'
+    'bundles/gistmedia/js/lightbox.min.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/components-pickers.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'
+    'bundles/gisttemplate/assets/global/plugins/clockface/js/clockface.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/moment.min.js'
 
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootbox/bootbox.min.js'
-    'bundles/catalystmedia/js/catalyst_media.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootbox/bootbox.min.js'
+    'bundles/gistmedia/js/gist_media.js'
 
-    'bundles/catalysttemplate/assets/global/plugins/jquery.orgchart-master/jquery.orgchart.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js'
-    'bundles/catalysttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js'
-    'bundles/catalysttemplate/assets/admin/pages/scripts/portfolio.js'
-    'bundles/catalysttemplate/assets/global/plugins/dropzone/dropzone.js'
-    'bundles/catalysttemplate/assets/admin/pages/scripts/form-dropzone.js'
-    'bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.fnreloadajax.js'
-    'bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.js'
-    'bundles/catalysttemplate/assets/admin/pages/scripts/form-validation.js'
-    'bundles/catalysttemplate/assets/global/plugins/highcharts/highcharts.js'
-    'bundles/catalysttemplate/assets/global/plugins/fullcalendar-2.3.1/lib/moment.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/fullcalendar-2.3.1/fullcalendar.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/moment.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-datepaginator/bootstrap-datepaginator.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-toastr/toastr.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/bootstrap-summernote/summernote.min.js'
-    'bundles/catalysttemplate/assets/global/plugins/photobooth.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery.orgchart-master/jquery.orgchart.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js'
+    'bundles/gisttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/portfolio.js'
+    'bundles/gisttemplate/assets/global/plugins/dropzone/dropzone.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/form-dropzone.js'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.fnreloadajax.js'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/form-validation.js'
+    'bundles/gisttemplate/assets/global/plugins/highcharts/highcharts.js'
+    'bundles/gisttemplate/assets/global/plugins/fullcalendar-2.3.1/lib/moment.min.js'
+    'bundles/gisttemplate/assets/global/plugins/fullcalendar-2.3.1/fullcalendar.min.js'
+    'bundles/gisttemplate/assets/global/plugins/moment.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datepaginator/bootstrap-datepaginator.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-toastr/toastr.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-summernote/summernote.min.js'
+    'bundles/gisttemplate/assets/global/plugins/photobooth.min.js'
 %}
 <script src="{{ asset_url }}" type="text/javascript"></script>
 {% endjavascripts %}

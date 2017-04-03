@@ -1,0 +1,6 @@
+imports:
+    - { resource: gist.yml }
+
+gist_media:
+    upload_storage:
+        base_url: "http://hris/uploads"

@@ -6,39 +6,6 @@
     "autoload": {
         "psr-0": { "": "src/" }
     },
-    "repositories": [ {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/configuration-bundle"
-        },
-        {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/menu-bundle"
-        },
-        {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/dashboard-bundle"
-        },
-        {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/gallery-bundle"
-        },
-        {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/grid-bundle"
-        },
-        {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/log-bundle"
-        },
-        {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/pdf-bundle"
-        },
-        {
-        "type": "vcs",
-        "url": "git@168.235.65.38:/catalyst/chart-bundle"
-        }
-    ],
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.6.*",
@@ -57,15 +24,7 @@
         "symfony/expression-language": "2.6.*@dev",
         "ensepar/html2pdf-bundle" : "~2.0",
         "symfony/event-dispatcher": "2.8.*@dev",
-        "smart-core/accelerator-cache-bundle": "dev-master",
-        "catalyst/configuration-bundle": "0.1.*-dev",
-        "catalyst/menu-bundle": "0.1.x-dev",
-        "catalyst/dashboard-bundle": "0.1.x-dev",
-        "catalyst/gallery-bundle": "0.1.x-dev",
-        "catalyst/grid-bundle": "0.1.x-dev",
-        "catalyst/log-bundle": "0.1.x-dev",
-        "catalyst/pdf-bundle": "0.1.x-dev",
-        "catalyst/chart-bundle": "0.1.x-dev"
+        "smart-core/accelerator-cache-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
@@ -74,7 +33,6 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "SmartCore\\Bundle\\AcceleratorCacheBundle\\Composer\\ScriptHandler::clearCache",
             "php app/console assetic:dump",
             "php app/console cache:clear"
         ],
@@ -84,7 +42,6 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "SmartCore\\Bundle\\AcceleratorCacheBundle\\Composer\\ScriptHandler::clearCache",
             "php app/console assetic:dump",
             "php app/console cache:clear"
         

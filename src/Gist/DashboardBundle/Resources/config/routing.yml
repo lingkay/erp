@@ -1,0 +1,4 @@
+cat_dashboard:
+    pattern: /
+    methods: [GET]
+    defaults: { _controller: GistDashboardBundle:Main:index }

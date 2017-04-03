@@ -2,14 +2,14 @@
 
 namespace Hris\ReportBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 use Hris\WorkforceBundle\Entity\Attendance;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -117,7 +117,7 @@ class TotalExpenseReportController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('employee','employee','getEmployee'),
             $grid->newJoin('period', 'payroll_period', 'getPayrollPeriod'),
@@ -126,7 +126,7 @@ class TotalExpenseReportController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Employee Name','getDisplayName', 'last_name', 'employee'),
             $grid->newColumn('Amount','getID','total_amount','o',array($this,'addContributions')),
@@ -303,8 +303,8 @@ class TotalExpenseReportController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $twig = "HrisReportBundle:TotalExpense:print.html.twig";
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -359,7 +359,7 @@ class TotalExpenseReportController extends CrudController
         $params['year'] = $year;
         
         $params['all'] = $data_array;
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());
@@ -381,7 +381,7 @@ class TotalExpenseReportController extends CrudController
 
     protected function filterTotalExpenseGrid($month = null, $year = null)
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
 
 

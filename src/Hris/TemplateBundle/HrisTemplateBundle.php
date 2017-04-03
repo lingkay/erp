@@ -8,6 +8,6 @@ class HrisTemplateBundle extends Bundle
 {
 	 public function getParent()
     {
-        return 'CatalystTemplateBundle';
+        return 'GistTemplateBundle';
     }
 }

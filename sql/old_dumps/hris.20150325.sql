@@ -143,12 +143,12 @@ CREATE TABLE IF NOT EXISTS `configentry` (
 --
 
 INSERT INTO `configentry` (`id`, `value`) VALUES
-('catalyst_customer_warehouse_default', '2'),
-('catalyst_inventory_restricted_default', '16'),
-('catalyst_product_group_default', '15'),
-('catalyst_service_role_default', '11'),
-('catalyst_super_user_role_default', '4'),
-('catalyst_supplier_warehouse_default', '1');
+('gist_customer_warehouse_default', '2'),
+('gist_inventory_restricted_default', '16'),
+('gist_product_group_default', '15'),
+('gist_service_role_default', '11'),
+('gist_super_user_role_default', '4'),
+('gist_supplier_warehouse_default', '1');
 
 -- --------------------------------------------------------
 

@@ -2,17 +2,17 @@
 
 namespace Hris\WorkforceBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 
 use Doctrine\ORM\EntityManager;
 
 use Hris\WorkforceBundle\Entity\Reimbursement;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use DateTime;
 
@@ -58,7 +58,7 @@ class ReimbursementController extends CrudController
         // die();
 
         $em = $this->getDoctrine()->getManager();
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $this->updateTrackCreate($o,$data,$is_new);
         $date_filed = new DateTime($data['date_filed']);
@@ -127,7 +127,7 @@ class ReimbursementController extends CrudController
 
     protected function hookPostSave($obj, $is_new = false)
     {
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $settings = $this->get('hris_settings');
 
         if($is_new){
@@ -237,7 +237,7 @@ class ReimbursementController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array (
             $grid->newJoin('emp','employee','getEmployee','left'),
         );
@@ -245,7 +245,7 @@ class ReimbursementController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Code', 'getCode', 'code'),
             $grid->newColumn('Date Filed', 'getDateFiled', 'date_filed','o',array($this,'formatDate')),
@@ -272,7 +272,7 @@ class ReimbursementController extends CrudController
     }
 
     protected function filterReimbursementGrid($id = null, $date_from = null, $date_to = null){
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
         $date = new DateTime();
 

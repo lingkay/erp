@@ -1,6 +1,6 @@
 imports:
     - { resource: config.yml }
-    - { resource: catalyst_prod.yml }
+    - { resource: gist_prod.yml }
 #framework:
 #    validation:
 #        cache: apc
@@ -24,6 +24,6 @@ monolog:
         console:
             type:  console
 
-accelerator_cache:
-    host: lilys.qalphalabs.com
-    web_dir: %kernel.root_dir%/../web
+# accelerator_cache:
+#     host: lilys.qalphalabs.com
+#     web_dir: %kernel.root_dir%/../web

@@ -12,7 +12,7 @@ class EventsCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        //Create cron task to run php app/console catalyst:payroll:generate per day
+        //Create cron task to run php app/console gist:payroll:generate per day
         $this->setName('hris:admin:events')
             ->setDescription('Create daily entries for events');
     }
@@ -22,7 +22,7 @@ class EventsCommand extends ContainerAwareCommand
         $evm = $this->getContainer()->get('hris_events');
         $evm->checkForEventsTomorrow();
 
-        $config = $this->getContainer()->get('catalyst_configuration');
+        $config = $this->getContainer()->get('gist_configuration');
         $settings = $this->getContainer()->get('hris_settings');
         $hr_dept = $config->get('hris_hr_department');
         if ($hr_dept != null) 

@@ -1,0 +1,29 @@
+{
+    "name": "gist/notification-bundle",
+    "type": "symfony-bundle",
+    "description": "Gist NotificationBundle",
+    "keywords": ["Gist Notification Bundle"],
+    "license": "closed",
+    "authors": [
+        {
+            "name": "Wally Noveno",
+            "email": "wally.noveno@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4",
+        "symfony/framework-bundle": "~2.6",
+        "symfony/twig-bundle": "~2.3",
+        "doctrine/doctrine-bundle": "*",
+        "symfony/yaml": "~2.3"
+    },
+    "autoload": {
+        "psr-4": { "Gist\\NotificationBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
+}

@@ -1,7 +1,0 @@
-parameters:
-#    catalyst_admin.example.class: Catalyst\AdminBundle\Example
-
-services:
-#    catalyst_admin.example:
-#        class: %catalyst_admin.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]

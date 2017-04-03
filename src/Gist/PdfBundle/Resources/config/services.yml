@@ -1,0 +1,7 @@
+parameters:
+#    Gist_purchasing.example.class: Gist\PdfBundle\Example
+
+services:
+    Gist_pdf:
+        class: Gist\PdfBundle\Model\PdfManager
+        arguments: ["@doctrine.orm.entity_manager","@service_container"]

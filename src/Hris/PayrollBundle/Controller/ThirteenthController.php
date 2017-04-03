@@ -2,13 +2,13 @@
 
 namespace Hris\PayrollBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\BaseController;
+use Gist\TemplateBundle\Model\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
 
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use Hris\PayrollBundle\Entity\PayTax;
 
@@ -27,7 +27,7 @@ class ThirteenthController extends BaseController
 
     public function indexAction()
     {
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
 
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
@@ -65,7 +65,7 @@ class ThirteenthController extends BaseController
         $p13th = $this->get('hris_thirteenth');
         $pm = $this->get('hris_payroll');
         $settings = $this->get('hris_settings');
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
         $params = $this->getViewParams('', 'hris_payroll_thirteenth_index');
       
         $start = new Datetime($data['year_start']);
@@ -93,7 +93,7 @@ class ThirteenthController extends BaseController
 
     protected function notify($date_from, $date_to, $period)
     {
-            $config = $this->get('catalyst_configuration');
+            $config = $this->get('gist_configuration');
             $settings = $this->get('hris_settings');
             $hr = $settings->getDepartment($config->get('hris_hr_department'));
 
@@ -124,7 +124,7 @@ class ThirteenthController extends BaseController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Name', '', ''),
             $grid->newColumn('Gross Pay', '', ''),
@@ -173,13 +173,13 @@ class ThirteenthController extends BaseController
        
         $twig = "HrisPayrollBundle:Thirteenth:pdf.html.twig";
         $em = $this->getDoctrine()->getManager();
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
 
         $params = $this->padDetailsParam($id);
         // $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
         // $params['company_website'] = $conf->get('hris_com_info_website');
-        // $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+        // $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         
         if ($conf->get('hris_com_logo') != '') 
         {
@@ -197,7 +197,7 @@ class ThirteenthController extends BaseController
         }
 
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

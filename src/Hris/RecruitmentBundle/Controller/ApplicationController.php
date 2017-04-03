@@ -2,7 +2,7 @@
 
 namespace Hris\RecruitmentBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -19,15 +19,15 @@ use Hris\RecruitmentBundle\Entity\ApplicationExam;
 use Hris\RecruitmentBundle\Entity\ApplicationInterview;
 use Hris\RecruitmentBundle\Entity\ApplicationChecklist;
 
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\ContactBundle\Entity\Address;
-use Catalyst\ContactBundle\Entity\Phone;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\ContactBundle\Entity\Address;
+use Gist\ContactBundle\Entity\Phone;
 
 use Hris\WorkforceBundle\Entity\Employee;
 
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 
 
 use DateTime;
@@ -174,7 +174,7 @@ class ApplicationController extends CrudController
     }
     protected function uploadPicture($o,$data,$is_new)
     {
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
         if($data['picture_id']!=0 && $data['picture_id'] != ""){
             $o->setUpload($media->getUpload($data['picture_id']));
         }
@@ -471,7 +471,7 @@ class ApplicationController extends CrudController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $cnt = $this->get('catalyst_contact');
+        $cnt = $this->get('gist_contact');
         
         $choice = array(
             'first' => $data['first_choice'],
@@ -668,7 +668,7 @@ class ApplicationController extends CrudController
     {
         print_r($data);
         $em = $this->getDoctrine()->getManager();
-        $cnt = $this->get('catalyst_contact');
+        $cnt = $this->get('gist_contact');
         $names = array();
 
         $references = $o->getReference();
@@ -769,7 +769,7 @@ class ApplicationController extends CrudController
     protected function hookPostSave($obj, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $settings = $this->get('hris_settings');
         if ($config->get('hris_hr_department') == null) 
         {
@@ -853,7 +853,7 @@ class ApplicationController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Applicant Name', 'getDisplayName', 'last_name'),
             $grid->newColumn('Status', 'getStatusFormatted', 'status_id'),
@@ -1116,7 +1116,7 @@ class ApplicationController extends CrudController
     protected function padFormParams(&$params, $object = NULL){
         
         $em = $this->getDoctrine()->getManager();
-        $cnt = $this->get('catalyst_contact');
+        $cnt = $this->get('gist_contact');
         $settings = $this->get('hris_settings');
         $recruitment = $this->get('hris_recruitment');
         $payroll = $this->get('hris_payroll');
@@ -1268,7 +1268,7 @@ class ApplicationController extends CrudController
         //params here
         $data = $this->getRequest()->query->all();
         $em = $this->getDoctrine()->getManager();
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
         if ($conf->get('hris_com_info_company_name') != null) 
         {
             $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
@@ -1281,13 +1281,13 @@ class ApplicationController extends CrudController
 
         if ($conf->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
 
         $params['request'] = $em->getRepository('HrisRecruitmentBundle:Application')->find($id);
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -1307,7 +1307,7 @@ class ApplicationController extends CrudController
         $params['object'] = $obj;
 
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

@@ -3,7 +3,7 @@
 namespace Hris\DashboardBundle\Controller;
 
 // use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Catalyst\TemplateBundle\Model\BaseController as Controller;
+use Gist\TemplateBundle\Model\BaseController as Controller;
 
 class DashboardController extends Controller
 {

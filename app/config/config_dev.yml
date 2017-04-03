@@ -1,6 +1,6 @@
 imports:
     - { resource: config.yml }
-    - { resource: catalyst_dev.yml }
+    - { resource: gist_dev.yml }
 
 framework:
     router:
@@ -37,6 +37,6 @@ monolog:
 assetic:
     use_controller: true
 
-accelerator_cache:
-    host: lilys.dev
-    web_dir: %kernel.root_dir%/../web
+# accelerator_cache:
+#     host: rdv.hris-quadrant
+#     web_dir: %kernel.root_dir%/../web

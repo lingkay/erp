@@ -1,0 +1,3 @@
+gist_core_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: GistCoreBundle:Default:index }

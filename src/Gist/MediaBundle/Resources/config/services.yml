@@ -1,0 +1,8 @@
+services:
+    gist_media:
+        class: Gist\MediaBundle\Model\UploadManager
+        arguments: ['%gist_media.storage_config%', '@security.token_storage', '@doctrine.orm.entity_manager']
+
+#    gist_media.example:
+#        class: Gist\MediaBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

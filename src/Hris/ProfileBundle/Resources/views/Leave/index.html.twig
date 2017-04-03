@@ -1,5 +1,5 @@
-{% extends "CatalystTemplateBundle::base.html.twig" %}
-{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
 
 {% block content %}
 <div class="row">
@@ -62,9 +62,9 @@
 {% endblock %}
 
 {% block js %}
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
 
 <script>
 $(document).ready(function() {
@@ -91,6 +91,6 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block css %}
-<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('bundles/catalysttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}

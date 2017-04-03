@@ -11,8 +11,8 @@ class PayrollCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        //Create cron task to run php app/console catalyst:payroll:generate per day
-        $this->setName('catalyst:payroll:generate')
+        //Create cron task to run php app/console gist:payroll:generate per day
+        $this->setName('gist:payroll:generate')
             ->setDescription('Generate payroll automatically');
     }
 

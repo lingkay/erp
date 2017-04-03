@@ -12,7 +12,7 @@ class AttendanceCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        //Create cron task to run php app/console catalyst:payroll:generate per day
+        //Create cron task to run php app/console gist:payroll:generate per day
         $this->setName('hris:workforce:attendance')
             ->setDescription('Create daily entries for attendance');
     }

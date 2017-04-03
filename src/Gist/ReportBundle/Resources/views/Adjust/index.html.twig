@@ -1,0 +1,199 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+    <div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Price Adjustment Report{#{{ list_title }}#}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                 <div class="table-toolbar" style="height:40px">
+                {#{% if app.user.hasAccess(prefix ~ '.add') %}
+                    <a href="{{ path(route_add) }}" class="btn green">Add New</a>
+                {% endif %}#}                                
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <a href="{{ path(csv)}}" class="btn green">Export to CSV</a>
+                        <a href="{{ path(print)}}" class="btn green">Print</a>
+                    </div>
+                </div>
+                </div>
+                
+                 <div class="table-toolbar" style="height:40px">
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-3 control-label">Choose Branches</label>
+                    <div class ="col-md-5">
+                        <select id="wh_id" class="form-control select_2" name="wh_id" multiple>
+                        {{ form_tools.options(br_opts, 0) }}
+                        </select>
+                    </div>
+                    </form>                        
+                </div>
+
+                <div class="table-toolbar" style="height:40px">
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-3 control-label">Product Category</label>
+                    <div class ="col-md-5">
+                        <select id="category" class="form-control select_2" name="category" multiple>
+                        {{ form_tools.options(prod_opts, 0) }}
+                        </select>
+                    </div>
+                        <div>
+                            <a href="{#javascript: void(0);#}" id="filter_button" class="btn blue-madison">Filter</a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="table-toolbar" style="height:40px">   
+                    <form id="date_form" method="post" class="form-horizontal" style="padding-left:10px">                 
+                    {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', date_from, date_to, 3, 5) }} 
+                    </form>
+                </div>
+                
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                            <th>Branch</th>
+                            <th>Item Code </th>
+                            <th>Description</th>
+                            <th>Specs</th>
+                            <th>Old Original Price</th>
+                            <th>Old Selling Price</th>                            
+                            <th>Updated Original Price</th>
+                            <th>Updated Selling Price</th>
+                            <th>Date Update</th>
+                            <th>Modified By</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr>
+                            <td>BF Homes</td>
+                            <td>SNK-001</td>
+                            <td>Taro Jelly</td>
+                            <td></td>
+                            <td>100</td>
+                            <td></td>
+                            <td>130</td>
+                            <td></td>
+                            <td>12/07/2014</td>
+                            <td></td>                            
+                        </tr>
+                        <tr>
+                            <td>Greenfield District</td>
+                            <td>PWD-001</td>
+                            <td>Frost Powder</td>
+                            <td></td>
+                            <td>100</td>
+                            <td></td>
+                            <td>130</td>
+                            <td></td>
+                            <td>12/07/2014</td>
+                            <td></td>                            
+                        </tr>
+                        <tr>
+                            <td>Katipunan Ave</td>
+                            <td>SYR-001</td>
+                            <td>Yakult</td>
+                            <td></td>
+                            <td>100</td>
+                            <td></td>
+                            <td>130</td>
+                            <td></td>
+                            <td>12/07/2014</td>                            
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Makati-Rada</td>
+                            <td>TEA-001</td>
+                            <td>Assam Tea</td>
+                            <td></td>
+                            <td>100</td>
+                            <td></td>
+                            <td>130</td>
+                            <td></td>
+                            <td>12/07/2014</td>                            
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Newport Mall</td>
+                            <td>PWD-002</td>
+                            <td>Oreo Strawberry</td>
+                            <td></td>
+                            <td>100</td>
+                            <td></td>
+                            <td>130</td>
+                            <td></td>
+                            <td>12/07/2014</td>                            
+                            <td></td>
+                        </tr>
+{#                    {% endfor %}#}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+
+<!-- select2 -->
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+
+<!-- datepicker -->
+<script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/components-pickers.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/clockface/js/clockface.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/moment.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+<script>
+
+    $(document).ready(function() {
+    ComponentsPickers.init();
+
+    $('#daterange').daterangepicker(
+        {
+            ranges: {
+                'Today': [new Date(),new Date()],
+                'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                'Last 7 Days': [moment().subtract('days', 6), new Date()],
+                'Last 30 Days': [moment().subtract('days', 29), new Date()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#form_date_from').val(start.format('YYYYMMDD'));
+            $('#form_date_to').val(end.format('YYYYMMDD'));
+            
+            filter_redirect();
+        }
+    );
+    });
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+
+
+<!-- date picker -->
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker3.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css') }}"/>
+{% endblock %}
+

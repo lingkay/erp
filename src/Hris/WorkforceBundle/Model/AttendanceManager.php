@@ -5,7 +5,7 @@ namespace Hris\WorkforceBundle\Model;
 use Doctrine\ORM\EntityManager;
 use Hris\WorkforceBundle\Entity\Employee;
 use Hris\WorkforceBundle\Entity\Attendance;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 use Hris\AdminBundle\Entity\Holiday;
 use DateTime;
 
@@ -151,7 +151,7 @@ class AttendanceManager
     protected function createAttendance(Employee $employee, DateTime $date, $type)
     {
         $attendance = new Attendance();
-        $user = $this->em->getRepository('CatalystUserBundle:User')->findOneBy(array('name' => 'Administrator'));
+        $user = $this->em->getRepository('GistUserBundle:User')->findOneBy(array('name' => 'Administrator'));
         $attendance->setEmployee($employee)
                     ->setDate($date)
                     ->setUserCreate($user)

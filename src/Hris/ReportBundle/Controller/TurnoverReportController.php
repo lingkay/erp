@@ -2,14 +2,14 @@
 
 namespace Hris\ReportBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 use Hris\WorkforceBundle\Entity\Resign;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use DateTime;
 
 class TurnoverReportController extends CrudController
@@ -68,7 +68,7 @@ class TurnoverReportController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('emp','employee','getEmployee'),
         );
@@ -77,7 +77,7 @@ class TurnoverReportController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Date Filed', 'getDateFiled', 'date_filed','o',array($this,'formatDate')),
             $grid->newColumn('Date Approved', 'getDateApproved', 'date_approved','o',array($this,'formatDate')),
@@ -134,7 +134,7 @@ class TurnoverReportController extends CrudController
         $dfrom = $date_from=='null'? new DateTime($date->format('Y-m-d H:i:s')):new DateTime($date_from.'00:00:00');
         $dto = $date_to=='null'? new DateTime($date->format('Y-m-d H:i:s')):new DateTime($date_to.'23:59:59');
 
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
         
         $qry[] = "(o.status = '".Resign::STATUS_ACCEPT."')";
@@ -185,8 +185,8 @@ class TurnoverReportController extends CrudController
         $dfrom = $date_from=='null'? new DateTime($date->format('Y-m-d H:i:s')):new DateTime($date_from.'00:00:00');
         $dto = $date_to=='null'? new DateTime($date->format('Y-m-d H:i:s')):new DateTime($date_to.'23:59:59');
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
 
         $params['grid_cols'] = $this->headers();
         $dept = '';
@@ -220,7 +220,7 @@ class TurnoverReportController extends CrudController
 
         if ($conf->get('hris_com_info_company_address') != null)
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
 
         $query = $em->createQueryBuilder();
@@ -255,7 +255,7 @@ class TurnoverReportController extends CrudController
         $params['list_title'] = $head_title;
         $params['data'] = $data;
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

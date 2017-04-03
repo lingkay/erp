@@ -2,11 +2,11 @@
 
 namespace Hris\AdminBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\AdminBundle\Entity\Schedules;
 
 use DateTime;
@@ -92,7 +92,7 @@ class SchedulesController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
 
         return array(
             $grid->newColumn('Employee Group','getName','name'),

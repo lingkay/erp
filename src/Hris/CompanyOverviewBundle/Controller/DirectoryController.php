@@ -2,7 +2,7 @@
 
 namespace Hris\CompanyOverviewBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 
 class DirectoryController extends CrudController

@@ -1,0 +1,55 @@
+{% import "GistTemplateBundle::form.html.twig" as f %}
+<!-- add phone modal -->
+<div id="add-contact-person" class="modal fade" role="dialog">
+    <form id="add-contact-person-form" method="post" action="{{ path('cnt_contact_person_ajax_add') }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Contact Person</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="form-body">
+                    {{ f.group_text('First Name', 'first_name', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('Middle Name', 'middle_name', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('Last Name', 'last_name', '', 3, 8, false, prefix) }}
+                    {{ f.group_text('Email Address', 'email_address', '', 3, 8, false, prefix) }}
+                    <div class="form-group">
+                        <label class="col-md-3"></label>
+                        <div class="col-md-7">
+                            {{ f.checkbox('contact_person_is_primary', 1, 'Set as Primary Contact Person', '', '')}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="add-contact-person-submit" type="button" class="btn btn-primary">Add Contact Person</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+<script id="contact-person-template" type="x-tmpl-mustache">
+    <hr/>
+    <h4>New Contact Person</h4>
+    <div class="contact-class-outer">    
+        <div class="contact">
+            {{ f.hidden2('','contact{{counter}}', 'contact-class contact-class-{{counter}}') }}
+            {{ f.hidden2('','{{id}}', 'contact-person-id') }}
+            {{ f.hidden2('is_person_new[]','new', '') }}
+            {{ f.hidden2('person_id[]','{{id}}', '') }}
+            {{ f.group_text('First Name', 'person_first_name[]', '{{first_name}}', 3, 4, true) }}
+            {{ f.group_text('Middle Name', 'person_middle_name[]', '{{middle_name}}', 3, 4, true) }}
+            {{ f.group_text('Last Name', 'person_last_name[]', '{{last_name}}', 3, 4, true) }}
+            {{ f.group_text('Email Address', 'person_email[]', '{{email}}', 3, 4, true) }}
+
+            <button type="button" id="add-phone" class="phone-button btn btn-primary" data-toggle="modal" data-target="#add-phone-modal">
+                Add Phone
+            </button>
+
+        </div>
+    </div>
+</script>
+  

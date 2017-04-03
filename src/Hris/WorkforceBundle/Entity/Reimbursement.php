@@ -5,10 +5,10 @@ namespace Hris\WorkforceBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\HasCode;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
-use Catalyst\MediaBundle\Template\Entity\HasUpload;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\HasCode;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+use Gist\MediaBundle\Template\Entity\HasUpload;
 
 use DateTime;
 use stdClass;
@@ -37,7 +37,7 @@ class Reimbursement
 	protected $employee;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Catalyst\UserBundle\Entity\user")
+     * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\user")
      * @ORM\JoinColumn(name="approver_id", referencedColumnName="id")
      */
     protected $approved_by;
@@ -274,11 +274,11 @@ class Reimbursement
     /**
      * Set approvedBy
      *
-     * @param \Catalyst\UserBundle\Entity\user $approvedBy
+     * @param \Gist\UserBundle\Entity\user $approvedBy
      *
      * @return Reimbursement
      */
-    public function setApprovedBy(\Catalyst\UserBundle\Entity\user $approvedBy = null)
+    public function setApprovedBy(\Gist\UserBundle\Entity\user $approvedBy = null)
     {
         $this->approved_by = $approvedBy;
 
@@ -288,7 +288,7 @@ class Reimbursement
     /**
      * Get approvedBy
      *
-     * @return \Catalyst\UserBundle\Entity\user
+     * @return \Gist\UserBundle\Entity\user
      */
     public function getApprovedBy()
     {

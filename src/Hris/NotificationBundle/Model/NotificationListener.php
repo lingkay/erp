@@ -2,7 +2,7 @@
 namespace Hris\NotificationBundle\Model;
 
 use Doctrine\ORM\EntityManager;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Model\NotificationEvent;
 
 class NotificationListener
 {

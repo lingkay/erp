@@ -1,0 +1,185 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+    <div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Inventory Stock Report{#{{ list_title }}#}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar" style="height:40px">
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-3 control-label">Product Category</label>
+                    <div class ="col-md-5">
+                        <select id="category" class="form-control select_2" name="category" multiple>
+                        {{ form_tools.options(prod_opts, 0) }}
+                        </select>
+                    </div>
+                        
+                    </form>
+                </div>
+                        
+                <div class="table-toolbar" style="height:40px">
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-3 control-label">Choose Branches</label>
+                    <div class ="col-md-5">
+                        <select id="br_id" class="form-control select_2" name="br_id" multiple>
+                        {{ form_tools.options(br_opts, 0) }}
+                        </select>
+                    </div>
+                        
+                    </form>                        
+                </div>
+
+                <div class="table-toolbar" style="height:40px">
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-3 control-label">Item</label>
+                    <div class ="col-md-5">
+                        <select id="br_id" class="form-control select_2" name="br_id" multiple>
+                        {{ form_tools.options(item_opts, 0) }}
+                        </select>
+                    </div>
+                        <div>
+                            <a href="{#javascript: void(0);#}" id="filter_button" class="btn blue-madison">Filter </a>
+                        </div>
+                    </form>                        
+                </div>
+                
+                <h4>Summary Details</h4>
+                <div class="table-toolbar" style="height:40px">
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-2 control-label">Total Item</label>
+                    <div class="col-md-4">                        
+                        <div class="input-group" id="daterange">
+                            <input type="text" class="form-control" placeholder="" readonly="">
+                           {# <span class="input-group-btn">
+                            <button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
+                            </span>#}
+                        </div>
+                    </div>
+                    </form>
+                        
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-2 control-label">Total Quantity</label>
+                    <div class="col-md-4">                        
+                        <div class="input-group" id="daterange">
+                            <input type="text" class="form-control" placeholder="" readonly="">
+                           {# <span class="input-group-btn">
+                            <button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
+                            </span>#}
+                        </div>
+                    </div>
+                    </form> 
+                </div>
+                        
+                <div class="table-toolbar" style="height:40px">
+                    <form id="date_form" method="post" class="form-horizontal">
+                    {#<label class="col-md-2 control-label">Total Item</label>#}
+                    <div class="col-md-4">                        
+                        <div class="input-group" id="daterange">
+                            {#<input type="text" class="form-control" placeholder="" readonly="">#}
+                           {# <span class="input-group-btn">
+                            <button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
+                            </span>#}
+                        </div>
+                    </div>
+                    </form>
+                        
+                    <form id="date_form" method="post" class="form-horizontal">
+                    <label class="col-md-4 control-label">Total Value</label>
+                    <div class="col-md-4">                        
+                        <div class="input-group" id="daterange">
+                            <input type="text" class="form-control" placeholder="" readonly="">
+                           {# <span class="input-group-btn">
+                            <button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
+                            </span>#}
+                        </div>
+                    </div>
+                    </form> 
+                </div>
+                            
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                            <th>Branch</th>
+                            <th>Item Code </th>
+                            <th>Description</th>
+                            <th>Specs</th>
+                            <th>Qty</th>                            
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr>
+                            <td>BF Homes</td>
+                            <td>PWD-001</td>
+                            <td>Frost Powder</td>
+                            <td></td>
+                            <td>3</td>
+                            <td>200</td>
+                            <td>600</td>                            
+                        </tr>
+                        <tr>
+                            <td>Greenfield District</td>
+                            <td>SNK-001</td>
+                            <td>Taro Jelly</td>
+                            <td></td>
+                            <td>3</td>
+                            <td>200</td>
+                            <td>600</td>                            
+                        </tr>
+                        <tr>
+                            <td>Katipunan Ave</td>
+                            <td>SYR-001</td>
+                            <td>Yakult</td>
+                            <td></td>
+                            <td>3</td>
+                            <td>200</td>
+                            <td>600</td>                            
+                        </tr>
+                        <tr>
+                            <td>Makati-Rada</td>
+                            <td>TEA-001</td>
+                            <td>Assam Tea</td>
+                            <td></td>
+                            <td>3</td>
+                            <td>200</td>
+                            <td>600</td>                            
+                        </tr>
+                        <tr>
+                            <td>Newport Mall</td>
+                            <td>PWD-002</td>
+                            <td>Oreo Strawberry</td>
+                            <td></td>
+                            <td>3</td>
+                            <td>200</td>
+                            <td>600</td>                            
+                        </tr>
+                        <tr>
+                            <td colspan="3">Total # of Item: 5 </td>
+                            <td colspan="2">Total Qty: 15</td>
+                            <td colspan="2">Grand Total Price: 3600</td>
+                        </tr>
+{#                    {% endfor %}#}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+    $(document).ready(function(){
+        $('#br_id').select2();            
+        $('#category').select2();
+    });
+    </script>
+{% endblock %}

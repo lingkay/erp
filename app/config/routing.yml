@@ -30,12 +30,12 @@ hris_notification:
     resource: "@HrisNotificationBundle/Resources/config/routing.yml"
     prefix:   /
 
-catalyst_notification:
-    resource: "@CatalystNotificationBundle/Resources/config/routing.yml"
+gist_notification:
+    resource: "@GistNotificationBundle/Resources/config/routing.yml"
     prefix:   /notifications
 
-catalyst_media:
-    resource: "@CatalystMediaBundle/Resources/config/routing.yml"
+gist_media:
+    resource: "@GistMediaBundle/Resources/config/routing.yml"
     prefix:   /media
 
 hris_admin:
@@ -86,22 +86,22 @@ fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
     prefix: /
 
-catalyst_dashboard:
-    resource: "@CatalystDashboardBundle/Resources/config/routing.yml"
+gist_dashboard:
+    resource: "@GistDashboardBundle/Resources/config/routing.yml"
     prefix:   /
 
-catalyst_configuration:
-    resource: "@CatalystConfigurationBundle/Resources/config/routing.yml"
+gist_configuration:
+    resource: "@GistConfigurationBundle/Resources/config/routing.yml"
     prefix:   /configuration
 
-catalyst_user:
-    resource: "@CatalystUserBundle/Resources/config/routing.yml"
+gist_user:
+    resource: "@GistUserBundle/Resources/config/routing.yml"
     prefix: /user
 
-catalyst_report:
-    resource: "@CatalystReportBundle/Resources/config/routing.yml"
+gist_report:
+    resource: "@GistReportBundle/Resources/config/routing.yml"
     prefix: /report
 
-catalyst_contact:
-    resource: "@CatalystContactBundle/Resources/config/routing.yml"
+gist_contact:
+    resource: "@GistContactBundle/Resources/config/routing.yml"
     prefix:   /contact

@@ -1,0 +1,7 @@
+parameters:
+#    gist_template.example.class: Gist\TemplateBundle\Example
+
+services:
+#    gist_template.example:
+#        class: %gist_template.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

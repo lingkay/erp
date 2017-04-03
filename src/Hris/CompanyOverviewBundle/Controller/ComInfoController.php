@@ -2,15 +2,15 @@
 
 namespace Hris\CompanyOverviewBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
 use Hris\CompanyOverviewBundle\Entity\ComInfo;
-use Catalyst\ContactBundle\Entity\Address;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\ContactBundle\Template\Controller\HasPhones;
+use Gist\ContactBundle\Entity\Address;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\ContactBundle\Template\Controller\HasPhones;
 
 
 class ComInfoController extends CrudController
@@ -32,10 +32,10 @@ class ComInfoController extends CrudController
         $this->checkAccess($this->route_prefix . '.view');
         
         $params = $this->getViewParams('List');
-        $conf = $this->get('catalyst_configuration');
-        $cm = $this->get('catalyst_contact');
+        $conf = $this->get('gist_configuration');
+        $cm = $this->get('gist_contact');
         $em = $this->getDoctrine()->getManager();
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $profile = $em->getRepository('HrisCompanyOverviewBundle:ComInfo')->findAll();
         if(count($profile) == 0)
@@ -166,8 +166,8 @@ class ComInfoController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
 
         $conf->set('hris_com_info_company_name', $data['company_name']);
         $conf->set('hris_com_info_email', $data['email_add']);
@@ -217,7 +217,7 @@ class ComInfoController extends CrudController
     protected function updateAddress($data,$is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
-        $contact = $this->get('catalyst_contact');
+        $contact = $this->get('gist_contact');
 
         if($data['address_id'] == 0 || $data['address_id'] == ""){
             $address = $contact->newAddress();

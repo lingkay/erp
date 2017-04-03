@@ -1,0 +1,65 @@
+menu_items:
+    - id: menu_report
+      acl: cat_report.menu
+      label: Report
+      icon: fa-file-o
+    - id: gist_report_po_summary
+      acl: cat_report_po.menu
+      label: Purchase Order Report
+      parent: menu_report
+    - id: gist_report_dr_summary
+      acl: cat_report_dr.menu
+      label: Delivery Receipt Report
+      parent: menu_report
+    - id: gist_report_damaged_summary
+      acl: cat_report_damaged.menu
+      label: Damaged Report
+      parent: menu_report
+    - id: gist_report_returned_summary
+      acl: cat_report_returned.menu
+      label: Returned Delivery Items
+      parent: menu_report
+    - id: gist_report_stock_summary
+      acl: cat_report_stock.menu
+      label: Inventory Stock Report
+      parent: menu_report
+#    - id: gist_report_service_summary
+#      acl: cat_report_service.menu
+#      label: External DR
+      parent: menu_report
+    - id: gist_report_externaldr_summary
+      acl: cat_report_externaldr.menu
+      label: Sales of Transferred Items
+      parent: menu_report
+    - id: gist_report_pending_summary
+      acl: cat_report_pending.menu
+      label: Product Frequency
+      parent: menu_report
+    - id: gist_report_postponed_summary
+      acl: cat_report_postponed.menu
+      label: Product Purchase Frequency
+      parent: menu_report
+    - id: gist_report_balance_summary
+      acl: cat_report_balance.menu
+      label: Balances Report
+      parent: menu_report    
+#    - id: gist_report_service_summary
+#      acl: cat_report_service.menu
+#      label: Purchasing Report based on transfer stock from supplier
+#      parent: menu_report
+    - id: gist_report_prcadjust_summary
+      acl: cat_report_prcadjust.menu
+      label: Price Adjustment Report
+      parent: menu_report
+    - id: gist_report_compare_summary
+      acl: cat_report_compare.menu
+      label: Store Price vs. Selling Price
+      parent: menu_report
+    - id: gist_report_prodfreq_summary
+      acl: cat_report_freq.menu
+      label: Product Frequency Report
+      parent: menu_report
+    - id: gist_report_insufficient_summary
+      acl: cat_report_insufficient.menu
+      label: Insufficient Stock Report
+      parent: menu_report

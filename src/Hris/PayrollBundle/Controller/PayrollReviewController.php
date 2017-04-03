@@ -2,7 +2,7 @@
 
 namespace Hris\PayrollBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\BaseController;
+use Gist\TemplateBundle\Model\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 
@@ -53,7 +53,7 @@ class PayrollReviewController extends BaseController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             // $grid->newJoin('period', 'period', 'getPayrollPeriod', 'left'),
             $grid->newJoin('employee', 'employee', 'getEmployee'),
@@ -63,7 +63,7 @@ class PayrollReviewController extends BaseController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array( 
             $grid->newColumn('Employee', 'getDisplayName', 'last_name','employee'),
             $grid->newColumn('Payroll Period', 'getPayrollPeriod', '','o', array($this,'formatPaySchedule')),

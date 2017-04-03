@@ -1,5 +1,5 @@
-{% extends "CatalystTemplateBundle::base.html.twig" %}
-{% import "CatalystTemplateBundle::form.html.twig" as form %}
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
 {% import _self as self %}
 
 {% macro static_text(label,value,body_size) %}
@@ -302,8 +302,8 @@ $(document).ready(function() {
 
 {% block css %}
 <!-- PAGE-LEVEL CSS -->
-<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/profile.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/tasks.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('bundles/catalysttemplate/assets/admin/pages/css/error.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/admin/pages/css/profile.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/admin/pages/css/tasks.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/admin/pages/css/error.css') }}" rel="stylesheet" type="text/css" />
 <!-- END PAGE-LEVEL CSS -->
 {% endblock %}

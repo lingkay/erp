@@ -5,8 +5,8 @@ namespace Hris\WorkforceBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
 
 use Hris\WorkforceBundle\Entity\Employee;
 

@@ -22,28 +22,28 @@ class AppKernel extends Kernel
             new Ensepar\Html2pdfBundle\EnseparHtml2pdfBundle(),
 
             // APC
-            new SmartCore\Bundle\AcceleratorCacheBundle\AcceleratorCacheBundle(),
+            // new SmartCore\Bundle\AcceleratorCacheBundle\AcceleratorCacheBundle(),
             // utility bundles
-            //new Catalyst\AdminBundle\CatalystAdminBundle(),
-            new Catalyst\ChartBundle\CatalystChartBundle(),
-            new Catalyst\TemplateBundle\CatalystTemplateBundle(),
+            //new Gist\AdminBundle\GistAdminBundle(),
+            new Gist\ChartBundle\GistChartBundle(),
+            new Gist\TemplateBundle\GistTemplateBundle(),
 
             // core modules
-            new Catalyst\ConfigurationBundle\CatalystConfigurationBundle(),
-            new Catalyst\DashboardBundle\CatalystDashboardBundle(),
-            new Catalyst\GalleryBundle\CatalystGalleryBundle(),
-            new Catalyst\MenuBundle\CatalystMenuBundle(),
-            new Catalyst\GridBundle\CatalystGridBundle(),
-            new Catalyst\LogBundle\CatalystLogBundle(),
-            new Catalyst\UserBundle\CatalystUserBundle(),
-            new Catalyst\MediaBundle\CatalystMediaBundle(),
-            new Catalyst\PdfBundle\CatalystPdfBundle(),
-            new Catalyst\NotificationBundle\CatalystNotificationBundle(),
+            new Gist\ConfigurationBundle\GistConfigurationBundle(),
+            new Gist\DashboardBundle\GistDashboardBundle(),
+            new Gist\GalleryBundle\GistGalleryBundle(),
+            new Gist\MenuBundle\GistMenuBundle(),
+            new Gist\GridBundle\GistGridBundle(),
+            new Gist\LogBundle\GistLogBundle(),
+            new Gist\UserBundle\GistUserBundle(),
+            new Gist\MediaBundle\GistMediaBundle(),
+            new Gist\PdfBundle\GistPdfBundle(),
+            new Gist\NotificationBundle\GistNotificationBundle(),
 
             // erp modules
-            new Catalyst\FlotBundle\CatalystFlotBundle(),
-            new Catalyst\ContactBundle\CatalystContactBundle(),
-            new Catalyst\ReportBundle\CatalystReportBundle(),
+            new Gist\FlotBundle\GistFlotBundle(),
+            new Gist\ContactBundle\GistContactBundle(),
+            new Gist\ReportBundle\GistReportBundle(),
 
             //Hris modules
             new Hris\AdminBundle\HrisAdminBundle(),
@@ -78,4 +78,23 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
     }
+
+    // public function getCacheDir()
+    // {
+    //     if (in_array($this->environment, array('dev', 'test'))) {
+    //         return '/dev/shm/hris-quadrant/cache/' .  $this->environment;
+    //     }
+
+    //     return parent::getCacheDir();
+    // }
+
+    // public function getLogDir()
+    // {
+    //     if (in_array($this->environment, array('dev', 'test'))) {
+    //         return '/dev/shm/hris-quadrant/logs';
+    //     }
+
+    //     return parent::getLogDir();
+    // }
+
 }

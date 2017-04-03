@@ -12,7 +12,7 @@ class AppraisalCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        //Create cron task to run php app/console catalyst:payroll:generate per day
+        //Create cron task to run php app/console gist:payroll:generate per day
         $this->setName('hris:workforce:check-appraisals')
             ->setDescription('Send Notification to HR that an Employee is for Appraisal');
     }

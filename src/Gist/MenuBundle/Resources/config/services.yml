@@ -1,0 +1,11 @@
+#parameters:
+#    Gist_menu.example.class: Gist\MenuBundle\Example
+
+services:
+    Gist_menu:
+        class: Gist\MenuBundle\Model\Menu\Handler
+        arguments: ["@service_container"]
+        
+#    Gist_menu.example:
+#        class: %Gist_menu.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -2,8 +2,8 @@
 
 namespace Hris\RemunerationBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,9 +12,9 @@ use Doctrine\ORM\EntityManager;
 
 use Hris\RemunerationBundle\Entity\Cashbond;
 use Hris\RemunerationBundle\Entity\CashbondLoan;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use DateTime;
 
@@ -57,7 +57,7 @@ class CashbondController extends CrudController
         // die();
 
         $em = $this->getDoctrine()->getManager();
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $this->updateTrackCreate($o,$data,$is_new);
         $date_filed = new DateTime($data['date_filed']);
@@ -96,7 +96,7 @@ class CashbondController extends CrudController
     protected function hookPostSave($obj, $is_new = false)
     {
         if($is_new){
-            $config = $this->get('catalyst_configuration');
+            $config = $this->get('gist_configuration');
             $settings = $this->get('hris_settings');
             $hr = $settings->getDepartment($config->get('hris_hr_department'));
 
@@ -150,7 +150,7 @@ class CashbondController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array (
             $grid->newJoin('emp','employee','getEmployee','left'),
         );
@@ -158,7 +158,7 @@ class CashbondController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Employee Name', 'getDisplayName', 'last_name', 'emp'),
             $grid->newColumn('Balance', 'getBalance', 'balance','o',array($this,'formatPrice')),
@@ -180,7 +180,7 @@ class CashbondController extends CrudController
     }
 
     protected function filterReimbursementGrid($id = null, $date_from = null, $date_to = null){
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
         $date = new DateTime();
 

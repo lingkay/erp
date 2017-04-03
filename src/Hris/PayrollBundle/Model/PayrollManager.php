@@ -10,7 +10,7 @@ use Hris\PayrollBundle\Entity\PayPayrollPeriod;
 use Hris\PayrollBundle\Entity\PayPayroll;
 use Hris\PayrollBundle\Entity\PayEarningEntry;
 use Hris\PayrollBundle\Entity\PayDeductionEntry;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 
 use DateTime;
 
@@ -172,7 +172,7 @@ class PayrollManager
 
     public function generateWeeklyPayPeriod($start, $end)
     {
-        $conf = $this->container->get('catalyst_configuration');
+        $conf = $this->container->get('gist_configuration');
         $pc = $this->container->get('hris_payroll_compute');
         $weekly = json_decode($conf->get('hris_payroll_weekly_sched'),true);
 
@@ -202,7 +202,7 @@ class PayrollManager
 
     public function generateSemiMonthlyPayPeriod($start, $end)
     {
-        $conf = $this->container->get('catalyst_configuration');
+        $conf = $this->container->get('gist_configuration');
          $pc = $this->container->get('hris_payroll_compute');
       
         $curr = new DateTime();
@@ -240,7 +240,7 @@ class PayrollManager
 
     public function generatePayPeriods()
     {
-        $conf = $this->container->get('catalyst_configuration');
+        $conf = $this->container->get('gist_configuration');
        
         $week_start = $conf->get('hris_payroll_weekly_year_start');
         $week_end = $conf->get('hris_payroll_weekly_year_end');

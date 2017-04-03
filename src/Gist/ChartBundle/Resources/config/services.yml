@@ -1,0 +1,7 @@
+parameters:
+#    Gist_chart.example.class: Gist\ChartBundle\Example
+
+services:
+#    Gist_chart.example:
+#        class: %Gist_chart.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

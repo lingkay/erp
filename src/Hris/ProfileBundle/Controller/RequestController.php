@@ -2,22 +2,22 @@
 
 namespace Hris\ProfileBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 
 use Doctrine\ORM\EntityManager;
 
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use Hris\WorkforceBundle\Entity\Reimbursement;
 use Hris\WorkforceBundle\Entity\Resign;
 use Hris\WorkforceBundle\Entity\Request;
 use Hris\WorkforceBundle\Entity\Employee;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 use Hris\AdminBundle\Entity\Leave\LeaveType;
 
 use DateTime;
@@ -368,7 +368,7 @@ class RequestController extends CrudController
                 $obj->setNotes($data['reason']);
                 break;
             case 'reimburse':
-                $media = $this->get('catalyst_media');
+                $media = $this->get('gist_media');
                 $reimburse = $em->getRepository('HrisWorkforceBundle:Reimbursement')->findOneBy(array('request'=>$obj->getID()));
 
                 if($data['expense_type'] == 'Others')
@@ -400,7 +400,7 @@ class RequestController extends CrudController
                 $em->flush();
                 break;
             case 'resign':
-                $media = $this->get('catalyst_media');
+                $media = $this->get('gist_media');
                 $resign = $em->getRepository('HrisWorkforceBundle:Resign')->findOneBy(array('request'=>$obj->getID()));
                 if(isset($data['file']) && $data['file']!=0 && $data['file'] != ""){
                     $resign->setUpload($media->getUpload($data['file']));
@@ -435,7 +435,7 @@ class RequestController extends CrudController
     public function updateReimburse($obj,$o,$data,$is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $this->updateTrackCreate($obj,$data,$is_new);
         $date_filed = new DateTime($data['date_filed']);
@@ -478,7 +478,7 @@ class RequestController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $setting = $this->get('hris_settings');
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $this->updateTrackCreate($obj,$data,$is_new);
         $employee = $em->getRepository('HrisWorkforceBundle:Employee')->find($data['name_id']);
@@ -524,7 +524,7 @@ class RequestController extends CrudController
 
     // protected function getGridJoins()
     // {
-    //     $grid = $this->get('catalyst_grid');
+    //     $grid = $this->get('gist_grid');
     //     return array (
     //         $grid->newJoin('l','leave_type','getLeaveType'),
     //     );
@@ -548,7 +548,7 @@ class RequestController extends CrudController
 
     protected function hookPostSave($obj, $is_new = false)
     {
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $settings = $this->get('hris_settings');
         $em = $this->getDoctrine()->getManager();
         $cm = $this->get('hris_cashflow');
@@ -618,7 +618,7 @@ class RequestController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array (
             $grid->newJoin('e','employee','getEmployee'),
         );
@@ -626,7 +626,7 @@ class RequestController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         if ($this->getUser()->getEmployee() == NULL) {
             return array(
                 $grid->newColumn('Employee Name', 'getDisplayName', 'last_name', 'e'),
@@ -649,7 +649,7 @@ class RequestController extends CrudController
         $gl = $this->setupGridLoader();
         $qry = array();
 
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
 
         if ($this->getUser()->getEmployee() == NULL) {
@@ -747,8 +747,8 @@ class RequestController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $twig = "HrisReportBundle:Attendance:print.html.twig";
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -776,7 +776,7 @@ class RequestController extends CrudController
         $data = unserialize($obj->getNotes());
         $params['msg_body'] = $data['coe_body'];
 
-        $config = $this  ->get('catalyst_configuration');
+        $config = $this  ->get('gist_configuration');
         if ($conf->get('hris_com_info_company_name') != null) 
         {
             $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
@@ -789,12 +789,12 @@ class RequestController extends CrudController
 
         if ($conf->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
 
         $twig = 'HrisProfileBundle:Request:print.html.twig';
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('LETTER');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

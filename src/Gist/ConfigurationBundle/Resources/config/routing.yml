@@ -1,0 +1,9 @@
+cat_config_index:
+    pattern: /config
+    methods: [GET]
+    defaults: { _controller: GistConfigurationBundle:ConfigEntry:index }
+
+cat_config_submit:
+    pattern: /config
+    methods: [POST]
+    defaults: { _controller: GistConfigurationBundle:ConfigEntry:submit }

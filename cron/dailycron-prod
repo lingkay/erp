@@ -1,9 +1,9 @@
 PATH=/usr/bin/php
-* * * * * cd /html/lilysdev.qalphalabs.com && php app/console catalyst:payroll:generate
+* * * * * cd /html/lilysdev.qalphalabs.com && php app/console gist:payroll:generate
 59 23 * * * cd /html/lilysdev.qalphalabs.com && php app/console hris:workforce:attendance
 00 04 * * * cd /html/lilysdev.qalphalabs.com &&  php app/console hris:admin:events
 00 04 * * * cd /html/lilysdev.qalphalabs.com && php app/console hris:workforce:check-appraisals
-* * * * * cd /html/lilys.qalphalabs.com && php app/console catalyst:payroll:generate
+* * * * * cd /html/lilys.qalphalabs.com && php app/console gist:payroll:generate
 59 23 * * * cd /html/lilys.qalphalabs.com && php app/console hris:workforce:attendance
 00 04 * * * cd /html/lilys.qalphalabs.com &&  php app/console hris:admin:events
 00 04 * * * cd /html/lilys.qalphalabs.com && php app/console hris:workforce:check-appraisals

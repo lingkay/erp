@@ -1,5 +1,5 @@
 parameters:
-#    catalyst_admin.example.class: Catalyst\AdminBundle\Example
+#    gist_admin.example.class: Gist\AdminBundle\Example
 
 services:
     hris_settings:

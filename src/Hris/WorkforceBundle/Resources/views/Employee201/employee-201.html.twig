@@ -42,7 +42,7 @@ div.container_logo {
 
 <div style="width: 100%;">
     {% set upload = employee.getProfile.getUpload %}    
-	<img src="{{ upload.getURL|default('bundles/catalystmedia/img/no_image.jpg')|replace({'\\': '/'}) }}" style="height: 100px; width: 100px;" align="left" />
+	<img src="{{ upload.getURL|default('bundles/gistmedia/img/no_image.jpg')|replace({'\\': '/'}) }}" style="height: 100px; width: 100px;" align="left" />
 	<p style="font-size: 24px; margin-left: 15px;">
 		<b style="text-transform: uppercase;">{{ employee.getFirstName ~ ' ' ~ employee.getLastName }}</b><br>
 		<span style="font-size: 16px">{{ employee.getJobTitle.getName }}</span>

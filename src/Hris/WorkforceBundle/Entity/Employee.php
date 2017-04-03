@@ -5,10 +5,10 @@ namespace Hris\WorkforceBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\HasName;
-use Catalyst\CoreBundle\Template\Entity\HasCode;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\HasName;
+use Gist\CoreBundle\Template\Entity\HasCode;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
 
 use stdClass;
 
@@ -114,7 +114,7 @@ class Employee
     protected $application_profile;
 
     /**
-     * @ORM\OneToOne(targetEntity="\Catalyst\UserBundle\Entity\User", mappedBy="employee", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="\Gist\UserBundle\Entity\User", mappedBy="employee", cascade={"persist"})
      */
     protected $user;
 
@@ -522,7 +522,7 @@ class Employee
 
             //Monthly
             case 12 : 
-            default: $computed = $this->getPayRate() * 12/313;
+            // default: $computed = $this->getPayRate() * 12/313;
                     break;
 
             //Daily

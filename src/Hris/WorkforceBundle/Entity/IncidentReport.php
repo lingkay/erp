@@ -5,9 +5,9 @@ namespace Hris\WorkforceBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\HasNotes;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\HasNotes;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
 
 use DateTime;
 use stdClass;
@@ -27,7 +27,7 @@ class IncidentReport
     use HasNotes;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="Catalyst\UserBundle\Entity\User")
+	 * @ORM\ManyToOne(targetEntity="Gist\UserBundle\Entity\User")
 	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $reporter;
@@ -267,11 +267,11 @@ class IncidentReport
     /**
      * Set reporter
      *
-     * @param \Catalyst\UserBundle\Entity\User $reporter
+     * @param \Gist\UserBundle\Entity\User $reporter
      *
      * @return IncidentReport
      */
-    public function setReporter(\Catalyst\UserBundle\Entity\User $reporter = null)
+    public function setReporter(\Gist\UserBundle\Entity\User $reporter = null)
     {
         $this->reporter = $reporter;
 
@@ -281,7 +281,7 @@ class IncidentReport
     /**
      * Get reporter
      *
-     * @return \Catalyst\UserBundle\Entity\User
+     * @return \Gist\UserBundle\Entity\User
      */
     public function getReporter()
     {

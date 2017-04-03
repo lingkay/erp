@@ -1,6 +1,6 @@
 <?php
 
-namespace Catalyst\PayrollBundle\DataFixtures\ORM;
+namespace Gist\PayrollBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;

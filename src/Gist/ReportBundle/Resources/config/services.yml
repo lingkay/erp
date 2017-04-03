@@ -1,0 +1,7 @@
+parameters:
+#    gist_report.example.class: Gist\ReportBundle\Example
+
+services:
+#    gist_report.example:
+#        class: %gist_report.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

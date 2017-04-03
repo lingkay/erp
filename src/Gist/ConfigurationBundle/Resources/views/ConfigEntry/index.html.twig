@@ -1,0 +1,39 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Settings</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        {% for cat in cats %}
+                            <h4 class="form-section">{{ cat.getName }}</h4>
+                            {% for e in cat.getEntries %}
+                                {% if e.getType == 'select' %}
+                                    {{ form.group_select(e.getLabel, e.getID, e.getOptions, e.getValue , 3, 5, not app.user.hasAccess('cat_config.edit')) }}
+                                {% elseif e.getType == 'color' %}
+                                    {{ form.group_color(e.getLabel, e.getID,e.getValue ,3,4)}}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    {% if app.user.hasAccess('cat_config.edit') %}
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

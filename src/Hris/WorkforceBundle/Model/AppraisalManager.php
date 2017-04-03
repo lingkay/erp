@@ -8,7 +8,7 @@ use Hris\WorkforceBundle\Entity\Profile;
 use Hris\WorkforceBundle\Entity\Appraisal;
 use Hris\WorkforceBundle\Entity\Evaluator;
 use Hris\AdminBundle\Model\SettingsManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 
 use DateTime;
 

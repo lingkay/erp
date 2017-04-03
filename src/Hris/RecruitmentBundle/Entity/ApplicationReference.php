@@ -5,10 +5,10 @@ namespace Hris\RecruitmentBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
 
-use Catalyst\ContactBundle\Entity\Phone;
+use Gist\ContactBundle\Entity\Phone;
 use Hris\RecruitmentBundle\Entity\Application;
 
 use DateTime;
@@ -31,7 +31,7 @@ class ApplicationReference
     protected $app_id;
 
     /** 
-     * @ORM\ManyToOne(targetEntity="\Catalyst\ContactBundle\Entity\Phone") 
+     * @ORM\ManyToOne(targetEntity="\Gist\ContactBundle\Entity\Phone") 
      * @ORM\JoinColumn(name="phone_id", referencedColumnName="id")
      */
     protected $phone; 

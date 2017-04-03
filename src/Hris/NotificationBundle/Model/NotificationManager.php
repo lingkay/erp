@@ -3,9 +3,9 @@ namespace Hris\NotificationBundle\Model;
 
 use Doctrine\ORM\EntityManager;
 
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\NotificationBundle\Entity\NotificationQueue;
-use Catalyst\NotificationBundle\Model\NotificationManager as Manager;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Entity\NotificationQueue;
+use Gist\NotificationBundle\Model\NotificationManager as Manager;
 
 use Hris\AdminBundle\Entity\Department;
 use Hris\WorkforceBundle\Entity\Employee;

@@ -1,7 +1,0 @@
-parameters:
-#    catalyst_report.example.class: Catalyst\ReportBundle\Example
-
-services:
-#    catalyst_report.example:
-#        class: %catalyst_report.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]

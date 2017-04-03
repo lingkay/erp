@@ -2,11 +2,11 @@
 
 namespace Hris\AdminBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\AdminBundle\Entity\Department;
 
 class DepartmentController extends CrudController
@@ -80,7 +80,7 @@ class DepartmentController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Department Name', 'getName', 'name'),
             $grid->newColumn('Department Head', 'getDeptHeadName', 'name'),
@@ -111,7 +111,7 @@ class DepartmentController extends CrudController
     }
     // protected function getGridJoins()
     // {
-    //     $grid = $this->get('catalyst_grid');
+    //     $grid = $this->get('gist_grid');
     //     return array(
     //         $grid->newJoin('e', 'dept_head', 'getDeptHead'),
     //     );
@@ -131,8 +131,8 @@ class DepartmentController extends CrudController
         if($obj->getDeptHead() != NULL)
         {
             $employee_id = $obj->getDeptHead()->getID();
-            $employee = $em->getRepository('CatalystUserBundle:User')->findOneBy(array("employee" => $employee_id));
-            $group = $em->getRepository('CatalystUserBundle:Group')->findOneBy(array("name" => "dept_head"));
+            $employee = $em->getRepository('GistUserBundle:User')->findOneBy(array("employee" => $employee_id));
+            $group = $em->getRepository('GistUserBundle:Group')->findOneBy(array("name" => "dept_head"));
 
             $emp_groups = explode(',', $employee->getGroupsText());
             if(!in_array("dept_head", $emp_groups))

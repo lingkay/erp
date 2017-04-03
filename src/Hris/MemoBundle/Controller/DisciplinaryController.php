@@ -3,13 +3,13 @@
 namespace Hris\MemoBundle\Controller;
 
 
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\MemoBundle\Entity\Memo;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 use Hris\MemoBundle\Controller\MemoController as Controller;
 use DateTime;
 
@@ -159,7 +159,7 @@ class DisciplinaryController extends Controller
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
 
         return array(
             $grid->newColumn('Date Issued','getDateIssued','id'),
@@ -171,8 +171,8 @@ class DisciplinaryController extends Controller
     public function printPdfAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         $obj = $em->getRepository($this->repo)->find($id);
   
         if ($conf->get('hris_com_logo') != '') 
@@ -198,13 +198,13 @@ class DisciplinaryController extends Controller
 
         if ($conf->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
 
         $this->padFormParams($params, $obj);
         $twig = "HrisMemoBundle:Disciplinary:print.html.twig";
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());
@@ -212,7 +212,7 @@ class DisciplinaryController extends Controller
 
     public function updateStatusAction($id = null, $type = null, $status = null)
     {
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $settings = $this->get('hris_settings');
         $wf = $this->get('hris_workforce');
         $em = $this->getDoctrine()->getManager();

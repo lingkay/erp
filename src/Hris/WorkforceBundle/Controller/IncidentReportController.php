@@ -2,21 +2,21 @@
 
 namespace Hris\WorkforceBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 
 use Doctrine\ORM\EntityManager;
 
 use Hris\WorkforceBundle\Entity\Reimbursement;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use Hris\WorkforceBundle\Entity\IncidentReport;
 use Hris\WorkforceBundle\Entity\Employee;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 
 use DateTime;
 
@@ -47,7 +47,7 @@ class IncidentReportController extends CrudController
     protected function padFormParams(&$params, $object = NULL)
     {
         $em = $this->getDoctrine()->getManager();
-        $config = $this  ->get('catalyst_configuration');
+        $config = $this  ->get('gist_configuration');
 
         $words = explode(" ", $config->get('hris_com_info_company_name'));
         $acronym = "";
@@ -129,7 +129,7 @@ class IncidentReportController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array (
             $grid->newJoin('d','department','getDepartment'),
             $grid->newJoin('e','employee','getEmployee'),
@@ -139,7 +139,7 @@ class IncidentReportController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Date of Incident', 'getDateHappened', 'date_happened', 'o', array($this,'formatDate')),
             $grid->newColumn('Involved Department', 'getName', 'name', 'd'),

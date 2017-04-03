@@ -1,0 +1,65 @@
+gist_menu:
+    bundle_menu:
+        - GistDashboardBundle
+        #- GistAdminBundle
+        - HrisAdminBundle
+        - GistConfigurationBundle
+        - GistUserBundle
+        - HrisBiometricsBundle
+        - HrisWorkforceBundle
+        - HrisRemunerationBundle
+        - HrisRecruitmentBundle
+        #- HrisEmployeeSatisfactionBundle
+        #- HrisTrainingBundle
+        - HrisCompanyOverviewBundle
+        - HrisPayrollBundle
+        - HrisProfileBundle
+        #- HrisArchivesBundle
+        - HrisReportBundle
+
+gist_user:
+    acl_entries:
+        - id: HrisDashboardBundle
+          label: Dashboard
+        # - id: GistAdminBundle
+        #   label: Administration
+        - id: GistConfigurationBundle
+          label: Settings
+        - id: GistUserBundle
+          label: User
+        - id: HrisAdminBundle
+          label: HR Settings
+        - id: HrisWorkforceBundle
+          label: WorkForce Management
+        - id: HrisRemunerationBundle
+          label: Remuneration
+        - id: HrisRecruitmentBundle
+          label: Recruitment
+        - id: HrisEmployeeSatisfactionBundle
+          label: Employee Satisfaction
+        - id: HrisTrainingBundle
+          label: Trainings
+        - id: HrisCompanyOverviewBundle
+          label: Company Overview
+        - id: HrisPayrollBundle
+          label: Payroll
+        - id: HrisProfileBundle
+          label: Profile
+        - id: HrisArchivesBundle
+          label: Archives
+        - id: HrisReportBundle
+          label: Report
+
+gist_configuration:
+    bundles:
+        - GistTemplateBundle
+        - HrisAdminBundle
+        # - HrisWorkforceBundle
+        # - HrisProfileBundle
+        # - HrisPayrollBundle
+
+gist_media:
+    upload_storage:
+        type: "local_file"
+        folder: "%kernel.root_dir%/../web/uploads"
+#        base_url: null

@@ -3,7 +3,7 @@
 namespace Hris\DashboardBundle\Controller;
 
 // use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Catalyst\TemplateBundle\Model\CrudController as Controller;
+use Gist\TemplateBundle\Model\CrudController as Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 
@@ -46,7 +46,7 @@ class SchedulesController extends Controller
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Time', '', ''),
             $grid->newColumn('Date', '', ''),

@@ -3,7 +3,7 @@
 namespace Hris\DashboardBundle\Controller;
 
 // use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Catalyst\TemplateBundle\Model\CrudController as Controller;
+use Gist\TemplateBundle\Model\CrudController as Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 

@@ -1,0 +1,16 @@
+## Departments
+
+cat_notification_get:
+    path:  /all
+    methods: [GET]
+    defaults: { _controller: GistNotificationBundle:Notification:notifications }
+
+cat_notification_read:
+    path:  /read/{id}
+    methods: [GET]
+    defaults: { _controller: GistNotificationBundle:Notification:setRead }
+
+cat_notification_index:
+    path:  /
+    methods: [GET]
+    defaults: { _controller: GistNotificationBundle:Notification:index }

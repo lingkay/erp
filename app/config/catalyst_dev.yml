@@ -1,6 +1,0 @@
-imports:
-    - { resource: catalyst.yml }
-
-catalyst_media:
-    upload_storage:
-        base_url: "http://lilys.dev/uploads"

@@ -2,7 +2,7 @@
 
 namespace Hris\DashboardBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController as Controller;
+use Gist\TemplateBundle\Model\CrudController as Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Hris\WorkforceBundle\Entity\Request;
 use DateTime;
@@ -46,7 +46,7 @@ class PendingRequestController extends Controller
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
         $grid->newJoin('emp','employee','getEmployee'),
         );
@@ -54,7 +54,7 @@ class PendingRequestController extends Controller
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Date Filed', 'getDateFiled', 'date_filed','o',array($this,'formatDate')),
             $grid->newColumn('Employee Name', 'getDisplayName', 'last_name','emp'),
@@ -90,7 +90,7 @@ class PendingRequestController extends Controller
         $dfrom = $date_from=='null'? new DateTime():new DateTime($date_from.'00:00:00');
         $dto = $date_to=='null'? new DateTime():new DateTime($date_to.'23:59:59');
 
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
 
         $qry[] = "(o.date_filed <= '".$dto->format('Y-m-d H:i:s')."' AND o.date_filed >= '".$dfrom->format('Y-m-d H:i:s')."')";

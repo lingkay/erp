@@ -1,0 +1,63 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Notifications</div>
+                <div class="actions">
+                </div>
+            </div>
+           <div class="portlet-body form">
+                <form method="post" class="form-horizontal" id="notification-body">
+                    <div class="form-body">
+                        <table class="table table-striped">
+                        {% for notification in notifications %}
+                            {% if notification.isRead == false %}
+                            <tr>
+                                <td>
+                                    {% if notification.getNotification.getType == 'UPDATE' %}
+                                        <span class="label label-sm label-icon label-success"><i class="fa fa-plus"></i></span>
+                                    {% elseif notification.getNotification.getType == 'ALERT' %}
+                                        <span class="label label-sm label-icon label-warning "><i class="fa fa-bell-o"></i></span>
+                                    {% elseif notification.getNotification.getType == 'CALENDAR' %}
+                                        <span class="label label-sm label-icon label-info "><i class="fa fa-calendar"></i></span>
+                                    {% endif %}
+                                    <a href="javascript:void(0)" class="notification-link" data-id="{{notification.getID}}" data-link="{{notification.getNotification.getLink}}" >{{notification.getNotification.getMessage}}</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+$(document).ready(function() {
+
+    $("#notification-body").on('click','.notification-link',function(){
+        var ntf = $(this).data();
+        $.ajax({
+                type: "GET",
+                cache: false,
+                url: '/notifications/read/'+ntf.id,
+                dataType: "json",
+                success: function (res) {
+                    window.location.href = ntf.link;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                }
+         });
+
+    });
+});
+</script>
+{% endblock %}

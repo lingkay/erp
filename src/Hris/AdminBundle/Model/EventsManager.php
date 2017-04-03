@@ -4,8 +4,8 @@ namespace Hris\AdminBundle\Model;
 
 use Doctrine\ORM\EntityManager;
 
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
 use DateTime;
 
 class EventsManager

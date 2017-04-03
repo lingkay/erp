@@ -2,21 +2,21 @@
 
 namespace Hris\WorkforceBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 
 use Doctrine\ORM\EntityManager;
 
 use Hris\WorkforceBundle\Entity\Reimbursement;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use Hris\WorkforceBundle\Entity\Leave;
 use Hris\WorkforceBundle\Entity\Employee;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 use Hris\AdminBundle\Entity\Leave\LeaveType;
 
 use DateTime;
@@ -195,7 +195,7 @@ class LeaveController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array (
             $grid->newJoin('e','employee','getEmployee'),
             // $grid->newJoin('l','leave_type','getLeaveType'),
@@ -204,7 +204,7 @@ class LeaveController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Employee Name', 'getDisplayName', 'last_name', 'e'),
             $grid->newColumn('Leave Type', 'getEmpLeaveName', 'emp_leave'),
@@ -234,7 +234,7 @@ class LeaveController extends CrudController
     {
         $setting = $this->get('hris_settings');
         $wf = $this->get('hris_workforce');
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
 
         if($is_new)
         {

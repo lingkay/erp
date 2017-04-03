@@ -1,0 +1,30 @@
+{
+    "name": "gist/user-bundle",
+    "type": "symfony-bundle",
+    "description": "Gist UserBundle",
+    "keywords": ["Gist User Bundle"],
+    "homepage": "http://jankstudio.com",
+    "license": "closed",
+    "authors": [
+        {
+            "name": "Kendrick Chan",
+            "email": "kc@jankstudio.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "~2.3",
+        "symfony/twig-bundle": "~2.3",
+        "doctrine/doctrine-bundle": "*",
+        "symfony/yaml": "~2.3"
+    },
+    "autoload": {
+        "psr-4": { "Gist\\UserBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
+}

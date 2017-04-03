@@ -2,8 +2,8 @@
 
 namespace Hris\AdminBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,8 +11,8 @@ use Doctrine\ORM\EntityManager;
 
 use Hris\AdminBundle\Entity\Location;
 
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
-use Catalyst\ContactBundle\Entity\Address;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Gist\ContactBundle\Entity\Address;
 
 class LocationController extends CrudController
 {
@@ -65,7 +65,7 @@ class LocationController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('add', 'address', 'getAddress','left'),
         );
@@ -73,7 +73,7 @@ class LocationController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Location', 'getName', 'name'),
             $grid->newColumn('Unit/Number', 'getName', 'name','add'),

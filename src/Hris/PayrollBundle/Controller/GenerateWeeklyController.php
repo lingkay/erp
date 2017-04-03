@@ -2,7 +2,7 @@
 
 namespace Hris\PayrollBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\BaseController;
+use Gist\TemplateBundle\Model\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
@@ -12,8 +12,8 @@ use Hris\PayrollBundle\Entity\PayPeriod;
 use Hris\PayrollBundle\Entity\PayDeductionEntry;
 use Hris\PayrollBundle\Entity\PayPayrollPeriod;
 use Hris\PayrollBundle\Entity\PayEarningEntry;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use Hris\PayrollBundle\Entity\PayTax;
 
@@ -32,7 +32,7 @@ class GenerateWeeklyController extends BaseController
 
     public function indexAction()
     {
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
 
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
@@ -71,7 +71,7 @@ class GenerateWeeklyController extends BaseController
         $payroll = $this->get('hris_payroll_compute');
         $pm = $this->get('hris_payroll');
         $settings = $this->get('hris_settings');
-        $conf = $this->get('catalyst_configuration');
+        $conf = $this->get('gist_configuration');
       
         $sched = $em->getRepository('HrisPayrollBundle:PayPeriod')->findOneByName(PayPeriod::TYPE_WEEKLY);
         // if($sched->getName() == PayPeriod::TYPE_SEMIMONTHLY){
@@ -110,7 +110,7 @@ class GenerateWeeklyController extends BaseController
 
     protected function notify($date_from, $date_to, $period)
     {
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $settings = $this->get('hris_settings');
         $hr = $settings->getDepartment($config->get('hris_hr_department'));
 
@@ -141,7 +141,7 @@ class GenerateWeeklyController extends BaseController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Name', '', ''),
             $grid->newColumn('Gross Pay', '', ''),
@@ -191,13 +191,13 @@ class GenerateWeeklyController extends BaseController
        
         $twig = "HrisPayrollBundle:GenerateWeekly:print.html.twig";
         $em = $this->getDoctrine()->getManager();
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
 
         $params = $this->padDetailsParam($id);
         // $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
         // $params['company_website'] = $conf->get('hris_com_info_website');
-        // $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+        // $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         
         if ($conf->get('hris_com_logo') != '') 
         {
@@ -215,7 +215,7 @@ class GenerateWeeklyController extends BaseController
         }
 
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

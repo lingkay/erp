@@ -2,15 +2,15 @@
 
 namespace Hris\WorkforceBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\WorkforceBundle\Entity\Appraisal;
 use Hris\WorkforceBundle\Entity\Employee;
 use Hris\WorkforceBundle\Entity\Evaluator;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -391,7 +391,7 @@ class AppraisalController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Employee Name', 'getEmployeeName', 'employee'),
             $grid->newColumn('Type', 'getType', 'type'),

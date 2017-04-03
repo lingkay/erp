@@ -2,8 +2,8 @@
 
 namespace Hris\WorkforceBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
@@ -73,7 +73,7 @@ class OnboardController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
 
         return array(
             $grid->newJoin('j', 'job_title', 'getJobTitle'),
@@ -85,7 +85,7 @@ class OnboardController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Employee Name', 'getDisplayName', 'last_name'),
             $grid->newColumn('Job Title', 'getName', 'name','j'),

@@ -7,7 +7,7 @@ use Hris\PayrollBundle\Entity\PayDeductionEntry;
 use Hris\RemunerationBundle\Entity\Cashbond;
 use Hris\RemunerationBundle\Entity\CashbondTransaction;
 
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 
 use DateTime;
 

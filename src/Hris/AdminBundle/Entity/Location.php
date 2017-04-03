@@ -5,10 +5,10 @@ namespace Hris\AdminBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\HasName;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
-use Catalyst\ContactBundle\Template\Entity\HasAddress;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\HasName;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+use Gist\ContactBundle\Template\Entity\HasAddress;
 
 use stdClass;
 

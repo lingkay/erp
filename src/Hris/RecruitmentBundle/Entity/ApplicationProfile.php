@@ -5,10 +5,10 @@ namespace Hris\RecruitmentBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
 
-use Catalyst\ContactBundle\Entity\Phone;
+use Gist\ContactBundle\Entity\Phone;
 
 use DateTime;
 use stdClass;
@@ -29,25 +29,25 @@ class ApplicationProfile
     protected $app_id;
 
     /** 
-     * @ORM\OneToOne(targetEntity="\Catalyst\ContactBundle\Entity\Phone") 
+     * @ORM\OneToOne(targetEntity="\Gist\ContactBundle\Entity\Phone") 
      * @ORM\JoinColumn(name="my_phone_id", referencedColumnName="id")
      */
     protected $my_number;
 
     /** 
-     * @ORM\OneToOne(targetEntity="\Catalyst\ContactBundle\Entity\Phone") 
+     * @ORM\OneToOne(targetEntity="\Gist\ContactBundle\Entity\Phone") 
      * @ORM\JoinColumn(name="contact_phone_id", referencedColumnName="id")
      */
     protected $contact_number;
 
     /** 
-     * @ORM\OneToOne(targetEntity="\Catalyst\ContactBundle\Entity\Address") 
+     * @ORM\OneToOne(targetEntity="\Gist\ContactBundle\Entity\Address") 
      * @ORM\JoinColumn(name="home_address", referencedColumnName="id")
      */
     protected $home_address;
 
     /** 
-     * @ORM\OneToOne(targetEntity="\Catalyst\ContactBundle\Entity\Address") 
+     * @ORM\OneToOne(targetEntity="\Gist\ContactBundle\Entity\Address") 
      * @ORM\JoinColumn(name="permanent_address", referencedColumnName="id")
      */
     protected $permanent_address;
@@ -284,7 +284,7 @@ class ApplicationProfile
         return $this->last_name.', '.$this->first_name;
     }
 
-    public function setHomeAddress(\Catalyst\ContactBundle\Entity\Address $add)
+    public function setHomeAddress(\Gist\ContactBundle\Entity\Address $add)
     {
         $this->home_address = $add;
         return $this;
@@ -295,7 +295,7 @@ class ApplicationProfile
         return $this->home_address;
     }
 
-    public function setPermanentAddress(\Catalyst\ContactBundle\Entity\Address $add)
+    public function setPermanentAddress(\Gist\ContactBundle\Entity\Address $add)
     {
         $this->permanent_address = $add;
         return $this;

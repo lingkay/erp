@@ -1,0 +1,118 @@
+gist_report_stock_summary:
+    path: /stock
+    defaults: { _controller: GistReportBundle:InventoryStock:index }
+
+gist_report_stock_csv:
+    path: /stock/csv
+    defaults: { _controller: GistReportBundle:InventoryStock:csv }
+    
+gist_report_stock_print:
+    path: /stock/print
+    defaults: { _controller: GistReportBundle:InventoryStock:print }  
+    
+        
+gist_report_compare_summary:
+    path: /comparative
+    defaults: { _controller: GistReportBundle:Comparative:index }
+
+gist_report_compare_csv:
+    path: /comparative/csv
+    defaults: { _controller: GistReportBundle:Comparative:csv }
+    
+gist_report_compare_print:
+    path: /comparative/print
+    defaults: { _controller: GistReportBundle:Comparative:print }    
+    
+    
+gist_report_damaged_summary:
+    path: /damaged
+    defaults: { _controller: GistReportBundle:Damaged:index }
+    
+gist_report_damaged_csv:
+    path: /damaged/csv
+    defaults: { _controller: GistReportBundle:Damaged:csv }
+    
+gist_report_damaged_print:
+    path: /damaged/print
+    defaults: { _controller: GistReportBundle:Damaged:print }       
+    
+    
+gist_report_po_summary:
+    path: /posummary
+    defaults: { _controller: GistReportBundle:Po:index }
+
+gist_report_po_csv:
+    path: /posummary/csv
+    defaults: { _controller: GistReportBundle:Po:csv }
+    
+gist_report_po_print:
+    path: /posummary/print
+    defaults: { _controller: GistReportBundle:Po:print }    
+    
+    
+gist_report_prcadjust_summary:
+    path: /prcadjust
+    defaults: { _controller: GistReportBundle:Adjust:index }
+    
+gist_report_prcadjust_csv:
+    path: /prcadjust/csv
+    defaults: { _controller: GistReportBundle:Adjust:csv }
+    
+gist_report_prcadjust_print:
+    path: /prcadjust/print
+    defaults: { _controller: GistReportBundle:Adjust:print }    
+    
+    
+gist_report_dr_summary:
+    path: /drsummary
+    defaults: { _controller: GistReportBundle:Dr:index }
+    
+gist_report_dr_print:
+    path: /drsummary/print
+    defaults: { _controller: GistReportBundle:Dr:print }
+
+gist_report_dr_csv:
+    path: /drsummary/csv
+    defaults: { _controller: GistReportBundle:Dr:csv }   
+    
+    
+gist_report_returned_summary:
+    path: /returnedsummary
+    defaults: { _controller: GistReportBundle:Returned:index }
+    
+gist_report_returned_print:
+    path: /returnedsummary/print
+    defaults: { _controller: GistReportBundle:Returned:print }
+
+gist_report_returned_csv:
+    path: /returnedsummary/csv
+    defaults: { _controller: GistReportBundle:Returned:csv }
+
+
+gist_report_balance_summary:
+    path: /balancesummary
+    defaults: { _controller: GistReportBundle:Balance:index }
+
+gist_report_balance_print:
+    path: /balancesummary/print
+    defaults: { _controller: GistReportBundle:Balance:print }
+
+
+gist_report_balance_csv:
+    path: /balancesummary/csv
+    defaults: { _controller: GistReportBundle:Balance:csv }
+
+
+gist_report_insufficient_summary:
+    path: /insufficient
+    defaults: { _controller: GistReportBundle:Insufficient:index }
+
+
+gist_report_prodfreq_summary:
+    path: /prodfrequency
+    defaults: { _controller: GistReportBundle:Frequency:index }
+
+
+gist_report_po_pdf:
+    path: /pdf
+    defaults: { _controller: GistReportBundle:Po:report }

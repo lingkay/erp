@@ -2,14 +2,14 @@
 
 namespace Hris\MemoBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\MemoBundle\Entity\Memo;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
 use DateTime;
 
 class MemoController extends CrudController
@@ -135,7 +135,7 @@ class MemoController extends CrudController
 
     public function notifyEmployee($employee_id, $memo_id, $message)
     {
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $settings = $this->get('hris_settings');
         
         $emp_obj = $settings->getEmployee($employee_id);
@@ -156,7 +156,7 @@ class MemoController extends CrudController
 
     public function notifyApprover($employee_id, $memo_id, $message)
     {
-        $config = $this->get('catalyst_configuration');
+        $config = $this->get('gist_configuration');
         $settings = $this->get('hris_settings');
         
         $emp_obj = $settings->getEmployee($employee_id);
@@ -228,7 +228,7 @@ class MemoController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
 
         return array(
             $grid->newColumn('Date Issued','getDateIssued','id'),

@@ -5,7 +5,7 @@ namespace Hris\WorkforceBundle\Model;
 use Doctrine\ORM\EntityManager;
 use Hris\WorkforceBundle\Entity\Request;
 use Hris\AdminBundle\Model\SettingsManager;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 
 use DateTime;
 

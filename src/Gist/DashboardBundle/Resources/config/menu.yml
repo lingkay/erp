@@ -1,0 +1,5 @@
+menu_items:
+    - id: cat_dashboard
+      acl: cat_dashboard.menu
+      label: Dashboard
+      icon: fa-dashboard

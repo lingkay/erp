@@ -1,0 +1,3 @@
+Gist_menu_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: GistMenuBundle:Default:index }

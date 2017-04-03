@@ -2,7 +2,7 @@
 
 namespace Hris\PayrollBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 
@@ -35,7 +35,7 @@ class PaySSSRateController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array( 
             $grid->newColumn('Minimum Amount', 'getMinimum', 'min_amount'),
             $grid->newColumn('Maximum Amount', 'getMaximum', 'max_amount'),

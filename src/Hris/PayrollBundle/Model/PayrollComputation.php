@@ -17,7 +17,7 @@ use Hris\PayrollBundle\Entity\Pay13th;
 use Hris\PayrollBundle\Entity\Pay13thEntry;
 use Hris\WorkforceBundle\Entity\Attendance;
 use Hris\AdminBundle\Entity\Benefit;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 
 use Hris\PayrollBundle\Model\Deductions\SSSDeduction;
 use Hris\PayrollBundle\Model\Deductions\PhilhealthDeduction;
@@ -220,7 +220,7 @@ class PayrollComputation
 
     public function getAttendanceEarnings($employee, $pay_period)
     {
-        $config = $this->container->get('catalyst_configuration');
+        $config = $this->container->get('gist_configuration');
         $ot_threshold = $config->get('hris_setting_overtime_threshold');
         
 
@@ -575,7 +575,7 @@ class PayrollComputation
     public function generatePayroll($schedule, $date_from, $date_to)
     {
         $wm = $this->container->get('hris_workforce');
-        $config = $this->container->get('catalyst_configuration');
+        $config = $this->container->get('gist_configuration');
         //$pm = $this->container->get('hris_payroll');
                 
 

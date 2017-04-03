@@ -5,13 +5,13 @@ namespace Hris\WorkforceBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\HasName;
-use Catalyst\CoreBundle\Template\Entity\HasCode;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
-use Catalyst\MediaBundle\Template\Entity\HasUpload;
-use Catalyst\ContactBundle\Template\Entity\HasAddress;
-use Catalyst\ContactBundle\Template\Entity\HasPhones;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\HasName;
+use Gist\CoreBundle\Template\Entity\HasCode;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+use Gist\MediaBundle\Template\Entity\HasUpload;
+use Gist\ContactBundle\Template\Entity\HasAddress;
+use Gist\ContactBundle\Template\Entity\HasPhones;
 use Hris\WorkforceBundle\Entity\EmployeeChecklist;
 
 use stdClass;

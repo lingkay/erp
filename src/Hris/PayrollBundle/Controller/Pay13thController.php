@@ -2,7 +2,7 @@
 
 namespace Hris\PayrollBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
@@ -58,7 +58,7 @@ class Pay13thController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             // $grid->newJoin('period', 'period', 'getPayrollPeriod', 'left'),
             $grid->newJoin('employee', 'employee', 'getEmployee'),
@@ -68,7 +68,7 @@ class Pay13thController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array( 
             $grid->newColumn('Employee', 'getDisplayName', 'last_name','employee'),
             $grid->newColumn('Year', 'getYear', 'year','o'),
@@ -122,7 +122,7 @@ class Pay13thController extends CrudController
 
     protected function generatePeriod($employee, $start, $end){
          $pc = $this->get('hris_payroll_compute');
-         $conf = $this->get('catalyst_configuration');
+         $conf = $this->get('gist_configuration');
          $schedule = $employee->getPaySchedule();
          $valid = false;
 

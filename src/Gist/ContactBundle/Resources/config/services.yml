@@ -1,0 +1,5 @@
+services:
+    gist_contact:
+        class: Gist\ContactBundle\Model\ContactManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"

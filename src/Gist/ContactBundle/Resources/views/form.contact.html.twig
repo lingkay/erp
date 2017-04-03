@@ -1,0 +1,20 @@
+{% import "GistTemplateBundle::form.html.twig" as f %}
+
+<h4 class="form-section">Name</h4>
+{% set contact_type = object.getContactType is not null? object.getContactType.getName: '' %}
+{{ f.group_select('Contact Type', 'contact_type', contact_opts, object.getContactType is not null? object.getContactType.getID: null, 3, 4) }}
+<div id="contact-individual" class='{{ contact_type == "Individual" or contact_type == ''?'':'hidden'}}'>
+{{ f.group_text('First Name', 'first_name', object.getFirstName, 3, 4) }}
+{{ f.group_text('Middle Name', 'middle_name', object.getMiddleName, 3, 4) }}
+{{ f.group_text('Last Name', 'last_name', object.getLastName, 3, 4) }}
+{{ f.group_text('Salutation', 'salutation', object.getSalutation, 3, 4) }}
+</div>
+<div id="contact-company" class='{{ contact_type == "Company"?'':'hidden'}}'>
+{{ f.group_text('Company Name', 'company_name', object.getFirstName, 3, 4) }}
+</div>
+<h4 class="form-section">Contact Information</h4>
+{{ f.group_email('Email', 'email', object.getEmail, 3, 4) }}
+
+{% include "GistContactBundle::form.has_addresses.html.twig" %}
+
+{% include "GistContactBundle::form.has_phones.html.twig" %}

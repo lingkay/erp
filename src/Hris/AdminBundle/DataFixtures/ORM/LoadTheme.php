@@ -18,7 +18,7 @@ class LoadTheme extends AbstractFixture implements OrderedFixtureInterface, Cont
      */
     public function load(ObjectManager $em)
     {
-        $conf = $this->container->get('catalyst_configuration');
+        $conf = $this->container->get('gist_configuration');
 
         $conf->set('cat_color_header', '#000');
         $conf->set('cat_color_primary', '#0C4A08');

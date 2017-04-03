@@ -1,0 +1,8 @@
+cat_media_upload_file:
+    path:     /upload
+    defaults: { _controller: GistMediaBundle:Upload:upload }
+
+
+cat_media_upload_doc:
+    path:     /upload_doc
+    defaults: { _controller: GistMediaBundle:Upload:uploadDoc }

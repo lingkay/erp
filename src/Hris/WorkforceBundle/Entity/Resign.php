@@ -5,9 +5,9 @@ namespace Hris\WorkforceBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Catalyst\CoreBundle\Template\Entity\HasGeneratedID;
-use Catalyst\CoreBundle\Template\Entity\TrackCreate;
-use Catalyst\MediaBundle\Template\Entity\HasUpload;
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+use Gist\MediaBundle\Template\Entity\HasUpload;
 
 use DateTime;
 use stdClass;
@@ -34,7 +34,7 @@ class Resign
 	protected $employee;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Catalyst\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="approver_id", referencedColumnName="id")
      */
     protected $approved_by;

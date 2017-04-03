@@ -2,11 +2,11 @@
 
 namespace Hris\CompanyOverviewBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Hris\WorkforceBundle\Entity\Employee;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 
 class OrgChartController extends CrudController
 {

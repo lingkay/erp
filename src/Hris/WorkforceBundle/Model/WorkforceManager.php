@@ -3,7 +3,7 @@
 namespace Hris\WorkforceBundle\Model;
 
 use Doctrine\ORM\EntityManager;
-use Catalyst\UserBundle\Entity\User;
+use Gist\UserBundle\Entity\User;
 use Hris\AdminBundle\Entity\Benefit;
 use Hris\AdminBundle\Model\SettingsManager;
 use Hris\WorkforceBundle\Entity\Employee;
@@ -14,8 +14,8 @@ use Hris\WorkforceBundle\Entity\EmployeeChecklist;
 use Hris\WorkforceBundle\Entity\EmployeeBenefits;
 use Hris\WorkforceBundle\Entity\EmployeeLeaves;
 use Hris\WorkforceBundle\Entity\SalaryHistory;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\NotificationBundle\Model\NotificationEvent;
 use DateTime;
 
 class WorkforceManager
@@ -58,7 +58,7 @@ class WorkforceManager
     public function generateUser(Employee $employee)
     {
         $user = new User();
-        $conf = $this->container->get('catalyst_configuration');
+        $conf = $this->container->get('gist_configuration');
         $setting = $this->container->get('hris_settings');
         $user->setName($employee->getFirstName().' '.$employee->getLastName());
         $user->setUsername($this->generateUsername($employee));
@@ -80,10 +80,10 @@ class WorkforceManager
         $group = [];
         if($employee->getDepartment() === $hr)
         {
-            $group[] = $this->em->getRepository('CatalystUserBundle:Group')->findOneBy(array("name" => "hr_admin"));
+            $group[] = $this->em->getRepository('GistUserBundle:Group')->findOneBy(array("name" => "hr_admin"));
         }
 
-        $group[] = $this->em->getRepository('CatalystUserBundle:Group')->findOneBy(array("name" => "employee"));
+        $group[] = $this->em->getRepository('GistUserBundle:Group')->findOneBy(array("name" => "employee"));
 
         foreach ($group as $grp) {
             $user->addGroup($grp);
@@ -218,7 +218,7 @@ class WorkforceManager
 
     protected function checkUsername($username)
     {
-        $employees = $this->em->getRepository("CatalystUserBundle:User")->findByUsername($username);
+        $employees = $this->em->getRepository("GistUserBundle:User")->findByUsername($username);
         if (count($employees) > 0) 
         {
             return true;
@@ -250,7 +250,7 @@ class WorkforceManager
 
         foreach ($employees as $employee) 
         {
-            $config = $this->container->get('catalyst_configuration');
+            $config = $this->container->get('gist_configuration');
             $settings = $this->container->get('hris_settings');
             $hr_dept = $config->get('hris_hr_department');
 
@@ -403,7 +403,7 @@ class WorkforceManager
         $emp = $this->getEmployee($id);
         $um = $this->container->get('fos_user.user_manager');
 
-        $user = $this->em->getRepository('CatalystUserBundle:User')
+        $user = $this->em->getRepository('GistUserBundle:User')
             ->find($emp->getUser()->getId());
 
         $password = $this->generatePassword();

@@ -1,7 +1,7 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-#   - { resource: catalyst.yml }
+#   - { resource: gist.yml }
 
 framework:
     #esi:             ~
@@ -31,12 +31,12 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     globals:
-        conf: "@catalyst_configuration"
+        conf: "@gist_configuration"
 # Assetic Configuration
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [ CatalystTemplateBundle ]
+    bundles:        [ GistTemplateBundle ]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
@@ -84,7 +84,7 @@ swiftmailer:
 fos_user:
     db_driver: orm
     firewall_name: main
-    user_class: Catalyst\UserBundle\Entity\User
+    user_class: Gist\UserBundle\Entity\User
 
 ensepar_html2pdf:
     orientation: P

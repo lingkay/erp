@@ -1,0 +1,9 @@
+services:
+    gist_notify:
+        class: Gist\NotificationBundle\Model\NotificationManager
+        arguments: ["@doctrine.orm.entity_manager", "@service_container","@security.context" ]
+    kernel.listener.notification.event:
+        class: Gist\NotificationBundle\Model\NotificationListener
+        arguments: ["@service_container"]
+        tags:
+            - { name: kernel.event_listener, event: notification.event, method: onNotify }

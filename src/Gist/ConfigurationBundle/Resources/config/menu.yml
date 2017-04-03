@@ -1,0 +1,5 @@
+menu_items:
+    - id: cat_config_index
+      acl: cat_config.menu
+      label: Settings
+      parent: menu_admin

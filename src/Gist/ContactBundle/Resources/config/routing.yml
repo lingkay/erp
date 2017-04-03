@@ -1,0 +1,29 @@
+cnt_address_ajax_add:
+    path:   /address/ajax/add
+    methods: [POST]
+    defaults: { _controller: GistContactBundle:Address:ajaxAdd }
+
+cnt_phone_ajax_add:
+    path:   /phone/ajax/add
+    methods: [POST]
+    defaults: { _controller: GistContactBundle:Phone:ajaxAdd }
+
+cnt_address_delete:
+    path:   /address/delete/{id}/{supp_id}
+    methods: [GET]
+    defaults: { _controller: GistContactBundle:Address:deleteAddress }
+
+cnt_phone_delete:
+    path:   /phone/delete/{id}/{supp_id}
+    methods: [GET]
+    defaults: { _controller: GistContactBundle:Phone:deletePhone }
+
+cnt_contact_person_ajax_add:
+    path:   /contact/ajax/add
+    methods: [POST]
+    defaults: { _controller: GistContactBundle:ContactPerson:ajaxAdd }
+
+cnt_contact_person_delete:
+    path:   /contact/delete/{id}/{supp_id}
+    methods: [GET]
+    defaults: { _controller: GistContactBundle:ContactPerson:deleteContactPerson }

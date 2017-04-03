@@ -2,12 +2,12 @@
 
 namespace Hris\WorkforceBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Hris\WorkforceBundle\Entity\IssuedProperty;
 use Hris\WorkforceBundle\Entity\Employee;
 
@@ -70,7 +70,7 @@ class IssuedPropertyController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Item Name', 'getItemName', 'item_name'),
             $grid->newColumn('Issued To', 'getDisplayName', 'first_name', 'e'),
@@ -81,7 +81,7 @@ class IssuedPropertyController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('e', 'employee', 'getEmployee'),
         );
@@ -131,7 +131,7 @@ class IssuedPropertyController extends CrudController
         else
         {
             $em = $this->getDoctrine()->getManager();
-            $media = $this->get('catalyst_media');
+            $media = $this->get('gist_media');
 
             $emp = $em->getRepository('HrisWorkforceBundle:Employee')->find($data['emp']);
 
@@ -265,7 +265,7 @@ class IssuedPropertyController extends CrudController
 
     protected function getGridIssued()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Item Name', 'getItemName', 'item_name'),
             $grid->newColumn('Issued To', 'getEmployeeName', 'name'),
@@ -276,7 +276,7 @@ class IssuedPropertyController extends CrudController
 
     protected function setupGridIssued()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $data = $this->getRequest()->query->all();
         $em = $this->getDoctrine()->getManager();
 
@@ -304,7 +304,7 @@ class IssuedPropertyController extends CrudController
         $gl = $this->setupGridIssued();
         $qry = array();
 
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
         // print_r($id .' '. $item_name);
         if ($item_name != null and $item_name != 'null')
@@ -346,8 +346,8 @@ class IssuedPropertyController extends CrudController
            ->getQuery()
            ->getResult();
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -363,20 +363,20 @@ class IssuedPropertyController extends CrudController
             $params['logo'] = '';
         }
 
-        $config               = $this  ->get('catalyst_configuration');
+        $config               = $this  ->get('gist_configuration');
         $params['company_name'] = strtoupper($config->get('hris_com_info_company_name'));
         $params['company_website'] = $config->get('hris_com_info_website');
 
         if ($config->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($config->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($config->get('hris_com_info_company_address'));
         }
 
 
         $params['properties'] = $properties;
         //$params['details'] = json_decode($obj->getAddtlDetails());
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());
@@ -396,8 +396,8 @@ class IssuedPropertyController extends CrudController
 
         $property = $em->getRepository('HrisWorkforceBundle:IssuedProperty')->find($id);
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -435,7 +435,7 @@ class IssuedPropertyController extends CrudController
 
 
 
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

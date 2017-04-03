@@ -2,16 +2,16 @@
 
 namespace Hris\ReportBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 use Hris\RemunerationBundle\Entity\Loan;
 use Hris\RemunerationBundle\Entity\LoanPayment;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -118,7 +118,7 @@ class LoanReportController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('emp','employee','getEmployee'),
         );
@@ -127,7 +127,7 @@ class LoanReportController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Date','getDateFiledDisplay','date_filed'),
             $grid->newColumn('Employee','getDisplayName','last_name','emp'),
@@ -316,8 +316,8 @@ class LoanReportController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $twig = "HrisReportBundle:Attendance:print.html.twig";
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -341,7 +341,7 @@ class LoanReportController extends CrudController
         $params['date_from_display'] = $date_from;
         $params['date_to_display'] = $date_to;
 
-        $config = $this  ->get('catalyst_configuration');
+        $config = $this  ->get('gist_configuration');
         if ($conf->get('hris_com_info_company_name') != null) 
         {
             $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
@@ -354,7 +354,7 @@ class LoanReportController extends CrudController
 
         if ($conf->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
 
         $twig = 'HrisReportBundle:Loan:print.html.twig';
@@ -363,7 +363,7 @@ class LoanReportController extends CrudController
         if ($data['loan_payment'] == 1) {
             $params['include_payments'] = true;
         }
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

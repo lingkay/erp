@@ -2,17 +2,17 @@
 
 namespace Hris\ReportBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\CrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
-use Catalyst\ValidationException;
+use Gist\ValidationException;
 use Hris\RemunerationBundle\Entity\Loan;
 use Hris\RemunerationBundle\Entity\LoanPayment;
 use Hris\RemunerationBundle\Entity\Incentive;
-use Catalyst\NotificationBundle\Model\NotificationEvent;
-use Catalyst\NotificationBundle\Entity\Notification;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\NotificationBundle\Model\NotificationEvent;
+use Gist\NotificationBundle\Entity\Notification;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -111,7 +111,7 @@ class IncentiveReportController extends CrudController
 
     protected function getGridJoins()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('emp','employee','getEmployee'),
         );
@@ -120,7 +120,7 @@ class IncentiveReportController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Date','getDateFiledDisplay','date_filed'),
             $grid->newColumn('Employee','getDisplayName','last_name','emp'),
@@ -306,8 +306,8 @@ class IncentiveReportController extends CrudController
         $wf = $this->get('hris_workforce');
         $em = $this->getDoctrine()->getManager();
 
-        $conf = $this->get('catalyst_configuration');
-        $media = $this->get('catalyst_media');
+        $conf = $this->get('gist_configuration');
+        $media = $this->get('gist_media');
         if ($conf->get('hris_com_logo') != '') 
         {
             $path = $media->getUpload($conf->get('hris_com_logo'));
@@ -331,7 +331,7 @@ class IncentiveReportController extends CrudController
         $params['date_from_display'] = $date_from;
         $params['date_to_display'] = $date_to;
 
-        $config = $this  ->get('catalyst_configuration');
+        $config = $this  ->get('gist_configuration');
         if ($conf->get('hris_com_info_company_name') != null) 
         {
             $params['company_name'] = strtoupper($conf->get('hris_com_info_company_name'));
@@ -344,13 +344,13 @@ class IncentiveReportController extends CrudController
 
         if ($conf->get('hris_com_info_company_address') != null) 
         {
-            $params['company_address'] = $em->getRepository('CatalystContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
+            $params['company_address'] = $em->getRepository('GistContactBundle:Address')->find($conf->get('hris_com_info_company_address'));
         }
 
         $twig = 'HrisReportBundle:Incentive:print.html.twig';
 
         $params['data'] = $this->filterIncentives($data);
-        $pdf = $this->get('catalyst_pdf');
+        $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());

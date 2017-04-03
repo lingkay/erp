@@ -1,5 +1,5 @@
-{% extends "CatalystTemplateBundle::base.html.twig" %}
-{% import "CatalystTemplateBundle::form.html.twig" as form_tools %}
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
 
 {% block content %}
 <div class="row">
@@ -36,7 +36,7 @@
                             {{ form.group_select('Country', 'country', country_opts, address.getCountry.getID|default('0'), 3, 4) }}
                             {{ form.group_select('State', 'state', state_opts, address.getState.getID|default(''), 3, 4) }}
                             {{ form.group_select('City', 'city', city_opts, address.getCity.getID|default(''), 3, 4) }}
-                        {% include "CatalystContactBundle::form.has_phones.html.twig" with {object:object, f:form}  %}
+                        {% include "GistContactBundle::form.has_phones.html.twig" with {object:object, f:form}  %}
                         <div class="form-actions fluid">
                             {% if app.user.hasAccess(prefix ~ '.add') %}
                             <div class="col-md-9">

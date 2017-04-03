@@ -24,7 +24,7 @@ class SettingsManager
 
     public function getUser($id)
     {
-        return $this->em->getRepository('CatalystUserBundle:User')->find($id);
+        return $this->em->getRepository('GistUserBundle:User')->find($id);
     }
 
     public function getEmployee($id)

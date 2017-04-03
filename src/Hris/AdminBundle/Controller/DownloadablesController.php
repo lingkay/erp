@@ -2,12 +2,12 @@
 
 namespace Hris\AdminBundle\Controller;
 
-use Catalyst\TemplateBundle\Model\CrudController;
-use Catalyst\ValidationException;
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Hris\AdminBundle\Entity\Downloadables;
-use Catalyst\CoreBundle\Template\Controller\TrackCreate;
+use Gist\CoreBundle\Template\Controller\TrackCreate;
 
 class DownloadablesController extends CrudController
 {
@@ -34,7 +34,7 @@ class DownloadablesController extends CrudController
         // echo "</pre>";
         // die();
 
-        $media = $this->get('catalyst_media');
+        $media = $this->get('gist_media');
 
         $o->setName($data['name']);
         $o->setNotes($data['notes']);
@@ -56,7 +56,7 @@ class DownloadablesController extends CrudController
 
     protected function getGridColumns()
     {
-        $grid = $this->get('catalyst_grid');
+        $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('File Name', 'getName', 'name'),
             $grid->newColumn('Details/Description', 'getNotes', 'notes'),
