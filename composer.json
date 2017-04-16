@@ -49,7 +49,8 @@
     },
     "config": {
         "bin-dir": "bin",
-        "discard-changes": true
+        "discard-changes": true,
+        "vendor-dir": "/home/vagrant/gist_hris/vendor"
     },
     "extra": {
         "symfony-app-dir": "app",
