@@ -20,10 +20,10 @@ menu_items:
       acl: hris_admin_joblevel.menu
       label: Job Level
       parent: menu_hr
-    - id: hris_admin_location_index
-      acl: hris_admin_location.menu
-      label: Location
-      parent: menu_hr
+    # - id: hris_admin_location_index
+    #   acl: hris_admin_location.menu
+    #   label: Location
+      # parent: menu_hr
     - id: hris_admin_benefit_index
       acl: hris_admin_benefit.menu
       label: Benefit
@@ -49,10 +49,10 @@ menu_items:
       acl: hris_admin_holiday.menu
       label: Holiday
       parent: menu_hr
-    - id: hris_admin_downloadables_index
-      acl: hris_admin_downloadables.menu
-      label: Downloadable Files/Forms
-      parent: menu_hr
+    # - id: hris_admin_downloadables_index
+    #   acl: hris_admin_downloadables.menu
+    #   label: Downloadable Files/Forms
+    #   parent: menu_hr
     - id: hris_admin_form_codes_index
       acl: hris_admin_form_codes.menu
       label: HR Form Codes
