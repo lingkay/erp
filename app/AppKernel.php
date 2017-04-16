@@ -97,4 +97,14 @@ class AppKernel extends Kernel
     //     return parent::getLogDir();
     // }
 
+    public function getCacheDir()
+    {
+        return '/tmp/symfony2/cache';
+    }
+
+    public function getLogDir()
+    {
+        return '/tmp/symfony2/logs';
+    }
+
 }

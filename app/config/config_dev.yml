@@ -13,7 +13,7 @@ web_profiler:
     intercept_redirects: false
 
 swiftmailer:
-    delivery_address: wally@quadrantalpha.com
+    delivery_address: xx@quadxxxrantalpha.com
     disable_delivery: true
 
 monolog:
