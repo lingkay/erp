@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>HRIS</title>
+<title>Gist HRIS</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="" name="description"/>
@@ -32,7 +32,7 @@
 <link id="style_color" href="{{ asset('bundles/gisttemplate/assets/admin/layout/css/themes/default.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('bundles/gisttemplate/assets/admin/layout/css/custom.css') }}" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="{{ conf.getAll['hris_com_favicon_url'] is defined  and conf.getAll['hris_com_favicon_url'] != '' ?conf.getAll['hris_com_favicon_url'] :asset('bundles/hristemplate/images/quadrant-logo.png') }}"/>
+<link rel="shortcut icon" href="{{ asset('bundles/gisttemplate/assets/global/img/logo_new.png') }}"/>
 
 <style>
 
@@ -74,7 +74,7 @@ body{
 <!-- BEGIN LOGO -->
 <div class="logo">
     <a href="/">
-    <img draggable="false" src="{{ conf.getAll['hris_com_logo_url'] is defined and conf.getAll['hris_com_logo_url'] != '' ?conf.getAll['hris_com_logo_url'] :asset('bundles/hristemplate/images/QA_logo_small.png') }}"  style="max-width: 350px !important" alt=""/>
+    
     </a>
 </div>
 <!-- END LOGO -->
@@ -85,7 +85,7 @@ body{
 {% block fos_user_content %}{% endblock %}
 <!-- BEGIN COPYRIGHT -->
 <div class="copyright">
-     2015 &copy; <img src="{{ asset('bundles/gisttemplate/assets/global/img/quadrant-logo.png') }}" alt="qa-logo"/>uadrant Alpha Technology Solutions Inc.
+     2017 &copy; GIST
 </div>
 <!-- END COPYRIGHT -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->

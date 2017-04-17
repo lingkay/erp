@@ -1,36 +1,6 @@
 <div class="row">
     {% if app.user.hasAccess('hris_dashboard.view') %}
-    <!-- START CALENDAR -->
-    <div class="col-md-6">
-        <!-- BEGIN PORTLET-->
-        <div class="portlet box blue-madison calendar">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-calendar"></i>Calendar
-                </div>
-            </div>
-            <div class="portlet-body light-grey">
-                <div class="row">
-                    <div class="col-md-12 col-sm-12">
-                        <div id="calendar" class="has-toolbar">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 col-sm-12">
-                        <!-- BEGIN DRAGGABLE EVENTS PORTLET-->
-                        <h3><i class="fa fa-calendar-o"></i> Holidays</h3>
-                        <div id="external-events">
-                            <div id="holidays" class="form-group"></div>
-                        </div>
-                        <!-- END DRAGGABLE EVENTS PORTLET-->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- END PORTLET-->
-    </div>
-    <!-- END CALENDAR -->
+    
     {% endif %}
     {% if app.user.hasAccess('hris_dashboard_admin.view') %}
     <!-- START PIE CHART -->
@@ -71,11 +41,12 @@
 </div>
 <div class="row">
     {% if app.user.hasAccess('hris_dashboard_admin.view') %}
-        {{ dboard.statbox('Shortlisted Applicants', shortlisted_count, 'hris_dashboard_shortlisted_applicant', '', '', 'blue-madison', 'fa-file-text-o','icon-users') }}
-        {{ dboard.statbox('Job Vacancy', vacancy_count, 'hris_dashboard_job_vacancy', '', '', 'purple-plum', 'icon-users', 'icon-magnifier') }}
+        {{ dboard.statbox('Pending Request', request_count, 'hris_dashboard_pending_request', '', '', 'red-intense', 'fa-file-text-o', 'fa-refresh') }}
+        {#{{ dboard.statbox('Shortlisted Applicants', shortlisted_count, 'hris_dashboard_shortlisted_applicant', '', '', 'blue-madison', 'fa-file-text-o','icon-users') }}
+        {{ dboard.statbox('Job Vacancy', vacancy_count, 'hris_dashboard_job_vacancy', '', '', 'purple-plum', 'icon-users', 'icon-magnifier') }}#}
     {% endif %}
     {% if app.user.hasAccess('hris_dashboard_admin.view') or app.user.hasAccess('hris_dashboard_request.view') %}
-        {{ dboard.statbox('Pending Request', request_count, 'hris_dashboard_pending_request', '', '', 'red-intense', 'fa-file-text-o', 'fa-refresh') }}
+        
     {% endif %}
     {# {{ dboard.statbox('Schedules', 0, 'hris_dashboard_schedules', '', '', 'green', 'fa-calendar', 'fa-male') }} #}
 </div>
