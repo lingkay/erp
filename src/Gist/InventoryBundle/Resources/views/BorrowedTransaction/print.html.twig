@@ -1,0 +1,39 @@
+<page>
+	<div style="text-align:center; font-family:arial; padding-bottom: 7px; font-size: 15px; font-weight:bold;">FAREAST ALCOHOL CORPORATION</div>
+	<div style="text-align:center; font-family:arial; padding-bottom: 7px; font-size: 15px;">WAREHOUSE BORROWER'S SLIP</div>
+	<br>
+	<table>
+		<tr>			
+			<td style="width:150px">No. {{ data[0].code }}</td>
+			<td>Date: {{ data[0].created|date('Y-m-d') }}</td>			
+		</tr>	
+	</table>
+	<br />
+	<br />
+	<table>	
+		<tr>
+			<th style="width:60px">UNIT</th>
+			<th style="width:100px">DESCRIPTION</th>
+			<th style="width:80px">REMARKS</th>
+			<th>QUANTITY</th>
+		</tr>		
+		<tbody>		
+		{% for d in data %}			
+			<tr>
+				<td style="width:60px">{{ d.name }}</td>
+				<td style="width:100px">{{d.description}}</td>
+				<td style="width:80px">{{d.remark}}</td>
+				<td>{{d.quantity}}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<page_footer>
+		<table>
+			<tr>
+				<td style="width:200px">Borrowed By: {{ data[0].borrower }}</td>			
+				<td>Received By: {{ data[0].create }}</td>			
+			</tr>
+		</table>		
+	</page_footer>
+</page>

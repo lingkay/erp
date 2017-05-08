@@ -60,6 +60,12 @@ class User extends BaseUser
         $this->flag_emailnotify = true;
     }
 
+    public function setID($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
 
     public function setName($name)
     {

@@ -1,0 +1,54 @@
+cat_inv_pg_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:index }
+
+cat_inv_pg_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:addForm }
+
+cat_inv_pg_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:addSubmit }
+
+cat_inv_pg_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:editForm }
+
+cat_inv_pg_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:editSubmit }
+
+cat_inv_pg_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:delete }
+
+cat_inv_pg_grid:
+    pattern: /grid/
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:grid }
+
+cat_inv_pg_ajax_get:
+    pattern: /ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:ajaxGet }
+
+cat_inv_pg_ajax_get_products:
+    pattern: /ajax/{id}/products
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:ajaxGetProducts }
+
+cat_inv_pg_ajax_get_supplier_products:
+    pattern: /ajax/supplier/{id}/products
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:ajaxGetSupplierProducts }
+
+cat_inv_pg_ajax_get_raw_materials:
+    pattern: /ajax/{id}/raw/products
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductGroup:ajaxGetRawMaterials }

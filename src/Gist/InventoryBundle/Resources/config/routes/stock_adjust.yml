@@ -1,0 +1,9 @@
+cat_inv_adjust_index:
+    path:     /{wh_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockAdjustment:index, wh_id:null }
+
+cat_inv_adjust_add_submit:
+    path:    /{wh_id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:StockAdjustment:addSubmit, wh_id:null }

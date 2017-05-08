@@ -1,0 +1,75 @@
+cat_mfg_tpl_index:
+    pattern: /templates
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:Template:index }
+
+cat_mfg_tpl_add_form:
+    pattern: /template
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:Template:addForm }
+
+cat_mfg_tpl_add_submit:
+    pattern: /template
+    methods: [POST]
+    defaults: { _controller: GistManufacturingBundle:Template:addSubmit }
+
+cat_mfg_tpl_edit_form:
+    pattern: /template/{id}
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:Template:editForm }
+
+cat_mfg_tpl_edit_submit:
+    pattern: /template/{id}
+    methods: [POST]
+    defaults: { _controller: GistManufacturingBundle:Template:editSubmit }
+
+cat_mfg_tpl_delete:
+    pattern: /template/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:Template:delete }
+
+cat_mfg_tpl_grid:
+    pattern: /templates/grid
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:Template:grid }
+
+cat_mfg_tpl_generate:
+    pattern: /template/{id}/generate
+    methods: [POST]
+    defaults: { _controller: GistManufacturingBundle:Template:generate }
+
+
+cat_mfg_bom_index:
+    pattern: /boms
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:BillOfMaterial:index }
+
+cat_mfg_bom_add_form:
+    pattern: /bom
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:BillOfMaterial:addForm }
+
+cat_mfg_bom_add_submit:
+    pattern: /bom
+    methods: [POST]
+    defaults: { _controller: GistManufacturingBundle:BillOfMaterial:addSubmit }
+
+cat_mfg_bom_edit_form:
+    pattern: /bom/{id}
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:BillOfMaterial:editForm }
+
+cat_mfg_bom_edit_submit:
+    pattern: /bom/{id}
+    methods: [POST]
+    defaults: { _controller: GistManufacturingBundle:BillOfMaterial:editSubmit }
+
+cat_mfg_bom_delete:
+    pattern: /bom/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:BillOfMaterial:delete }
+
+cat_mfg_bom_grid:
+    pattern: /boms/grid
+    methods: [GET]
+    defaults: { _controller: GistManufacturingBundle:BillOfMaterial:grid }

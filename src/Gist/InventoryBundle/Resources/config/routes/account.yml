@@ -1,0 +1,39 @@
+cat_inv_accnt_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Account:index }
+
+cat_inv_accnt_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Account:addForm }
+
+cat_inv_accnt_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Account:addSubmit }
+
+cat_inv_accnt_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Account:editForm }
+
+cat_inv_accnt_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Account:editSubmit }
+
+cat_inv_accnt_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Account:delete }
+
+cat_inv_accnt_stock_grid:
+    pattern: /grid/{id}/stock
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Account:stockGrid }
+
+cat_inv_accnt_ajax_get:
+    pattern: /ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Account:ajaxGet }

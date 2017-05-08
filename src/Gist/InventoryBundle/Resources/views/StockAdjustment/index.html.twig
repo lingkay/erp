@@ -1,0 +1,270 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as f %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{list_title}}</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal" onsubmit="return checkForm()">
+                    <div class="form-body">
+                        <h4 class="form-section">Information</h4>
+                        {{ f.group_select('Warehouse', 'from_wh_id', wh_opts, wh_id, 3, 4, false) }}
+                        {{ f.group_textarea('Remarks', 'desc', 'Stock Adjustment', 4, 3, 4) }}  
+
+
+                        <h4 class="form-section">Item Entries</h4>
+                        <!-- <div>  
+                            <a id="btn_from_add" href="#entry_form" class="btn green add-field">Add Item</a>
+                        </div>    -->                                      
+
+                        <div class="row table-responsive" style="padding-top:10px">
+                            <div class="col-md-12">
+                                <table class="table table-striped table-bordered table-hover" aria-describedby="list_table_info" id="transfer_table">
+                                    <thead>
+                                        <tr>
+                                            <!-- <th width="20%">Category</th> -->
+                                            <th width="25%">Item Name</th>                                            
+                                            {#<th width="18%">Type</th>#}
+                                            <th width="10%">Unit Of Measurement</th>
+                                            <th width="13%">Stock</th>
+                                            <th width="13%">Quantity</th>
+                                            {#<th width="10%"></th>#}
+                                        </tr>
+                                    </thead>
+                                    <tbody id="from_table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            <a href="{{path('cat_inv_adjust_index')}}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hidden">
+    <select class="form-control select2 prodgroup_opts">
+        {{ f.options(prodgroup_opts,0)}}
+    </select>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+// function checkForm()
+// {
+//     if ($("#transfer_table tbody td [name^=prod_id]").length > 0) 
+//     {
+//         if ($('#cform-from_wh_id').val() == $('#cform-to_wh_id').val()) 
+//         {
+//             toastr['error']('Source and destination warehouse cannot be the same', 'Error');
+//             return false;
+//         }
+//         else
+//         {
+//             //check if there are entries
+//             //check for duplicate
+//             var contents = {},
+//             duplicates = false;
+//             $("#transfer_table tbody td [name^=prod_id]").each(function() {
+//                 var tdContent = $(this).val();
+//                 if (contents[tdContent]) {
+//                     duplicates = true;
+//                     return false;
+//                 }
+//                 contents[tdContent] = true;
+//             });    
+
+//             if (duplicates)
+//             {
+//                 toastr['error']('Duplicate product entry', 'Error');
+//                 return false;
+//             }
+//             else
+//             {
+//                 return true;
+//             }
+//         }
+//     }
+//     else
+//     {
+//         toastr['error']('No product to transfer', 'Error');
+//         return false;
+//     }
+// }
+// function appendEntry()
+// {
+//     var html = '<tr class="prod_row">';
+//     html += '<td><select name="prodgroup_opts[]" class="form-control select2 prodgroup_opts">';
+//     html += $('.prodgroup_opts').html();   
+//     html += '</select> </td>';
+
+//     html += '<td><select name="prod_id[]" class="form-control prod_id">';        
+//     html += '</select></td>';
+
+//     html += '<td><input type="text" name="prod_type[]" class="form-control prodtype" readonly></td>';        
+
+//     html += '<td> <input type="text" name="uom[]" class="form-control uom" readonly></td>';
+//     html += '<td> <input type="text" name="stock[]" class="form-control stock" readonly></td>';
+//     html += '<td> <input type="number" name="qty[]" class="form-control qty"></td>';
+//     html += '<td><a href="#" class="btn red btn-xs remove_field"><i class="fa fa-times"></i> Delete</a></td>';
+//     html += '</tr>';
+
+//     $('#from_table').append(html);
+
+//     var pg_select = $('tr.prod_row:last').find('.prodgroup_opts');
+//     prodgroup_refresh(pg_select);
+
+// }
+
+function appendProducts(data)
+{
+    var html = '';
+    for (var i = data.length - 1; i >= 0; i--) {
+     html += '<tr class="prod_row">';
+        html += '<td>'+data[i].prod_name+'<input type="hidden" name="prod_id[]" value="'+data[i].prod_id+'"></td>';
+
+
+        // html += '<td><input type="text" name="prod_type[]" class="form-control prodtype" readonly></td>';        
+        html += '<td> <input type="text" name="uom[]" class="form-control uom" value="'+data[i].uom+'" readonly></td>';
+        html += '<td> <input type="text" name="stock[]" value="'+data[i].stock+'" class="form-control stock" readonly></td>';
+        html += '<td> <input type="number" name="qty[]" class="form-control qty"></td>';
+       
+        html += '</tr>';
+
+    }
+    
+
+    //$('#from_table').append(html);
+    $('#from_table').html(html);
+
+    // var pg_select = $('tr.prod_row:last').find('.prodgroup_opts');
+    // prodgroup_refresh(pg_select);
+
+}
+
+// function prodgroup_refresh(pg_select) {
+//     // var cat = pg_select.closest('tr').find('.prodgroup_opts').val();
+//     var cat = pg_select.val();
+//     var url = "{{ path('cat_inv_pg_ajax_get_products', { id: ':id'}) }}";
+//     url = url.replace(":id", cat);
+
+//     var row = pg_select.closest('.prod_row');
+//     //closest('tr');
+
+//     // $(row).find('.prod_id').empty();
+//     var prod_select = $(row).find('.prod_id');
+
+//     $.getJSON(url, function(data) {
+//         // console.log(data);
+//         prod_select.html('Hello');
+//         for(var index in data)
+//         {
+//             var prod = data[index];
+//             console.log(prod);
+//             prod_select.append('<option value="'+ prod.id + '">'+ prod.name + ' </option>'); 
+//         }
+
+//         product_refresh(prod_select);
+//     });
+// }
+
+// function product_refresh(prod_select) {
+//     var prod_id = prod_select.closest('tr').find('.prod_id').val();
+//     var wh_id = $('#cform-from_wh_id').val();
+
+//     var url = "{{ path('cat_inv_prod_ajax_wh_stock', { prod_id: ':prod_id', wh_id: ':wh_id' }) }}";
+//     url = url.replace(":prod_id", prod_id).replace(':wh_id', wh_id);
+
+
+//     var row = prod_select.closest('tr');
+
+//     $.getJSON(url, function(json){
+//         console.log(json)                    
+        
+//         $(row).find('.prodtype').val(json.prodtype);
+//         $(row).find('.uom').val(json.uom);
+//         $(row).find('.stock').val(json.current_stock);
+       
+//     });
+// }
+
+function loadProducts()
+{
+    var wh_id = $('#cform-from_wh_id').val();
+    if (wh_id > 0) {
+        var url = "{{ path('cat_inv_adjust_wh_products', { wh_id: ':wh_id' }) }}";
+        url = url.replace(':wh_id', wh_id);
+        $.getJSON(url, function(json){
+        console.log(json)                    
+            
+
+        // alert(json[0].prod_name);
+        // for (var i = json.length - 1; i >= 0; i--) {
+            appendProducts(json);
+        // };
+       
+       
+        });
+    } else {
+        
+        $('#from_table').html('');
+    }
+}
+
+$(document).ready(function() {
+    ComponentsPickers.init();
+
+    loadProducts();
+
+    var wrapper = $("#from_table");
+
+            
+    var i=0;
+
+    // $('.add-field').click(function(){                            
+    //     appendEntry();            
+    // });
+
+
+    // // product group dropdown
+    // $(document).on('change', '.prodgroup_opts', function(e){
+    //     prodgroup_refresh($(this));
+    // });
+
+
+    // // product dropdown
+    // $(document).on('change','.prod_id', function(e){
+    //     product_refresh($(this));
+    // });
+    
+    // // delete button
+    // $(document).on("click",".remove_field", function(e){
+    //     var tr = $(this).closest('tr');
+    //     tr.remove();
+    //     return false;
+    // });
+
+    // source warehouse dropdown
+    $('#cform-from_wh_id').change(function() {
+        //alert($(this).val());
+        loadProducts();
+
+    });
+});
+</script>
+{% endblock %}

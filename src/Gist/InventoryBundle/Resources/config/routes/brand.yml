@@ -1,0 +1,39 @@
+cat_inv_brand_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Brand:index }
+
+cat_inv_brand_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Brand:addForm }
+
+cat_inv_brand_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Brand:addSubmit }
+
+cat_inv_brand_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Brand:editForm }
+
+cat_inv_brand_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Brand:editSubmit }
+
+cat_inv_brand_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Brand:delete }
+
+cat_inv_brand_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Brand:grid }
+
+cat_inv_brand_ajax_get:
+    pattern: /ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Brand:ajaxGet }

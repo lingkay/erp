@@ -1,0 +1,166 @@
+cat_inv_fixed_asset_index:
+    path:     /fixedassets
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:FixedAsset:index }
+
+cat_inv_fixed_asset_add_form:
+    path:     /fixedasset
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:FixedAsset:addForm }
+
+cat_inv_fixed_asset_add_form_submit:
+    path:     /fixedasset
+    methods:  [POST]
+    defaults: { _controller: GistInventoryBundle:FixedAsset:addSubmit }
+
+cat_inv_fixed_asset_grid:
+    path:     /fixedasset/grid
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:FixedAsset:grid }
+
+cat_inv_fixed_asset_edit_form:
+    path:     /fixedasset/{id}
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:FixedAsset:editForm }
+
+cat_inv_fixed_asset_edit_submit:
+    pattern: /fixedasset/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:FixedAsset:editSubmit }
+
+cat_inv_fixed_asset_delete:
+    pattern: /fixedasset/delete/{id}
+    defaults: { _controller: GistInventoryBundle:FixedAsset:delete }
+
+cat_inv_fixed_asset_import:
+   path:    /fixedassets/csv
+   methods: [POST]
+   defaults: { _controller: GistInventoryBundle:FixedAsset:importCsv }
+
+cat_inv_product_import:
+   path:    /products/csv
+   methods: [POST]
+   defaults: { _controller: GistInventoryBundle:Product:importCsv }
+
+# export csv
+cat_inv_fixed_asset_export:
+    pattern: /fixedassets/csv
+    defaults: { _controller: GistInventoryBundle:FixedAsset:csv }
+
+
+cat_inv_wh:
+    resource: "@GistInventoryBundle/Resources/config/routes/warehouse.yml"
+    prefix: /warehouses
+
+cat_inv_accnt:
+    resource: "@GistInventoryBundle/Resources/config/routes/account.yml"
+    prefix: /accounts
+
+cat_inv_prod:
+    resource: "@GistInventoryBundle/Resources/config/routes/product.yml"
+    prefix: /products
+
+cat_inv_brand:
+    resource: "@GistInventoryBundle/Resources/config/routes/brand.yml"
+    prefix: /brands
+
+cat_inv_pg:
+    resource: "@GistInventoryBundle/Resources/config/routes/product_group.yml"
+    prefix: /product_groups
+
+cat_inv_adjust:
+    resource: "@GistInventoryBundle/Resources/config/routes/stock_adjust.yml"
+    prefix: /stock_adjustment
+
+
+cat_inv_trans_index:
+    pattern: /transaction
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Transaction:index }
+
+cat_inv_trans_add_submit:
+    pattern: /transaction
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Transaction:addSubmit }
+
+
+
+cat_inv_sv_task_ajax_index:
+    pattern: /servicetask
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ServiceTask:index }
+
+cat_inv_sv_task_ajax_get_by:
+    pattern: /ajax/servicetask/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ServiceTask:ajaxGet }
+
+cat_inv_sv_task_ajax_get_by_prod:
+    pattern: /ajax/servicetask/product_id/{prod_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ServiceTask:ajaxGetByProd }
+
+
+cat_inv_borrowed_index:
+    path:     /borrowed
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:index }
+
+cat_inv_borrowed_add_form:
+    path:     /borrow
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:addForm }
+
+cat_inv_borrowed_add_submit:
+    path:     /borrow
+    methods:  [POST]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:addSubmit }
+
+cat_inv_borrowed_edit_form:
+    path:     /borrow/{id}
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:editForm }
+
+cat_inv_borrowed_edit_submit:
+    pattern: /borrow/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:editSubmit }
+
+cat_inv_borrowed_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:grid }
+
+cat_inv_borrowed_dept:
+    pattern: /borrowed/dept/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:getDept }
+
+cat_inv_borrowed_product:
+    pattern: /borrowed/product/{prod_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:getProduct }
+
+cat_inv_borrowed_export:
+    pattern: /borrowed/list/csv
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:exportCSV }
+
+cat_inv_borrowed_range:
+    pattern: /borrowed/{date_from}/{date_to}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:filter }
+
+cat_inv_borrowed_print:
+    pattern: /borrow/print/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:printPDF }
+
+cat_inv_borrowed_print_grid:
+    pattern: /borrowed/print_grid/{date_from}/{date_to}/{category}/{department}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:printGrid, date_from: null, date_to: null, category: null, department: null }
+
+cat_inv_borrowed_entry_delete:
+    pattern: /borrow/entry/delete/{borrow_id}/{entry_id}
+    defaults: { _controller: GistInventoryBundle:BorrowedTransaction:deleteEntry }

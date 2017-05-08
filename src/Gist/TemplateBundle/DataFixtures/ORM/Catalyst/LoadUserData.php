@@ -21,13 +21,15 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
                 "email" => "test@test.com",
                 "name" => "Administrator",
                 "enabled" => true,
+                "id"=>1,
             ),
             "hr_lilys" => array(
                 "password" => "12345",
-                "email" => "hr@mylilys.com",
+                "email" => "hr@gist.com",
                 "name" => "HR-Admin",
                 "enabled" => true,
                 "group" => "hr_admin",
+                "id"=>2,
             )
         );
 
@@ -37,7 +39,8 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
                 ->setPlainPassword($data['password'])
                 ->setEmail($data['email'])
                 ->setName($data['name'])
-                ->setEnabled($data['enabled']);
+                ->setEnabled($data['enabled'])
+                ->setID($data['id']);
 
             if(isset($data['group'])) {
                 $group = $em->getRepository('GistUserBundle:Group')

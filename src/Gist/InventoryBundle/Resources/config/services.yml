@@ -1,0 +1,14 @@
+#parameters:
+#    gist_inventory.example.class: Gist\InventoryBundle\Example
+
+services:
+    gist_inventory:
+        class: Gist\InventoryBundle\Model\InventoryManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"
+            container: "@service_container"
+            security: "@security.context"
+
+#    gist_inventory.example:
+#        class: %gist_inventory.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

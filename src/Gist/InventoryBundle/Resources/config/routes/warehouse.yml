@@ -1,0 +1,39 @@
+cat_inv_wh_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Warehouse:index }
+
+cat_inv_wh_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Warehouse:addForm }
+
+cat_inv_wh_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Warehouse:addSubmit }
+
+cat_inv_wh_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Warehouse:editForm }
+
+cat_inv_wh_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Warehouse:editSubmit }
+
+cat_inv_wh_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Warehouse:delete }
+
+cat_inv_wh_stock_grid:
+    pattern: /grid/{id}/stock
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Warehouse:stockGrid }
+
+cat_inv_wh_ajax_get:
+    pattern: /ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Warehouse:ajaxGet }

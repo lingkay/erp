@@ -1,0 +1,17 @@
+menu_items:
+    - id: menu_manufacturing
+      acl: cat_mfg.menu
+      label: Manufacturing
+      icon: fa-gears
+    - id: cat_mfg_tpl_index
+      acl: cat_mfg_tpl.menu
+      label: Template
+      parent: menu_manufacturing
+    - id: cat_mfg_bom_index
+      acl: cat_mfg_bom.menu
+      label: Bill of Materials
+      parent: menu_manufacturing
+    - id: cat_mfg_wo_index
+      acl: cat_mfg_wo.menu
+      label: Work Order
+      parent: menu_manufacturing

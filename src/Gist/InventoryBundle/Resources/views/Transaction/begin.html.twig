@@ -1,0 +1,156 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Beginning Inventory</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4 class="form-section">Information</h4>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Description</label>
+                            <div class ="col-md-6">
+                                <textarea name="desc" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <h4 class="form-section">Source</h4>
+                            <div class="form-group">
+                                <input type="hidden" value = "1" name="from_wh_id" id="from_wh_id" />
+                                <label class="col-md-3 control-label">To Warehouse </label>
+                                <div class ="col-md-7">
+                                    <select id="to_warehouse_id" class="form-control select_2" name="to_wh_id">
+                                    {{ form_tools.options(wh_opts, 0) }}
+                                    </select>
+                                </div>
+                            </div>
+                        <div>
+                            <a id="btn_from_add" href="#entry_form" class="btn green" data-toggle="modal">Add Product</a>
+                        </div>
+
+                        <div class="row table-responsive" style="padding-top:10px">
+                            <div class="col-md-12">
+                                <table class="table table-striped table-bordered table-hover" aria-describedby="list_table_info">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th style="width: 60px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="from_table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            <a href="{{ path('cat_inv_trans_index') }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="entry_form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 id="form_title" class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row form-horizontal form">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Product</label>
+                                <div class ="col-md-7">
+                                    <select id="en_product_id" class="form-control select_2" name="prod_id">
+                                    {{ form_tools.options(prod_opts, 0) }}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">Close</button>
+                    <button id="btn_entry" type="button" class="btn green">Select Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+                                    
+{% endblock %}
+
+{% block js %}
+<script>
+function escape_attr(s) {
+    return String(s).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escape_html(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+$(document).ready(function() {
+    // add from entry form
+    
+    $('#btn_from_add').click(function() {
+        $('#form_title').html('Add Product');
+        $('#en_product_id').select2("val", '');
+        $('#btn_entry').data('table_id', 'from_table').data('prefix', 'from_');
+    });
+
+    // add to entry form
+    $('#btn_to_add').click(function() {
+        $('#form_title').html('Add Destination Entry');
+        $('#btn_entry').data('table_id', 'to_table').data('prefix', 'to_');
+    });
+
+    // remove entry
+    $('#from_table').on('click', '.btn_en_del', function() {
+        $(this).closest('tr').remove();
+    });
+
+    // add entry submit
+    $('#btn_entry').click(function() {
+        var prefix = $(this).data('prefix');
+        var table_id = $(this).data('table_id');
+
+        var prod_id = $('#en_product_id').val();
+        var prod_name = $('#en_product_id option:selected').text();
+
+        var row = '<tr>';
+        row += '<td><input type="hidden" name="prod_id[]" value="' + escape_attr(prod_id) + '">' + escape_html(prod_name) + '</td>';
+        row += '<td><input type="text" name="qty[]"></td>';
+        row += '<td><a href="#" class="btn default btn-xs red-sunglo"><i class="btn_en_del fa fa-minus-circle"></i></a></td>';
+        row += '</tr>';
+
+        $('#' + table_id).append(row);
+
+        $('#entry_form').modal('hide');
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+{% endblock %}

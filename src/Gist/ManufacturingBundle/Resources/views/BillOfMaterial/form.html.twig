@@ -1,0 +1,70 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistManufacturingBundle:BillOfMaterial:material.html.twig" as matmacro %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4 class="form-section">Information</h4>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Name</label>
+                            <div class ="col-md-6">
+                                <input type="text" class="form-control" name="name" placeholder="Name" value="{{ object.getName }}">
+                            </div>
+                        </div>
+
+                        {{ matmacro.table('input', 'Input', object.getInputs) }}
+                        {{ matmacro.table('output', 'Output', object.getOutputs) }}
+
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ matmacro.form('input', 'Input', prod_opts) }}
+{{ matmacro.form('output', 'Output', prod_opts) }}
+
+{% endblock %}
+
+
+
+{% block js %}
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script>
+function escape_attr(s) {
+    return String(s).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escape_html(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+
+{{ matmacro.js_script('input') }}
+{{ matmacro.js_script('output') }}
+
+{% endblock %}
+
+
+
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

@@ -1,1 +1,1 @@
-../vendor/doctrine/orm/bin/doctrine.php
+/home/vagrant/gist_erp2/vendor/doctrine/orm/bin/doctrine.php

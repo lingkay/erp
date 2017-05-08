@@ -1,0 +1,25 @@
+menu_items:
+    - id: menu_inventory
+      acl: cat_inv.menu
+      label: Inventory
+      icon: fa-dropbox
+    - id: cat_inv_wh_index
+      acl: cat_inv_wh.menu
+      label: Warehouse
+      parent: menu_inventory
+    - id: cat_inv_prod_index
+      acl: cat_inv_prod.menu
+      label: Product / Service
+      parent: menu_inventory
+    - id: cat_inv_brand_index
+      acl: cat_inv_brand.menu
+      label: Brand
+      parent: menu_inventory
+    - id: cat_inv_pg_index
+      acl: cat_inv_pg.menu
+      label: Product Group
+      parent: menu_inventory
+    - id: cat_inv_trans_index
+      acl: cat_inv_trans.menu
+      label: Transfer Stock
+      parent: menu_inventory

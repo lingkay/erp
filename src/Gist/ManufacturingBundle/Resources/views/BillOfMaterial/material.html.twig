@@ -1,0 +1,97 @@
+{% macro table(prefix, title, materials) %}
+<h4 class="form-section">{{ title }}s</h4>
+
+<div>
+    <a id="btn_{{ prefix }}_add" href="#{{ prefix }}_form" class="btn green" data-toggle="modal">Add {{ title }} Material</a>
+</div>
+
+<div class="row table-responsive" style="padding-top:10px">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered table-hover" aria-describedby="list_table_info">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th style="width: 150px">Quantity</th>
+                    <th style="width: 100px">Unit</th>
+                    <th style="width: 50px"></th>
+                </tr>
+            </thead>
+            <tbody id="{{ prefix }}_table">
+            {% for asset in materials %}
+                <tr>
+                    <td><input type="hidden" name="{{ prefix }}_id[]" value="{{ asset.getProductID }}">{{ asset.getProduct.getCode }}</td>
+                    <td>{{ asset.getProduct.getName }}</td>
+                    <td><input type="text" class="form-control" name="{{ prefix }}_quantity[]" value="{{ asset.getQuantity }}"></td>
+                    <td>{{ asset.getProduct.getUnitOfMeasure }}</td>
+                    <td><a href="#" class="btn_{{ prefix }}_del btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro form(prefix, title, prod_opts) %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+<div id="{{ prefix }}_form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">{{ title }} Material</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Product</label>
+                            <div class ="col-md-9">
+                                <select id="{{ prefix }}_product_id" class="form-control" name="prod_id">
+                                {{ form_tools.options(prod_opts, 0) }}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+                <button id="btn_{{ prefix }}" type="button" class="btn green">Select Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro js_script(prefix) %}
+<script>
+$(document).ready(function() {
+    // selects
+    $('#{{ prefix }}_product_id').select2();
+
+    // remove material
+    $('#{{ prefix }}_table').on('click', '.btn_{{ prefix }}_del', function() {
+        $(this).closest('tr').remove();
+    });
+
+    // add material submit
+    $('#btn_{{ prefix }}').click(function() {
+        $.get('/inventory/ajax/product/' + $('#{{ prefix }}_product_id').val(), function(data) {
+            var row = '<tr>';
+            row += '<td><input type="hidden" name="{{ prefix }}_id[]" value="' + escape_attr(data.id) + '">' + escape_html(data.code) + '</td>';
+            row += '<td>' + escape_html(data.name) + '</td>';
+            row += '<td><input type="text" class="form-control" name="{{ prefix }}_quantity[]" value="0"></td>';
+            row += '<td>' + data.uom + '</td>';
+            row += '<td><a href="#" class="btn default btn-xs red-sunglo"><i class="btn_{{ prefix }}_del fa fa-minus-circle"></i></a></td>';
+            row += '</tr>';
+
+            $('#{{ prefix }}_table').append(row);
+
+            $('#{{ prefix }}_form').modal('hide');
+        }, "json");
+    });
+});
+</script>
+{% endmacro %}

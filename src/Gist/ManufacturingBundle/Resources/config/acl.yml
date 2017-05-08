@@ -1,0 +1,35 @@
+acl:
+    - category: Manufacturing
+      entries:
+        - id: cat_mfg.menu
+          label: "Menu"
+    - category: Template
+      entries:
+        - id: cat_mfg_tpl.menu
+          label: "Menu"
+        - id: cat_mfg_tpl.view
+          label: "View"
+        - id: cat_mfg_tpl.add
+          label: "Add"
+        - id: cat_mfg_tpl.edit
+          label: "Edit"
+        - id: cat_mfg_tpl.delete
+          label: "Delete"
+        - id: cat_mfg_tpl.generate
+          label: "Generate product and bill of materials"
+    - category: Bill of Materials
+      entries:
+        - id: cat_mfg_bom.menu
+          label: "Menu"
+        - id: cat_mfg_bom.view
+          label: "View"
+        - id: cat_mfg_bom.add
+          label: "Add"
+        - id: cat_mfg_bom.edit
+          label: "Edit"
+        - id: cat_mfg_bom.delete
+          label: "Delete"
+    - category: Work Order
+      entries:
+        - id: cat_mfg_wo.menu
+          label: "Menu"

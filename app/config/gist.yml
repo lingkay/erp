@@ -5,6 +5,7 @@ gist_menu:
         - HrisAdminBundle
         - GistConfigurationBundle
         - GistUserBundle
+        - GistInventoryBundle
         - HrisBiometricsBundle
         - HrisWorkforceBundle
         - HrisRemunerationBundle

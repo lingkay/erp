@@ -1,0 +1,81 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                {% if app.user.hasAccess(prefix ~ '.add') %}
+                    <a href="{{ path(route_add) }}" class="btn green">Add New</a>
+                    <a href="{{ path(route_add) }}" class="btn green">Print</a>
+                {% endif %}
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            <th>{{ col.getLabel }}</th>
+                        {% endfor %}
+                            <th style="width:90px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for o in objects %}
+                        <tr class="odd gradeX">
+                        {% for col in grid_cols %}
+                            <td>{{ col.getValue(o) }}</td>
+                        {% endfor %}
+                            <td>
+                            {% set id = o.getID %}
+                            {% embed "GistTemplateBundle:Object:action.html.twig" %}{% endembed %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [{{ grid_cols|length }}] },
+            { "bSearchable": false, "aTargets": [{{ grid_cols|length }}] }
+        ]
+    });
+
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

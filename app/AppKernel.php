@@ -45,6 +45,10 @@ class AppKernel extends Kernel
             new Gist\ContactBundle\GistContactBundle(),
             new Gist\ReportBundle\GistReportBundle(),
 
+            //GIST ERP
+            new Gist\InventoryBundle\GistInventoryBundle(),
+            new Gist\ManufacturingBundle\GistManufacturingBundle(),
+
             //Hris modules
             new Hris\AdminBundle\HrisAdminBundle(),
             new Hris\WorkforceBundle\HrisWorkforceBundle(),
@@ -99,12 +103,12 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
-        return '/tmp/symfony2/cache';
+        return '/tmp/gist_erp2/cache';
     }
 
     public function getLogDir()
     {
-        return '/tmp/symfony2/logs';
+        return '/tmp/gist_erp2/logs';
     }
 
 }

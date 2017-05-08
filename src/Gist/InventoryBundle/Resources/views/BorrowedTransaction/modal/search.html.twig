@@ -1,0 +1,65 @@
+<div id="search-form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Product Search</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" row form-horizontal form">
+                    <div class="form-body">
+                        <form id="product-search-form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.hidden('wh_id','') }}
+                                    {{ form.group_textnew('Product Name','prod_name','',4,8) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.group_textnew('SKU','stock_num','',4,8) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.group_select_tree('Product Category','prod_category',pg_opts,'',4,8)}}
+                                </div>
+                                {#<div class="col-md-6">
+                                    {{ form.group_textnew('Barcode','barcode','',4,8) }}
+                                </div>#}
+                            </div>
+                        </form>
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-6">  
+                                <button class="btn red pull-right" id="clear_filter">Clear Filters</button>
+                                <button class="btn blue pull-right" id="filter_button" style="margin-right: 10px;">Apply Filter</button> 
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <table class="table table-bordered" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                {% for col in grid_search %}
+                                                    <th>{{ col.getLabel }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="product-search">  
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                <button id="btn_en_submit" type="button" class="btn blue">Add Product</button>
+                                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

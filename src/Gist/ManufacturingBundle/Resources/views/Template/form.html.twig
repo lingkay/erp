@@ -1,0 +1,301 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+{% if (object.getID != 0) %}
+<div class="row">
+    <div class="col-md-12" style="padding-bottom: 10px">
+        <a href="#gen_form" class="btn green" data-toggle="modal">Generate Product and Bill of Materials</a>
+    </div>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4 class="form-section">Information</h4>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Name</label>
+                            <div class ="col-md-6">
+                                <input type="text" class="form-control" name="name" placeholder="Name" value="{{ object.getName }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Product Code</label>
+                            <div class ="col-md-6">
+                                <input type="text" class="form-control" name="output_code" placeholder="Output Code" value="{{ object.getOutputCode }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Product Name</label>
+                            <div class ="col-md-6">
+                                <input type="text" class="form-control" name="output_name" placeholder="Output Name" value="{{ object.getOutputName }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Unit of Measure</label>
+                            <div class ="col-md-6">
+                                <input type="text" class="form-control" name="uom" placeholder="Unit of Measure" value="{{ object.getUnitOfMeasure }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Product Group</label>
+                            <div class ="col-md-6">
+                                <select name="prodgroup_id" class="select_2 form-control">
+                                {{ form_tools.options(pg_opts, object.getProductGroupID) }}
+                                </select>
+                            </div>
+                        </div>
+
+                        <h4 class="form-section">Dimensions</h4>
+
+                        <div>
+                            <a id="btn_dim_add" href="#dim_form" class="btn green" data-toggle="modal">Add Dimension</a>
+                        </div>
+
+                        <div class="row table-responsive" style="padding-top:10px">
+                            <div class="col-md-8">
+                                <table class="table table-striped table-bordered table-hover" aria-describedby="list_table_info">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th style="width: 200px">Short Code</th>
+                                            <th style="width: 50px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dim_table">
+                                    {% for dim in object.getDimensions %}
+                                        <tr>
+                                            <td><input type="hidden" name="dim_name[]" value="{{ dim.getName }}">{{ dim.getName }}</td>
+                                            <td><input type="hidden" name="dim_short_code[]" value="{{ dim.getShortcode }}">{{ dim.getShortcode }}</td>
+                                            <td><a href="#" class="btn btn_dim_del default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <h4 class="form-section">Materials</h4>
+
+                        <div>
+                            <a id="btn_mat_add" href="#mat_form" class="btn green" data-toggle="modal">Add Material</a>
+                        </div>
+
+                        <div class="row table-responsive" style="padding-top:10px">
+                            <div class="col-md-12">
+                                <table class="table table-striped table-bordered table-hover" aria-describedby="list_table_info">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th style="width: 250px">Quantity</th>
+                                            <th style="width: 100px">Unit</th>
+                                            <th style="width: 50px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="mat_table">
+                                    {% for mat in object.getMaterials %}
+                                        <tr>
+                                            <td><input type="hidden" name="mat_id[]" value="{{ mat.getProductID }}">{{ mat.getProduct.getCode }}</td>
+                                            <td>{{ mat.getProduct.getName }}</td>
+                                            <td><input type="text" class="form-control" name="mat_formula[]" value="{{ mat.getFormula }}"></td>
+                                            <td>{{ mat.getProduct.getUnitOfMeasure }}</td>
+                                            <td><a href="#" class="btn_mat_del btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="dim_form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Dimension</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Name</label>
+                            <div class ="col-md-6">
+                                <input id="fdim_name" type="text" class="form-control" name="name" placeholder="Name" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Short Code</label>
+                            <div class ="col-md-6">
+                                <input id="fdim_short_code" type="text" class="form-control" name="short_code" placeholder="Short Code" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+                <button id="btn_dim" type="button" class="btn green">Add Dimension</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mat_form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Product</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Product</label>
+                            <div class ="col-md-9">
+                                <select id="mat_product_id" class="select_2 form-control" name="prod_id">
+                                {{ form_tools.options(prod_opts, 0) }}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+                <button id="btn_mat" type="button" class="btn green">Select Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if (object.getID != 0) %}
+<div id="gen_form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:400px;">
+        <div class="modal-content">
+            <form method="post" action="{{ path('cat_mfg_tpl_generate', { 'id': object.getID }) }}">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Generate Product and Bill of Materials</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row form-horizontal form">
+                    <div class="form-body">
+                    {% for dim in object.getDimensions %}
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">{{ dim.getName }}</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" name="{{ dim.getShortcode }}">
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>
+                <input type="submit" class="btn green" value="Generate">
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+function escape_attr(s) {
+    return String(s).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escape_html(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+$(document).ready(function() {
+    // add dimension form
+    $('#btn_dim_add').click(function() {
+        $('#fdim_name').val('');
+        $('#fdim_short_code').val('');
+    });
+
+    // remove dimension
+    $('#dim_table').on('click', '.btn_dim_del', function() {
+        $(this).closest('tr').remove();
+    });
+
+    // add dimension submit
+    $('#btn_dim').click(function() {
+        var name = $('#fdim_name').val();
+        var short_code = $('#fdim_short_code').val();
+
+        var row = '<tr>';
+        row += '<td><input type="hidden" name="dim_name[]" value="' + escape_attr(name) + '">' + escape_html(name) + '</td>';
+        row += '<td><input type="hidden" name="dim_short_code[]" value="' + escape_attr(short_code) + '">' + escape_html(short_code) + '</td>';
+        row += '<td><a href="#" class="btn default btn-xs red-sunglo"><i class="btn_dim_del fa fa-minus-circle"></i></a></td>';
+        row += '</tr>';
+
+        $('#dim_table').append(row);
+
+        $('#dim_form').modal('hide');
+    });
+
+    // remove material
+    $('#mat_table').on('click', '.btn_mat_del', function() {
+        $(this).closest('tr').remove();
+    });
+
+    // add material submit
+    $('#btn_mat').click(function() {
+        $.get('/inventory/ajax/product/' + $('#mat_product_id').val(), function(data) {
+            var row = '<tr>';
+            row += '<td><input type="hidden" name="mat_id[]" value="' + escape_attr(data.id) + '">' + escape_html(data.code) + '</td>';
+            row += '<td>' + escape_html(data.name) + '</td>';
+            row += '<td><input type="text" class="form-control" name="mat_formula[]" value="0"></td>';
+            row += '<td>' + data.uom + '</td>';
+            row += '<td><a href="#" class="btn default btn-xs red-sunglo"><i class="btn_mat_del fa fa-minus-circle"></i></a></td>';
+            row += '</tr>';
+
+            $('#mat_table').append(row);
+
+            $('#mat_form').modal('hide');
+        }, "json");
+    });
+
+});
+</script>
+{% endblock %}
+
+{% block css %}
+{% endblock %}

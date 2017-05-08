@@ -1,0 +1,62 @@
+{% extends "GistTemplateBundle:Object:list.dynamic.html.twig" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                {% if app.user.hasAccess(prefix ~ '.add') %}
+                    <a href="{{ path(route_add) }}" class="btn green">Add New</a>
+                    <a href={{ path("cat_inv_prod_export") }} class="btn green">Export To CSV</a>
+                {% endif %}
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                            <th style="width: 180px">{{ col.getLabel }}</th>
+                            {% else %}
+                            <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_datatables %}
+<script>
+$(document).ready(function() {
+    $('#list_table').dataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "{{ path(route_grid) }}",
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+        ]
+    });
+});
+</script>
+{% endblock %}

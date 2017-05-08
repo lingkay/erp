@@ -1,0 +1,337 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as f %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Borrowed Items</div>
+            </div>
+        
+
+        <div class="portlet-body form">
+            <form method="post" class="form-horizontal">
+                <div class="form-body">
+                    <input type="hidden" id="equip_wh" value="{{equipment_warehouse|default('')}}">
+                    <h4 class="form-section"> Information</h4>
+                    {% if object.getID == '' %}
+                    {{ f.group_select('Name of Borrower','user_opts',user_opts,object.getBorrower is not null ? object.getBorrower.getID,3,4, readonly)}} 
+                    {% else %}
+                    <input type="hidden" name="user_opts" value="{{object.getBorrower.getID}}">
+                    {{ f.group_text('Name of Borrower','lbl_borrower_name',object.getBorrower.getName|default() ,3,4, true)}}
+                    {% endif %}                  
+                    {{ f.group_text('Department','dept_id',object.getBorrower.getDepartment.getName|default() ,3,4, true)}}                    
+                    {{ f.group_date('Date Borrowed', 'date_issue', object.getDateIssue|date('m/d/Y'), 3, 4) }}                     
+                    {{ f.group_text('Status', 'status', object.getStatus, 3, 4,true) }}
+                    {{ f.group_textarea('Description', 'description',object.getDescription,3,3,4)}}
+                    {{ f.group_textarea('Purpose/Remarks', 'remark',object.getRemark,3,3,4)}}
+
+                    <h4 class="form-section"> Items </h4>
+                    <input type="hidden" id="cform-from_wh_id" value="{{equipment_warehouse}}">
+
+                    <div>
+                        {% if (object.getID == null) %}
+                        <a id="btn_from_add" href="javascript:void(0)" class="btn green add-field">Add Item</a>
+                        {% endif %}
+                    </div>
+
+                    <div class="row table-responsive" style="padding-top:10px">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-bordered table-hover" aria-describedby="list_table_info">
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>     
+                                        <th>Unit of Measurement</th>                                     
+                                        <th>Quantity Borrowed</th>      
+                                        {% if object.getID is defined and object.getID != '' %}                               
+                                        <th>Quantity Returned</th>      
+                                        {% endif %}                                    
+                                        <th width="100px"></th>                          
+                                    </tr>
+                                </thead>
+                                <tbody id="from_table">
+                                {% if (object.getID != null) %}
+
+                                    {% for entry in object.getEntries %}
+                                        <div class="prod_parent">
+                                            <tr data-id="{{ entry.getID }}" data-prod-id="{{ entry.getProduct.getID }}" class="borrowed_items_table">                                        
+                                                <input type="hidden" name="prod_opts[]" value="{{ entry.getProduct.getID }}">
+                                                <input type="hidden" class="entry_id" name="id[]" value="{{ entry.getID }}">
+                                                <input type="hidden" class="original_returned_count" value="{{ entry.getReturnedCount }}">
+                                                <td>
+                                                <input class="form-control prod_opts[{{ entry.getProduct.getID }}]" value="{{ entry.getProduct.getName }}" readonly></td>
+                                                <td><input type="text" name="uom[]" class="form-control uom" value="{{ entry.getProduct.getUnitOfMeasure }}" readonly></td>
+                                                <td><input type="text" name="qty[]" class="form-control qty" value="{{ entry.getQuantity }}" readonly></td>
+                                                {% if object.getID is defined and object.getID != '' %}
+                                                <td><input type="text" name="total_returned[]" class="form-control total_returned" value="{{ entry.getReturnedCount }}" readonly>
+
+                                                </td>
+                                                {% endif %}
+                                                {% if object.getID == '' %}
+                                                <td>
+                                                    <a href="{{ path('cat_inv_borrowed_entry_delete', { borrow_id: object.getID, entry_id: entry.getID }) }}" class="remove_field btn default btn-xs red-sunglo"><i class="fa fa-minus-circle">Remove</i></a>
+                                                
+                                                {% else %}
+                                                {% endif %}
+                                                <td>
+                                                    <a data-id="{{ entry.getID }}" class="add_return btn_en_add btn default btn-xs blue-madison"><i class="fa fa-edit"></i> Return</a>
+                                                </td>
+                                            </tr>
+
+                                            {% for borrowed in entry.getReturned %}
+                                                <tr data-id="{{ entry.getID }}" class="returned_item_entry">                                        
+                                                    <td style="text-align: right;">
+                                                        Date Returned:
+                                                        <input type="hidden" class="form-control returned_entry_id" value="{{ entry.getID }}"readonly>
+                                                        <input type="hidden" class="form-control qty_returned" value="{{ borrowed.getQuantity }}"readonly>
+                                                    </td>
+                                                    <td>{{ borrowed.getDateReturned|date('m/d/Y') }}</td>    
+                                                    {% if object.getID is defined and object.getID != '' %}                                    
+                                                    <td style="text-align: right;" colspan="1">Quantity Returned</td>
+                                                    {% endif %}
+                                                    <td style="text-align: right;">{{ borrowed.getQuantity }}</td>
+                                                    <td></td>
+
+                                                </tr>            
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>                    
+                </div>
+
+                <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn blue">Submit</button>
+                            <!-- <a href="{{path('cat_inv_borrowed_index')}}" class="btn default">Cancel</a> -->
+                            {% if (object.getID != null) %}
+                            <a id="btn_from_add" href="{{ path('cat_inv_borrowed_print',{'id':object.getID}) }}" class="btn green">Print Borrower's Slip</a>
+                            {% endif %}
+                        </div>
+                    </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="hidden">
+    <select class="form-control select2 prod_opts">
+        {{ f.options(prod_opts, 0)}}
+    </select>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    function appendEntry()
+    { 
+        var field = '<tr class="borrowed_items_table prod_row">';        
+            field += '<input type="hidden" name="is_new[]"> <input type="hidden" name="id[]" class="form-control"> <input type="hidden" name="total_returned[]" >';  
+            field += '<td><select name="prod_opts[]" class="form-control select2 prod_opts">';
+            field += $('.prod_opts').html();   
+            field += '</select> </td>'; 
+            field += '<td><input type="text" name="uom[]" class="form-control uom" readonly></td>';      
+            field += '<td><input type="number" name="qty[]" class="form-control qty" required></td>';
+            field += '<td><a href="javascript:void(0)" class="btn_en_del btn_dim_del btn default btn-xs red-sunglo"><i class="fa fa-times"></i> Delete</a></td>';
+            field += '</tr>';
+
+            $('#from_table').append(field);
+
+            var prod_select = $('tr.prod_row:last').find('.prod_opts');
+            product_refresh(prod_select);
+            product_refresh2(null, prod_select);
+    }
+
+    function product_refresh(prod_select)
+    {
+        var prod_id = prod_select.closest('tr').find('.prod_opts').val();
+
+        var url = "{{ path('cat_inv_borrowed_product', { prod_id: ':prod_id'}) }}";
+        url = url.replace(":prod_id", prod_id);
+
+        var row = prod_select.closest('tr');
+
+        $.getJSON(url, function(data){
+            // console.log(data)
+
+            row.find('.uom').val(data.uom);
+        });
+        // console.log(prod_id)
+    }
+
+    function updateTotalReturned(qty, returned_entry_id)
+    {
+        $('.borrowed_items_table').each(function(){
+    
+            entry_id = $(this).find('.entry_id').val();
+            original_returned_count = $(this).find('.original_returned_count').val();
+
+            if(entry_id == returned_entry_id)
+            {
+
+                // getting quantites of borrowed
+                total_qty_borrowed = 0;
+                $('.returned_entry_id').each(function(){
+            
+                    entry_id2 = $(this).val();
+                    if(entry_id2 == returned_entry_id)
+                    {
+                        t_quantity = $(this).closest('tr').find('.qty_returned').val();
+                        total_qty_borrowed += parseInt(t_quantity);                
+                    }
+                });
+
+                total_returned = $(this).find('.total_returned');
+                total_returned.val(total_qty_borrowed);                
+            }
+        });
+    }
+
+    function product_refresh2(that, prod_select) {
+        var prod_id = prod_select.closest('tr').find('.prod_opts').val();
+        var wh_id = $('#cform-from_wh_id').val();
+
+        var url = "{{ path('cat_inv_prod_ajax_wh_stock', { prod_id: ':prod_id', wh_id: ':wh_id' }) }}";
+        url = url.replace(":prod_id", prod_id).replace(':wh_id', wh_id);
+
+
+        var row = prod_select.closest('tr');
+
+        $.getJSON(url, function(json){
+            console.log(json)                    
+            
+            $(row).find('.prodtype').val(json.prodtype);
+            $(row).find('.uom').val(json.uom);
+            $(row).find('.stock').val(json.current_stock);
+
+            prod_select.closest('tr').find('.qty').prop({
+            'min': 1,
+            'max': json.current_stock
+            });
+           
+        });
+
+
+    }
+
+    $(document).ready(function() {
+
+
+        ComponentsPickers.init();    
+
+        $('.form-horizontal').submit( function() {
+         if ($('#equip_wh').val() == '') 
+         {
+            toastr['error']('No equipment warehouse set', 'Error');
+            return false;
+         }
+         else
+         {
+            return true;
+         }
+     });
+
+        $(document).on('change','.prod_opts', function(e){
+            var that = this;
+        product_refresh2(that, $(this));
+        });
+
+        // $(document).on('change','.prod_opts', function(e){
+        //     e.preventDefault();
+        //     // console.log('dgagas')
+        //     var prod_id = $(this).closest('tr').find('.prod_opts').val();
+        //     var row = $(this).closest('tr');
+        //     // console.log(prod_id)
+
+        //     var url = "{{ path('cat_inv_borrowed_product', { prod_id: ':id'}) }}";
+        //         url = url.replace(":id", prod_id);
+
+        //             $.getJSON(url, function(data){
+        //                 $(row).find('.uom').val(data.uom);
+        //             });            
+        // });
+
+        $('#from_table').on('click', '.add_return' ,function(){            
+
+            var parent = $(this).parents('tr');
+
+            var body = $(this).parents('tr');
+            var parent_id = body.data('id');
+            var prod_id = body.data('prod-id');
+
+            // update total returned
+
+            total = $(this).closest('tr').find('.total_returned');
+            total_value = parseInt(total.val()) + 1;
+            total.val(total_value);
+
+            
+            returned = "<tr>";
+            returned += '<td>Date Returned: <input type="hidden" name="entry_id[]" class="form-control returned_entry_id" value="'+ parent_id +'"readonly> <input type="hidden" name="prod_id[]" class="form-control=" value="'+ prod_id +'"readonly></td>';       
+            returned += "<td><input type='text' readonly name='date_returned[]' class='form-control date-picker date_return'></td>";
+            returned += "<td>Quantity Returned:</td>";
+            returned += "<td><input type='number' name='qty_returned[]' value='1' min='1' class='form-control qty_returned'></td>";
+            returned += "</tr>";
+
+            parent.after(returned); 
+
+            $('.date_return').each(function(){
+               $(this).datepicker(); 
+            });
+
+        });
+
+        $('#from_table').on('change', '.qty_returned' ,function(){
+            var returned_entry_id = $(this).closest('tr').find('.returned_entry_id').val();
+            qty = $(this).val();
+            updateTotalReturned(qty, returned_entry_id);
+        });
+
+        $('#cform-user_opts').change(function(){
+            var user =  $('#cform-user_opts').val();
+
+            var url = "{{ path('cat_inv_borrowed_dept', { id: ':id'}) }}";
+                url = url.replace(":id", user);
+
+                $.getJSON(url, function(data){
+                    console.log(data)
+                    $('#cform-dept_id').val(data.dept);
+                });
+        });
+
+        var add_button = $(".add-field");
+        var wrapper = $("#from_table");
+        
+
+        $(add_button).on('click',function(){        
+            appendEntry();
+
+            $('.date_return').each(function(){
+               $(this).datepicker(); 
+           });
+
+            var that = null;
+            var pg_select = $('tr.prod_row:last').find('.prod_opts');
+            prodgroup_refresh2(that, pg_select);
+
+        });        
+         
+        
+
+
+        //remove row
+        $(document).on("click",".btn_en_del", function(e){
+            e.preventDefault();            
+            var tr = $(this).closest('tr');
+            tr.remove();
+            return false;
+        });
+    });
+</script>
+{% endblock %}
