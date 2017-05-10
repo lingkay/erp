@@ -34,6 +34,45 @@ cat_user_user_grid:
     defaults: { _controller: GistUserBundle:User:grid }
 
 
+#POSITION
+cat_user_position_index:
+    pattern: /position
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Position:index }
+
+cat_user_position_add_form:
+    pattern: /position
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Position:addForm }
+
+cat_user_position_add_submit:
+    pattern: /position
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:Position:addSubmit }
+
+cat_user_position_edit_form:
+    pattern: /position/{id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Position:editForm }
+
+cat_user_position_edit_submit:
+    pattern: /position/{id}
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:Position:editSubmit }
+
+cat_user_position_delete:
+    pattern: /position/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Position:delete }
+
+cat_user_position_grid:
+    pattern: /position/grid
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Position:grid }
+
+#DEPARTMENT
+
+
 cat_user_group_index:
     pattern: /groups
     methods: [GET]

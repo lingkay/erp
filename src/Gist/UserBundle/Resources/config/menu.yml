@@ -7,12 +7,12 @@ menu_items:
       acl: cat_user_user.menu
       label: User
       parent: cat_hris_menu
-    - id: cat_user_user_index
-      acl: cat_user_user.menu
+    - id: cat_user_position_index
+#      acl: cat_user_user.menu
       label: Position
       parent: cat_hris_menu
     - id: cat_user_user_index
-      acl: cat_user_user.menu
+#      acl: cat_user_user.menu
       label: Department
       parent: cat_hris_menu
 #    - id: cat_user_group_index
