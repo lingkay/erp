@@ -73,6 +73,17 @@ class UserManager
         );
     }
 
+    public function getDepartmentOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistUserBundle:Department',
+            $filter,
+            array('department_name' => 'ASC'),
+            'getID',
+            'getDepartmentName'
+        );
+    }
+
     public function findUser($id)
     {
         return $this->em->getRepository('GistUserBundle:User')

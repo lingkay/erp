@@ -52,12 +52,30 @@ class UserController extends CrudController
             0 => 'Disabled'
         );
 
+        $params['agency_opts'] = array(
+            1 => 'Agency X',
+            0 => 'Agency Y'
+        );
+
+        $params['area_opts'] = array(
+            'Makati' => 'Makati',
+            'Taguig' => 'Taguig'
+        );
+
+        $params['brand_opts'] = array(
+            'Barand X' => 'Brand X',
+            'Brand Y' => 'Brand Y'
+        );
+
         //branch opts
         // $inv = $this->get('gist_inventory');
         // $params['wh_opts'] = $inv->getWarehouseOptions();
 
         // groups
-        $params['group_opts'] = $um->getGroupOptions();
+        $params['position_opts'] = $um->getGroupOptions();
+
+        // departments
+        $params['department_opts'] = $um->getDepartmentOptions();
 
         // user groups
         $ug_opts = array();
@@ -74,7 +92,10 @@ class UserController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        $em = $this->getDoctrine()->getManager();
         $uc = $this->get('gist_user');
+        $dept = $em->getRepository('GistUserBundle:Department')->find($data['department']);
+        $o->setDepartment($dept);
 
         // TODO: validation check for email
         // check if username is set then set username, else throw exception

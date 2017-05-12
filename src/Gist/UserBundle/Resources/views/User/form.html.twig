@@ -4,44 +4,106 @@
 {% set readonly = not app.user.hasAccess('cat_user_user.edit') %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="portlet box blue-hoki">
-            <div class="portlet-title">
-                <div class="caption">{% block form_header %}User{% endblock %}</div>
-            </div>
-            <div class="portlet-body form">
-                <!-- BEGIN FORM-->
-                <form method="post" class="form-horizontal">
-                    <div class="form-body">
-                        {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-                        {{ form.group_text('Username', 'username', object.getUsername, 3, 4, readonly) }}
-                        {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
-                        {{ form.group_email('Email', 'email', object.getEmail, 3, 4, readonly) }}
-                        {# form.group_select('Branch','warehouse_id',wh_opts,object.getWarehouse.getID|default(''),3,4, readonly)#}                     
-                        {% if not readonly %}
-                            {{ form.group_password('Password', 'pass1', 3, 4, readonly) }}
-                            {{ form.group_password('Re-type Password', 'pass2', 3, 4, readonly) }}
-                        {% endif %}
-                        {{ form.group_select('Status', 'enabled', enabled_opts, object.isEnabled, 3, 4, readonly) }}
-                        {{ form.group_checkbox_set('Roles', 'groups', group_opts, ug_opts, 3, 9,readonly) }}
-                    </div>
-                    <div class="form-actions fluid">
-                        <div class="col-md-9">
-                            {% if not readonly %}
-                            <button type="submit" class="btn blue">Submit</button>
-                            {% endif %}
-                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+    <form method="post" class="form-horizontal">
+    {#BEGIN TABS#}
+    <!-- start of profile -->
+    <div class="row profile">
+        <div class="col-md-12">
+            <!--BEGIN TABS-->
+            <div class="tabbable tabbable-custom tabbable-full-width">
+                <!-- MAIN TABS -->
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_sys_credentials" data-toggle="tab">
+                            System Credentials </a>
+                    </li>
+                    <li>
+                        <a href="#tab_personal_info" data-toggle="tab">
+                            Personal Information </a>
+                    </li>
+                    <li>
+                        <a href="#tab_emp_record" data-toggle="tab">
+                            Employee Record </a>
+                    </li>
+                    <li>
+                        <a href="#tab_items_given" data-toggle="tab">
+                            Items Given </a>
+                    </li>
+                </ul>
+                <!-- END MAIN TABS -->
+                <div class="tab-content">
+                        <!-- OVERVIEW TAB -->
+                        <div class="tab-pane active" id="tab_sys_credentials">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- BEGIN FORM-->
+                                        <div class="form-body">
+                                            {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                                            {{ form.group_text('Username', 'username', object.getUsername, 3, 4, readonly) }}
+                                            {% if not readonly %}
+                                                {{ form.group_password('Password', 'pass1', 3, 4, readonly) }}
+                                                {{ form.group_password('Re-type Password', 'pass2', 3, 4, readonly) }}
+                                            {% endif %}
+                                            <br>
+                                            {{ form.group_select('Agency', 'agency', agency_opts, '', 3, 4, readonly) }}
+                                            {{ form.group_select('Department', 'department', department_opts, object.getDepartment.getID|default('0'), 3, 4, readonly) }}
+                                            {{ form.group_select('Position', 'position', position_opts, '', 3, 4, readonly) }}
+                                            {{ form.group_select('Approver', 'approver', enabled_opts, '', 3, 4, readonly) }}
+                                            {{ form.group_select('Status', 'enabled', enabled_opts, object.isEnabled, 3, 4, readonly) }}
+                                            {{ form.group_select('Area', 'area', area_opts, '', 3, 4, readonly) }}
+                                            {{ form.group_select('Brand', 'brand', brand_opts, '', 3, 4, readonly) }}
+                                            {{ form.group_select('Commission Type', 'commission_type', enabled_opts, '', 3, 4, readonly) }}
+
+
+
+                                            {#{{ form.group_checkbox_set('Roles', 'groups', group_opts, ug_opts, 3, 9,readonly) }}#}
+                                        </div>
+                                        <div class="form-actions fluid">
+                                            <div class="col-md-9">
+                                                {% if not readonly %}
+                                                    <button type="submit" class="btn blue">Submit</button>
+                                                {% endif %}
+                                                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                                            </div>
+                                        </div>
+                                    <!-- END FORM-->
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </form>
-                <!-- END FORM-->
+                        <!-- INCIDENT REPORTS TAB -->
+                        <div class="tab-pane" id="tab_personal_info">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- BEGIN FORM-->
+                                    <div class="form-body">
+                                    {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
+                                    {{ form.group_text('Email', 'email', object.getEmail, 3, 4, readonly) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- INCIDENT REPORTS TAB -->
+                        <div class="tab-pane" id="tab_emp_record">
+                            {#{% embed "HrisProfileBundle:Employee:prof_incidents.html.twig" %}{% endembed %}#}
+                            ddd
+                        </div>
+
+                        <!-- INCIDENT REPORTS TAB -->
+                        <div class="tab-pane" id="tab_items_given">
+                            {#{% embed "HrisProfileBundle:Employee:prof_incidents.html.twig" %}{% endembed %}#}
+                            ddd
+                        </div>
+                        <!-- END TAB CONTENTS -->
+
+                </div>
             </div>
+            <!--END TABS-->
         </div>
     </div>
-</div>
+    {#END TABS#}
+    </form>
 {% endblock %}
-
 {% block js %}
 <script type="text/javascript" src="{{ asset('bundles/leathertemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('bundles/leathertemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>

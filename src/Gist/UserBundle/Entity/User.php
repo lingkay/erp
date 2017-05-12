@@ -32,6 +32,12 @@ class User extends BaseUser
      */
     protected $groups;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Department")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
+     */
+    protected $department;
+
 
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -168,6 +174,17 @@ class User extends BaseUser
     {
         $this->flag_emailnotify = $flag;
         return $this;
+    }
+
+    public function setDepartment($department)
+    {
+        $this->department = $department;
+        return $this;
+    }
+
+    public function getDepartment()
+    {
+        return $this->department;
     }
 
 
