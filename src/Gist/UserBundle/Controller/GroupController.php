@@ -11,9 +11,9 @@ class GroupController extends CrudController
     public function __construct()
     {
         $this->route_prefix = 'cat_user_group';
-        $this->title = 'Role';
+        $this->title = 'Position';
 
-        $this->list_title = 'Roles';
+        $this->list_title = 'Positions';
         $this->list_type = 'static';
     }
 

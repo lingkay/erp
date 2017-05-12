@@ -34,43 +34,43 @@ cat_user_user_grid:
     defaults: { _controller: GistUserBundle:User:grid }
 
 
-#POSITION
-cat_user_position_index:
-    pattern: /position
-    methods: [GET]
-    defaults: { _controller: GistUserBundle:Position:index }
-
-cat_user_position_add_form:
-    pattern: /position
-    methods: [GET]
-    defaults: { _controller: GistUserBundle:Position:addForm }
-
-cat_user_position_add_submit:
-    pattern: /position
-    methods: [POST]
-    defaults: { _controller: GistUserBundle:Position:addSubmit }
-
-cat_user_position_edit_form:
-    pattern: /position/{id}
-    methods: [GET]
-    defaults: { _controller: GistUserBundle:Position:editForm }
-
-cat_user_position_edit_submit:
-    pattern: /position/{id}
-    methods: [POST]
-    defaults: { _controller: GistUserBundle:Position:editSubmit }
-
-cat_user_position_delete:
-    pattern: /position/{id}/delete
-    methods: [GET]
-    defaults: { _controller: GistUserBundle:Position:delete }
-
-cat_user_position_grid:
-    pattern: /position/grid
-    methods: [GET]
-    defaults: { _controller: GistUserBundle:Position:grid }
-
 #DEPARTMENT
+cat_user_department_index:
+    pattern: /departments
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Department:index }
+
+cat_user_department_add_form:
+    pattern: /department
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Department:addForm }
+
+cat_user_department_add_submit:
+    pattern: /department
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:Department:addSubmit }
+
+cat_user_department_edit_form:
+    pattern: /department/{id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Department:editForm }
+
+cat_user_department_edit_submit:
+    pattern: /department/{id}
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:Department:editSubmit }
+
+cat_user_department_delete:
+    pattern: /department/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Department:delete }
+
+cat_user_department_grid:
+    pattern: /departments/grid
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Department:grid }
+
+#POSITION
 
 
 cat_user_group_index:
