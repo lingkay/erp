@@ -6,6 +6,10 @@ use Gist\TemplateBundle\Model\CrudController;
 use Gist\UserBundle\Entity\Group;
 use Gist\ValidationException;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Cookie;
+
 class GroupController extends CrudController
 {
     public function __construct()
@@ -32,12 +36,47 @@ class GroupController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Name', 'getName', 'name'),
+            $grid->newColumn('Position Name', 'getName', 'name'),
+            $grid->newColumn('Department', 'getDepartmentName', 'name'),
         );
+    }
+
+    public function getPositionsAction($parent)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $filter = array();
+        $positions = $em
+            ->getRepository('GistUserBundle:Group')
+            ->findBy(
+                array('department' => $parent)
+            );
+
+        $position_opts = array();
+
+        foreach ($positions as $position)
+        {
+            $position_opts[] =
+                [
+                    'id' => $position->getID(),
+                    'text' => $position->getName(),
+                ];
+        }
+
+
+        return new JsonResponse($position_opts);
     }
 
     protected function update($o, $data, $is_new = false)
     {
+//        var_dump($data);
+//        die();
+        $em = $this->getDoctrine()->getManager();
+        $dept = $em->getRepository('GistUserBundle:Department')->find($data['department']);
+        $o->setDepartment($dept);
+
+        $position = $em->getRepository('GistUserBundle:Group')->find($data['head']);
+        $o->setParent($position);
+
         // validate name
         if (strlen($data['name']) > 0)
             $o->setName($data['name']);
@@ -54,8 +93,11 @@ class GroupController extends CrudController
 
     protected function padFormParams(&$params, $object = null)
     {
+        $um = $this->get('gist_user');
         $acl_entries = $this->get('gist_acl')->getAllACLEntries();
-
+        // departments
+        $params['position_opts'] = $um->getGroupOptions();
+        $params['department_opts'] = $um->getDepartmentOptions();
         $params['acl_entries'] = $acl_entries;
 
         return $params;

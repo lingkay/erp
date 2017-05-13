@@ -30,6 +30,11 @@ class Department
     /** @ORM\Column(type="string", length=50) */
     protected $department_name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     */
+    protected $group;
 
 
 

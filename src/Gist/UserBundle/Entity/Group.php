@@ -25,9 +25,42 @@ class Group extends BaseGroup implements GroupInterface
      */
     protected $users;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Department")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
+     */
+    protected $department;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="variants")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     **/
+    protected $parent;
+
+    /** @ORM\OneToMany(targetEntity="Group", mappedBy="parent") */
+    protected $variants;
+
     /** @ORM\Column(type="text") */
     protected $access;
 
+    //parent&child
+    public function setParent(Group $group)
+    {
+        $this->parent = $group;
+        return $this;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+//    public function addVariant(Group $group)
+//    {
+//        $group->setParent($this);
+//        $this->variants->add($group);
+//        return $this;
+//    }
 
     public function __construct($name, $roles = array())
     {
@@ -74,6 +107,31 @@ class Group extends BaseGroup implements GroupInterface
     public function getRoles()
     {
         return array();
+    }
+
+    //DEPT
+    public function setDepartment($department)
+    {
+        $this->department = $department;
+        return $this;
+    }
+
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    public function getDepartmentName()
+    {
+        if ($this->department != null)
+        {
+            return $this->department->getDepartmentName();
+        }
+        else
+        {
+
+        }
+
     }
 
     public function getAccess()
