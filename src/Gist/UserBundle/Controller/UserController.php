@@ -94,8 +94,8 @@ class UserController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $uc = $this->get('gist_user');
-        $dept = $em->getRepository('GistUserBundle:Department')->find($data['department']);
-        $o->setDepartment($dept);
+        $position = $em->getRepository('GistUserBundle:Group')->find($data['position']);
+        $o->setPosition($position);
 
         // TODO: validation check for email
         // check if username is set then set username, else throw exception

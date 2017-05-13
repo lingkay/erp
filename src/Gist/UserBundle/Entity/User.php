@@ -32,11 +32,7 @@ class User extends BaseUser
      */
     protected $groups;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Department")
-     * @ORM\JoinColumn(name="department_id", referencedColumnName="id")
-     */
-    protected $department;
+
 
 
 
@@ -176,16 +172,6 @@ class User extends BaseUser
         return $this;
     }
 
-    public function setDepartment($department)
-    {
-        $this->department = $department;
-        return $this;
-    }
-
-    public function getDepartment()
-    {
-        return $this->department;
-    }
 
 
     public function toData()
