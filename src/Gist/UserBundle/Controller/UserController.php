@@ -5,6 +5,7 @@ namespace Gist\UserBundle\Controller;
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\UserBundle\Entity\User;
 use Gist\ValidationException;
+use DateTime;
 
 class UserController extends CrudController
 {
@@ -72,9 +73,15 @@ class UserController extends CrudController
             'French' => 'French'
         );
 
-        //branch opts
-        // $inv = $this->get('gist_inventory');
-        // $params['wh_opts'] = $inv->getWarehouseOptions();
+        $params['commission_type_opts'] = array(
+            'Straight' => 'Straight',
+            'Variable' => 'Variable'
+        );
+        
+        $params['approver_opts'] = array(
+            'Approver 1' => 'Approver 1',
+            'Approver 2' => 'Approver 2'
+        );
 
         // groups
         $params['position_opts'] = $um->getGroupOptions();
@@ -99,8 +106,128 @@ class UserController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $uc = $this->get('gist_user');
-        $position = $em->getRepository('GistUserBundle:Group')->find($data['position']);
-        $o->setGroup($position);
+
+        //update position/group
+        if (isset($data['position'])) {
+            $position = $em->getRepository('GistUserBundle:Group')->find($data['position']);
+            $o->setGroup($position);
+        }
+
+        if (isset($data['agency'])) {
+            $o->setAgencyName($data['agency']);
+        }
+
+        if (isset($data['approver'])) {
+            $o->setApprover($data['approver']);
+        }
+
+        if (isset($data['area'])) {
+            $o->setArea($data['area']);
+        }
+
+        if (isset($data['brand'])) {
+            $o->setBrand($data['brand']);
+        }
+
+        if (isset($data['commission_type'])) {
+            $o->setCommissionType($data['commission_type']);
+        }
+
+        if (isset($data['first_name'])) {
+            $o->setFirstName($data['first_name']);
+        }
+
+        if (isset($data['middle_name'])) {
+            $o->setMiddleName($data['middle_name']);
+        }
+
+        if (isset($data['last_name'])) {
+            $o->setLastName($data['last_name']);
+        }
+
+        if (isset($data['conctact_no'])) {
+            $o->setContactNumber($data['conctact_no']);
+        }
+
+        if (isset($data['nationality'])) {
+            $o->setNationality($data['nationality']);
+        }
+        
+        if (isset($data['dob'])) {
+            $o->setDateOfBirth(new DateTime($data['dob']));
+        }
+
+        if (isset($data['prov_address'])) {
+            $o->setProvincialAddress($data['prov_address']);
+        }
+
+        if (isset($data['city_address'])) {
+            $o->setCityAddress($data['city_address']);
+        }
+
+        if (isset($data['life_insurance'])) {
+            $o->setLifeInsurance($data['life_insurance']);
+        }
+
+        if (isset($data['life_insurance_exp'])) {
+            $o->setLifeInsuranceExpiration(new DateTime($data['life_insurance_exp']));
+        }
+
+        if (isset($data['sss_no'])) {
+            $o->setSSS($data['sss_no']);
+        }
+
+        if (isset($data['philhealth_no'])) {
+            $o->setPhilhealth($data['philhealth_no']);
+        }
+
+        if (isset($data['pagibig_no'])) {
+            $o->setPagibig($data['pagibig_no']);
+        }
+
+        if (isset($data['tin_no'])) {
+            $o->setTIN($data['tin_no']);
+        }
+
+        if (isset($data['ec_full_name'])) {
+            $o->setECFullName($data['ec_full_name']);
+        }
+
+        if (isset($data['ec_relationship'])) {
+            $o->setECRelation($data['ec_relationship']);
+        }
+
+        if (isset($data['ec_contact_no'])) {
+            $o->setECContact($data['ec_contact_no']);
+        }
+
+        if (isset($data['ec_remarks'])) {
+            $o->setECRemarks($data['ec_remarks']);
+        }
+
+        if (isset($data['employment_date'])) {
+            $o->setEmploymentDate(new DateTime($data['employment_date']));
+        }
+
+        if (isset($data['contract_expiration'])) {
+            $o->setContractExpiration(new DateTime($data['contract_expiration']));
+        }
+
+        if (isset($data['contract_status'])) {
+            $o->setContractStataus($data['contract_status']);
+        }
+
+        if (isset($data['employment_remarks'])) {
+            $o->setEmploymentRemarks($data['employment_remarks']);
+        }
+
+        $media = $this->get('gist_media');
+
+        // var_dump($media->getUpload($data['upl_employment_contract']));
+        //     die();
+        if($data['upl_employment_contract']!=0 && $data['upl_employment_contract'] != ""){
+            $o->setFileEmploymentContract($media->getUpload($data['upl_employment_contract']));
+        }
 
 
 
@@ -120,24 +247,7 @@ class UserController extends CrudController
         else
             $o->setEnabled(0);
 
-        // groups
-        // $o->clearGroups();
-        // if (isset($data['groups']))
-        // {
-        //     foreach ($data['groups'] as $gid)
-        //     {
-        //         $group = $uc->findGroup($gid);
-        //         if ($group != null)
-        //             $o->addGroup($group);
-        //     }
-        // }
 
-        //branch options        
-        // $inv = $this->get('gist_inventory');
-        // $wh = $inv->findWarehouse($data['warehouse_id']);
-        // if($wh == null)
-        //     throw new ValidationException('Could not find branch specified.');
-        // $o->setWarehouse($wh);
 
         // check if we need to have password
         if ($is_new)

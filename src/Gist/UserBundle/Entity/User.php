@@ -6,7 +6,9 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\GroupInterface;
+use Gist\MediaBundle\Entity\Upload;
 use stdClass;
+use DateTime;
 
 /**
  * @ORM\Entity
@@ -31,8 +33,11 @@ class User extends BaseUser
      */
     protected $group;
 
-
-
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="emp_contract_file_id", referencedColumnName="id")
+     */
+    protected $file_employment_contract;
 
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -52,6 +57,90 @@ class User extends BaseUser
     */
     protected $flag_emailnotify;
 
+    // NEW FIELDS AS OF MAY 14, 2017
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $first_name;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $middle_name;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $last_name;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $agency;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $approver;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $area;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $brand;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $commission_type;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $contact_number;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $nationality;
+
+    /** @ORM\Column(type="date") */
+    protected $date_of_birth;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $provincial_address;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $city_address;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $life_insurance;
+
+    /** @ORM\Column(type="date") */
+    protected $life_insurance_expiration;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $sss;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $philhealth;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $pagibig;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $tin;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $ec_full_name;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $ec_contact_number;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $ec_relationship;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $ec_remarks;
+
+    /** @ORM\Column(type="date") */
+    protected $employment_date;
+
+    /** @ORM\Column(type="date") */
+    protected $contract_expiration;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $contract_status;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $employment_remarks;
+
+
     public function __construct()
     {
         parent::__construct();
@@ -60,6 +149,317 @@ class User extends BaseUser
         $this->acl_cache = array();
         $this->flag_emailnotify = true;
     }
+
+    //NEW GETTERS AND SETTERS
+    public function setFirstName($first_name)
+    {
+        $this->first_name = $first_name;
+        return $this;
+    }
+
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    public function setMiddleName($middle_name)
+    {
+        $this->middle_name = $middle_name;
+        return $this;
+    }
+
+    public function getMiddleName()
+    {
+        return $this->middle_name;
+    }
+
+    public function setLastName($last_name)
+    {
+        $this->last_name = $last_name;
+        return $this;
+    }
+
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    public function setAgencyName($agency)
+    {
+        $this->agency = $agency;
+        return $this;
+    }
+
+    public function getAgencyName()
+    {
+        return $this->agency;
+    }
+
+    public function setApprover($approver)
+    {
+        $this->approver = $approver;
+        return $this;
+    }
+
+    public function getApprover()
+    {
+        return $this->approver;
+    }
+
+    public function setArea($area)
+    {
+        $this->area = $area;
+        return $this;
+    }
+
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+        return $this;
+    }
+
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    public function setCommissionType($commission_type)
+    {
+        $this->commission_type = $commission_type;
+        return $this;
+    }
+
+    public function getCommissionType()
+    {
+        return $this->commission_type;
+    }
+
+    public function setContactNumber($contact_number)
+    {
+        $this->contact_number = $contact_number;
+        return $this;
+    }
+
+    public function getContactNumber()
+    {
+        return $this->contact_number;
+    }
+
+    public function setNationality($nationality)
+    {
+        $this->nationality = $nationality;
+        return $this;
+    }
+
+    public function getNationality()
+    {
+        return $this->nationality;
+    }
+
+    public function setDateOfBirth(DateTime $date_of_birth)
+    {
+        $this->date_of_birth = $date_of_birth;
+        return $this;
+    }
+
+    public function getDateOfBirth()
+    {
+        return $this->date_of_birth;
+    }
+
+    public function setProvincialAddress($provincial_address)
+    {
+        $this->provincial_address = $provincial_address;
+        return $this;
+    }
+
+    public function getProvincialAddress()
+    {
+        return $this->provincial_address;
+    }
+
+    public function setCityAddress($city_address)
+    {
+        $this->city_address = $city_address;
+        return $this;
+    }
+
+    public function getCityAddress()
+    {
+        return $this->city_address;
+    }
+
+    public function setLifeInsurance($life_insurance)
+    {
+        $this->life_insurance = $life_insurance;
+        return $this;
+    }
+
+    public function getLifeInsurance()
+    {
+        return $this->life_insurance;
+    }
+
+    public function setLifeInsuranceExpiration(DateTime $life_insurance_expiration)
+    {
+        $this->life_insurance_expiration = $life_insurance_expiration;
+        return $this;
+    }
+
+    public function getLifeInsuranceExpiration()
+    {
+        return $this->life_insurance_expiration;
+    }
+
+    public function setSSS($sss)
+    {
+        $this->sss = $sss;
+        return $this;
+    }
+
+    public function getSSS()
+    {
+        return $this->sss;
+    }
+
+    public function setPhilhealth($philhealth)
+    {
+        $this->philhealth = $philhealth;
+        return $this;
+    }
+
+    public function getPhilhealth()
+    {
+        return $this->philhealth;
+    }
+
+    public function setPagibig($pagibig)
+    {
+        $this->pagibig = $pagibig;
+        return $this;
+    }
+
+    public function getPagibig()
+    {
+        return $this->pagibig;
+    }
+
+    public function setTIN($tin)
+    {
+        $this->tin = $tin;
+        return $this;
+    }
+
+    public function getTIN()
+    {
+        return $this->tin;
+    }
+
+    public function setECFullName($ec_full_name)
+    {
+        $this->ec_full_name = $ec_full_name;
+        return $this;
+    }
+
+    public function getECFullName()
+    {
+        return $this->ec_full_name;
+    }
+
+    public function setECRelation($ec_relationship)
+    {
+        $this->ec_relationship = $ec_relationship;
+        return $this;
+    }
+
+    public function getECRelation()
+    {
+        return $this->ec_relationship;
+    }
+
+    public function setECContact($ec_contact_number)
+    {
+        $this->ec_contact_number = $ec_contact_number;
+        return $this;
+    }
+
+    public function getECContact()
+    {
+        return $this->ec_contact_number;
+    }
+
+    public function setECRemarks($ec_remarks)
+    {
+        $this->ec_remarks = $ec_remarks;
+        return $this;
+    }
+
+    public function getECRemarks()
+    {
+        return $this->ec_remarks;
+    }
+
+    public function setEmploymentDate(DateTime $employment_date)
+    {
+        $this->employment_date = $employment_date;
+        return $this;
+    }
+
+    public function getEmploymentDate()
+    {
+        return $this->employment_date;
+    }
+
+    public function setContractExpiration(DateTime $contract_expiration)
+    {
+        $this->contract_expiration = $contract_expiration;
+        return $this;
+    }
+
+    public function getContractExpiration()
+    {
+        return $this->contract_expiration;
+    }
+
+    public function setContractStataus($contract_status)
+    {
+        $this->contract_status = $contract_status;
+        return $this;
+    }
+
+    public function getContractStataus()
+    {
+        return $this->contract_status;
+    }
+
+    public function setEmploymentRemarks($employment_remarks)
+    {
+        $this->employment_remarks = $employment_remarks;
+        return $this;
+    }
+
+    public function getEmploymentRemarks()
+    {
+        return $this->employment_remarks;
+    }
+
+    public function setFileEmploymentContract(Upload $file_employment_contract)
+    {
+        $this->file_employment_contract = $file_employment_contract;
+        return $this;
+    }
+
+    public function getFileEmploymentContract()
+    {
+        return $this->file_employment_contract;
+    }
+
+    //END NEW GETTERS AND SETTERS
 
     public function setID($id)
     {
