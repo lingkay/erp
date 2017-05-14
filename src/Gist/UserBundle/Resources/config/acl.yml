@@ -11,7 +11,7 @@ acl:
           label: "Edit"
         - id: cat_user_user.delete
           label: "Delete"
-    - category: Role
+    - category: Position
       entries:
         - id: cat_user_group.menu
           label: "Menu"
@@ -22,4 +22,16 @@ acl:
         - id: cat_user_group.edit
           label: "Edit"
         - id: cat_user_group.delete
+          label: "Delete"
+    - category: Department
+      entries:
+        - id: cat_user_department.menu
+          label: "Menu"
+        - id: cat_user_department.view
+          label: "View"
+        - id: cat_user_department.add
+          label: "Add"
+        - id: cat_user_department.edit
+          label: "Edit"
+        - id: cat_user_department.delete
           label: "Delete"

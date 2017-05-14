@@ -1,5 +1,9 @@
 menu_items:
+    - id: cat_config
+      acl: cat_config.menu
+      label: System Configuration
+      icon: fa-wrench
     - id: cat_config_index
       acl: cat_config.menu
       label: Settings
-      parent: menu_admin
+      parent: cat_config
