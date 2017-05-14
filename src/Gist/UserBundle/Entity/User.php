@@ -127,8 +127,8 @@ class User extends BaseUser
     public function hasAccess($acl_key)
     {
         // DEBUG: allow all for admin user
-        if ($this->getUsername() == 'admin')
-            return true;
+        // if ($this->getUsername() == 'admin')
+        //     return true;
 
         // check acl cache
         if (isset($this->acl_cache[$acl_key]))
