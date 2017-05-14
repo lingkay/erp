@@ -28,6 +28,8 @@ gist_user:
           label: Settings
         - id: GistUserBundle
           label: User
+        - id: GistInventoryBundle
+          label: Inventory
         - id: HrisAdminBundle
           label: HR Settings
         - id: HrisWorkforceBundle
