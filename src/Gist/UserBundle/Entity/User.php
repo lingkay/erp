@@ -39,6 +39,24 @@ class User extends BaseUser
      */
     protected $file_employment_contract;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="nbi_clearance_file_id", referencedColumnName="id")
+     */
+    protected $file_nbi_clearance;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="police_clearance_file_id", referencedColumnName="id")
+     */
+    protected $file_police_clearance;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="previous_coe_file_id", referencedColumnName="id")
+     */
+    protected $file_previous_coe;
+
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $name;
@@ -451,13 +469,49 @@ class User extends BaseUser
     public function setFileEmploymentContract(Upload $file_employment_contract)
     {
         $this->file_employment_contract = $file_employment_contract;
-        $this->file_employment_contract->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
+        // $this->file_employment_contract->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
         return $this;
     }
 
     public function getFileEmploymentContract()
     {
         return $this->file_employment_contract;
+    }
+
+    public function setFilePoliceClearance(Upload $file_police_clearance)
+    {
+        $this->file_police_clearance = $file_police_clearance;
+        // $this->file_police_clearance->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
+        return $this;
+    }
+
+    public function getFilePoliceClearance()
+    {
+        return $this->file_police_clearance;
+    }
+
+    public function setFileNBIClearance(Upload $file_NBI_clearance)
+    {
+        $this->file_nbi_clearance = $file_nbi_clearance;
+        // $this->file_nbi_clearance->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
+        return $this;
+    }
+
+    public function getFileNBIClearance()
+    {
+        return $this->file_nbi_clearance;
+    }
+
+    public function setFilePrevCOE(Upload $file_previous_coe)
+    {
+        $this->file_previous_coe = $file_previous_coe;
+        // $this->file_previous_coe->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
+        return $this;
+    }
+
+    public function getFilePrevCOE()
+    {
+        return $this->file_previous_coe;
     }
 
     //END NEW GETTERS AND SETTERS

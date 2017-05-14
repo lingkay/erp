@@ -229,6 +229,18 @@ class UserController extends CrudController
             $o->setFileEmploymentContract($media->getUpload($data['upl_employment_contract']));
         }
 
+        if($data['upl_police_clearance']!=0 && $data['upl_police_clearance'] != ""){
+            $o->setFilePoliceClearance($media->getUpload($data['upl_police_clearance']));
+        }
+
+        if($data['upl_nbi_clearance']!=0 && $data['upl_nbi_clearance'] != ""){
+            $o->setFileNBIClearance($media->getUpload($data['upl_nbi_clearance']));
+        }
+
+        if($data['upl_prev_coe']!=0 && $data['upl_prev_coe'] != ""){
+            $o->setFilePrevCOE($media->getUpload($data['upl_prev_coe']));
+        }
+
 
 
         // TODO: validation check for email

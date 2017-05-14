@@ -12,7 +12,7 @@ menu_items:
       label: Position
       parent: cat_hris_menu
     - id: cat_user_department_index
-#      acl: cat_user_user.menu
+      acl: cat_user_department.menu
       label: Department
       parent: cat_hris_menu
 #    - id: cat_user_group_index
