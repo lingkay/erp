@@ -107,3 +107,13 @@ cat_user_group_get_positions:
     pattern: /group/get_positions/{parent}
     methods: [GET]
     defaults: { _controller: GistUserBundle:Group:getPositions }
+
+cat_user_group_acl_editor:
+    pattern: /group/acl_editor/{group_id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Group:aclEditor }
+
+cat_user_group_acl_editor_submit:
+    pattern: /group/acl_editor/{group_id}
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:Group:aclUpdate }

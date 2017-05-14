@@ -66,6 +66,31 @@ class GroupController extends CrudController
         return new JsonResponse($position_opts);
     }
 
+    public function indexAction()
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+
+        $gl = $this->setupGridLoader();
+
+        $params = $this->getViewParams('List');
+
+        $em = $this->getDoctrine()->getManager();
+        $objects = $em->getRepository($this->repo)->findAll();
+
+        $params['objects'] = $objects;
+
+
+        $twig_file = 'GistUserBundle:Group:index.html.twig';
+        
+
+        $params['list_title'] = $this->list_title;
+        $params['grid_cols'] = $gl->getColumns();
+
+        return $this->render($twig_file, $params);
+    }
+
     protected function update($o, $data, $is_new = false)
     {
 //        var_dump($data);
@@ -106,6 +131,8 @@ class GroupController extends CrudController
         $params['department_opts'] = $um->getDepartmentOptions();
         $params['acl_entries'] = $acl_entries;
 
+
+
         return $params;
     }
 
@@ -144,4 +171,72 @@ class GroupController extends CrudController
             return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
         }
     }
+
+    public function aclEditorAction($group_id)
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository($this->repo)->find($group_id);
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['o_label'] = $this->getObjectLabel($obj);
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
+
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistUserBundle:Group:acl_editor.form.html.twig', $params);
+    }
+
+    public function aclUpdateAction($group_id)
+    {
+        
+
+        $em = $this->getDoctrine()->getManager();
+        $data = $this->getRequest()->request->all();
+
+        $this->checkAccess($this->route_prefix . '.add');
+
+        $this->hookPreAction();
+        try
+        {
+            $obj = $em->getRepository($this->repo)->find($group_id);
+            $obj->clearAccess();
+            if (isset($data['acl']))
+            {
+                foreach ($data['acl'] as $id => $val)
+                    $obj->addAccess($id);
+            }
+
+            $em->persist($obj);
+            $em->flush();
+
+            $this->addFlash('success', $this->title . ' added successfully.');
+            if($this->submit_redirect){
+                return $this->redirect($this->generateUrl('cat_user_group_acl_editor',array('group_id'=>$obj->getID())));
+            }else{
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(),array('id'=>$obj->getID())).$this->url_append);
+            }
+        }
+        catch (ValidationException $e)
+        {
+             $this->addFlash('error', $e->getMessage());
+            return $this->addError($obj);
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('error', 'Database error encountered. Possible duplicate.');
+            error_log($e->getMessage());
+            return $this->addError($obj);
+        }
+
+    }
+
 }

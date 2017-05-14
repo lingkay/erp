@@ -557,7 +557,11 @@ $(document).ready(function() {
         </div>
         <div id="{{ prefix }}prev-container">
         </div>
-        <a href="javascript:void(0)" id="{{ prefix }}dz-upload" class="btn btn-primary btn-sm {{ readonly ? "disabled" : "" }}">Upload</a>
+        {% if upload.getURL|default('') == '' %}
+        <a href="javascript:void(0)" id="{{ prefix }}dz-upload" class="btn btn-primary btn-sm {{ readonly ? "disabled" : "" }}">Upload file</a>
+        {% else %}
+        <a href="javascript:void(0)" id="{{ prefix }}dz-upload" class="btn btn-primary btn-sm {{ readonly ? "disabled" : "" }}">Replace file</a>
+        {% endif %}
     </div>
 </div>
 

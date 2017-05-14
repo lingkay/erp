@@ -1,0 +1,9 @@
+{% if app.user.hasAccess(prefix ~ '.view') %}
+<a href="{{ path(route_edit, { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> Edit</a>
+{% endif %}
+{% if app.user.hasAccess(prefix ~ '.delete') %}
+<a href="{{ path(route_delete, { 'id': id }) }}" class="btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i> Delete</a>
+{% endif %}
+{% if app.user.hasAccess(prefix ~ '.view') %}
+<a href="{{ path('cat_user_group_acl_editor', { 'group_id': id }) }}" class="btn default btn-xs green"><i class="fa fa-eye"></i> ACL</a>
+{% endif %}

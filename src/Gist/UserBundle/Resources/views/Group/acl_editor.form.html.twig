@@ -6,24 +6,42 @@
     <div class="col-md-12">
         <div class="portlet box blue-hoki">
             <div class="portlet-title">
-                <div class="caption">{% block form_header %}Role{% endblock %}</div>
+                <div class="caption">{{object.getName}} - Access Control List</div>
             </div>
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
                 <form method="post" class="form-horizontal">
+                    <div class="form-actions fluid" style="margin-top: 0px !important">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Save</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
                     <div class="form-body">
-                        <h4 class="form-section">Information</h4>
-                        {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
-                        {{ form.group_select('Department', 'department', department_opts, object.getDepartment.getID|default('0'), 3, 4, readonly) }}
-                        {{ form.group_select('Head', 'head', position_opts, object.getParent.getID|default('0'), 3, 4, readonly) }}
+
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
 
-                        
+                        {% for bundle_label,bundle_entries in acl_entries %}
+                            <h4 class="form-section">{{ bundle_label }} </h4>
+
+                            {% for cat_label,cat in bundle_entries %}
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">{{ cat_label }}</label>
+                                    <div class="col-md-5 checkbox-list">
+                                    {% for acl_id,acl_label in cat %}
+                                    {{ form.checkbox('acl[' ~ acl_id ~ ']', 1, acl_label, object.hasAccess(acl_id), readonly) }}
+                                    {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
                     </div>
                     <div class="form-actions fluid">
                         <div class="col-md-9">
                             {% if not readonly %}
-                            <button type="submit" class="btn blue">Submit</button>
+                            <button type="submit" class="btn blue">Save</button>
                             {% endif %}
                             <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
                         </div>
