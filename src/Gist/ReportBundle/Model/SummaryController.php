@@ -77,7 +77,7 @@ abstract class SummaryController extends BaseController
 
     protected function getViewTemplate()
     {
-        return 'LeatherReportBundle:ReportSummary:index.html.twig';
+        // return 'LeatherReportBundle:ReportSummary:index.html.twig';
     }
 
     protected function processAggregate($interval, $wh_id, $date_from, $date_to, &$return_data)
