@@ -451,6 +451,7 @@ class User extends BaseUser
     public function setFileEmploymentContract(Upload $file_employment_contract)
     {
         $this->file_employment_contract = $file_employment_contract;
+        $this->file_employment_contract->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
         return $this;
     }
 
