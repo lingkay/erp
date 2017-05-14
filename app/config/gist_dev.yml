@@ -3,4 +3,4 @@ imports:
 
 gist_media:
     upload_storage:
-        base_url: "http://hris/uploads"
+        base_url: "http://dev.gisterp2/uploads"
