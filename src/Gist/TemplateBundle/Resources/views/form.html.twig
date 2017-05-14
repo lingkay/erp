@@ -531,6 +531,70 @@ $(document).ready(function() {
 </script>
 {% endmacro %}
 
+{% macro group_upload_file2(label,name,upload,label_size,body_size,readonly = false,prefix = 'c') %}
+<input type="hidden" id="{{ prefix }}form-{{ name }}" name="{{name}}" value="{{ upload.getID|default('0')}}">
+<div id="{{ prefix }}dropzone" class="form-group">
+    <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+    <div class="col-md-{{ body_size }}">
+        <div id="real-container">        
+            {% set uploadClass = '' %}
+            {% if upload != null %}
+                {% if upload.getFileType in ['doc','docx','odt'] %}
+                    {% set uploadClass = 'fa-file-word-o' %}
+                {% elseif upload.getFileType in ['ppt', 'pptx'] %}
+                    {% set uploadClass = 'fa-file-powerpoint-o' %}
+                {% elseif upload.getFileType in ['xls', 'xlsx'] %}
+                    {% set uploadClass = 'fa-file-excel-o' %}
+                {% elseif upload.getFileType in ['pdf'] %}
+                    {% set uploadClass = 'fa-file-pdf-o' %}
+                {% endif %}
+            {% endif %}
+            <a id="main-image-link"  href="{{ upload.getURL|default(asset('bundles/gistmedia/img/no_image.jpg')) }}">
+                <i class="fa fa-4 upload-icon {{ uploadClass}}" id="{{ prefix }}main-image"  data-id="{{ upload.getID|default('0') }}">
+                </i>
+            </a>
+            <br>
+        </div>
+        <div id="{{ prefix }}prev-container">
+        </div>
+        <a href="javascript:void(0)" id="{{ prefix }}dz-upload" class="btn btn-primary btn-sm {{ readonly ? "disabled" : "" }}">Upload</a>
+    </div>
+</div>
+
+<div id="dz-preview" class="hidden">
+    <div>
+        <div style="width:200px; overflow:hidden;">
+        <a class="dzp-image" href="#" data-lightbox="donor">
+            <img data-dz-thumbnail style="min-height:150px;max-height:150px;">
+        </a>
+        </div>
+
+        <div class="dzp-progress progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width:200px">
+          <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+        </div>
+
+        <strong class="error text-danger dzp-error" data-dz-errormessage></strong>
+
+        <br>
+    </div>
+</div>
+<script>
+$(document).ready(function() {
+    var upload_config = {
+        'preview': '#dz-preview',
+        'url': '{{ path('cat_media_upload_doc') }}',
+        'dropzone': '#{{ prefix }}dropzone',
+        'preview_container': '#{{ prefix }}prev-container',
+        'accepted_files': 'application/pdf, .pdf, .xls, .xlsx, .doc, .docx, .ppt',
+        'clickable': '#{{ prefix }}dz-upload',
+        'display_image': '#{{ prefix }}main-image',
+        'form_field': '#{{ prefix }}form-{{ name }}'
+    };
+    setup_file_upload(upload_config);
+});
+</script>
+{% endmacro %}
+
 
 {% macro group_textnew(label, name, value, label_size, body_size, options = {} ) %}
 {% set options = options|merge({'prefix' : options.prefix is defined ? options.prefix  : 'c' }) %}

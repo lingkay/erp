@@ -74,8 +74,11 @@ class GroupController extends CrudController
         $dept = $em->getRepository('GistUserBundle:Department')->find($data['department']);
         $o->setDepartment($dept);
 
-        $position = $em->getRepository('GistUserBundle:Group')->find($data['head']);
-        $o->setParent($position);
+        if (isset($data['head'])) {
+            $position = $em->getRepository('GistUserBundle:Group')->find($data['head']);
+            $o->setParent($position);        
+        }
+        
 
         // validate name
         if (strlen($data['name']) > 0)

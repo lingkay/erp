@@ -26,11 +26,10 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
-     * @ORM\JoinTable(name="user_usergroup")
-     * @ORM\OrderBy({"name" = "ASC"})
+     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      */
-    protected $groups;
+    protected $group;
 
 
 
@@ -57,7 +56,7 @@ class User extends BaseUser
     {
         parent::__construct();
         $this->roles = array();
-        $this->groups = new ArrayCollection();
+        // $this->groups = new ArrayCollection();
         $this->acl_cache = array();
         $this->flag_emailnotify = true;
     }
@@ -76,16 +75,16 @@ class User extends BaseUser
     }
 
     
-    public function addGroup(GroupInterface $role)
-    {
-        $this->groups->add($role);
-        return $this;
-    }
+    // public function addGroup(GroupInterface $role)
+    // {
+    //     $this->groups->add($role);
+    //     return $this;
+    // }
 
-    public function clearGroups()
-    {
-        $this->groups->clear();
-    }
+    // public function clearGroups()
+    // {
+    //     $this->groups->clear();
+    // }
 
     public function getID()
     {
@@ -97,19 +96,19 @@ class User extends BaseUser
         return $this->name;
     }
 
-    public function getGroups()
-    {
-        return $this->groups;
-    }
+    // public function getGroups()
+    // {
+    //     return $this->groups;
+    // }
 
 
-    public function getGroupsText()
-    {
-        $groups = array();
-        foreach ($this->groups as $g)
-            $groups[] = $g->getName();
-        return implode(', ', $groups);
-    }
+    // public function getGroupsText()
+    // {
+    //     $groups = array();
+    //     foreach ($this->groups as $g)
+    //         $groups[] = $g->getName();
+    //     return implode(', ', $groups);
+    // }
 
     public function getLastLoginText()
     {
@@ -136,14 +135,13 @@ class User extends BaseUser
             return $this->acl_cache[$acl_key];
 
         // go through all groups and check
-        foreach ($this->groups as $group)
+        
+        if ($this->group->hasAccess($acl_key))
         {
-            if ($group->hasAccess($acl_key))
-            {
-                $this->acl_cache[$acl_key] = true;
-                return true;
-            }
+            $this->acl_cache[$acl_key] = true;
+            return true;
         }
+        
 
         // no access
         $this->acl_cache[$acl_key] = false;
@@ -159,6 +157,17 @@ class User extends BaseUser
     public function getEmployee()
     {
         return $this->employee;
+    }
+
+     public function setGroup($group)
+    {
+        $this->group = $group;
+        return $this;
+    }
+
+    public function getGroup()
+    {
+        return $this->group;
     }
 
     public function isEmailNotify()
@@ -177,8 +186,8 @@ class User extends BaseUser
     public function toData()
     {
         $groups = array();
-        foreach ($this->groups as $group)
-            $groups[] = $group->toData(false);
+        // foreach ($this->groups as $group)
+            // $groups[] = $group->toData(false);
 
         $data = new stdClass();
         $data->id = $this->id;

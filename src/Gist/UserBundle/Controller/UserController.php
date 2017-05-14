@@ -35,7 +35,7 @@ class UserController extends CrudController
             $grid->newColumn('Username', 'getUsername', 'username'),
             $grid->newColumn('Email', 'getEmail', 'email'),
             $grid->newColumn('Name', 'getName', 'name'),
-            $grid->newColumn('Roles', 'getGroupsText', 'id', 'o', null, false),
+            // $grid->newColumn('Roles', 'getGroupsText', 'id', 'o', null, false),
             $grid->newColumn('Last Login', 'getLastLoginText', 'lastLogin', 'o', null, false),
             $grid->newColumn('Status', 'getEnabledText', 'enabled', 'o', null, false),
         );
@@ -67,6 +67,11 @@ class UserController extends CrudController
             'Brand Y' => 'Brand Y'
         );
 
+        $params['nationality_opts'] = array(
+            'Filipino' => 'Filipino',
+            'French' => 'French'
+        );
+
         //branch opts
         // $inv = $this->get('gist_inventory');
         // $params['wh_opts'] = $inv->getWarehouseOptions();
@@ -95,7 +100,9 @@ class UserController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $uc = $this->get('gist_user');
         $position = $em->getRepository('GistUserBundle:Group')->find($data['position']);
-        $o->setPosition($position);
+        $o->setGroup($position);
+
+
 
         // TODO: validation check for email
         // check if username is set then set username, else throw exception
@@ -105,7 +112,7 @@ class UserController extends CrudController
             throw new ValidationException('Cannot leave username blank');
 
         $o->setEmail($data['email']);
-        $o->setName($data['name']);
+        $o->setName($data['first_name']);
 
         // status / enabled
         if ($data['enabled'] == 1)
@@ -114,16 +121,16 @@ class UserController extends CrudController
             $o->setEnabled(0);
 
         // groups
-        $o->clearGroups();
-        if (isset($data['groups']))
-        {
-            foreach ($data['groups'] as $gid)
-            {
-                $group = $uc->findGroup($gid);
-                if ($group != null)
-                    $o->addGroup($group);
-            }
-        }
+        // $o->clearGroups();
+        // if (isset($data['groups']))
+        // {
+        //     foreach ($data['groups'] as $gid)
+        //     {
+        //         $group = $uc->findGroup($gid);
+        //         if ($group != null)
+        //             $o->addGroup($group);
+        //     }
+        // }
 
         //branch options        
         // $inv = $this->get('gist_inventory');

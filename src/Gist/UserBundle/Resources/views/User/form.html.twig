@@ -47,16 +47,13 @@
                                             <br>
                                             {{ form.group_select('Agency', 'agency', agency_opts, '', 3, 4, readonly) }}
                                             {#{{ form.group_select('Department', 'department', department_opts, object.getDepartment.getID|default('0'), 3, 4, readonly) }}#}
-                                            {{ form.group_select('Position', 'position', position_opts, '', 3, 4, readonly) }}
+                                            {{ form.group_select('Department', 'department', department_opts, object.getGroup.getDepartment.getID|default('0'), 3, 4, readonly) }}
+                                            {{ form.group_select('Position', 'position', position_opts, object.getGroup.getID, 3, 4, readonly) }}
                                             {{ form.group_select('Approver', 'approver', enabled_opts, '', 3, 4, readonly) }}
                                             {{ form.group_select('Status', 'enabled', enabled_opts, object.isEnabled, 3, 4, readonly) }}
                                             {{ form.group_select('Area', 'area', area_opts, '', 3, 4, readonly) }}
                                             {{ form.group_select('Brand', 'brand', brand_opts, '', 3, 4, readonly) }}
                                             {{ form.group_select('Commission Type', 'commission_type', enabled_opts, '', 3, 4, readonly) }}
-
-
-
-                                            {#{{ form.group_checkbox_set('Roles', 'groups', group_opts, ug_opts, 3, 9,readonly) }}#}
                                         </div>
                                         <div class="form-actions fluid">
                                             <div class="col-md-9">
@@ -70,29 +67,82 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- INCIDENT REPORTS TAB -->
+                        <!-- PERSONAL INFO TAB -->
                         <div class="tab-pane" id="tab_personal_info">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <!-- BEGIN FORM-->
                                     <div class="form-body">
-                                    {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
-                                    {{ form.group_text('Email', 'email', object.getEmail, 3, 4, readonly) }}
+                                    {{ form.group_text('First Name', 'first_name', object.getFirstName|default(''), 3, 6, readonly) }}
+                                    {{ form.group_text('Middle Name', 'middle_name', object.getMiddleName|default(''), 3, 6, readonly) }}
+                                    {{ form.group_text('Last Name', 'lastname', object.getLastName|default(''), 3, 6, readonly) }}
+
+                                    {{ form.group_text('Email', 'email', object.getEmail, 3, 6, readonly) }}
+                                    {{ form.group_text('Concact No.', 'conctact_no', object.getContactNumber|default(''), 3, 6, readonly) }}
+                                    {{ form.group_select('Nationality', 'nationality', nationality_opts|default(''), '', 3, 6, readonly) }}
+                                    {{ form.group_date('Date of Birth','dob', object.getDOB|default('')|date('m/d/Y'),3,6) }}
+                                    {{ form.group_textarea('Provincial Address', 'prov_address',object.getProvincialAddress|default(''),3,3,6)}}
+                                    {{ form.group_textarea('City Address', 'city_address',object.getCityAddress|default(''),3,3,6)}}
+                                    <br>
+                                    <h4 class="form-section">Emergency Contact Information</h4>
+                                    <hr>
+                                    {{ form.group_text('Full name', 'ec_full_name', object.getECFullName|default(''), 3, 6, readonly) }}
+                                    {{ form.group_text('Relationship', 'ec_relationship', object.getECRelationship|default(''), 3, 6, readonly) }}
+                                    {{ form.group_text('Contact No.', 'ec_contact_no', object.getECContact|default(''), 3, 6, readonly) }}
+                                    {{ form.group_textarea('Remarks', 'ec_remarks',object.getECRemarks|default(''),3,3,6)}}
+                                    </div>
+                                    <div class="form-actions fluid">
+                                            <div class="col-md-9">
+                                                {% if not readonly %}
+                                                    <button type="submit" class="btn blue">Submit</button>
+                                                {% endif %}
+                                                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- BEGIN FORM-->
+                                    <div class="form-body">
+                                    {{ form.group_text('Life Insurance', 'life_insurance', object.getLifeInsurance|default(''), 3, 6, readonly) }}
+                                    {{ form.group_date('Life Insurance Expiration','life_insurance_exp', object.getLifeInsuranceExpiration|default('')|date('m/d/Y'),3,6) }}
+                                    {{ form.group_text('SSS No.', 'sss_no', object.getSSS|default(''), 3, 6, readonly) }}
+                                    {{ form.group_text('Philhealth No.', 'philhealth_no', object.getPhilhealth|default(''), 3, 6, readonly) }}
+                                    {{ form.group_text('Pagibig No.', 'pagigib_no', object.getPagibig|default(''), 3, 6, readonly) }}
+                                    {{ form.group_text('TIN No.', 'tin_no', object.getTIN|default(''), 3, 6, readonly) }}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- INCIDENT REPORTS TAB -->
+                        <!-- EMPLOYMENT RECORD TAB -->
                         <div class="tab-pane" id="tab_emp_record">
-                            {#{% embed "HrisProfileBundle:Employee:prof_incidents.html.twig" %}{% endembed %}#}
-                            ddd
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- BEGIN FORM-->
+                                    <div class="form-body">
+                                    {{ form.group_date('Employement Date','employment_date', object.getEmploymentDate|default('')|date('m/d/Y'),3,4) }}
+                                    {{ form.group_date('Contract Expiration','employment_date', object.getContractExpiration|default('')|date('m/d/Y'),3,4) }}
+                                    {{ form.group_select('Contract Status', 'contract_status', enabled_opts, object.getContractStatus|default(''), 3, 4, readonly) }}
+                                    {{ form.group_textarea('Remarks', 'employment_remarks',object.getEmploymentRemarks|default(''),3,3,4)}}
+                                    <br>
+                                    <h4 class="form-section">Files</h4>
+                                    <hr>
+                                    {{ form.group_upload_file2('Employment Contract','upl_employment_contract',object.getUplEmpContract|default(''),3,4)}}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- INCIDENT REPORTS TAB -->
+                        <!-- ITEMS GIVEN TAB -->
                         <div class="tab-pane" id="tab_items_given">
-                            {#{% embed "HrisProfileBundle:Employee:prof_incidents.html.twig" %}{% endembed %}#}
-                            ddd
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- BEGIN FORM-->
+                                    <div class="form-body">
+                                    {{ form.group_number('Buffer', 'ig_buffer', object.getBufferQty|default(''), 3, 1, readonly) }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- END TAB CONTENTS -->
 
@@ -107,9 +157,37 @@
 {% block js %}
 {% if object.getUsername == '' %}
 <script>
+function updatePositions()
+    {
+        var path;
+        var department = $('#cform-department').val();
+        path = "{{path('cat_user_group_get_positions', {'parent': 'PARENT'})}}";
+        path = path.replace('PARENT', department);
+
+        var $element = $('#cform-position').select2();
+        var $request = $.ajax({
+            url: path
+        });
+
+        $request.then(function (data)
+        {
+            //clear previous options
+            $('#cform-position option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-position').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+    }
+
 $(document).ready(function() {
     FormValidation.init(); // init form validation
-
+    $('#cform-department').on("change", function()
+    {
+        updatePositions();
+    });
     // set default error and success elements
     jQuery.validator.setDefaults({
         errorClass: 'help-block',
@@ -189,9 +267,36 @@ $(document).ready(function() {
 </script>
 {% else %}
 <script>
+function updatePositions()
+    {
+        var path;
+        var department = $('#cform-department').val();
+        path = "{{path('cat_user_group_get_positions', {'parent': 'PARENT'})}}";
+        path = path.replace('PARENT', department);
+
+        var $element = $('#cform-position').select2();
+        var $request = $.ajax({
+            url: path
+        });
+
+        $request.then(function (data)
+        {
+            //clear previous options
+            $('#cform-position option').remove();
+            //loop through all returned data then append
+            $.each(data, function(k, v) {
+                $('#cform-position').append('<option value="'+v.id+'">'+v.text+'</option>');
+            });
+            //refresh element
+            $element.trigger('change');
+        });
+    }
 $(document).ready(function() {
     FormValidation.init(); // init form validation
-
+    $('#cform-department').on("change", function()
+    {
+        updatePositions();
+    });
     // set default error and success elements
     jQuery.validator.setDefaults({
         errorClass: 'help-block',
