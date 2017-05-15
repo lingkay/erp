@@ -1,0 +1,39 @@
+cat_inv_product_category_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:index }
+
+cat_inv_product_category_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:addForm }
+
+cat_inv_product_category_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:addSubmit }
+
+cat_inv_product_category_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:editForm }
+
+cat_inv_product_category_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:editSubmit }
+
+cat_inv_product_category_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:delete }
+
+cat_inv_product_category_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:grid }
+
+cat_inv_product_category_ajax_get:
+    pattern: /ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ProductCategory:ajaxGet }
