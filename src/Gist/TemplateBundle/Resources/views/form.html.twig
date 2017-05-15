@@ -84,6 +84,18 @@
 </div>
 {% endmacro %}
 
+{% macro group_text_ig(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
+    <div id="{{ prefix }}group-{{ name }}" class="form-group">
+        <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+        <div class="col-md-{{ body_size/2 }}" style="display: inline-block !important;">
+            <input id="{{ prefix }}form-{{ name }}" type="text" name="{{ name }}" class="form-control" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }}>
+        </div>
+        <div class="col-md-{{ body_size/2 }}" style="display: inline-block !important;">
+            <input id="{{ prefix }}form-{{ name }}" type="text" name="{{ name }}" class="form-control" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }}>
+        </div>
+    </div>
+{% endmacro %}
+
 {% macro group_text_nac(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 <div id="{{ prefix }}group-{{ name }}" class="form-group">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
