@@ -27,6 +27,18 @@ acl:
           label: "Edit"
         - id: cat_inv_brand.delete
           label: "Delete"
+    - category: Product Category
+      entries:
+        - id: cat_inv_product_category.menu
+          label: "Menu"
+        - id: cat_inv_product_category.view
+          label: "View"
+        - id: cat_inv_product_category.add
+          label: "Add"
+        - id: cat_inv_product_category.edit
+          label: "Edit"
+        - id: cat_inv_product_category.delete
+          label: "Delete"
     - category: Product Group
       entries:
         - id: cat_inv_pg.menu
