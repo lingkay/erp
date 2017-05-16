@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+        <div class="form-body">
+            {{ form.group_date('Employement Date','employment_date', object.getEmploymentDate|default('')|date('m/d/Y'),3,4) }}
+            {{ form.group_date('Contract Expiration','contract_expiration', object.getContractExpiration|default('')|date('m/d/Y'),3,4) }}
+            {{ form.group_select('Contract Status', 'contract_status', enabled_opts, object.getContractStatus|default(''), 3, 4, readonly) }}
+            {{ form.group_textarea('Remarks', 'employment_remarks',object.getEmploymentRemarks|default(''),3,3,4)}}
+            <br>
+            <h4 class="form-section">Files</h4>
+            <hr>
+            {{ form.group_upload_file2('Employment Contract','upl_employment_contract',object.getFileEmploymentContract|default(''),3,4)}}
+            {{ form.group_upload_file2('Police Clearance','upl_police_clearance',object.getFilePoliceClearance|default(''),3,4)}}
+            {{ form.group_upload_file2('NBI Clearance','upl_nbi_clearance',object.getFileNBIClearance|default(''),3,4)}}
+            {{ form.group_upload_file2('Certificate of Employment (Previous Employer)','upl_prev_coe',object.getFilePrevCOE|default(''),3,4)}}
+            
+        </div>
+        <br>
+        <div class="form-actions fluid">
+            <div class="col-md-9">
+                {% if not readonly %}
+                    <button type="submit" class="btn blue">Save</button>
+                {% endif %}
+                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>

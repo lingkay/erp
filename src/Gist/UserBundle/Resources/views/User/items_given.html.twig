@@ -1,0 +1,107 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+        <div class="form-body">
+            {{ form.group_number('Buffer', 'buffer', object.getBufferQty|default(''), 3, 2, readonly) }}
+            <div id="cgroup-sim_card" class="form-group">
+                <label class="col-md-3 control-label">SIM Card</label>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-sim_qty" type="text" name="sim_qty" class="form-control" placeholder="Qty" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-sim_number" type="text" name="sim_number" class="form-control" placeholder="Number" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-sim_porivder" type="text" name="sim_porivder" class="form-control" placeholder="Provider" value="">
+                </div>
+            </div>
+
+            <div id="cgroup-cellphone" class="form-group">
+                <label class="col-md-3 control-label">Cellphone with charger</label>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-cellphone_qty" type="text" name="cellphone_qty" class="form-control" placeholder="Qty" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-cellphone_brand" type="text" name="cellphone_brand" class="form-control" placeholder="Brand" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-cellphone_model" type="text" name="cellphone_model" class="form-control" placeholder="Model" value="">
+                </div>
+            </div>
+
+            <div id="cgroup-uniform" class="form-group">
+                <label class="col-md-3 control-label">Uniform</label>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-uniform_qty" type="text" name="uniform_qty" class="form-control" placeholder="Qty" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-uniform_size" type="text" name="uniform_size" class="form-control" placeholder="Size" value="">
+                </div>
+            </div>
+
+            <div id="cgroup-uniform" class="form-group">
+                <label class="col-md-3 control-label">Laptop with charger</label>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-laptop_qty" type="text" name="laptop_qty" class="form-control" placeholder="Qty" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-laptop_brand" type="text" name="laptop_brand" class="form-control" placeholder="Brand" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-laptop_model" type="text" name="laptop_model" class="form-control" placeholder="Model" value="">
+                </div>
+            </div>
+
+            {{ form.group_number('Nameplate', 'nameplate', object.getBufferQty|default(''), 3, 2, readonly) }}
+            {{ form.group_number('ID', 'ig_id', object.getBufferQty|default(''), 3, 2, readonly) }}
+
+            <div id="cgroup-uniform" class="form-group">
+                <label class="col-md-3 control-label">Car</label>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-car_qty" type="text" name="car_qty" class="form-control" placeholder="Qty" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-car_brand" type="text" name="car_brand" class="form-control" placeholder="Brand" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-car_model" type="text" name="car_model" class="form-control" placeholder="Model" value="">
+                </div>
+            </div>
+
+            <div id="cgroup-uniform" class="form-group">
+                <label class="col-md-3 control-label">Motorcycle</label>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-motorcycle_qty" type="text" name="motorcycle_qty" class="form-control" placeholder="Qty" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-motorcycle_brand" type="text" name="motorcycle_brand" class="form-control" placeholder="Brand" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-motorcycle_model" type="text" name="motorcycle_model" class="form-control" placeholder="Model" value="">
+                </div>
+            </div>
+
+            <div id="cgroup-uniform" class="form-group">
+                <label class="col-md-3 control-label">Bag</label>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-bag_qty" type="text" name="bag_qty" class="form-control" placeholder="Qty" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-bag_brand" type="text" name="bag_brand" class="form-control" placeholder="Brand" value="">
+                </div>
+                <div class="col-md-2" style="display: inline-block !important;">
+                    <input id="cform-bag_size" type="text" name="bag_size" class="form-control" placeholder="Size" value="">
+                </div>
+            </div>
+
+        </div>
+        <div class="form-actions fluid">
+            <div class="col-md-9">
+                {% if not readonly %}
+                    <button type="submit" class="btn blue">Save</button>
+                {% endif %}
+                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
