@@ -87,6 +87,11 @@ cat_inv_prod_upload:
     methods: [POST]
     defaults: { _controller: GistInventoryBundle:Product:upload }
 
+cat_inv_prod_upload2:
+    pattern: /upload2/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Product:upload2 }
+
 cat_inv_prod_upload_delete:
     pattern: /image/delete/{id}/{loop}
     defaults: { _controller: GistInventoryBundle:Product:deleteImage }

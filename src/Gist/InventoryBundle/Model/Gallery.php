@@ -19,7 +19,7 @@ class Gallery
         $this->base_dir = $base_dir;
         $this->id = $id;
         $this->digit_pad = $digit_pad;
-        $this->allowed_exts = array('png', 'jpg', 'jpeg', 'bmp', 'gif');
+        $this->allowed_exts = array('png', 'jpg', 'jpeg', 'bmp', 'gif','pdf','doc','docx','xls','xlsx');
 
         $this->relative_dir = $this->getRelativeDirectory($id);
         $this->directory = $this->base_dir . DIRECTORY_SEPARATOR . $this->relative_dir;
@@ -73,7 +73,7 @@ class Gallery
         $this->makeDirectory($this->directory);
 
         // generate filename
-        $filename = $this->generateFilename($file);
+        $filename = $file->getClientOriginalName();
 
         // move file
         $file->move($this->directory, $filename);

@@ -446,6 +446,7 @@ class ProductController extends CrudController
 
         // let our gallery lib handle it
         $gallery = $this->getGallery($id);
+        
         $gallery->addImage($file);
 
         return new Response('Success');
@@ -453,7 +454,7 @@ class ProductController extends CrudController
 
     protected function getGallery($id)
     {
-        return new Gallery(__DIR__ . '/../../../../web/uploads/images', $id);
+        return new Gallery(__DIR__ . '/../../../../web/uploads/dzones', $id);
     }
 
     public function ajaxAddAction()

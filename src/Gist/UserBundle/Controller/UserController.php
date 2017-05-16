@@ -4,6 +4,7 @@ namespace Gist\UserBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\UserBundle\Entity\User;
+use Gist\InventoryBundle\Model\Gallery;
 use Gist\ValidationException;
 use DateTime;
 
@@ -42,10 +43,22 @@ class UserController extends CrudController
         );
     }
 
+    protected function getGallery($id)
+    {
+        return new Gallery(__DIR__ . '/../../../../web/uploads/dzones', $id);
+    }
+
     protected function padFormParams(&$params, $user = null)
     {
         $em = $this->getDoctrine()->getManager();
         $um = $this->get('gist_user');
+
+        if ($user->getID())
+        {
+            $gallery = $this->getGallery($user->getID());
+            $images = $gallery->getImages();
+            $params['images'] = $images;
+        }
 
         // enabled options
         $params['enabled_opts'] = array(
@@ -104,6 +117,9 @@ class UserController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+
+        // var_dump($data);
+        // die();
         $em = $this->getDoctrine()->getManager();
         $uc = $this->get('gist_user');
 
@@ -290,5 +306,10 @@ class UserController extends CrudController
             );
 
         return $data;
+    }
+
+    public function deleteFileAction($file)
+    {
+        unlink($file);
     }
 }

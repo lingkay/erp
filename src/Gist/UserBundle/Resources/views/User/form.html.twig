@@ -29,10 +29,15 @@
                         <a href="#tab_items_given" data-toggle="tab">
                             Items Given </a>
                     </li>
+                    <li>
+                        <a href="#tab_documents" data-toggle="tab">
+                            Other Documents </a>
+                    </li>
                 </ul>
                 <!-- END MAIN TABS -->
                 <div class="tab-content">
                         <!-- OVERVIEW TAB -->
+                        
                         <div class="tab-pane active" id="tab_sys_credentials">
                             <div class="row">
                                 <div class="col-md-12">
@@ -120,17 +125,18 @@
                                 <div class="col-md-12">
                                     <!-- BEGIN FORM-->
                                     <div class="form-body">
-                                    {{ form.group_date('Employement Date','employment_date', object.getEmploymentDate|default('')|date('m/d/Y'),3,4) }}
-                                    {{ form.group_date('Contract Expiration','contract_expiration', object.getContractExpiration|default('')|date('m/d/Y'),3,4) }}
-                                    {{ form.group_select('Contract Status', 'contract_status', enabled_opts, object.getContractStatus|default(''), 3, 4, readonly) }}
-                                    {{ form.group_textarea('Remarks', 'employment_remarks',object.getEmploymentRemarks|default(''),3,3,4)}}
-                                    <br>
-                                    <h4 class="form-section">Files</h4>
-                                    <hr>
-                                    {{ form.group_upload_file2('Employment Contract','upl_employment_contract',object.getFileEmploymentContract|default(''),3,4)}}
-                                    {{ form.group_upload_file2('Police Clearance','upl_police_clearance',object.getFilePoliceClearance|default(''),3,4)}}
-                                    {{ form.group_upload_file2('NBI Clearance','upl_nbi_clearance',object.getFileNBIClearance|default(''),3,4)}}
-                                    {{ form.group_upload_file2('Certificate of Employment (Previous Employer)','upl_prev_coe',object.getFilePrevCOE|default(''),3,4)}}
+                                        {{ form.group_date('Employement Date','employment_date', object.getEmploymentDate|default('')|date('m/d/Y'),3,4) }}
+                                        {{ form.group_date('Contract Expiration','contract_expiration', object.getContractExpiration|default('')|date('m/d/Y'),3,4) }}
+                                        {{ form.group_select('Contract Status', 'contract_status', enabled_opts, object.getContractStatus|default(''), 3, 4, readonly) }}
+                                        {{ form.group_textarea('Remarks', 'employment_remarks',object.getEmploymentRemarks|default(''),3,3,4)}}
+                                        <br>
+                                        <h4 class="form-section">Files</h4>
+                                        <hr>
+                                        {{ form.group_upload_file2('Employment Contract','upl_employment_contract',object.getFileEmploymentContract|default(''),3,4)}}
+                                        {{ form.group_upload_file2('Police Clearance','upl_police_clearance',object.getFilePoliceClearance|default(''),3,4)}}
+                                        {{ form.group_upload_file2('NBI Clearance','upl_nbi_clearance',object.getFileNBIClearance|default(''),3,4)}}
+                                        {{ form.group_upload_file2('Certificate of Employment (Previous Employer)','upl_prev_coe',object.getFilePrevCOE|default(''),3,4)}}
+                                        
                                     </div>
                                     <br>
                                     <div class="form-actions fluid">
@@ -255,6 +261,57 @@
                                 </div>
                             </div>
                         </div>
+                        </form>
+
+                        <!-- EMPLOYMENT RECORD TAB -->
+                        <div class="tab-pane" id="tab_documents">
+                        {% if object.getID != '' %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                <th>File Name</th>
+                                                <th width="10px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for image in images|default('') %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="/uploads/dzones/{{ image }}" target="_blank">
+                                                            {{image|slice(15)}}
+                                                        </a>
+                                                    </td>
+                                                    <td><a href="" class="btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i> Delete</a></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <div class="portlet box blue-hoki">
+                                        <div class="portlet-title">
+                                            <div class="caption"></div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            
+                                            {% if not readonly %}
+                                            <div class="row">
+                                                <form method="post" action="{{ path('cat_inv_prod_upload', {id: object.getID}) }}" class="dropzone dz-clickable" id="myDropzone">
+                                                    <div class="dz-default dz-message">
+                                                        <span>Drop files here to upload</span>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            {% endif %}
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <h3>Create user first before adding documents.</h3>
+                            {% endif %}
+                        </div>
                         <!-- END TAB CONTENTS -->
 
                 </div>
@@ -263,11 +320,14 @@
         </div>
     </div>
     {#END TABS#}
-    </form>
+    
+
+
 {% endblock %}
 {% block js %}
 {% if object.getUsername == '' %}
 <script>
+
 function updatePositions()
     {
         var path;
@@ -295,6 +355,12 @@ function updatePositions()
 
 $(document).ready(function() {
     FormValidation.init(); // init form validation
+    FormDropzone.init();
+
+
+      
+
+
     $('#cform-department').on("change", function()
     {
         updatePositions();
@@ -377,7 +443,19 @@ $(document).ready(function() {
 });
 </script>
 {% else %}
+<!-- HERE -->
 <script>
+function appendFileFields()
+    { 
+        var field = '<tr>';     
+            field += "<td></td>";
+            field += '<td><input type="text" name="uom[]" class="form-control uom" readonly></td>';     
+            field += '<td></td>'; 
+            field += '</tr>';
+
+            $('#more_files_tbody').append(field);
+
+    }
 function updatePositions()
     {
         var path;
@@ -404,6 +482,15 @@ function updatePositions()
     }
 $(document).ready(function() {
     FormValidation.init(); // init form validation
+    FormDropzone.init();
+    // //for dynamic files form
+    // var add_button = $(".add-field");
+    // $(add_button).on('click',function(){    
+    //     alert('here');    
+    //     appendFileFields();
+    // });   
+
+
     $('#cform-department').on("change", function()
     {
         updatePositions();
