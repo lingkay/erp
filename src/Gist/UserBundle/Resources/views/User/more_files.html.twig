@@ -16,7 +16,7 @@
                                 {{image|slice(15)}}
                             </a>
                         </td>
-                        <td><a href="" class="btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i> Delete</a></td>
+                        <td><a href="{{path('rm_file', {'file':image,'uid':object.getID})}}" class="btn default btn-xs red-sunglo"><i class="fa fa-minus-circle"></i> Delete</a></td>
                     </tr>
                 {% endfor %}
             </tbody>

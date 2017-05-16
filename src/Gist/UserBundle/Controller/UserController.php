@@ -308,8 +308,10 @@ class UserController extends CrudController
         return $data;
     }
 
-    public function deleteFileAction($file)
+    public function deleteFileAction($file,$uid)
     {
-        unlink($file);
+        unlink('/var/www/html/gist_erp2/web/uploads/dzones/'.$file);
+        $this->addFlash('success', $this->title . ' ' . ' file deleted successfully.');
+        return $this->redirect($this->generateUrl('cat_user_user_edit_form',array('id'=>$uid)).'#tab_documents');
     }
 }

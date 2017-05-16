@@ -121,6 +121,8 @@ cat_user_group_acl_editor_submit:
 
 
 rm_file:
-    pattern: /user/removeFile/{file}
+    pattern: /user/removeFile/{file}/{uid}
     methods: [GET]
     defaults: { _controller: GistUserBundle:User:deleteFile, file: null }
+    requirements:
+        file:    '[a-zA-Z0-9-_\/-\s.^]+'

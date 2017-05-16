@@ -158,6 +158,70 @@ class User extends BaseUser
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $employment_remarks;
 
+    //ITEMS GIVEN
+    
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $buffer_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $sim_card_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $sim_card_number;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $sim_card_provider;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $cp_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $cp_brand;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $cp_model;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $cp_color;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $laptop_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $laptop_brand;
+
+    // * @ORM\Column(type="string", length=150, nullable=true) 
+    // protected $laptop_model;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $laptop_color;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $uniform_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $uniform_size;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $nameplate_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $id_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $laptop_qty;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $laptop_brand;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $laptop_model;
+
+    // /** @ORM\Column(type="string", length=150, nullable=true) */
+    // protected $laptop_color;
+
+    //END ITEMS GIVEN
+
 
     public function __construct()
     {
