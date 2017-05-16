@@ -492,7 +492,7 @@ class User extends BaseUser
 
     public function setFileNBIClearance(Upload $file_NBI_clearance)
     {
-        $this->file_nbi_clearance = $file_nbi_clearance;
+        $this->file_nbi_clearance = $file_NBI_clearance;
         // $this->file_nbi_clearance->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
         return $this;
     }

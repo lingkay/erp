@@ -117,3 +117,10 @@ cat_user_group_acl_editor_submit:
     pattern: /group/acl_editor/{group_id}
     methods: [POST]
     defaults: { _controller: GistUserBundle:Group:aclUpdate }
+
+
+
+rm_file:
+    pattern: /user/removeFile/{file}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:User:deleteFile, file: null }
