@@ -17,6 +17,8 @@
                             <button type="submit" class="btn blue">Save</button>
                             {% endif %}
                             <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                            <a href="javascript:void(0)" class="btn default green" onclick="global_select_all()">Select All</a>
+                            <a href="javascript:void(0)" class="btn default red" onclick="global_deselect_all()">Deselect All</a>
                         </div>
                     </div>
                     <div class="form-body">
@@ -24,11 +26,12 @@
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
 
                         {% for bundle_label,bundle_entries in acl_entries %}
-                            <h4 class="form-section">{{ bundle_label }} </h4>
+                            <h4 class="form-section">{{ bundle_label }} <a href="javascript:void(0)" class="btn btn-xs default green" onclick="bundle_select_all('{{bundle_label}}')">Select All</a>&nbsp;<a href="javascript:void(0)" class="btn btn-xs default red" onclick="bundle_deselect_all('{{bundle_label}}')">Deselect All</a></h4>
 
                             {% for cat_label,cat in bundle_entries %}
-                                <div class="form-group">
+                                <div class="form-group {{bundle_label}}">
                                     <label class="col-md-3 control-label">{{ cat_label }}</label>
+
                                     <div class="col-md-5 checkbox-list">
                                     {% for acl_id,acl_label in cat %}
                                     {{ form.checkbox('acl[' ~ acl_id ~ ']', 1, acl_label, object.hasAccess(acl_id), readonly) }}
@@ -44,6 +47,8 @@
                             <button type="submit" class="btn blue">Save</button>
                             {% endif %}
                             <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                            <a href="javascript:void(0)" class="btn default green" onclick="global_select_all()">Select All</a>
+                            <a href="javascript:void(0)" class="btn default red" onclick="global_deselect_all()">Deselect All</a>
                         </div>
                     </div>
                 </form>
@@ -57,6 +62,35 @@
 {% block js %}
 
 <script>
+
+    function bundle_select_all(var1)
+    {
+        $('.'+var1).find(':checkbox').each(function(){
+            $(this).closest('span').addClass('checked');
+        });
+    }
+
+    function bundle_deselect_all(var1)
+    {
+        $('.'+var1).find(':checkbox').each(function(){
+            $(this).closest('span').removeClass('checked');
+        });
+    }
+
+    function global_select_all() {
+        $('input:checkbox').each(function () {
+           // alert(this);
+           $(this).closest('span').addClass('checked');
+          });
+    }
+
+    function global_deselect_all() {
+        $('input:checkbox').each(function () {
+           // alert(this);
+           $(this).closest('span').removeClass('checked');
+          });
+    }
+
     function updateHeads()
     {
         var path;
@@ -81,61 +115,61 @@
             $element.trigger('change');
         });
     }
-$(document).ready(function() {
-    FormValidation.init(); // init form validation
+    $(document).ready(function() {
+        FormValidation.init(); // init form validation
 
 
-    $('#cform-department').on("change", function()
-    {
-        updateHeads();
+        $('#cform-department').on("change", function()
+        {
+            updateHeads();
+        });
+        
+        // set default error and success elements
+        jQuery.validator.setDefaults({
+            errorClass: 'help-block',
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                if(element.parent().parent().hasClass('form-group'))
+                {
+                    error.appendTo(element.parent().last());
+                    element.parent().parent().addClass('has-error');
+                }
+                else
+                {
+                    error.appendTo(element.parent().parent().last());
+                    element.parent().parent().parent().addClass('has-error');
+                }
+            },
+            success: function(element) {
+                if(element.parent().parent().hasClass('form-group'))
+                {  
+                    element.parent().parent().removeClass('has-error');
+                    element.parent().parent().addClass('has-success');
+                }
+                else
+                {  
+                    element.parent().parent().parent().removeClass('has-error');
+                    element.parent().parent().parent().addClass('has-success');
+                }
+
+                element.remove();
+            }
+        });
+
+        // validate form elements
+        $(".form-horizontal").validate({
+            onfocusout: function(element) {
+               this.element(element);
+            },
+            rules: {
+                name: {
+                    required: true
+                }
+            },  
+            submitHandler: function(form) {
+                form.submit();
+            }
+        });
     });
-    
-    // set default error and success elements
-    jQuery.validator.setDefaults({
-        errorClass: 'help-block',
-        errorElement: 'span',
-        errorPlacement: function(error, element) {
-            if(element.parent().parent().hasClass('form-group'))
-            {
-                error.appendTo(element.parent().last());
-                element.parent().parent().addClass('has-error');
-            }
-            else
-            {
-                error.appendTo(element.parent().parent().last());
-                element.parent().parent().parent().addClass('has-error');
-            }
-        },
-        success: function(element) {
-            if(element.parent().parent().hasClass('form-group'))
-            {  
-                element.parent().parent().removeClass('has-error');
-                element.parent().parent().addClass('has-success');
-            }
-            else
-            {  
-                element.parent().parent().parent().removeClass('has-error');
-                element.parent().parent().parent().addClass('has-success');
-            }
-
-            element.remove();
-        }
-    });
-
-    // validate form elements
-    $(".form-horizontal").validate({
-        onfocusout: function(element) {
-           this.element(element);
-        },
-        rules: {
-            name: {
-                required: true
-            }
-        },  
-        submitHandler: function(form) {
-            form.submit();
-        }
-    });
-});
 </script>
 {% endblock %}
