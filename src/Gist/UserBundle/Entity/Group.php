@@ -21,7 +21,7 @@ class Group extends BaseGroup implements GroupInterface
     protected $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="groups")
+     * @ORM\OneToMany(targetEntity="User", mappedBy="group")
      */
     protected $users;
 
