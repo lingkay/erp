@@ -67,6 +67,7 @@
     {
         $('.'+var1).find(':checkbox').each(function(){
             $(this).closest('span').addClass('checked');
+            $(this).attr('checked','checked');
         });
     }
 
@@ -74,6 +75,7 @@
     {
         $('.'+var1).find(':checkbox').each(function(){
             $(this).closest('span').removeClass('checked');
+            $(this).removeAttr('checked');
         });
     }
 
@@ -81,6 +83,7 @@
         $('input:checkbox').each(function () {
            // alert(this);
            $(this).closest('span').addClass('checked');
+           $(this).attr('checked','checked');
           });
     }
 
@@ -88,6 +91,7 @@
         $('input:checkbox').each(function () {
            // alert(this);
            $(this).closest('span').removeClass('checked');
+           $(this).removeAttr('checked');
           });
     }
 
