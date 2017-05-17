@@ -1,6 +1,6 @@
 menu_items:
     - id: cat_hris_menu
-#      acl: cat_user_user.menu
+      acl: cat_hris.menu
       label: HRIS
       icon: fa-user
     - id: cat_user_user_index
@@ -8,14 +8,14 @@ menu_items:
       label: User
       parent: cat_hris_menu
     - id: cat_user_group_index
-#      acl: cat_user_user.menu
+      acl: cat_user_group.menu
       label: Position
       parent: cat_hris_menu
     - id: cat_user_department_index
       acl: cat_user_department.menu
       label: Department
       parent: cat_hris_menu
-#    - id: cat_user_group_index
-#      acl: cat_user_group.menu
-#      label: Role
-#      parent: cat_hris_menu
+    - id: cat_user_items_list_index
+      acl: cat_user_items_list.menu
+      label: Items List
+      parent: cat_hris_menu

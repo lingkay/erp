@@ -330,7 +330,7 @@ abstract class CrudController extends BaseController
         }
         catch (DBALException $e)
         {
-            $this->addFlash('error', 'Database error encountered. Possible duplicate.');
+            $this->addFlash('error', $e->getMessage());
             error_log($e->getMessage());
             return $this->addError($obj);
         }
@@ -405,7 +405,7 @@ abstract class CrudController extends BaseController
         }
         catch (DBALException $e)
         {
-            $this->addFlash('error', 'Database error encountered. Possible duplicate.');
+            $this->addFlash('error', $e->getMessage());
             error_log($e->getMessage());
 
             return $this->editError($object, $id);

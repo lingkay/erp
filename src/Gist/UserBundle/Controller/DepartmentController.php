@@ -46,20 +46,8 @@ class DepartmentController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-//        $uc = $this->get('gist_user');
-
-
         $o->setDepartmentName($data['department_name']);
-
-
     }
 
-//    public function toData()
-//    {
-//        $data = array(
-//            'warehouse_id' => $o->getWarehouse()->getID(),
-//        );
-//
-//        return $data;
-//    }
+
 }

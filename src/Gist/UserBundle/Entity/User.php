@@ -157,70 +157,9 @@ class User extends BaseUser
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $employment_remarks;
-
-    //ITEMS GIVEN
     
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $buffer_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $sim_card_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $sim_card_number;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $sim_card_provider;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $cp_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $cp_brand;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $cp_model;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $cp_color;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $laptop_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $laptop_brand;
-
-    // * @ORM\Column(type="string", length=150, nullable=true) 
-    // protected $laptop_model;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $laptop_color;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $uniform_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $uniform_size;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $nameplate_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $id_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $laptop_qty;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $laptop_brand;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $laptop_model;
-
-    // /** @ORM\Column(type="string", length=150, nullable=true) */
-    // protected $laptop_color;
-
-    //END ITEMS GIVEN
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $items_given;
 
 
     public function __construct()
@@ -232,7 +171,6 @@ class User extends BaseUser
         $this->flag_emailnotify = true;
     }
 
-    //NEW GETTERS AND SETTERS
     public function setFirstName($first_name)
     {
         $this->first_name = $first_name;
@@ -533,7 +471,6 @@ class User extends BaseUser
     public function setFileEmploymentContract(Upload $file_employment_contract)
     {
         $this->file_employment_contract = $file_employment_contract;
-        // $this->file_employment_contract->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
         return $this;
     }
 
@@ -545,7 +482,6 @@ class User extends BaseUser
     public function setFilePoliceClearance(Upload $file_police_clearance)
     {
         $this->file_police_clearance = $file_police_clearance;
-        // $this->file_police_clearance->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
         return $this;
     }
 
@@ -557,7 +493,6 @@ class User extends BaseUser
     public function setFileNBIClearance(Upload $file_NBI_clearance)
     {
         $this->file_nbi_clearance = $file_NBI_clearance;
-        // $this->file_nbi_clearance->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
         return $this;
     }
 
@@ -569,7 +504,6 @@ class User extends BaseUser
     public function setFilePrevCOE(Upload $file_previous_coe)
     {
         $this->file_previous_coe = $file_previous_coe;
-        // $this->file_previous_coe->setFileName($this->last_name.', '.$this->first_name.' - Employment Contract');
         return $this;
     }
 
@@ -578,7 +512,16 @@ class User extends BaseUser
         return $this->file_previous_coe;
     }
 
-    //END NEW GETTERS AND SETTERS
+    public function setItemsGiven($items_given)
+    {
+        $this->items_given = $items_given;
+        return $this;
+    }
+
+    public function getItemsGiven()
+    {
+        return $this->items_given;
+    }
 
     public function setID($id)
     {
@@ -593,18 +536,6 @@ class User extends BaseUser
         return $this;
     }
 
-    
-    // public function addGroup(GroupInterface $role)
-    // {
-    //     $this->groups->add($role);
-    //     return $this;
-    // }
-
-    // public function clearGroups()
-    // {
-    //     $this->groups->clear();
-    // }
-
     public function getID()
     {
         return $this->id;
@@ -614,20 +545,6 @@ class User extends BaseUser
     {
         return $this->name;
     }
-
-    // public function getGroups()
-    // {
-    //     return $this->groups;
-    // }
-
-
-    // public function getGroupsText()
-    // {
-    //     $groups = array();
-    //     foreach ($this->groups as $g)
-    //         $groups[] = $g->getName();
-    //     return implode(', ', $groups);
-    // }
 
     public function getLastLoginText()
     {
@@ -661,7 +578,6 @@ class User extends BaseUser
             return true;
         }
         
-
         // no access
         $this->acl_cache[$acl_key] = false;
         return false;
@@ -705,9 +621,6 @@ class User extends BaseUser
     public function toData()
     {
         $groups = array();
-        // foreach ($this->groups as $group)
-            // $groups[] = $group->toData(false);
-
         $data = new stdClass();
         $data->id = $this->id;
         $data->username = $this->username;

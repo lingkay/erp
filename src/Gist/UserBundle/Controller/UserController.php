@@ -96,11 +96,23 @@ class UserController extends CrudController
             'Approver 2' => 'Approver 2'
         );
 
+        // items given
+        $params['item_opts'] = $um->getItemOptions();
+
         // groups
         $params['position_opts'] = $um->getGroupOptions();
 
         // departments
         $params['department_opts'] = $um->getDepartmentOptions();
+
+
+        $items_given = array();
+        foreach (explode('&', $user->getItemsGiven()) as $piece) {
+            $items_given[] = explode('~', $piece);
+        }
+
+        $params['items_given'] = $items_given;
+
 
         // user groups
         $ug_opts = array();
@@ -117,8 +129,9 @@ class UserController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-
+        // echo "<pre>";
         // var_dump($data);
+        // echo "</pre>";
         // die();
         $em = $this->getDoctrine()->getManager();
         $uc = $this->get('gist_user');
@@ -256,6 +269,29 @@ class UserController extends CrudController
         if($data['upl_prev_coe']!=0 && $data['upl_prev_coe'] != ""){
             $o->setFilePrevCOE($media->getUpload($data['upl_prev_coe']));
         }
+
+        //parse items given
+        $items_given = [];
+        foreach ($data['item_id'] as $i => $item_id) {
+            $items_given[] = array($item_id, $data['qty'][$i]);
+        }
+
+        // print_r($items_given);
+        // echo "<br><br>";
+        $items_given_formatted = implode("&",array_map(function($a) {return implode("~",$a);},$items_given));
+        // print_r($out);
+        // echo "<br><br>";
+        // $result = array();
+        // foreach (explode('&', $out) as $piece) {
+        //     $result[] = explode('~', $piece);
+        // }
+        // print_r($result);
+        // die();
+
+        $o->setItemsGiven($items_given_formatted);
+
+        // var_dump($items_given);
+        // die();
 
 
 

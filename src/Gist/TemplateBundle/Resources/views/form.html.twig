@@ -245,6 +245,25 @@
 </div>
 {% endmacro %}
 
+{% macro group_select_only(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
+{% import _self as self %}
+<div class="col-md-{{ body_size }}">
+<select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control select_2" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --" style="margin=0;">
+{{ self.options(options, value) }}
+</select>
+</div>
+{% endmacro %}
+
+{% macro group_select_only2(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
+{% import _self as self %}
+
+<select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --" style="margin=0;">
+{{ self.options(options, value) }}
+</select>
+
+{% endmacro %}
+
+
 {% macro group_selectmulti(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
 {% import _self as self %}
 <div id="{{ prefix }}group-{{ name }}" class="form-group">

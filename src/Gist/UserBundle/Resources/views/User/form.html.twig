@@ -67,7 +67,7 @@
 {% block js %}
 <!-- HERE -->
 <script>
-function appendFileFields()
+    function appendFileFields()
     { 
         var field = '<tr>';     
             field += "<td></td>";
@@ -78,7 +78,20 @@ function appendFileFields()
             $('#more_files_tbody').append(field);
 
     }
-function updatePositions()
+
+    function appendItemsField(item_id, item_name)
+    { 
+        var field = '<tr>';     
+            field += '<input type="hidden" name="item_id[]" value="'+item_id+'">';
+            field += '<td><input type="text" value="'+item_name+'" readonly="true" class="form-control"></td>';
+            field += '<td><input type="number" name="qty[]" class="form-control qty" min="1"></td>';     
+            field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_ig_row">Remove</a></td>'; 
+            field += '</tr>';
+
+            $('#items_given_tbody').append(field);
+
+    }
+    function updatePositions()
     {
         var path;
         var department = $('#cform-department').val();
@@ -106,11 +119,27 @@ $(document).ready(function() {
     FormValidation.init(); // init form validation
     FormDropzone.init();
     // //for dynamic files form
-    // var add_button = $(".add-field");
-    // $(add_button).on('click',function(){    
-    //     alert('here');    
-    //     appendFileFields();
-    // });   
+    var add_button = $(".add-ig-field");
+    $(add_button).on('click',function(){      
+        var item_id = $('#cform-item_opt').val();
+        var item_name = $('#cform-item_opt option:selected').text();
+
+        if (!item_id == '') 
+        {
+            appendItemsField(item_id, item_name);
+        }
+        else
+        {
+            toastr['error']('Select an item first.', 'Error');
+        }
+    });   
+
+    $(document).on("click",".remove_ig_row", function(e){
+            e.preventDefault();            
+            var tr = $(this).closest('tr');
+            tr.remove();
+            return false;
+        });
 
 
     $('#cform-department').on("change", function()

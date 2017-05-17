@@ -126,3 +126,40 @@ rm_file:
     defaults: { _controller: GistUserBundle:User:deleteFile, file: null }
     requirements:
         file:    '[a-zA-Z0-9-_\/-\s.^]+'
+
+
+#ITEMS LIST
+cat_user_items_list_index:
+    pattern: /itemslist
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:ItemsList:index }
+
+cat_user_items_list_add_form:
+    pattern: /item
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:ItemsList:addForm }
+
+cat_user_items_list_add_submit:
+    pattern: /item
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:ItemsList:addSubmit }
+
+cat_user_items_list_edit_form:
+    pattern: /item/{id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:ItemsList:editForm }
+
+cat_user_items_list_edit_submit:
+    pattern: /item/{id}
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:ItemsList:editSubmit }
+
+cat_user_items_list_delete:
+    pattern: /item/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:ItemsList:delete }
+
+cat_user_items_list_grid:
+    pattern: /itemslist/grid
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:ItemsList:grid }

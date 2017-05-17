@@ -1,4 +1,8 @@
 acl:
+    - category: HRIS
+      entries:
+        - id: cat_hris.menu
+          label: "Menu"
     - category: User
       entries:
         - id: cat_user_user.menu
@@ -34,4 +38,16 @@ acl:
         - id: cat_user_department.edit
           label: "Edit"
         - id: cat_user_department.delete
+          label: "Delete"
+    - category: Items List
+      entries:
+        - id: cat_user_items_list.menu
+          label: "Menu"
+        - id: cat_user_items_list.view
+          label: "View"
+        - id: cat_user_items_list.add
+          label: "Add"
+        - id: cat_user_items_list.edit
+          label: "Edit"
+        - id: cat_user_items_list.delete
           label: "Delete"

@@ -4,6 +4,7 @@ namespace Gist\UserBundle\Model;
 
 use Gist\UserBundle\Entity\User;
 use Gist\UserBundle\Entity\Group;
+use Gist\UserBundle\Entity\ItemsList;
 use Doctrine\ORM\EntityManager;
 
 class UserManager
@@ -81,6 +82,17 @@ class UserManager
             array('department_name' => 'ASC'),
             'getID',
             'getDepartmentName'
+        );
+    }
+
+    public function getItemOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistUserBundle:ItemsList',
+            $filter,
+            array('name' => 'ASC'),
+            'getID',
+            'getFormattedName'
         );
     }
 
