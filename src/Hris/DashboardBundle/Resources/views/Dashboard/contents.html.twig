@@ -1,52 +1,47 @@
 <div class="row">
-    {% if app.user.hasAccess('hris_dashboard.view') %}
-    
-    {% endif %}
-    {% if app.user.hasAccess('hris_dashboard_admin.view') %}
-    <!-- START PIE CHART -->
-    <div class="col-md-6">
-        <div class="portlet solid bordered grey-cararra">
-            <div class="portlet-body">
-                <div id="chart" class="chart">
-                </div>
-                <div style="margin: 20px 0 10px 30px">
-                    <div class="row">
-                        <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                            <span class="label label-sm label-info">
-                            Contractual: </span>
-                            <h3>{{ contractual_count }}</h3>
-                        </div>
-                        <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                            <span class="label label-sm label-info">
-                            Probationary: </span>
-                            <h3>{{ probation_count }}</h3>
-                        </div>
-                        <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                            <span class="label label-sm label-info">
-                            Regular: </span>
-                            <h3>{{ regular_count }}</h3>
-                        </div>
-                        <div class="col-md-3 col-sm-3 col-xs-6 text-stat">
-                            <span class="label label-sm label-danger">
-                            Total: </span>
-                            <h3>{{ employee_count }}</h3>
-                        </div>
-                    </div>
-                </div> 
-            </div>
-        </div>
-    </div>
-    <!-- END PIE CHART -->
-    {% endif %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <script type="text/javascript">
+    Highcharts.chart('container', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Monthly Average Income'
+        },
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        },
+        yAxis: {
+            title: {
+                text: 'Units'
+            }
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+        series: [{
+            name: 'Region 1',
+            data: [123444,125443,189312,209234,233474,176253,123222,172366,172883,212334,234555,298999]
+        }, {
+            name: 'Region 2',
+            data: [135887,135413,199312,269234,203461,186253,103852,122366,122343,212399,162555,320545]
+        }]
+    });
+    </script>
+    </body>
 </div>
 <div class="row">
-    {% if app.user.hasAccess('hris_dashboard_admin.view') %}
-        {{ dboard.statbox('Pending Request', request_count, 'hris_dashboard_pending_request', '', '', 'red-intense', 'fa-file-text-o', 'fa-refresh') }}
-        {#{{ dboard.statbox('Shortlisted Applicants', shortlisted_count, 'hris_dashboard_shortlisted_applicant', '', '', 'blue-madison', 'fa-file-text-o','icon-users') }}
-        {{ dboard.statbox('Job Vacancy', vacancy_count, 'hris_dashboard_job_vacancy', '', '', 'purple-plum', 'icon-users', 'icon-magnifier') }}#}
-    {% endif %}
-    {% if app.user.hasAccess('hris_dashboard_admin.view') or app.user.hasAccess('hris_dashboard_request.view') %}
-        
-    {% endif %}
-    {# {{ dboard.statbox('Schedules', 0, 'hris_dashboard_schedules', '', '', 'green', 'fa-calendar', 'fa-male') }} #}
+    <div class="col-md-12">
+        {{ dboard.statbox('Supplies Purchase Orders', 0, 'cat_dashboard', '', '', 'blue', 'fa-ship','fa-file') }}
+        {{ dboard.statbox('Equipments Purchase Orders', 0, 'cat_dashboard', '', '', 'red-flamingo', 'fa-wrench','fa-tags') }}
+        {{ dboard.statbox('Completed Orders', 0, 'cat_dashboard', '', '', 'green-meadow', 'fa-check','fa-list') }}
+        {{ dboard.statbox('Pending Orders', 0, 'cat_dashboard', '', '', 'purple-plum', 'fa-truck','fa-clock-o') }}
+    </div>
 </div>
