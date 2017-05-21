@@ -105,13 +105,17 @@ class UserController extends CrudController
         // departments
         $params['department_opts'] = $um->getDepartmentOptions();
 
+        if ($user->getItemsGiven() == null) {
+            $params['items_given'] = null;
+        } else {
+            $items_given = array();
+            foreach (explode('&', $user->getItemsGiven()) as $piece) {
+                $items_given[] = explode('~', $piece);
+            }
 
-        $items_given = array();
-        foreach (explode('&', $user->getItemsGiven()) as $piece) {
-            $items_given[] = explode('~', $piece);
+            $params['items_given'] = $items_given;
         }
-
-        $params['items_given'] = $items_given;
+        
 
 
         // user groups
@@ -270,25 +274,29 @@ class UserController extends CrudController
             $o->setFilePrevCOE($media->getUpload($data['upl_prev_coe']));
         }
 
+
         //parse items given
-        $items_given = [];
-        foreach ($data['item_id'] as $i => $item_id) {
-            $items_given[] = array($item_id, $data['qty'][$i]);
+        if (isset($data['item_id'])) {
+             $items_given = [];
+            foreach ($data['item_id'] as $i => $item_id) {
+                $items_given[] = array($item_id, $data['qty'][$i]);
+            }
+
+            // print_r($items_given);
+            // echo "<br><br>";
+            $items_given_formatted = implode("&",array_map(function($a) {return implode("~",$a);},$items_given));
+            // print_r($out);
+            // echo "<br><br>";
+            // $result = array();
+            // foreach (explode('&', $out) as $piece) {
+            //     $result[] = explode('~', $piece);
+            // }
+            // print_r($result);
+            // die();
+
+            $o->setItemsGiven($items_given_formatted);
         }
-
-        // print_r($items_given);
-        // echo "<br><br>";
-        $items_given_formatted = implode("&",array_map(function($a) {return implode("~",$a);},$items_given));
-        // print_r($out);
-        // echo "<br><br>";
-        // $result = array();
-        // foreach (explode('&', $out) as $piece) {
-        //     $result[] = explode('~', $piece);
-        // }
-        // print_r($result);
-        // die();
-
-        $o->setItemsGiven($items_given_formatted);
+       
 
         // var_dump($items_given);
         // die();
