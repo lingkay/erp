@@ -26,6 +26,12 @@ class Product
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $product_compositions;
 
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $item_code;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $barcode;
+
     /**
      * @ORM\ManyToOne(targetEntity="Brand")
      * @ORM\JoinColumn(name="brand_id", referencedColumnName="id")
@@ -79,6 +85,28 @@ class Product
     public function getCategory()
     {
         return $this->category;
+    }
+
+    public function setBarcode($barcode)
+    {
+        $this->barcode = $barcode;
+        return $this;
+    }
+
+    public function getBarcode()
+    {
+        return $this->barcode;
+    }
+
+    public function setItemCode($item_code)
+    {
+        $this->item_code = $item_code;
+        return $this;
+    }
+
+    public function getItemCode()
+    {
+        return $this->item_code;
     }
 
 

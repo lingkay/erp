@@ -13,11 +13,13 @@
                 <form method="post" class="form-horizontal">
                     <div class="form-body">
                         {{ form.group_text('Product Name', 'name', object.getName, 3, 4, readonly) }}
+                        {{ form.group_text('Item Code', 'item_code', object.getItemCode|default(''), 3, 4, readonly) }}
+                        {{ form.group_text('Barcode', 'barcode', object.getBarcode|default(''), 3, 4, readonly) }}
                         {{ form.group_select("Category", "category", category_opts, category.getID|default(''), 3, 4, readonly) }}
                         {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
                         {{ form.group_select("Type", "item_type", type_opts, ptype|default(''), 3, 4, readonly) }}
                         <div id="composition_div" style="margin-top: 10px;">
-                            <h4 class="form-section">Product Composition</h4>
+                            <h4 class="form-section">Package Contents</h4>
                             <div class="col-md-4" style="padding-bottom: 20px;">
                             {{ form.group_select_only("Item", "item_opt", item_opts, '', 3, 7, readonly) }}
                             <a href="javascript:void(0)" class="btn default green add-prod_comp-field" style="margin=0">Add Item</a>
@@ -64,17 +66,7 @@
 {% block js %}
 <!-- HERE -->
 <script>
-    // function appendRowFields()
-    // { 
-    //     var field = '<tr>';     
-    //         field += "<td></td>";
-    //         field += '<td><input type="text" name="uom[]" class="form-control uom" readonly></td>';     
-    //         field += '<td></td>'; 
-    //         field += '</tr>';
 
-    //         $('#product_composition_tbody').append(field);
-
-    // }
 
     function appendRowFields(item_id, item_name)
     { 
@@ -89,41 +81,17 @@
 
     }
 
-    // function updatePositions()
-    // {
-    //     var path;
-    //     var department = $('#cform-department').val();
-    //     path = "{{path('cat_user_group_get_positions', {'parent': 'PARENT'})}}";
-    //     path = path.replace('PARENT', department);
 
-    //     var $element = $('#cform-position').select2();
-    //     var $request = $.ajax({
-    //         url: path
-    //     });
-
-    //     $request.then(function (data)
-    //     {
-    //         //clear previous options
-    //         $('#cform-position option').remove();
-    //         //loop through all returned data then append
-    //         $.each(data, function(k, v) {
-    //             $('#cform-position').append('<option value="'+v.id+'">'+v.text+'</option>');
-    //         });
-    //         //refresh element
-    //         $element.trigger('change');
-    //     });
-    // }
 $(document).ready(function() {
-    FormValidation.init(); // init form validation
+    FormValidation.init();
 
-    if ($('#cform-item_type option:selected').val() == "composition") {
+    if ($('#cform-item_type option:selected').val() == "package") {
         $('#composition_div').show();
     } else {
         $('#composition_div').hide();
     }
     
-    // FormDropzone.init();
-    // // //for dynamic files form
+
     var add_button = $(".add-prod_comp-field");
     $(add_button).on('click',function(){      
         var item_id = $('#cform-item_opt').val();
@@ -149,7 +117,7 @@ $(document).ready(function() {
 
     $('#cform-item_type').on("change", function()
     {
-        if ($(this).val() == 'composition') { 
+        if ($(this).val() == 'package') { 
             $('#composition_div').show(); 
         } else { 
             //should form clear?

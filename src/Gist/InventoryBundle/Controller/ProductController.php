@@ -53,7 +53,7 @@ class ProductController extends CrudController
 
         $params['type_opts'] = array(
             'single' => 'Single Product',
-            'composition' => 'Composition'
+            'package' => 'Package'
         );
 
         $params['ptype'] = 'single';
@@ -75,7 +75,7 @@ class ProductController extends CrudController
             }
 
             $params['product_composition'] = $product_composition;
-            $params['ptype'] = 'composition';
+            $params['ptype'] = 'package';
         }
 
         return $params;
@@ -96,6 +96,14 @@ class ProductController extends CrudController
             $o->setCategory($category);
         }
 
+        if (isset($data['item_code'])) {
+            $o->setItemCode($data['item_code']);
+        }
+
+        if (isset($data['barcode'])) {
+            $o->setBarcode($data['barcode']);
+        }
+
         //parse items given
         if (isset($data['item_id'])) {
              $items_given = [];
@@ -103,17 +111,8 @@ class ProductController extends CrudController
                 $items_given[] = array($item_id, $data['qty'][$i]);
             }
 
-            // print_r($items_given);
-            // echo "<br><br>";
             $items_given_formatted = implode("&",array_map(function($a) {return implode("~",$a);},$items_given));
-            // print_r($out);
-            // echo "<br><br>";
-            // $result = array();
-            // foreach (explode('&', $out) as $piece) {
-            //     $result[] = explode('~', $piece);
-            // }
-            // print_r($result);
-            // die();
+
 
             $o->setProductCompositions($items_given_formatted);
         } else {
