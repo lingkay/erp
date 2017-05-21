@@ -3876,7 +3876,7 @@ CREATE TABLE `user_user` (
 
 LOCK TABLES `user_user` WRITE;
 /*!40000 ALTER TABLE `user_user` DISABLE KEYS */;
-INSERT INTO `user_user` VALUES (1,NULL,'admin','admin',1,'fhqsoge52l4c8kw0cow0gsc8kscww80','I+1fZU2kCil0Jr0X7eWaEuY3WWtNlrsVXR3MvJSjbh6KKcePiUD1+iiVJptrzKvPqcJ7oZOQr9TlLeJ9egroxQ==','2017-05-20 15:52:30',0,0,NULL,NULL,NULL,'a:0:{}',0,NULL,'System Admin',1,'sys_ad@test.com','sys_ad@test.com',15,NULL,'System Admin','.','.','0','Approver 1','Makati','Brand Y','Variable','','','2017-05-21','','','','2019-06-04','','','','','.','.','.','.','2015-11-18','0111-11-10','0','aaa',NULL,NULL,NULL,NULL),(12,NULL,'hr_admin','hr_admin',1,'91fv4dyh6gcokowgk0g48wg8woo8gww','OTpISAHGoiVLvdH9Qar0dLdWSCnQGqjkTyOkvmtiz4IrT3zFWPT4SP8GeKlCZ2iN1cm9+l8ojxziJt241Mle1g==',NULL,0,0,NULL,NULL,NULL,'a:0:{}',0,NULL,'Victoria',1,'vgelmo@test.com','vgelmo@test.com',18,NULL,'Victoria','Abril','Gelmo','0','Approver 1','Makati','Barand X','Straight','0','Filipino','1994-09-23','San Pedro, Laguna','Taguig City, Metro Manila','Asian Life','2018-11-15','1908423-14','0923134','294842389','342-234-187-000','Lorna Gelmo','0','Mother','n/a','2017-04-13','2019-11-14','1','',NULL,NULL,NULL,NULL);
+INSERT INTO `user_user` VALUES (1,NULL,'admin','admin',1,'fhqsoge52l4c8kw0cow0gsc8kscww80','I+1fZU2kCil0Jr0X7eWaEuY3WWtNlrsVXR3MvJSjbh6KKcePiUD1+iiVJptrzKvPqcJ7oZOQr9TlLeJ9egroxQ==','2017-05-21 13:20:24',0,0,NULL,NULL,NULL,'a:0:{}',0,NULL,'System Admin',1,'sys_ad@test.com','sys_ad@test.com',15,NULL,'System Admin','.','.','0','Approver 1','Makati','Brand Y','Variable','','','2017-05-21','','','','2019-06-04','','','','','.','.','.','.','2015-11-18','0111-11-10','0','aaa',NULL,NULL,NULL,NULL),(12,NULL,'hr_admin','hr_admin',1,'91fv4dyh6gcokowgk0g48wg8woo8gww','OTpISAHGoiVLvdH9Qar0dLdWSCnQGqjkTyOkvmtiz4IrT3zFWPT4SP8GeKlCZ2iN1cm9+l8ojxziJt241Mle1g==',NULL,0,0,NULL,NULL,NULL,'a:0:{}',0,NULL,'Victoria',1,'vgelmo@test.com','vgelmo@test.com',18,NULL,'Victoria','Abril','Gelmo','0','Approver 1','Makati','Barand X','Straight','0','Filipino','1994-09-23','San Pedro, Laguna','Taguig City, Metro Manila','Asian Life','2018-11-15','1908423-14','0923134','294842389','342-234-187-000','Lorna Gelmo','0','Mother','n/a','2017-04-13','2019-11-14','1','',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3943,4 +3943,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-21  4:53:36
+-- Dump completed on 2017-05-21  5:23:44
