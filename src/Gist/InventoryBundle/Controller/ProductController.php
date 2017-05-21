@@ -27,16 +27,27 @@ class ProductController extends CrudController
         return $obj->getName();
     }
 
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('c', 'category', 'getCategory'),
+            $grid->newJoin('b', 'brand', 'getBrand'),
+        );
+    }
+
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
 
         return array(
             $grid->newColumn('Name', 'getName', 'name'),
+            $grid->newColumn('Category', 'getName', 'name','c'),
+            $grid->newColumn('Brand', 'getName', 'name','b'),
         );
     }
 
-    protected function padFormParams(&$params, $user = null)
+    protected function padFormParams(&$params, $product = null)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -48,13 +59,18 @@ class ProductController extends CrudController
         $params['ptype'] = 'single';
 
         $params['item_opts'] = $this->getProductOptions();
+        $params['brand_opts'] = $this->getBrandOptions();
+        $params['category_opts'] = $this->getCategoryOptions();
 
-        if ($user->getProductCompositions() == null) {
+        $params['category'] = $product->getCategory();
+        $params['brand'] = $product->getBrand();
+
+        if ($product->getProductCompositions() == null) {
             $params['product_composition'] = null;
             $params['ptype'] = 'single';
         } else {
             $product_composition = array();
-            foreach (explode('&', $user->getProductCompositions()) as $piece) {
+            foreach (explode('&', $product->getProductCompositions()) as $piece) {
                 $product_composition[] = explode('~', $piece);
             }
 
@@ -67,8 +83,18 @@ class ProductController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        $em = $this->getDoctrine()->getManager();
         $o->setName($data['name']);
 
+        if (isset($data['brand'])) {
+            $brand = $em->getRepository('GistInventoryBundle:Brand')->find($data['brand']);
+            $o->setBrand($brand);
+        }
+
+        if (isset($data['category'])) {
+            $category = $em->getRepository('GistInventoryBundle:ProductCategory')->find($data['category']);
+            $o->setCategory($category);
+        }
 
         //parse items given
         if (isset($data['item_id'])) {
@@ -115,6 +141,28 @@ class ProductController extends CrudController
     {
         return $this->getOptionsArray(
             'GistInventoryBundle:Product',
+            $filter, 
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
+
+    public function getBrandOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistInventoryBundle:Brand',
+            $filter, 
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
+
+    public function getCategoryOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistInventoryBundle:ProductCategory',
             $filter, 
             array('name' => 'ASC'),
             'getID',

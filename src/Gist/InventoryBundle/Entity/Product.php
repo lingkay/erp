@@ -26,8 +26,25 @@ class Product
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $product_compositions;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Brand")
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id")
+     */
+    protected $brand;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ProductCategory")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     */
+    protected $category;
+
     public function __construct()
     {
+    }
+
+    public function getID()
+    {
+        return $this->id;
     }
 
     public function setName($name)
@@ -36,15 +53,35 @@ class Product
         return $this;
     }
 
-    public function getID()
-    {
-        return $this->id;
-    }
-
     public function getName()
     {
         return $this->name;
     }
+
+
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+        return $this;
+    }
+
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    public function setCategory($category)
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+
 
     public function setProductCompositions($product_compositions)
     {

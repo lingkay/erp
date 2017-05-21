@@ -13,6 +13,8 @@
                 <form method="post" class="form-horizontal">
                     <div class="form-body">
                         {{ form.group_text('Product Name', 'name', object.getName, 3, 4, readonly) }}
+                        {{ form.group_select("Category", "category", category_opts, category.getID|default(''), 3, 4, readonly) }}
+                        {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
                         {{ form.group_select("Type", "item_type", type_opts, ptype|default(''), 3, 4, readonly) }}
                         <div id="composition_div" style="margin-top: 10px;">
                             <h4 class="form-section">Product Composition</h4>
@@ -205,6 +207,12 @@ $(document).ready(function() {
         },
         rules: {
             name: {
+                required: true
+            },
+            brand: {
+                required: true
+            },
+            category: {
                 required: true
             }
         },
