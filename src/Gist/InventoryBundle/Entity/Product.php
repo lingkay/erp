@@ -23,6 +23,9 @@ class Product
      */
     protected $name;
 
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $product_compositions;
+
     public function __construct()
     {
     }
@@ -41,6 +44,17 @@ class Product
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setProductCompositions($product_compositions)
+    {
+        $this->product_compositions = $product_compositions;
+        return $this;
+    }
+
+    public function getProductCompositions()
+    {
+        return $this->product_compositions;
     }
 
     public function toData()

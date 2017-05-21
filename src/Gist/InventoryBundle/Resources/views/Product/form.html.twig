@@ -12,13 +12,40 @@
                 <!-- BEGIN FORM-->
                 <form method="post" class="form-horizontal">
                     <div class="form-body">
-                        <div class="form-group">
-                        {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
+                        {{ form.group_text('Product Name', 'name', object.getName, 3, 4, readonly) }}
+                        {{ form.group_select("Type", "item_type", type_opts, ptype|default(''), 3, 4, readonly) }}
+                        <div id="composition_div" style="margin-top: 10px;">
+                            <h4 class="form-section">Product Composition</h4>
+                            <div class="col-md-4" style="padding-bottom: 20px;">
+                            {{ form.group_select_only("Item", "item_opt", item_opts, '', 3, 7, readonly) }}
+                            <a href="javascript:void(0)" class="btn default green add-prod_comp-field" style="margin=0">Add Item</a>
+                            </div>
+                            <div class="col-md-4" style="padding-bottom: 20px;">
+                            </div>
+
+                            <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th width="40px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="product_composition_tbody">
+                                    {% for key,val in product_composition %}
+                                      <tr>
+                                        <input type="hidden" name="item_id[]" value="{{val[0]}}">
+                                        <input type="hidden" name="qty[]" value="0">
+                                        <td>{{ form.group_select_only2("Item", "item_opt", item_opts, val[0], 3, 7, true) }}</td>
+                                        <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>
+                                      </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
+
                     </div>
-                    
                     <div class="form-actions fluid">
-                        <div class="col-md-offset-3 col-md-9">
+                        <div class="col-md-offset-0 col-md-12">
                             {% if not readonly %}
                             <button type="submit" class="btn blue">Submit</button>
                             {% endif %} 
@@ -31,4 +58,189 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block js %}
+<!-- HERE -->
+<script>
+    // function appendRowFields()
+    // { 
+    //     var field = '<tr>';     
+    //         field += "<td></td>";
+    //         field += '<td><input type="text" name="uom[]" class="form-control uom" readonly></td>';     
+    //         field += '<td></td>'; 
+    //         field += '</tr>';
+
+    //         $('#product_composition_tbody').append(field);
+
+    // }
+
+    function appendRowFields(item_id, item_name)
+    { 
+        var field = '<tr>';     
+            field += '<input type="hidden" name="item_id[]" value="'+item_id+'">';
+            field += '<input type="hidden" name="qty[]" value="0">';
+            field += '<td><input type="text" value="'+item_name+'" readonly="true" class="form-control"></td>';  
+            field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>'; 
+            field += '</tr>';
+
+            $('#product_composition_tbody').append(field);
+
+    }
+
+    // function updatePositions()
+    // {
+    //     var path;
+    //     var department = $('#cform-department').val();
+    //     path = "{{path('cat_user_group_get_positions', {'parent': 'PARENT'})}}";
+    //     path = path.replace('PARENT', department);
+
+    //     var $element = $('#cform-position').select2();
+    //     var $request = $.ajax({
+    //         url: path
+    //     });
+
+    //     $request.then(function (data)
+    //     {
+    //         //clear previous options
+    //         $('#cform-position option').remove();
+    //         //loop through all returned data then append
+    //         $.each(data, function(k, v) {
+    //             $('#cform-position').append('<option value="'+v.id+'">'+v.text+'</option>');
+    //         });
+    //         //refresh element
+    //         $element.trigger('change');
+    //     });
+    // }
+$(document).ready(function() {
+    FormValidation.init(); // init form validation
+
+    if ($('#cform-item_type option:selected').val() == "composition") {
+        $('#composition_div').show();
+    } else {
+        $('#composition_div').hide();
+    }
+    
+    // FormDropzone.init();
+    // // //for dynamic files form
+    var add_button = $(".add-prod_comp-field");
+    $(add_button).on('click',function(){      
+        var item_id = $('#cform-item_opt').val();
+        var item_name = $('#cform-item_opt option:selected').text();
+
+        if (!item_id == '') 
+        {
+            appendRowFields(item_id, item_name);
+        }
+        else
+        {
+            toastr['error']('Select a product first.', 'Error');
+        }
+    });   
+
+    $(document).on("click",".remove_row", function(e){
+            e.preventDefault();            
+            var tr = $(this).closest('tr');
+            tr.remove();
+            return false;
+        });
+
+
+    $('#cform-item_type').on("change", function()
+    {
+        if ($(this).val() == 'composition') { 
+            $('#composition_div').show(); 
+        } else { 
+            //should form clear?
+            $('#composition_div').hide(); 
+        }
+    });
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            name: {
+                required: true
+            }
+        },
+        submitHandler: function(form) {
+            var pass1 = $("#cform-pass1");
+            var pass2 = $("#cform-pass2");
+            
+            // validate password if password field is changed
+            if(pass1.val() !== '' || pass2.val() !== '')
+            {
+                if(pass1.val() !== pass2.val())
+                {
+                    pass1.rules('add', {
+                        required: true
+                    });
+                    pass2.rules('add', {
+                        required: true,
+                        equalTo: "#cform-pass1",
+                        messages: {
+                            equalTo: "Password do not match."
+                        }
+                    });
+                    pass1.parents('.form-group').addClass('has-error');
+                    pass2.parents('.form-group').addClass('has-error');
+                    if(!$("#help").hasClass('help-block'))
+                        pass2.parent().parent().append('<span id="help" class="help-block">Password do not match.</span>');
+                }
+            }
+
+            if(pass1.val() === pass2.val())
+            {
+                form.submit();
+            }
+        }
+    });
+
+});
+</script>
 {% endblock %}
