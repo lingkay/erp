@@ -9,6 +9,7 @@
         {{ form.group_text('Email', 'email', object.getEmail, 3, 6, readonly) }}
         {{ form.group_text('Concact No.', 'conctact_no', object.getContactNumber|default(''), 3, 6, readonly) }}
         {{ form.group_select('Nationality', 'nationality', nationality_opts, object.getNationality|default(''), 3, 6, readonly) }}
+        
         {{ form.group_date('Date of Birth','dob', object.getDOB|default('')|date('m/d/Y'),3,6) }}
         {{ form.group_textarea('Provincial Address', 'prov_address',object.getProvincialAddress|default(''),3,3,6)}}
         {{ form.group_textarea('City Address', 'city_address',object.getCityAddress|default(''),3,3,6)}}
