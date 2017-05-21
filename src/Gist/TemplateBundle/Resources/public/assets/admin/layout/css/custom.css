@@ -375,3 +375,8 @@ ol.progtrckr li.progtrckr-todo:before {
 .fa-file-powerpoint-o,.fa-file-pdf-o {
   color: #D24625;
 }
+
+
+.select2 {
+width: 100% !important;
+}
