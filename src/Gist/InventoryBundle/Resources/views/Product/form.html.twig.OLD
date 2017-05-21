@@ -1,0 +1,317 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('bundles/gisttemplate/assets/admin/pages/css/portfolio.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/dropzone/css/dropzone.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{% block form_header %}{% endblock %}</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <h4 class="form-section">Information</h4>
+                        {{ form.group_select('Product Type','type_id',type_opts, object.getTypeID,3,4)}}
+                        {{ form.group_text('Product SKU', 'sku', object.getSKU, 3, 4, readonly) }}
+                        {{ form.group_text('Product Name', 'name', object.getName, 3, 4, readonly) }}
+                        {#{{ form.group_select('Product Group', 'prodgroup_id', pg_opts, object.getProductGroup.getID|default(''), 3, 4, readonly) }}#}
+                        {#{{ form.group_select('Product Brand', 'brand_id', brand_opts, object.getBrand.getID|default(''), 3, 4, readonly) }}#}
+                        <input type="hidden" name="prodgroup_id" value="1">
+                        <input type="hidden" name="brand_id" value="1">
+                        {{ form.group_text('Unit of Measure', 'uom', object.getUnitOfMeasure, 3, 4, readonly) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Characteristics</label>
+                            <div class="col-md-4">
+                                <div class="checkbox-list">
+                                    <div>
+                                    {{ form.checkbox('flag_sale', 1, 'For sale?', object.canSell, 'chars', readonly) }}
+                                    </div>
+                                    <div>
+                                    {{ form.checkbox('flag_purchase', 1, 'For purchase?', object.canPurchase, 'chars', readonly) }}
+                                    </div>
+                                    {#<div>
+                                    {{ form.checkbox('flag_perishable', 1, 'Perishable?', object.isPerishable, 'chars', readonly) }}
+                                    </div>#}
+                                </div>
+                            </div>
+                        </div>
+                        {% if object.getID == '' %}
+                         <h4 class="form-section">Initial Balance</h4>
+                        {{ form.group_select('Warehouse', 'warehouse', wh_opts, '', 3, 4, readonly) }}
+                        {{ form.group_text('Quantity', 'qty', '0', 3, 4, readonly) }}
+                        {% endif %}
+                        
+
+                        {% set view_sell_price = app.user.hasAccess(prefix ~ '.view_sell_price') %}
+                        {% set view_cost_price = app.user.hasAccess(prefix ~ '.view_cost_price') %}
+
+                        <div id="price-group">
+                        {% if view_sell_price or view_cost_price %}
+                            <h4 class="form-section">Pricing</h4>
+                        {% endif %}
+                        {% if view_sell_price %}
+                            {{ form.group_number('Sale Price', 'price_sale', object.getPriceSale|number_format(2, '.', ''), 3, 4, readonly) }}
+                        {% endif %}
+                        {% if view_cost_price %}
+                            {{ form.group_number('Purchase Price', 'price_purchase', object.getPricePurchase|number_format(2, '.', ''), 3, 4, readonly) }}
+                        {% endif %}
+                        </div>
+
+                        <h4 class="form-section">Threshold</h4>
+                        {{ form.group_number('Stock Minimum', 'stock_min', object.getStockMin|number_format(2, '.', ''), 3, 4, readonly) }}
+                        {{ form.group_number('Stock Maximum', 'stock_max', object.getStockMax|number_format(2, '.', ''), 3, 4, readonly) }}
+                        {% if object.getID != '' %}
+                        <h4 class="form-section">Suppliers</h4>
+                        <a class="button green btn default add-supplier" style="margin-bottom: 10px;">Add Supplier</a>
+                        <table class="table table-striped table-bordered table-hover suppliers_info" id="suppliers_info" aria-describedby="list_table_suppliers_info">
+                            <thead>
+                                <tr>
+                                    <th>Supplier Name</th>
+                                    <th style="width: 180px">Supplier Price</th>
+                                    <th style="width: 10px"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-supplier-entry">
+                            {% for supplier in suppliers %}
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="en_id[]" value="{{ o.getID | default('') }}">
+                                        <select name="supplier_id[]" class="form-control">
+                                            {{ form.options(supplier_opts, supplier.getSupplier.getID ) }}
+                                        </select>
+                                    </td>
+                                    <td><input class="form-control price" type="number" name="supplier_price[]" value="{{supplier.getPrice}}"></td>
+                                    <td><a href="#" class="btn red btn-xs remove_field"><i class="fa fa-times"></i></a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="form-actions fluid">
+                        <div class="col-md-9">
+                            {% if not readonly %}
+                            <button type="submit" class="btn blue">Submit</button>
+                            {% endif %}
+                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{#{% if object.getID != null %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Gallery</div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    {% for image in images %}
+                    <div class="col-md-3 col-sd-4">
+                        <a class="fancybox-button" href="/uploads/images/{{ image }}" data-rel="fancybox-button">
+                            <img class="img-responsive" src="/uploads/images/{{ image }}">
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if not readonly %}
+                <div class="row">
+                    <form method="post" action="{{ path('cat_inv_prod_upload', {id: object.getID}) }}" class="dropzone dz-clickable">
+                        <div class="dz-default dz-message">
+                            <span>Drop files here to upload</span>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}#}
+<div class="hidden">
+    <div class="supplier_opts">{{ form.options(supplier_opts,0 ) }}</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/portfolio.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/dropzone/dropzone.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/form-dropzone.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
+
+
+<script>
+function escape_attr(s) {
+    return String(s).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escape_html(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function update_price() {
+    // price sell
+    var price_sell = false;
+    if ($('#cform-flag_sale').prop('checked')) {
+        price_sell = true;
+        $('#cgroup-price_sale').show();
+    } else {
+        $('#cgroup-price_sale').hide();
+    }
+
+    // price purchase
+    var price_purchase = false;
+    if ($('#cform-flag_purchase').prop('checked')) {
+        price_purchase = true;
+        $('#cgroup-price_purchase').show();
+    } else {
+        $('#cgroup-price_purchase').hide();
+    }
+
+    // price group
+    if (!price_sell && !price_purchase) {
+        $('#price-group').hide();
+    } else {
+        $('#price-group').show();
+    }
+}
+
+function appendEntry()
+{
+    var html = '<tr>';
+
+    html += '<td><select name="supplier_id[]" class="form-control supplier_opts">'+$('.supplier_opts').html()+'</td></select>';
+    html += '<td><input class="form-control price" type="number" name="supplier_price[]" min="0"></td>';
+    html += '<td><a href="#" class="btn red btn-xs remove_field"><i class="fa fa-times"></i></a></td>';
+    html += '</tr>';
+
+    $('#table-supplier-entry').append(html);
+}
+
+function checkSupplierTable()
+{
+    //check for repeated products
+    var contents = {},
+    duplicates = false;
+    $("#suppliers_info tbody td [name^=supplier_id]").each(function() {
+        var tdContent = $(this).val();
+        if (contents[tdContent]) {
+            duplicates = true;
+            return false;
+        }
+        contents[tdContent] = true;
+    });    
+
+    if (duplicates)
+    {
+        toastr['error']('Duplicate supplier entry', 'Error');
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+    
+}
+
+
+$(document).ready(function() {
+
+    $('#cform-sku').change(function() {
+        var url = "{{ path('cat_inv_prod_check_sku', { sku: ':sku' }) }}";
+        url = url.replace(':sku', $(this).val());
+        $.getJSON(url, function(json){
+        console.log(json);                    
+            if (json) {
+                toastr['error']('SKU '+ $('#cform-sku').val() +' already exists', 'Error');
+                $('#cform-sku').val("");
+            }
+        });
+    });
+
+
+    Portfolio.init();
+    FormDropzone.init();
+    FormValidation.init(); // init form validation
+
+    // handle price toggles
+    update_price();
+    $('#cform-flag_sale').change(function() {
+        update_price();
+    });
+    $('#cform-flag_purchase').change(function() {
+        update_price();
+    });
+
+    $('.add-supplier').click(function(){                            
+        appendEntry();            
+    });
+
+    // delete button
+    $(document).on("click",".remove_field", function(e){
+        var tr = $(this).closest('tr');
+        tr.remove();
+        return false;
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            code: {
+                required: true
+            },
+            name: {
+                required: true
+            },
+            sku: {
+                required: true
+            }
+        },  
+        submitHandler: function(form) {
+            // if($('#flag_service').attr('checked'))
+            // {
+            //     // alert('asdasd')
+            //     if(!$('#en_prod_id').val())
+            //         $validator.showErrors({ en_table: "Please enter an ID to check" });
+            // }
+            // else
+            // {
+                //form.submit();
+                if (!checkSupplierTable()) 
+                {
+                    return false;
+                }
+                else
+                {
+                    form.submit();
+                }
+            // }
+        }
+    });
+});
+</script>
+{% endblock %}
