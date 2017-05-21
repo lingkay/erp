@@ -295,6 +295,8 @@ class UserController extends CrudController
             // die();
 
             $o->setItemsGiven($items_given_formatted);
+        } else {
+            $o->setItemsGiven(null);
         }
        
 
