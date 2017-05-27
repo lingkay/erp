@@ -33,6 +33,10 @@
                         <a href="#tab_documents" data-toggle="tab">
                             Other Documents </a>
                     </li>
+                    <li>
+                        <a href="#tab_performance" data-toggle="tab">
+                            Performance </a>
+                    </li>
                 </ul>
                 <!-- END MAIN TABS -->
                 <div class="tab-content">
@@ -51,6 +55,9 @@
                     <!-- ITEMS GIVEN TAB -->
                     <div class="tab-pane" id="tab_items_given">
                         {% include 'GistUserBundle:User:items_given.html.twig' %}
+                    </div>
+                    <div class="tab-pane" id="tab_performance">
+                        {% include 'GistUserBundle:User:performance.html.twig' %}
                     </div>
     </form>
                     <!-- MORE FILES TAB -->
