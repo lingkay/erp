@@ -43,6 +43,9 @@ class Group extends BaseGroup implements GroupInterface
     /** @ORM\Column(type="text") */
     protected $access;
 
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $job_description;
+
     //parent&child
     public function setParent(Group $group)
     {
@@ -53,6 +56,17 @@ class Group extends BaseGroup implements GroupInterface
     public function getParent()
     {
         return $this->parent;
+    }
+
+    public function setJobDescription($job_description)
+    {
+        $this->job_description = $job_description;
+        return $this;
+    }
+
+    public function getJobDescription()
+    {
+        return $this->job_description;
     }
 
 //    public function addVariant(Group $group)

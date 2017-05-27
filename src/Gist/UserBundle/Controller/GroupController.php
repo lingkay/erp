@@ -106,6 +106,10 @@ class GroupController extends CrudController
             }
             
         }
+
+        if (isset($data['job_description'])) {
+            $o->setJobDescription($data['job_description']);
+        }
         
 
         // validate name
