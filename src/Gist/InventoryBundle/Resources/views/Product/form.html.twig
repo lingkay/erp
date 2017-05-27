@@ -30,7 +30,8 @@
                             <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
+                                        <th>Item</th>
+                                        <th width="80px">Quantity</th>
                                         <th width="40px"></th>
                                     </tr>
                                 </thead>
@@ -38,8 +39,9 @@
                                     {% for key,val in product_composition %}
                                       <tr>
                                         <input type="hidden" name="item_id[]" value="{{val[0]}}">
-                                        <input type="hidden" name="qty[]" value="0">
+                                        
                                         <td>{{ form.group_select_only2("Item", "item_opt", item_opts, val[0], 3, 7, true) }}</td>
+                                        <td><input type="number" name="qty[]" class="form-control qty" value="{{val[1]}}" min="1"></td>
                                         <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>
                                       </tr>
                                     {% endfor %}
@@ -72,8 +74,8 @@
     { 
         var field = '<tr>';     
             field += '<input type="hidden" name="item_id[]" value="'+item_id+'">';
-            field += '<input type="hidden" name="qty[]" value="0">';
-            field += '<td><input type="text" value="'+item_name+'" readonly="true" class="form-control"></td>';  
+            field += '<td><input type="text" value="'+item_name+'" readonly="true" class="form-control"></td>';
+            field += '<td><input type="number" name="qty[]" class="form-control qty" min="1"></td>';     
             field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>'; 
             field += '</tr>';
 
