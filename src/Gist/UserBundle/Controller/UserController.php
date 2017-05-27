@@ -274,6 +274,10 @@ class UserController extends CrudController
             $o->setFilePrevCOE($media->getUpload($data['upl_prev_coe']));
         }
 
+        if($data['upl_profile_picture']!=0 && $data['upl_profile_picture'] != ""){
+            $o->setProfilePicture($media->getUpload($data['upl_profile_picture']));
+        }
+
 
         //parse items given
         if (isset($data['item_id'])) {

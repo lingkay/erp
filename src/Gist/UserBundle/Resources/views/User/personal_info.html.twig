@@ -2,6 +2,8 @@
     <div class="col-md-6">
         <!-- BEGIN FORM-->
         <div class="form-body">
+        {{ form.group_upload_image('Profile Picture','upl_profile_picture',object.getProfilePicture|default(''),3,4)}}
+            
         {{ form.group_text('First Name', 'first_name', object.getFirstName|default(''), 3, 6, readonly) }}
         {{ form.group_text('Middle Name', 'middle_name', object.getMiddleName|default(''), 3, 6, readonly) }}
         {{ form.group_text('Last Name', 'last_name', object.getLastName|default(''), 3, 6, readonly) }}

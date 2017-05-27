@@ -37,6 +37,12 @@ class User extends BaseUser
      * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
      * @ORM\JoinColumn(name="emp_contract_file_id", referencedColumnName="id")
      */
+    protected $profile_picture;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="emp_contract_file_id", referencedColumnName="id")
+     */
     protected $file_employment_contract;
 
     /**
@@ -466,6 +472,17 @@ class User extends BaseUser
     public function getEmploymentRemarks()
     {
         return $this->employment_remarks;
+    }
+
+    public function setProfilePicture(Upload $profile_picture)
+    {
+        $this->profile_picture = $profile_picture;
+        return $this;
+    }
+
+    public function getProfilePicture()
+    {
+        return $this->profile_picture;
     }
 
     public function setFileEmploymentContract(Upload $file_employment_contract)
