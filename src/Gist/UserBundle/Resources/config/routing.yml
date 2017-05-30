@@ -163,3 +163,39 @@ cat_user_items_list_grid:
     pattern: /itemslist/grid
     methods: [GET]
     defaults: { _controller: GistUserBundle:ItemsList:grid }
+
+#AREA
+gist_loc_areas_index:
+    pattern: /areas
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Areas:index }
+
+gist_loc_areas_add_form:
+    pattern: /area
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Areas:addForm }
+
+gist_loc_areas_add_submit:
+    pattern: /area
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:Areas:addSubmit }
+
+gist_loc_areas_edit_form:
+    pattern: /area/{id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Areas:editForm }
+
+gist_loc_areas_edit_submit:
+    pattern: /area/{id}
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:Areas:editSubmit }
+
+gist_loc_areas_delete:
+    pattern: /area/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Areas:delete }
+
+gist_loc_areas_grid:
+    pattern: /areas/grid
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Areas:grid }
