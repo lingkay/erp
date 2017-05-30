@@ -23,6 +23,12 @@ class ProductCategory
      */
     protected $name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Brand")
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id")
+     */
+    protected $brand;
+
     public function __construct()
     {
     }
@@ -41,6 +47,17 @@ class ProductCategory
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+        return $this;
+    }
+
+    public function getBrand()
+    {
+        return $this->brand;
     }
 
     public function toData()

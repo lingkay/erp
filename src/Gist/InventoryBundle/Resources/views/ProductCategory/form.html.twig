@@ -14,6 +14,7 @@
                         <div class="form-body">
                             <div class="form-group">
                                 {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
+                                {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
                             </div>
                         </div>
 
@@ -31,4 +32,104 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+<!-- HERE -->
+<script>
+$(document).ready(function() {
+    FormValidation.init();
+
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            name: {
+                required: true
+            },
+            brand: {
+                required: true
+            }
+        },
+        submitHandler: function(form) {
+            var pass1 = $("#cform-pass1");
+            var pass2 = $("#cform-pass2");
+            
+            // validate password if password field is changed
+            if(pass1.val() !== '' || pass2.val() !== '')
+            {
+                if(pass1.val() !== pass2.val())
+                {
+                    pass1.rules('add', {
+                        required: true
+                    });
+                    pass2.rules('add', {
+                        required: true,
+                        equalTo: "#cform-pass1",
+                        messages: {
+                            equalTo: "Password do not match."
+                        }
+                    });
+                    pass1.parents('.form-group').addClass('has-error');
+                    pass2.parents('.form-group').addClass('has-error');
+                    if(!$("#help").hasClass('help-block'))
+                        pass2.parent().parent().append('<span id="help" class="help-block">Password do not match.</span>');
+                }
+            }
+
+            if(pass1.val() === pass2.val())
+            {
+                form.submit();
+            }
+        }
+    });
+
+});
+</script>
 {% endblock %}
