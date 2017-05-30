@@ -199,3 +199,39 @@ gist_loc_areas_grid:
     pattern: /areas/grid
     methods: [GET]
     defaults: { _controller: GistUserBundle:Areas:grid }
+
+#POS LOCS
+gist_loc_pos_locations_index:
+    pattern: /pos_locations
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:POSLocations:index }
+
+gist_loc_pos_locations_add_form:
+    pattern: /pos_location
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:POSLocations:addForm }
+
+gist_loc_pos_locations_add_submit:
+    pattern: /pos_location
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:POSLocations:addSubmit }
+
+gist_loc_pos_locations_edit_form:
+    pattern: /pos_location/{id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:POSLocations:editForm }
+
+gist_loc_pos_locations_edit_submit:
+    pattern: /pos_location/{id}
+    methods: [POST]
+    defaults: { _controller: GistUserBundle:POSLocations:editSubmit }
+
+gist_loc_pos_locations_delete:
+    pattern: /pos_location/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:POSLocations:delete }
+
+gist_loc_pos_locations_grid:
+    pattern: /pos_locations/grid
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:POSLocations:grid }
