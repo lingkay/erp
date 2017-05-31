@@ -27,40 +27,40 @@ class POSLocations
 
 
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $name;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $leasor;
 
-    /** @ORM\Column(type="string", length=50) */
-    protected $contact_mumber;
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $contact_number;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $coordinates;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $locator_desc;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $type;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $brand;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $city;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $postal;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $region;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $country;
 
-    /** @ORM\Column(type="string", length=50) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $status;
 
     /**
@@ -127,27 +127,27 @@ class POSLocations
     }
 
     /**
-     * Set contactMumber
+     * Set contactNumber
      *
-     * @param string $contactMumber
+     * @param string $contactNumber
      *
      * @return POSLocations
      */
-    public function setContactMumber($contactMumber)
+    public function setContactNumber($contact_number)
     {
-        $this->contact_mumber = $contactMumber;
+        $this->contact_number = $contact_number;
 
         return $this;
     }
 
     /**
-     * Get contactMumber
+     * Get contactNumber
      *
      * @return string
      */
-    public function getContactMumber()
+    public function getContactNumber()
     {
-        return $this->contact_mumber;
+        return $this->contact_number;
     }
 
     /**

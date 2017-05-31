@@ -11,9 +11,9 @@ class AreasController extends CrudController
     public function __construct()
     {
         $this->route_prefix = 'gist_loc_areas';
-        $this->title = 'Areas';
+        $this->title = 'Area';
 
-        $this->list_title = 'Area';
+        $this->list_title = 'Areas';
         $this->list_type = 'dynamic';
     }
 
