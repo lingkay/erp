@@ -27,12 +27,23 @@ class POSLocationsController extends CrudController
         return $obj->getName();
     }
 
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('a', 'area', 'getArea'),
+        );
+    }
+
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
 
         return array(
             $grid->newColumn('Location', 'getName', 'name'),
+            $grid->newColumn('Area', 'getName', 'name','a'),
+            $grid->newColumn('Contact No.', 'getContactNumber', 'contact_number'),
+            $grid->newColumn('Location', 'getLocatorDesc', 'locator_desc'),
         );
     }
 
@@ -82,7 +93,7 @@ class POSLocationsController extends CrudController
         $o->setStatus($data['status']);
 
         $em = $this->getDoctrine()->getManager();
-        if (isset($data['position'])) {
+        if (isset($data['area'])) {
             $area = $em->getRepository('GistUserBundle:Areas')->find($data['area']);
             $o->setArea($area);
         }

@@ -1,0 +1,39 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+
+{% block content %}
+<h1>{{object.getName}}</h1>
+<hr>
+<h2>Area Managers</h2>
+{% for user in users %}
+	{% if user.getGroup.getName == 'Area Manager' %}
+		<b>{{user.getFirstName}} {{user.getLastName}}</b>
+		<br>
+	{% endif %}
+
+{% endfor %}
+<br>
+<h2>Assistant Managers</h2>
+{% for user in users %}
+	{% if user.getGroup.getName == 'Assistant Manager' %}
+		<b>{{user.getFirstName}} {{user.getLastName}}</b>
+		<br>
+	{% endif %}
+
+{% endfor %}
+
+<h2>Locations</h2>
+{% for p in pos %}
+<b>{{p.getName}}</b><br>
+{% endfor %}
+<br>
+<h2>Personnel</h2>
+{% for user in users %}
+	{% if user.getGroup.getName != 'Assistant Manager' and user.getGroup.getName != 'Area Manager' %}
+		<b>{{user.getFirstName}} {{user.getLastName}}</b>
+		<br>
+		{{user.getGroup.getName}}
+		<br><br>
+	{% endif %}
+
+{% endfor %}
+{% endblock %}

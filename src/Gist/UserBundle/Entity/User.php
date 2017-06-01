@@ -98,7 +98,10 @@ class User extends BaseUser
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $approver;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /**
+     * @ORM\ManyToOne(targetEntity="Areas")
+     * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
+     */
     protected $area;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */

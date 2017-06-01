@@ -71,10 +71,7 @@ class UserController extends CrudController
             0 => 'Agency Y'
         );
 
-        $params['area_opts'] = array(
-            'Makati' => 'Makati',
-            'Taguig' => 'Taguig'
-        );
+        $params['area_opts'] = $this->getAreaOptions();
 
         $params['brand_opts'] = array(
             'Barand X' => 'Brand X',
@@ -155,7 +152,8 @@ class UserController extends CrudController
         }
 
         if (isset($data['area'])) {
-            $o->setArea($data['area']);
+            $area = $em->getRepository('GistUserBundle:Areas')->find($data['area']);
+            $o->setArea($area);
         }
 
         if (isset($data['brand'])) {
@@ -363,5 +361,33 @@ class UserController extends CrudController
         unlink('/var/www/html/gist_erp2/web/uploads/dzones/'.$file);
         $this->addFlash('success', $this->title . ' ' . ' file deleted successfully.');
         return $this->redirect($this->generateUrl('cat_user_user_edit_form',array('id'=>$uid)).'#tab_documents');
+    }
+
+    protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $objects = $em->getRepository($repo)
+            ->findBy(
+                $filter,
+                $order
+            );
+
+        $opts = array();
+        foreach ($objects as $o)
+            $opts[$o->$id_method()] = $o->$value_method();
+
+        return $opts;
+    }
+
+
+    public function getAreaOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistUserBundle:Areas',
+            $filter, 
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
     }
 }

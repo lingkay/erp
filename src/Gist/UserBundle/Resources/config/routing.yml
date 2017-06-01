@@ -200,6 +200,12 @@ gist_loc_areas_grid:
     methods: [GET]
     defaults: { _controller: GistUserBundle:Areas:grid }
 
+
+gist_loc_areas_group_view:
+    pattern: /area/group/{id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Areas:viewGroup }
+
 #POS LOCS
 gist_loc_pos_locations_index:
     pattern: /pos_locations

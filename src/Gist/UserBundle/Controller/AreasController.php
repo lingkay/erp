@@ -14,12 +14,37 @@ class AreasController extends CrudController
         $this->title = 'Area';
 
         $this->list_title = 'Areas';
-        $this->list_type = 'dynamic';
+        $this->list_type = 'static';
     }
 
     protected function newBaseClass()
     {
         return new Areas();
+    }
+
+    public function indexAction()
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+
+        $gl = $this->setupGridLoader();
+
+        $params = $this->getViewParams('List');
+
+        $em = $this->getDoctrine()->getManager();
+        $objects = $em->getRepository($this->repo)->findAll();
+
+        $params['objects'] = $objects;
+
+
+        $twig_file = 'GistUserBundle:Areas:index.html.twig';
+        
+
+        $params['list_title'] = $this->list_title;
+        $params['grid_cols'] = $gl->getColumns();
+
+        return $this->render($twig_file, $params);
     }
 
     protected function getObjectLabel($obj)
@@ -47,6 +72,32 @@ class AreasController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $o->setName($data['name']);
+    }
+
+    public function viewGroupAction($id)
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository($this->repo)->find($id);
+
+        
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['o_label'] = $this->getObjectLabel($obj);
+
+        $users = $em->getRepository('GistUserBundle:User')->findBy(array('area'=>$id));
+        $params['users'] = $users;
+
+        $pos = $em->getRepository('GistUserBundle:POSLocations')->findBy(array('area'=>$id));
+        $params['pos'] = $pos;
+
+        
+
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistUserBundle:Areas:group.html.twig', $params);
     }
 
 
