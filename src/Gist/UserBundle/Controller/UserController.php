@@ -72,11 +72,8 @@ class UserController extends CrudController
         );
 
         $params['area_opts'] = $this->getAreaOptions();
+        $params['brand_opts'] = $this->getBrandOptions();
 
-        $params['brand_opts'] = array(
-            'Barand X' => 'Brand X',
-            'Brand Y' => 'Brand Y'
-        );
 
         $params['nationality_opts'] = array(
             'Filipino' => 'Filipino',
@@ -157,7 +154,8 @@ class UserController extends CrudController
         }
 
         if (isset($data['brand'])) {
-            $o->setBrand($data['brand']);
+            $brand = $em->getRepository('GistInventoryBundle:Brand')->find($data['brand']);
+            $o->setBrand($brand);
         }
 
         if (isset($data['commission_type'])) {
@@ -377,6 +375,17 @@ class UserController extends CrudController
             $opts[$o->$id_method()] = $o->$value_method();
 
         return $opts;
+    }
+
+    public function getBrandOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistInventoryBundle:Brand',
+            $filter, 
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
     }
 
 

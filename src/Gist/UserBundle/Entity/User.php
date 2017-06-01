@@ -104,7 +104,10 @@ class User extends BaseUser
      */
     protected $area;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\InventoryBundle\Entity\Brand")
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id")
+     */
     protected $brand;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
