@@ -99,7 +99,7 @@ class User extends BaseUser
     protected $approver;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Areas")
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
      * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
      */
     protected $area;

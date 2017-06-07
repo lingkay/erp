@@ -1,6 +1,6 @@
 <?php
 
-namespace Gist\UserBundle\Entity;
+namespace Gist\LocationBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,7 +15,7 @@ use stdClass;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user_pos_locations")
+ * @ORM\Table(name="loc_pos_locations")
  */
 
 class POSLocations
@@ -373,7 +373,7 @@ class POSLocations
      *
      * @return POSLocations
      */
-    public function setArea(\Gist\UserBundle\Entity\Areas $area = null)
+    public function setArea(\Gist\LocationBundle\Entity\Areas $area = null)
     {
         $this->area = $area;
 

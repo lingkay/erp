@@ -48,6 +48,7 @@ class AppKernel extends Kernel
             //GIST ERP
             new Gist\InventoryBundle\GistInventoryBundle(),
             new Gist\ManufacturingBundle\GistManufacturingBundle(),
+            new Gist\LocationBundle\GistLocationBundle(),
 
             //Hris modules
             new Hris\AdminBundle\HrisAdminBundle(),
@@ -83,23 +84,7 @@ class AppKernel extends Kernel
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
     }
 
-    // public function getCacheDir()
-    // {
-    //     if (in_array($this->environment, array('dev', 'test'))) {
-    //         return '/dev/shm/hris-quadrant/cache/' .  $this->environment;
-    //     }
 
-    //     return parent::getCacheDir();
-    // }
-
-    // public function getLogDir()
-    // {
-    //     if (in_array($this->environment, array('dev', 'test'))) {
-    //         return '/dev/shm/hris-quadrant/logs';
-    //     }
-
-    //     return parent::getLogDir();
-    // }
 
     public function getCacheDir()
     {

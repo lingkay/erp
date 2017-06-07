@@ -149,7 +149,7 @@ class UserController extends CrudController
         }
 
         if (isset($data['area'])) {
-            $area = $em->getRepository('GistUserBundle:Areas')->find($data['area']);
+            $area = $em->getRepository('GistLocationBundle:Areas')->find($data['area']);
             $o->setArea($area);
         }
 
@@ -392,7 +392,7 @@ class UserController extends CrudController
     public function getAreaOptions($filter = array())
     {
         return $this->getOptionsArray(
-            'GistUserBundle:Areas',
+            'GistLocationBundle:Areas',
             $filter, 
             array('name' => 'ASC'),
             'getID',

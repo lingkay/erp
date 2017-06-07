@@ -19,11 +19,3 @@ menu_items:
       acl: cat_user_items_list.menu
       label: Items List
       parent: cat_hris_menu
-    - id: gist_loc_areas_index
-      acl: gist_loc_areas.menu
-      label: Areas
-      parent: cat_hris_menu
-    - id: gist_loc_pos_locations_index
-      acl: gist_loc_pos_locations.menu
-      label: POS Locations
-      parent: cat_hris_menu

@@ -5,8 +5,10 @@ gist_menu:
         #- HrisAdminBundle
         
         - GistUserBundle
+        - GistLocationBundle
         - GistInventoryBundle
         - GistConfigurationBundle
+
         #- HrisBiometricsBundle
         #- HrisWorkforceBundle
         #- HrisRemunerationBundle
@@ -27,6 +29,8 @@ gist_user:
         #   label: Administration
         - id: GistConfigurationBundle
           label: Settings
+        - id: GistLocationBundle
+          label: Location
         - id: GistUserBundle
           label: User
         - id: GistInventoryBundle

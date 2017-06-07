@@ -1,0 +1,29 @@
+acl:
+    - category: Location
+      entries:
+        - id: gist_loc.menu
+          label: "Menu"
+    - category: Areas
+      entries:
+        - id: gist_loc_areas.menu
+          label: "Menu"
+        - id: gist_loc_areas.view
+          label: "View"
+        - id: gist_loc_areas.add
+          label: "Add"
+        - id: gist_loc_areas.edit
+          label: "Edit"
+        - id: gist_loc_areas.delete
+          label: "Delete"
+    - category: POS Locations
+      entries:
+        - id: gist_loc_pos_locations.menu
+          label: "Menu"
+        - id: gist_loc_pos_locations.view
+          label: "View"
+        - id: gist_loc_pos_locations.add
+          label: "Add"
+        - id: gist_loc_pos_locations.edit
+          label: "Edit"
+        - id: gist_loc_pos_locations.delete
+          label: "Delete"

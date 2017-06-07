@@ -1,0 +1,104 @@
+<?php
+
+namespace Gist\UserBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\HasCode;
+use Gist\CoreBundle\Template\Entity\HasNotes;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+
+use DateTime;
+use stdClass;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="user_pos_locations")
+ */
+
+class POSLocations
+{
+
+
+    use HasGeneratedID;
+    use TrackCreate;
+
+
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $name;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $leasor;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $contact_mumber;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $coordinates;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $locator_desc;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $type;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $brand;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $city;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $postal;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $region;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $country;
+
+    /** @ORM\Column(type="string", length=50) */
+    protected $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Areas")
+     * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
+     */
+    protected $area;
+
+
+
+
+    public function __construct()
+    {
+        $this->initTrackCreate();
+    }
+
+
+
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+
+
+    public function toData()
+    {
+        $data = new \stdClass();
+        $this->dataHasGeneratedID($data);
+        $this->dataTrackCreate($data);
+        return $data;
+    }
+
+}

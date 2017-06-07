@@ -40,7 +40,7 @@ gist_media:
 
 hris_admin:
     resource: "@HrisAdminBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /hr_admin
 
 hris_payroll:
     resource: "@HrisPayrollBundle/Resources/config/routing.yml"
@@ -97,6 +97,10 @@ gist_configuration:
 gist_user:
     resource: "@GistUserBundle/Resources/config/routing.yml"
     prefix: /user
+
+gist_location:
+    resource: "@GistLocationBundle/Resources/config/routing.yml"
+    prefix: /location
 
 gist_report:
     resource: "@GistReportBundle/Resources/config/routing.yml"

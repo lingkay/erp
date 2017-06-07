@@ -1,0 +1,13 @@
+menu_items:
+    - id: gist_loc_menu
+      acl: gist_loc.menu
+      label: Location
+      icon: fa-map
+    - id: gist_loc_areas_index
+      acl: gist_loc_areas.menu
+      label: Areas
+      parent: gist_loc_menu
+    - id: gist_loc_pos_locations_index
+      acl: gist_loc_pos_locations.menu
+      label: POS Locations
+      parent: gist_loc_menu
