@@ -86,8 +86,8 @@ class UserController extends CrudController
         );
         
         $params['approver_opts'] = array(
-            'Approver 1' => 'Approver 1',
-            'Approver 2' => 'Approver 2'
+            'yes' => 'Yes',
+            'no' => 'No'
         );
 
         // items given
@@ -146,6 +146,10 @@ class UserController extends CrudController
 
         if (isset($data['approver'])) {
             $o->setApprover($data['approver']);
+        }
+
+        if (isset($data['approver_code'])) {
+            $o->setApproverCode($data['approver_code']);
         }
 
         if (isset($data['area'])) {

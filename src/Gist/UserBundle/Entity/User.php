@@ -98,6 +98,9 @@ class User extends BaseUser
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $approver;
 
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $approver_code;
+
     /**
      * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
      * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
@@ -236,6 +239,17 @@ class User extends BaseUser
     public function getApprover()
     {
         return $this->approver;
+    }
+
+    public function setApproverCode($approver_code)
+    {
+        $this->approver_code = $approver_code;
+        return $this;
+    }
+
+    public function getApproverCode()
+    {
+        return $this->approver_code;
     }
 
     public function setArea($area)
