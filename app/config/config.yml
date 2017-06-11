@@ -1,6 +1,7 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: "@GistAccountingBundle/Resources/config/services.yml" }
 #   - { resource: gist.yml }
 
 framework:
