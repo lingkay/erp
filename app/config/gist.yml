@@ -38,36 +38,12 @@ gist_user:
           label: User
         - id: GistInventoryBundle
           label: Inventory
-        # - id: HrisAdminBundle
-        #   label: HR Settings
-        # - id: HrisWorkforceBundle
-        #   label: WorkForce Management
-        # - id: HrisRemunerationBundle
-        #   label: Remuneration
-        # - id: HrisRecruitmentBundle
-        #   label: Recruitment
-        # - id: HrisEmployeeSatisfactionBundle
-        #   label: Employee Satisfaction
-        # - id: HrisTrainingBundle
-        #   label: Trainings
-        # - id: HrisCompanyOverviewBundle
-        #   label: Company Overview
-        # - id: HrisPayrollBundle
-        #   label: Payroll
-        # - id: HrisProfileBundle
-        #   label: Profile
-        # - id: HrisArchivesBundle
-        #   label: Archives
-        # - id: HrisReportBundle
-        #   label: Report
+
 
 gist_configuration:
     bundles:
         - GistTemplateBundle
-        # - HrisAdminBundle
-        # - HrisWorkforceBundle
-        # - HrisProfileBundle
-        # - HrisPayrollBundle
+
 
 gist_media:
     upload_storage:

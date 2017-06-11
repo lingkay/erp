@@ -33,8 +33,4 @@ security:
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login_check$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/biometrics/login$, allow_if: 1 }
-        - { path: ^/biometrics/transmit$, allow_if: 1 }
-        - { path: ^/biometrics/receive$, allow_if: 1 }
-        - { path: ^/biometrics/pair$, allow_if: 1 }
         - { path: ^/, roles: ROLE_USER }
