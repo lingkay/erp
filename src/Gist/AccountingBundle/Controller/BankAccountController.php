@@ -41,7 +41,10 @@ class BankAccountController extends CrudController
 
         return array(
             $grid->newColumn('Account Number', 'getAccountNumber', 'account_number'),
-            $grid->newColumn('Account Name', 'getName', 'name')
+            $grid->newColumn('Account Name', 'getName', 'name'),
+            $grid->newColumn('Branch', 'getBranch', 'branch'),
+            $grid->newColumn('Type', 'getType', 'type'),
+            $grid->newColumn('Status', 'getStatus', 'status')
         );
     }
 
