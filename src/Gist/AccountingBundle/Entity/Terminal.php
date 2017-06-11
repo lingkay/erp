@@ -240,7 +240,7 @@ class Terminal
      *
      * @return Terminal
      */
-    public function setMid($mid)
+    public function setMID($mid)
     {
         $this->mid = $mid;
 
@@ -252,7 +252,7 @@ class Terminal
      *
      * @return string
      */
-    public function getMid()
+    public function getMID()
     {
         return $this->mid;
     }
@@ -264,7 +264,7 @@ class Terminal
      *
      * @return Terminal
      */
-    public function setTid($tid)
+    public function setTID($tid)
     {
         $this->tid = $tid;
 
@@ -276,7 +276,7 @@ class Terminal
      *
      * @return string
      */
-    public function getTid()
+    public function getTID()
     {
         return $this->tid;
     }

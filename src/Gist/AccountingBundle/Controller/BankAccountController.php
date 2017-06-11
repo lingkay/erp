@@ -27,14 +27,6 @@ class BankAccountController extends CrudController
         return $obj->getName();
     }
 
-    // protected function getGridJoins()
-    // {
-    //     $grid = $this->get('gist_grid');
-    //     return array(
-    //         $grid->newJoin('a', 'area', 'getArea'),
-    //     );
-    // }
-
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
@@ -73,33 +65,4 @@ class BankAccountController extends CrudController
         $o->setStatus($data['status']);
 
     }
-
-    // protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
-    // {
-    //     $em = $this->getDoctrine()->getManager();
-    //     $objects = $em->getRepository($repo)
-    //         ->findBy(
-    //             $filter,
-    //             $order
-    //         );
-
-    //     $opts = array();
-    //     foreach ($objects as $o)
-    //         $opts[$o->$id_method()] = $o->$value_method();
-
-    //     return $opts;
-    // }
-
-    // public function getAreaOptions($filter = array())
-    // {
-    //     return $this->getOptionsArray(
-    //         'GistLocationBundle:Areas',
-    //         $filter, 
-    //         array('name' => 'ASC'),
-    //         'getID',
-    //         'getName'
-    //     );
-    // }
-
-
 }

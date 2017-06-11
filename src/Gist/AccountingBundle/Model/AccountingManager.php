@@ -36,6 +36,14 @@ class AccountingManager
         );
     }
 
+    public function getPaymentTypeOptions()
+    {
+        return array(
+            'Quota' => 'Quota',
+            'Rental' => 'Rental'
+        );
+    }
+
     public function getStatusOptions()
     {
         return array(
@@ -96,7 +104,7 @@ class AccountingManager
             $filter,
             array('name' => 'ASC'),
             'getID',
-            'getName'
+            'getNameFormatted'
         );
     }
 

@@ -13,14 +13,22 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
-                            {{ form.group_text('Actual Location', 'actual_location', object.getActualLocation, 3, 4, readonly) }}
-                            {{ form.group_text('Registered Location', 'registered_location', object.getRegisteredLocation, 3, 4, readonly) }}
+                            <input type="hidden" id="sourceValues" value="{{object.getBank|default('')}}">
+                            {{ form.group_text('Actual Location', 'actual_location', object.getActualLocation|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Registered Location', 'registered_location', object.getRegisteredLocation|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Company', 'company', terminal_company_opts, object.getCompany|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Terminal of', 'terminal_of', bank_opts, object.getTerminalOf|default(''), 3, 4, readonly) }}
-                            {{ form.group_select('Bank', 'bank', bank_opts, object.getBank|default(''), 3, 4, readonly) }}
-                            {{ form.group_select('Account', 'bank_account','', object.getBankAccount|default(''), 3, 4, readonly) }}
-                            
-                         
+                            {{ form.group_select_multiple('Bank', 'bank[]', bank_opts, '', 3, 4, readonly) }}
+                            {{ form.group_select('Account', 'bank_account',bank_account_opts, object.getBankAccount.getID|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Payment Type', 'payment_type', payment_type_opts, object.getPaymentType|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('MID', 'mid', object.getMID|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('TID', 'tid', object.getTID|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Serial No.', 'serial_number', object.getSerialNumber|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Sim Card No.', 'sim_number', object.getSimCardNumber|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Brand', 'tid', object.getTID|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Model', 'tid', object.getTID|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
+                            {{ form.group_textarea('Remarks', 'remarks',object.getRemarks|default(''),3,3,4)}}
                         </div>
                         <div class="form-actions fluid">
                             <div class="col-md-9">
@@ -42,6 +50,9 @@
     <script>
         $(document).ready(function() {
             FormValidation.init(); // init form validation
+
+            var selectedValues = $("#sourceValues").val().split(',');
+            $(".select_2-multi").val(selectedValues).trigger("change");
 
             // set default error and success elements
             jQuery.validator.setDefaults({
@@ -81,9 +92,21 @@
                     this.element(element);
                 },
                 rules: {
-                    name: {
+                    actual_location: {
                         required: true
-                    }
+                    },
+                    MID: {
+                        required: true
+                    },
+                    TID: {
+                        required: true
+                    },
+                    registered_location: {
+                        required: true
+                    },
+                    terminal_of: {
+                        required: true
+                    },
                 },
                 submitHandler: function(form) {
                     form.submit();

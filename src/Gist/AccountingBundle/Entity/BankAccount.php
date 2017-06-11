@@ -76,6 +76,11 @@ class BankAccount
         return $this->name;
     }
 
+    public function getNameFormatted()
+    {
+        return $this->account_number .' - '. $this->name;
+    }
+
     /**
      * Set accountNumber
      *

@@ -24,16 +24,16 @@ class TerminalController extends CrudController
 
     protected function getObjectLabel($obj)
     {
-        return $obj->getName();
+        return $obj->getActualLocation();
     }
 
-    // protected function getGridJoins()
-    // {
-    //     $grid = $this->get('gist_grid');
-    //     return array(
-    //         $grid->newJoin('a', 'area', 'getArea'),
-    //     );
-    // }
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('a', 'bank_account', 'getBankAccount'),
+        );
+    }
 
     protected function getGridColumns()
     {
@@ -41,6 +41,12 @@ class TerminalController extends CrudController
 
         return array(
             $grid->newColumn('Actual Location', 'getActualLocation', 'actual_location'),
+            $grid->newColumn('Registered Location', 'getRegisteredLocation', 'registered_location'),
+            $grid->newColumn('Company', 'getCompany', 'company'),
+            $grid->newColumn('Bank', 'getBank', 'bank'),
+            $grid->newColumn('Account Number', 'getNameFormatted', 'id','a'),
+            $grid->newColumn('MID', 'getMID', 'mid'),
+            $grid->newColumn('TID', 'getTID', 'tid'),
         );
     }
 
@@ -55,6 +61,7 @@ class TerminalController extends CrudController
         $params['terminal_company_opts'] = $am->getTerminalCompanyOptions();
         $params['currency_opts'] = $am->getCurrencyOptions();
         $params['status_opts'] = $am->getStatusOptions();
+        $params['payment_type_opts'] = $am->getPaymentTypeOptions();
         $params['bank_opts'] = $am->getBankOptions();
         $params['bank_account_opts'] = $am->getBankAccountOptions();
 
@@ -63,42 +70,24 @@ class TerminalController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setName($data['name']);
-        $o->setAccountNumber($data['account_number']);
-        $o->setBranch($data['branch']);
-        $o->setCurrency($data['currency']);
-        $o->setType($data['type']);
-        $o->setChartOfAccount($data['chart_of_account']);
+        $em = $this->getDoctrine()->getManager();
+        $o->setActualLocation($data['actual_location']);
+        $o->setRegisteredLocation($data['registered_location']);
+        if (isset($data['bank'])) {
+           $o->setBank(implode(",", $data['bank']));
+        }
+        $o->setCompany($data['company']);
+        $o->setMID($data['mid']);
+        $o->setTID($data['tid']);
+        $o->setSerialNumber($data['serial_number']);
+        $o->setSimCardNumber($data['sim_number']);
+        $o->setRemarks($data['remarks']);
+        $o->setPaymentType($data['payment_type']);
         $o->setStatus($data['status']);
-
+        $o->setTerminalOf($data['terminal_of']);
+        if (isset($data['bank_account'])) {
+            $bank_account = $em->getRepository('GistAccountingBundle:BankAccount')->find($data['bank_account']);
+            $o->setBankAccount($bank_account);
+        }
     }
-
-    // protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
-    // {
-    //     $em = $this->getDoctrine()->getManager();
-    //     $objects = $em->getRepository($repo)
-    //         ->findBy(
-    //             $filter,
-    //             $order
-    //         );
-
-    //     $opts = array();
-    //     foreach ($objects as $o)
-    //         $opts[$o->$id_method()] = $o->$value_method();
-
-    //     return $opts;
-    // }
-
-    // public function getAreaOptions($filter = array())
-    // {
-    //     return $this->getOptionsArray(
-    //         'GistLocationBundle:Areas',
-    //         $filter, 
-    //         array('name' => 'ASC'),
-    //         'getID',
-    //         'getName'
-    //     );
-    // }
-
-
 }
