@@ -15,3 +15,20 @@ acl:
           label: "Edit"
         - id: gist_accounting_bank_accounts.delete
           label: "Delete"
+
+    - category: Terminals
+      entries:
+        - id: gist_terminals.menu
+          label: "Menu"
+    - category: Terminal
+      entries:
+        - id: gist_terminals_terminal.menu
+          label: "Menu"
+        - id: gist_terminals_terminal.view
+          label: "View"
+        - id: gist_terminals_terminal.add
+          label: "Add"
+        - id: gist_terminals_terminal.edit
+          label: "Edit"
+        - id: gist_terminals_terminal.delete
+          label: "Delete"

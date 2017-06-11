@@ -7,3 +7,12 @@ menu_items:
       acl: gist_accounting_bank_accounts.menu
       label: Bank Accounts
       parent: gist_accounting_menu
+
+    - id: gist_terminals_menu
+      acl: gist_terminals.menu
+      label: Terminals
+      icon: fa-credit-card
+    - id: gist_terminals_terminal_index
+      acl: gist_terminals_terminal.menu
+      label: Terminal
+      parent: gist_terminals_menu
