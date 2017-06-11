@@ -1,0 +1,11 @@
+parameters:
+#    gist_user.example.class: Gist\UserBundle\Example
+
+services:
+    gist_accounting:
+        class: Gist\AccountingBundle\Model\AccountingManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"
+#    gist_user.example:
+#        class: %gist_user.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

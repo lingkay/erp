@@ -118,3 +118,7 @@ gist_manufacturing:
 gist_inventory:
     resource: "@GistInventoryBundle/Resources/config/routing.yml"
     prefix:   /inventory
+
+gist_accounting:
+    resource: "@GistAccountingBundle/Resources/config/routing.yml"
+    prefix:   /accounting

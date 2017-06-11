@@ -1,0 +1,102 @@
+<?php
+
+namespace Gist\AccountingBundle\Controller;
+
+use Gist\TemplateBundle\Model\CrudController;
+use Gist\AccountingBundle\Entity\BankAccount;
+use Gist\ValidationException;
+
+class BankAccountController extends CrudController
+{
+    public function __construct()
+    {
+        $this->route_prefix = 'gist_accounting_bank_accounts';
+        $this->title = 'Bank Account';
+
+        $this->list_title = 'Bank Accounts';
+        $this->list_type = 'dynamic';
+    }
+
+    protected function newBaseClass()
+    {
+        return new BankAccount();
+    }
+
+    protected function getObjectLabel($obj)
+    {
+        return $obj->getName();
+    }
+
+    // protected function getGridJoins()
+    // {
+    //     $grid = $this->get('gist_grid');
+    //     return array(
+    //         $grid->newJoin('a', 'area', 'getArea'),
+    //     );
+    // }
+
+    protected function getGridColumns()
+    {
+        $grid = $this->get('gist_grid');
+
+        return array(
+            $grid->newColumn('Account Number', 'getAccountNumber', 'account_number'),
+            $grid->newColumn('Account Name', 'getName', 'name')
+        );
+    }
+
+    protected function padFormParams(&$params, $user = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        //GIST Accounting Service
+        $am = $this->get('gist_accounting');
+
+        $params['acct_type_opts'] = $am->getAccountTypeOptions();
+        $params['currency_opts'] = $am->getCurrencyOptions();
+        $params['status_opts'] = $am->getStatusOptions();
+
+        return $params;
+    }
+
+    protected function update($o, $data, $is_new = false)
+    {
+        $o->setName($data['name']);
+        $o->setAccountNumber($data['account_number']);
+        $o->setBranch($data['branch']);
+        $o->setCurrency($data['currency']);
+        $o->setType($data['type']);
+        $o->setChartOfAccount($data['chart_of_account']);
+        $o->setStatus($data['status']);
+
+    }
+
+    // protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
+    // {
+    //     $em = $this->getDoctrine()->getManager();
+    //     $objects = $em->getRepository($repo)
+    //         ->findBy(
+    //             $filter,
+    //             $order
+    //         );
+
+    //     $opts = array();
+    //     foreach ($objects as $o)
+    //         $opts[$o->$id_method()] = $o->$value_method();
+
+    //     return $opts;
+    // }
+
+    // public function getAreaOptions($filter = array())
+    // {
+    //     return $this->getOptionsArray(
+    //         'GistLocationBundle:Areas',
+    //         $filter, 
+    //         array('name' => 'ASC'),
+    //         'getID',
+    //         'getName'
+    //     );
+    // }
+
+
+}

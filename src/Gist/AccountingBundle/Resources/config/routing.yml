@@ -1,0 +1,35 @@
+#BANK ACCOUNT
+gist_accounting_bank_accounts_index:
+    pattern: /bank_accounts
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BankAccount:index }
+
+gist_accounting_bank_accounts_add_form:
+    pattern: /bank_account
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BankAccount:addForm }
+
+gist_accounting_bank_accounts_add_submit:
+    pattern: /bank_account
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:BankAccount:addSubmit }
+
+gist_accounting_bank_accounts_edit_form:
+    pattern: /bank_account/{id}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BankAccount:editForm }
+
+gist_accounting_bank_accounts_edit_submit:
+    pattern: /bank_account/{id}
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:BankAccount:editSubmit }
+
+gist_accounting_bank_accounts_delete:
+    pattern: /bank_account/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BankAccount:delete }
+
+gist_accounting_bank_accounts_grid:
+    pattern: /bank_accounts/grid
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BankAccount:grid }
