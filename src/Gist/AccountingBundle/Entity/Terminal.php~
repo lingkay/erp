@@ -1,0 +1,91 @@
+<?php
+
+namespace Gist\AccountingBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+
+use DateTime;
+use stdClass;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="acct_terminal")
+ */
+
+class Terminal
+{
+
+
+    use HasGeneratedID;
+    use TrackCreate;
+
+
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $actual_location;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $registered_location;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $company;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $terminal_of;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $bank;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="BankAccount")
+     * @ORM\JoinColumn(name="bank_account_id", referencedColumnName="id")
+     */
+    protected $bank_account;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $payment_type;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $mid;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $tid;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $serial_number;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $sim_card_number;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $brand;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $model;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $status;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $remarks;
+
+
+    public function __construct()
+    {
+        $this->initTrackCreate();
+    }
+
+    
+
+    public function toData()
+    {
+        $data = new \stdClass();
+        $this->dataHasGeneratedID($data);
+        $this->dataTrackCreate($data);
+        return $data;
+    }
+}

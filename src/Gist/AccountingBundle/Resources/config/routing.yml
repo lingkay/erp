@@ -33,3 +33,40 @@ gist_accounting_bank_accounts_grid:
     pattern: /bank_accounts/grid
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:BankAccount:grid }
+
+
+#TERMINAL
+gist_terminals_terminal_index:
+    pattern: /terminals
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Terminal:index }
+
+gist_terminals_terminal_add_form:
+    pattern: /terminal
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Terminal:addForm }
+
+gist_terminals_terminal_add_submit:
+    pattern: /terminal
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:Terminal:addSubmit }
+
+gist_terminals_terminal_edit_form:
+    pattern: /terminal/{id}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Terminal:editForm }
+
+gist_terminals_terminal_edit_submit:
+    pattern: /terminal/{id}
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:Terminal:editSubmit }
+
+gist_terminals_terminal_delete:
+    pattern: /terminal/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Terminal:delete }
+
+gist_terminals_terminal_grid:
+    pattern: /terminals/grid
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Terminal:grid }

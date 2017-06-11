@@ -45,6 +45,16 @@ class AccountingManager
         );
     }
 
+    public function getTerminalCompanyOptions()
+    {
+        return array(
+            'GHL' => 'GHL',
+            'Global Pay' => 'Global Pay',
+            'BDO' => 'BDO',
+            'Tangent' => 'Tangent'
+        );
+    }
+
     public function getBankOptions()
     {
         return array(
@@ -60,18 +70,35 @@ class AccountingManager
         );
     }
 
+
+    protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
+    {
+        $em = $this->em;
+        $objects = $em->getRepository($repo)
+            ->findBy(
+                $filter,
+                $order
+            );
+
+        $opts = array();
+        foreach ($objects as $o)
+            $opts[$o->$id_method()] = $o->$value_method();
+
+        return $opts;
+    }
+
     
 
-    // public function getItemOptions($filter = array())
-    // {
-    //     return $this->getOptionsArray(
-    //         'GistUserBundle:ItemsList',
-    //         $filter,
-    //         array('name' => 'ASC'),
-    //         'getID',
-    //         'getFormattedName'
-    //     );
-    // }
+    public function getBankAccountOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistAccountingBundle:BankAccount',
+            $filter,
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
 
     // public function findUser($id)
     // {
