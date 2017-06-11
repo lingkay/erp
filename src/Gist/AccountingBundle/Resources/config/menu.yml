@@ -1,0 +1,9 @@
+menu_items:
+    - id: gist_accounting_menu
+      acl: gist_accounting.menu
+      label: Accounting
+      icon: fa-money
+    - id: gist_accounting_bank_accounts_index
+      acl: gist_accounting_bank_accounts.menu
+      label: Bank Accounts
+      parent: gist_accounting_menu

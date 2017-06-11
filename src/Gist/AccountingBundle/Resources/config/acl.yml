@@ -1,0 +1,17 @@
+acl:
+    - category: Accounting
+      entries:
+        - id: gist_accounting.menu
+          label: "Menu"
+    - category: Areas
+      entries:
+        - id: gist_accounting_bank_accounts.menu
+          label: "Menu"
+        - id: gist_accounting_bank_accounts.view
+          label: "View"
+        - id: gist_accounting_bank_accounts.add
+          label: "Add"
+        - id: gist_accounting_bank_accounts.edit
+          label: "Edit"
+        - id: gist_accounting_bank_accounts.delete
+          label: "Delete"
