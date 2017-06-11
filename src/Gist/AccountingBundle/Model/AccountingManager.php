@@ -45,6 +45,21 @@ class AccountingManager
         );
     }
 
+    public function getBankOptions()
+    {
+        return array(
+            'BDO' => 'BDO',
+            'BPI' => 'BPI',
+            'Citibank' => 'Citibank',
+            'Security Bank' => 'Security Bank',
+            'HSBC' => 'HSBC',
+            'Metrobank' => 'Metrobank',
+            'Unionbank' => 'Unionbank',
+            'RCBC' => 'RCBC',
+            'Chinabank' => 'Chinabank'
+        );
+    }
+
     
 
     // public function getItemOptions($filter = array())
