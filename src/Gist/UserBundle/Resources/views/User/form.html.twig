@@ -135,10 +135,43 @@
         });
     }
 $(document).ready(function() {
+
     updateApproverField();
-    FormValidation.init(); // init form validation
-    FormDropzone.init();
-    // //for dynamic files form
+    FormValidation.init(); 
+
+    Dropzone.options.myDropzone = {
+        maxFilesize: 2,
+        addRemoveLinks: true,
+        enqueueForUpload: true,
+        autoProcessQueue: false,
+        clickable: true,
+        init: function() {
+
+            this.on('queuecomplete', function () {
+                location.reload();
+            });
+
+            this.on("addedfile", function(file) {
+                
+            });
+
+           this.on("error", function(file, message) { 
+                toastr['error'](message, 'File Upload Error');
+                this.removeFile(file); 
+        });
+
+        }
+    };
+
+
+    $(document).on("click","#process_queue", function(e){
+            var myDropzone = Dropzone.forElement("#myDropzone");
+            myDropzone.processQueue();
+            
+        });
+
+
+    //for dynamic files form
     var add_button = $(".add-ig-field");
     $(add_button).on('click',function(){      
         var item_id = $('#cform-item_opt').val();
@@ -171,6 +204,7 @@ $(document).ready(function() {
     {
         updateApproverField();
     });
+    
     // set default error and success elements
     jQuery.validator.setDefaults({
         errorClass: 'help-block',

@@ -567,7 +567,7 @@ $(document).ready(function() {
           <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
         </div>
 
-        <strong class="error text-danger dzp-error" data-dz-errormessage></strong>
+        
 
         <br>
     </div>
@@ -578,13 +578,14 @@ $(document).ready(function() {
         'preview': '#dz-preview',
         'url': '{{ path('cat_media_upload_doc') }}',
         'dropzone': '#{{ prefix }}dropzone',
+        'maxFilesize': '2',
         'preview_container': '#{{ prefix }}prev-container',
-        'accepted_files': 'application/pdf, .pdf, .xls, .xlsx, .doc, .docx, .ppt',
+        'accepted_files': 'application/pdf, .pdf, .xls, .xlsx, .doc, .docx, .ppt, .jpg, .JPEG, .bmp, .png',
         'clickable': '#{{ prefix }}dz-upload',
         'display_image': '#{{ prefix }}main-image',
         'form_field': '#{{ prefix }}form-{{ name }}'
     };
-    setup_file_upload(upload_config);
+    setup_file_upload2(upload_config);
 });
 </script>
 {% endmacro %}
@@ -652,7 +653,7 @@ $(document).ready(function() {
         'display_image': '#{{ prefix }}-{{name}}main-image',
         'form_field': '#{{ prefix }}form-{{ name }}'
     };
-    setup_file_upload(upload_config);
+    setup_file_upload2(upload_config);
 });
 </script>
 {% endmacro %}
