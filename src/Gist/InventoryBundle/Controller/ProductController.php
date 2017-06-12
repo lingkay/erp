@@ -4,7 +4,14 @@ namespace Gist\InventoryBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\InventoryBundle\Entity\Product;
+use Gist\InventoryBundle\Model\Gallery;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Gist\ValidationException;
+
+use DateTime;
+use SplFileObject;
+use LimitIterator;
 
 class ProductController extends CrudController
 {
@@ -167,5 +174,28 @@ class ProductController extends CrudController
             'getID',
             'getName'
         );
+    }
+
+    //MIGRATE THIS
+    public function uploadAction($id)
+    {
+        // TODO: confirm that product exists
+
+        // handle dropzone
+        $file = $this->getRequest()->files->get('file');
+        if ($file->getError())
+            return new Response('Failed');
+
+        // let our gallery lib handle it
+        $gallery = $this->getGallery($id);
+        
+        $gallery->addImage($file);
+
+        return new Response('Success');
+    }
+
+    protected function getGallery($id)
+    {
+        return new Gallery(__DIR__ . '/../../../../web/uploads/dzones', $id);
     }
 }
