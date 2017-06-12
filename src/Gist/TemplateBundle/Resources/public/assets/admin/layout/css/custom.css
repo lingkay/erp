@@ -385,3 +385,6 @@ width: 100% !important;
 
 
 
+.dz-error-message {
+  visibility: hidden !important;
+}

@@ -146,7 +146,9 @@
   padding: 8px 10px;
   color: #800;
   min-width: 140px;
-  max-width: 500px;
+  max-width: 400px;
+  margin-top: 180px !important;
+  max-height: 30px !important;
   z-index: 500;
 }
 .dropzone .dz-preview:hover.dz-error .dz-error-message,
@@ -335,6 +337,8 @@
   -o-transition: opacity 0.3s ease-in-out;
   -ms-transition: opacity 0.3s ease-in-out;
   transition: opacity 0.3s ease-in-out;
+  margin-top: 180px !important;
+  max-height: 30px !important;
 }
 .dropzone .dz-preview:hover.dz-error .dz-error-message,
 .dropzone-previews .dz-preview:hover.dz-error .dz-error-message {
