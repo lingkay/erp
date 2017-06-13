@@ -21,3 +21,7 @@ menu_items:
       acl: gist_terminals_terminal.menu
       label: Terminal
       parent: gist_terminals_menu
+    - id: gist_terminals_terminal_operator_index
+      acl: gist_terminals_terminal_operator.menu
+      label: Terminal Operator
+      parent: gist_terminals_menu

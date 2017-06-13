@@ -107,3 +107,40 @@ gist_terminals_terminal_grid:
     pattern: /terminals/grid
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:Terminal:grid }
+
+
+#TERMINAL OPERATOR
+gist_terminals_terminal_operator_index:
+    pattern: /terminal_operators
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TerminalOperator:index }
+
+gist_terminals_terminal_operator_add_form:
+    pattern: /terminal_operator
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TerminalOperator:addForm }
+
+gist_terminals_terminal_operator_add_submit:
+    pattern: /terminal_operator
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:TerminalOperator:addSubmit }
+
+gist_terminals_terminal_operator_edit_form:
+    pattern: /terminal_operator/{id}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TerminalOperator:editForm }
+
+gist_terminals_terminal_operator_edit_submit:
+    pattern: /terminal_operator/{id}
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:TerminalOperator:editSubmit }
+
+gist_terminals_terminal_operator_delete:
+    pattern: /terminal_operator/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TerminalOperator:delete }
+
+gist_terminals_terminal_operator_grid:
+    pattern: /terminal_operators/grid
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TerminalOperator:grid }

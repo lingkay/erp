@@ -44,3 +44,15 @@ acl:
           label: "Edit"
         - id: gist_terminals_terminal.delete
           label: "Delete"
+    - category: Terminal Operator
+      entries:
+        - id: gist_terminals_terminal_operator.menu
+          label: "Menu"
+        - id: gist_terminals_terminal_operator.view
+          label: "View"
+        - id: gist_terminals_terminal_operator.add
+          label: "Add"
+        - id: gist_terminals_terminal_operator.edit
+          label: "Edit"
+        - id: gist_terminals_terminal_operator.delete
+          label: "Delete"

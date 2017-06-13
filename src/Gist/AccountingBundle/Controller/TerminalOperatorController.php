@@ -3,23 +3,23 @@
 namespace Gist\AccountingBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
-use Gist\AccountingBundle\Entity\Bank;
+use Gist\AccountingBundle\Entity\TerminalOperator;
 use Gist\ValidationException;
 
-class BankController extends CrudController
+class TerminalOperatorController extends CrudController
 {
     public function __construct()
     {
-        $this->route_prefix = 'gist_accounting_banks';
-        $this->title = 'Bank';
+        $this->route_prefix = 'gist_terminals_terminal_operator';
+        $this->title = 'Terminal Operator';
 
-        $this->list_title = 'Banks';
+        $this->list_title = 'Terminal Operators';
         $this->list_type = 'dynamic';
     }
 
     protected function newBaseClass()
     {
-        return new Bank();
+        return new TerminalOperator();
     }
 
     protected function getObjectLabel($obj)
@@ -32,8 +32,7 @@ class BankController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Name', 'getName', 'name'),
-            $grid->newColumn('Rank', 'getListID', 'list_id'),
+            $grid->newColumn('Company', 'getName', 'name'),
             $grid->newColumn('Status', 'getStatus', 'status')
         );
     }
@@ -44,7 +43,6 @@ class BankController extends CrudController
 
         //GIST Accounting Service
         $am = $this->get('gist_accounting');
-        $params['currency_opts'] = $am->getCurrencyOptions();
         $params['status_opts'] = $am->getStatusOptions();
 
         return $params;
@@ -53,7 +51,6 @@ class BankController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $o->setName($data['name']);
-        $o->setListID($data['list_id']);
         $o->setStatus($data['status']);
 
     }
