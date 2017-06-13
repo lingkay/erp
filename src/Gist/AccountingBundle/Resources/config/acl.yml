@@ -3,7 +3,7 @@ acl:
       entries:
         - id: gist_accounting.menu
           label: "Menu"
-    - category: Areas
+    - category: Bank Account
       entries:
         - id: gist_accounting_bank_accounts.menu
           label: "Menu"
@@ -14,6 +14,18 @@ acl:
         - id: gist_accounting_bank_accounts.edit
           label: "Edit"
         - id: gist_accounting_bank_accounts.delete
+          label: "Delete"
+    - category: Banks
+      entries:
+        - id: gist_accounting_banks.menu
+          label: "Menu"
+        - id: gist_accounting_banks.view
+          label: "View"
+        - id: gist_accounting_banks.add
+          label: "Add"
+        - id: gist_accounting_banks.edit
+          label: "Edit"
+        - id: gist_accounting_banks.delete
           label: "Delete"
 
     - category: Terminals

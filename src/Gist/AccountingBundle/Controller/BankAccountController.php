@@ -27,11 +27,20 @@ class BankAccountController extends CrudController
         return $obj->getName();
     }
 
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('b', 'bank', 'getBank'),
+        );
+    }
+
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
 
         return array(
+            $grid->newColumn('Bank', 'getName', 'name', 'b'),
             $grid->newColumn('Account Number', 'getAccountNumber', 'account_number'),
             $grid->newColumn('Account Name', 'getName', 'name'),
             $grid->newColumn('Branch', 'getBranch', 'branch'),
@@ -48,6 +57,7 @@ class BankAccountController extends CrudController
         $am = $this->get('gist_accounting');
 
         $params['acct_type_opts'] = $am->getAccountTypeOptions();
+        $params['bank_opts'] = $am->getBankOptions();
         $params['currency_opts'] = $am->getCurrencyOptions();
         $params['status_opts'] = $am->getStatusOptions();
 
@@ -56,6 +66,8 @@ class BankAccountController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        $em = $this->getDoctrine()->getManager();
+
         $o->setName($data['name']);
         $o->setAccountNumber($data['account_number']);
         $o->setBranch($data['branch']);
@@ -63,6 +75,11 @@ class BankAccountController extends CrudController
         $o->setType($data['type']);
         $o->setChartOfAccount($data['chart_of_account']);
         $o->setStatus($data['status']);
+
+        if (isset($data['bank'])) {
+            $bank = $em->getRepository('GistAccountingBundle:Bank')->find($data['bank']);
+            $o->setBank($bank);
+        }
 
     }
 }

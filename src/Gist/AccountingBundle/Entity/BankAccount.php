@@ -46,11 +46,31 @@ class BankAccount
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $status;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Bank")
+     * @ORM\JoinColumn(name="bank_id", referencedColumnName="id")
+     */
+    protected $bank;
+
 
     public function __construct()
     {
         $this->initTrackCreate();
     }
+
+    public function setBank($bank)
+    {
+        $this->bank = $bank;
+
+        return $this;
+    }
+
+    public function getBank()
+    {
+        return $this->bank;
+    }
+
+
 
     /**
      * Set name

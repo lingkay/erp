@@ -63,20 +63,20 @@ class AccountingManager
         );
     }
 
-    public function getBankOptions()
-    {
-        return array(
-            'BDO' => 'BDO',
-            'BPI' => 'BPI',
-            'Citibank' => 'Citibank',
-            'Security Bank' => 'Security Bank',
-            'HSBC' => 'HSBC',
-            'Metrobank' => 'Metrobank',
-            'Unionbank' => 'Unionbank',
-            'RCBC' => 'RCBC',
-            'Chinabank' => 'Chinabank'
-        );
-    }
+    // public function getBankOptions()
+    // {
+    //     return array(
+    //         'BDO' => 'BDO',
+    //         'BPI' => 'BPI',
+    //         'Citibank' => 'Citibank',
+    //         'Security Bank' => 'Security Bank',
+    //         'HSBC' => 'HSBC',
+    //         'Metrobank' => 'Metrobank',
+    //         'Unionbank' => 'Unionbank',
+    //         'RCBC' => 'RCBC',
+    //         'Chinabank' => 'Chinabank'
+    //     );
+    // }
 
 
     protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
@@ -105,6 +105,17 @@ class AccountingManager
             array('name' => 'ASC'),
             'getID',
             'getNameFormatted'
+        );
+    }
+
+    public function getBankOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistAccountingBundle:Bank',
+            $filter,
+            array('list_id' => 'ASC'),
+            'getID',
+            'getName'
         );
     }
 
