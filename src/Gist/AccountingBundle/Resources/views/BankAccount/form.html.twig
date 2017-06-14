@@ -24,6 +24,36 @@
                             
                             {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
 
+                            
+                            <div class="row">
+                                <div class="col-md-12" style="padding-bottom: 10px;">
+                                    <h4 class="form-section">Charge Rates</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="padding-bottom: 10px;">
+                                    <a href="javascript:void(0)" class="btn default green add-ig-field" style="margin=0">Add Charge Rate</a>
+                                    <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                <th width="60%">Type</th>
+                                                <th width="30%">Rate (%)</th>
+                                                <th width="20%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="items_given_tbody">
+                                            {% for key,val in null %}
+                                              <tr>
+                                                <input type="hidden" name="item_id[]" value="{{val[0]}}">
+                                                <td>{{ form.group_select_only2("Item", "item_opt", item_opts, val[0], 3, 7, true) }}</td>
+                                                <td><input type="number" name="qty[]" class="form-control qty" value="{{val[1]}}" min="1"></td>
+                                                <td><a href="javascript:void(0)" class="btn btn-xs default red remove_ig_row">Remove</a></td>
+                                              </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="form-actions fluid">
@@ -44,8 +74,37 @@
 
 {% block js %}
     <script>
+        function appendItemsField(item_id, item_name)
+        { 
+            var field = '<tr>';     
+                field += '<input type="hidden" name="item_id[]" value="'+item_id+'">';
+                field += '<td><input type="text" value="'+item_name+'" readonly="true" class="form-control"></td>';
+                field += '<td><input type="number" name="qty[]" class="form-control qty" min="1"></td>';     
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_ig_row">Remove</a></td>'; 
+                field += '</tr>';
+
+                $('#items_given_tbody').append(field);
+
+        }
+
         $(document).ready(function() {
             FormValidation.init(); // init form validation
+
+
+            var add_button = $(".add-ig-field");
+            $(add_button).on('click',function(){      
+                var item_id = '3';
+                var item_name = 'none';
+
+                if (!item_id == '') 
+                {
+                    appendItemsField(item_id, item_name);
+                }
+                else
+                {
+                    toastr['error']('Select an item first.', 'Error');
+                }
+            });   
 
             // set default error and success elements
             jQuery.validator.setDefaults({
