@@ -46,6 +46,12 @@ class Terminal
      */
     protected $bank_account;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="TerminalOperator")
+     * @ORM\JoinColumn(name="terminal_operator_id", referencedColumnName="id")
+     */
+    protected $terminal_operator;
+
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $payment_type;
 
@@ -448,4 +454,19 @@ class Terminal
     {
         return $this->bank_account;
     }
+
+
+    public function setTerminalOperator(\Gist\AccountingBundle\Entity\TerminalOperator $terminal_operator = null)
+    {
+        $this->terminal_operator = $terminal_operator;
+
+        return $this;
+    }
+
+    public function getTerminalOperator()
+    {
+        return $this->terminal_operator;
+    }
+
+
 }

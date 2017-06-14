@@ -59,6 +59,7 @@ class TerminalController extends CrudController
 
         $params['acct_type_opts'] = $am->getAccountTypeOptions();
         $params['terminal_company_opts'] = $am->getTerminalCompanyOptions();
+        $params['terminal_operator_opts'] = $am->getTerminalOperatorOptions();
         $params['currency_opts'] = $am->getCurrencyOptions();
         $params['status_opts'] = $am->getStatusOptions();
         $params['payment_type_opts'] = $am->getPaymentTypeOptions();
@@ -88,6 +89,11 @@ class TerminalController extends CrudController
         if (isset($data['bank_account'])) {
             $bank_account = $em->getRepository('GistAccountingBundle:BankAccount')->find($data['bank_account']);
             $o->setBankAccount($bank_account);
+        }
+
+        if (isset($data['terminal_operator'])) {
+            $terminal_operator = $em->getRepository('GistAccountingBundle:TerminalOperator')->find($data['terminal_operator']);
+            $o->setTerminalOperator($terminal_operator);
         }
     }
 }

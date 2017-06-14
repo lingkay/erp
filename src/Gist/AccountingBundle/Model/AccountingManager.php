@@ -119,6 +119,17 @@ class AccountingManager
         );
     }
 
+    public function getTerminalOperatorOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistAccountingBundle:TerminalOperator',
+            $filter,
+            array('id' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
+
     // public function findUser($id)
     // {
     //     return $this->em->getRepository('GistUserBundle:User')
