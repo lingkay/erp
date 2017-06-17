@@ -47,9 +47,11 @@ class POSLocationsController extends CrudController
         );
     }
 
-    protected function padFormParams(&$params, $user = null)
+    protected function padFormParams(&$params, $o = null)
     {
         $em = $this->getDoctrine()->getManager();
+        $am = $this->get('gist_accounting');
+        $params['bank_opts'] = $am->getBankOptions();
 
         // enabled options
         $params['type_opts'] = array(
@@ -71,6 +73,8 @@ class POSLocationsController extends CrudController
             'Inactive' => 'Inactive',
             'Deleted' => 'Deleted'
         );
+
+        $params['terminals'] = $em->getRepository('GistAccountingBundle:Terminal')->findBy(array('actual_location'=>$o->getID()));
 
         $params['area_opts'] = $this->getAreaOptions();
 

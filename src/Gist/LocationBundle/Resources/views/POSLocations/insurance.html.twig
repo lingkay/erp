@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+            <div class="form-body">
+
+
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-9">
+                    {% if not readonly %}
+                        <button type="submit" class="btn blue">Save</button>
+                    {% endif %}
+                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                </div>
+            </div>
+        <!-- END FORM-->
+    </div>
+</div>

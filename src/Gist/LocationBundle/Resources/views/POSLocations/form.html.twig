@@ -18,19 +18,19 @@
                             POS </a>
                     </li>
                     <li>
-                        <a href="#tab_personal_info" data-toggle="tab">
+                        <a href="#tab_permits" data-toggle="tab">
                             Permits </a>
                     </li>
                     <li>
-                        <a href="#tab_emp_record" data-toggle="tab">
+                        <a href="#tab_rental" data-toggle="tab">
                             Rental </a>
                     </li>
                     <li>
-                        <a href="#tab_items_given" data-toggle="tab">
+                        <a href="#tab_terminals" data-toggle="tab">
                             Terminals </a>
                     </li>
                     <li>
-                        <a href="#tab_documents" data-toggle="tab">
+                        <a href="#tab_insurance" data-toggle="tab">
                             Insurance </a>
                     </li>
                 </ul>
@@ -39,6 +39,18 @@
                     <!-- POS TAB -->
                     <div class="tab-pane active" id="tab_pos">
                         {% include 'GistLocationBundle:POSLocations:pos.html.twig' %}
+                    </div>
+                    <div class="tab-pane" id="tab_permits">
+                        {% include 'GistLocationBundle:POSLocations:permits.html.twig' %}
+                    </div>
+                    <div class="tab-pane" id="tab_rental">
+                        {% include 'GistLocationBundle:POSLocations:rental.html.twig' %}
+                    </div>
+                    <div class="tab-pane" id="tab_terminals">
+                        {% include 'GistLocationBundle:POSLocations:terminals.html.twig' %}
+                    </div>
+                    <div class="tab-pane" id="tab_insurance">
+                        {% include 'GistLocationBundle:POSLocations:insurance.html.twig' %}
                     </div>
                     
                 </div>
@@ -52,6 +64,9 @@
 <!-- HERE -->
 <script>
 $(document).ready(function() {
+
+    var selectedValues = $("#sourceValues").val().split(',');
+    $(".select_2-multi").val(selectedValues).trigger("change");
 
     FormValidation.init(); 
 

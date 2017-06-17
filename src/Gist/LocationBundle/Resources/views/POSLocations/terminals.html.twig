@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+            <div class="form-body">
+            {% for t in terminals|default('') %}
+                <div class="portlet box blue-madison">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-gift"></i>Terminal MID: {{t.getMID|default('')}}</div>
+                        <div class="tools">
+                            <a href="javascript:;" class="expand" data-original-title="" title=""> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body portlet-collapsed" style="display: none;">
+                        <input type="hidden" id="sourceValues" value="{{t.getBank|default('')}}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.group_text('Actual Location', 'actual_location', t.getActualLocation.getName|default(''), 3, 5, true) }}
+                                {{ form.group_text('Registered Location', 'registered_location', t.getRegisteredLocation.getName|default(''), 3, 5, true) }}
+                                {{ form.group_text('Company', 'company', t.getCompany|default(''), 3, 5, true) }}
+                                {{ form.group_text('Terminal of', 'terminal_of', t.getTerminalOf|default(''), 3, 5, true) }}
+                                {{ form.group_select_multiple('Bank', 'bank[]', bank_opts,'', 3, 5, true) }}
+                                {{ form.group_text('Account', 'bank_account', t.getBankAccount.getNameFormatted|default(''), 3, 5, true) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.group_text('Payment Type', 'payment_type', t.getPaymentType|default(''), 3, 5, true) }}
+                                {{ form.group_text('MID', 'mid', t.getMID|default(''), 3, 5, true) }}
+                                {{ form.group_text('TID', 'tid', t.getTID|default(''), 3, 5, true) }}
+                                {{ form.group_text('Serial No.', 'serial_number', t.getSerialNumber|default(''), 3, 5, true) }}
+                                {{ form.group_text('Sim Card No.', 'sim_number', t.getSimCardNumber|default(''), 3, 5, true) }}
+                                {{ form.group_text('Brand', 'tid', t.getTID|default(''), 3, 5, true) }}
+                                {{ form.group_text('Model', 'tid', t.getTID|default(''), 3, 5, true) }}
+                                {{ form.group_text('Status', 'status', t.getStatus|default(''), 3, 5, true) }}
+                                {{ form.group_text('Terminal Operator', 'terminal_operator', t.getTerminalOperator.getName|default(''), 3, 5, true) }}
+                                {{ form.group_textarea('Remarks', 'remarks',t.getRemarks|default(''),3,3,5, true)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="form-actions fluid">
+            </div>
+        <!-- END FORM-->
+    </div>
+</div>
