@@ -13,10 +13,11 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
+                            {{ form.group_select('Bank', 'bank', bank_opts, object.getBank.getID|default(''), 3, 4, readonly) }}
                             {{ form.group_text('Account #/Card #', 'account_number', object.getAccountNumber, 3, 4, readonly) }}
 
                             {{ form.group_text('Account Name', 'name', object.getName, 3, 4, readonly) }}
-                            {{ form.group_select('Bank', 'bank', bank_opts, object.getBank.getID|default(''), 3, 4, readonly) }}
+                            
                             {{ form.group_text('Branch', 'branch', object.getBranch, 3, 4, readonly) }}
                             {{ form.group_select('Currency', 'currency', currency_opts, object.getCurrency|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Type', 'type', acct_type_opts, object.getType|default(''), 3, 4, readonly) }}

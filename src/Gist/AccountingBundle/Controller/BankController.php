@@ -33,7 +33,6 @@ class BankController extends CrudController
 
         return array(
             $grid->newColumn('Name', 'getName', 'name'),
-            $grid->newColumn('Rank', 'getListID', 'list_id'),
             $grid->newColumn('Status', 'getStatus', 'status')
         );
     }
@@ -53,7 +52,6 @@ class BankController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $o->setName($data['name']);
-        $o->setListID($data['list_id']);
         $o->setStatus($data['status']);
 
     }

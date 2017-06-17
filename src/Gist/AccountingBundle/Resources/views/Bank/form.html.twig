@@ -14,7 +14,6 @@
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
                             {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
-                            {{ form.group_number('List ID', 'list_id', object.getListID, 3, 4, readonly) }}
                             {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
                         </div>
                         <div class="form-actions fluid">

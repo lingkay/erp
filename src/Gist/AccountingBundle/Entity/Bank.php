@@ -28,8 +28,6 @@ class Bank
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $name;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
-    protected $list_id;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $status;
@@ -64,20 +62,6 @@ class Bank
         return $this->name;
     }
 
-
-    public function setListID($list_id)
-    {
-        $this->list_id = $list_id;
-
-        return $this;
-    }
-
-    public function getListID()
-    {
-        return $this->list_id;
-    }
-
-    
 
     /**
      * Set status

@@ -113,7 +113,7 @@ class AccountingManager
         return $this->getOptionsArray(
             'GistAccountingBundle:Bank',
             $filter,
-            array('list_id' => 'ASC'),
+            array('id' => 'ASC'),
             'getID',
             'getName'
         );
