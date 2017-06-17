@@ -25,10 +25,17 @@ class Terminal
 
 
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\POSLocations")
+     * @ORM\JoinColumn(name="actual_location_id", referencedColumnName="id")
+     */
     protected $actual_location;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\POSLocations")
+     * @ORM\JoinColumn(name="registered_location_id", referencedColumnName="id")
+     */
     protected $registered_location;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */

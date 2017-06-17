@@ -24,7 +24,7 @@ class TerminalController extends CrudController
 
     protected function getObjectLabel($obj)
     {
-        return $obj->getActualLocation();
+        return $obj->getMID();
     }
 
     protected function getGridJoins()
@@ -32,6 +32,8 @@ class TerminalController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('a', 'bank_account', 'getBankAccount'),
+            $grid->newJoin('l', 'actual_location', 'getActualLocation'),
+            $grid->newJoin('x', 'registered_location', 'getRegisteredLocation'),
         );
     }
 
@@ -40,8 +42,8 @@ class TerminalController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Actual Location', 'getActualLocation', 'actual_location'),
-            $grid->newColumn('Registered Location', 'getRegisteredLocation', 'registered_location'),
+            $grid->newColumn('Actual Location', 'getName', 'name','l'),
+            $grid->newColumn('Registered Location', 'getName', 'name','x'),
             $grid->newColumn('Company', 'getCompany', 'company'),
             $grid->newColumn('Bank', 'getBank', 'bank'),
             $grid->newColumn('Account Number', 'getNameFormatted', 'id','a'),
@@ -65,6 +67,7 @@ class TerminalController extends CrudController
         $params['payment_type_opts'] = $am->getPaymentTypeOptions();
         $params['bank_opts'] = $am->getBankOptions();
         $params['bank_account_opts'] = $am->getBankAccountOptions();
+        $params['pos_locations_opts'] = $am->getPOSLocationOptions();
 
         return $params;
     }
@@ -72,8 +75,20 @@ class TerminalController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
-        $o->setActualLocation($data['actual_location']);
-        $o->setRegisteredLocation($data['registered_location']);
+
+        if (isset($data['actual_location'])) {
+            $actual_location = $em->getRepository('GistLocationBundle:POSLocations')->find($data['actual_location']);
+            $o->setActualLocation($actual_location);
+        }
+
+        if (isset($data['registered_location'])) {
+            $registered_location = $em->getRepository('GistLocationBundle:POSLocations')->find($data['registered_location']);
+            $o->setRegisteredLocation($registered_location);
+        }
+
+
+        // $o->setActualLocation($data['actual_location']);
+        // $o->setRegisteredLocation($data['registered_location']);
         if (isset($data['bank'])) {
            $o->setBank(implode(",", $data['bank']));
         }

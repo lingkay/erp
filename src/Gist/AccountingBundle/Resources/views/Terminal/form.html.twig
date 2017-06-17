@@ -14,8 +14,8 @@
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
                             <input type="hidden" id="sourceValues" value="{{object.getBank|default('')}}">
-                            {{ form.group_text('Actual Location', 'actual_location', object.getActualLocation|default(''), 3, 4, readonly) }}
-                            {{ form.group_text('Registered Location', 'registered_location', object.getRegisteredLocation|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Actual Location', 'actual_location',pos_locations_opts, object.getActualLocation.getID|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Registered Location', 'registered_location',pos_locations_opts, object.getRegisteredLocation.getID|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Company', 'company', terminal_company_opts, object.getCompany|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Terminal of', 'terminal_of', bank_opts, object.getTerminalOf|default(''), 3, 4, readonly) }}
                             {{ form.group_select_multiple('Bank', 'bank[]', bank_opts, '', 3, 4, readonly) }}
@@ -93,16 +93,10 @@
                     this.element(element);
                 },
                 rules: {
-                    actual_location: {
-                        required: true
-                    },
                     MID: {
                         required: true
                     },
                     TID: {
-                        required: true
-                    },
-                    registered_location: {
                         required: true
                     },
                     terminal_of: {

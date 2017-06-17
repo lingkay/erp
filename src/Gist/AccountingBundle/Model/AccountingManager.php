@@ -119,6 +119,17 @@ class AccountingManager
         );
     }
 
+    public function getPOSLocationOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistLocationBundle:POSLocations',
+            $filter,
+            array('id' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
+
     public function getTerminalOperatorOptions($filter = array())
     {
         return $this->getOptionsArray(
