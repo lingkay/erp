@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+            <div class="form-body">
+                {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
+
+                {{ form.group_text('Leasor', 'leasor', object.getLeasor, 3, 4, readonly) }}
+                {{ form.group_text('Contact No', 'contact_number', object.getContactNumber, 3, 4, readonly) }}
+                {{ form.group_text('Map Coor.', 'coordinates', object.getCoordinates, 3, 4, readonly) }}
+                {{ form.group_textarea('Locator Description', 'locator_desc',object.getLocatorDesc|default(''),3,3,4)}}
+
+                {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
+                {{ form.group_select('Brand', 'brand', brand_opts, object.getBrand|default(''), 3, 4, readonly) }}
+
+                {{ form.group_text('City', 'city', object.getCity, 3, 4, readonly) }}
+                {{ form.group_text('Postal', 'postal', object.getCoordinates, 3, 4, readonly) }}
+                {{ form.group_text('Region', 'region', object.getCoordinates, 3, 4, readonly) }}
+                {{ form.group_text('Country', 'country', object.getCoordinates, 3, 4, readonly) }}
+                {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
+                {{ form.group_select('Area', 'area', area_opts, object.getArea.getID|default(''), 3, 4, readonly) }}
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-9">
+                    {% if not readonly %}
+                        <button type="submit" class="btn blue">Save</button>
+                    {% endif %}
+                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                </div>
+            </div>
+        <!-- END FORM-->
+    </div>
+</div>

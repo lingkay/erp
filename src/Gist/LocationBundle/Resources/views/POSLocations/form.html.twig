@@ -1,6 +1,175 @@
 {% extends "GistTemplateBundle::base.html.twig" %}
 {% import "GistTemplateBundle::form.html.twig" as form %}
 
+{% set readonly = not app.user.hasAccess('cat_user_user.edit') %}
+
+{% block content %}
+    <form method="post" class="form-horizontal">
+    {#BEGIN TABS#}
+    <!-- start of profile -->
+    <div class="row profile">
+        <div class="col-md-12">
+            <!--BEGIN TABS-->
+            <div class="tabbable tabbable-custom tabbable-full-width">
+                <!-- MAIN TABS -->
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_pos" data-toggle="tab">
+                            POS </a>
+                    </li>
+                    <li>
+                        <a href="#tab_personal_info" data-toggle="tab">
+                            Permits </a>
+                    </li>
+                    <li>
+                        <a href="#tab_emp_record" data-toggle="tab">
+                            Rental </a>
+                    </li>
+                    <li>
+                        <a href="#tab_items_given" data-toggle="tab">
+                            Terminals </a>
+                    </li>
+                    <li>
+                        <a href="#tab_documents" data-toggle="tab">
+                            Insurance </a>
+                    </li>
+                </ul>
+                <!-- END MAIN TABS -->
+                <div class="tab-content">
+                    <!-- POS TAB -->
+                    <div class="tab-pane active" id="tab_pos">
+                        {% include 'GistLocationBundle:POSLocations:pos.html.twig' %}
+                    </div>
+                    
+                </div>
+            </div>
+            <!--END TABS-->
+        </div>
+    </div>
+    {#END TABS#}
+{% endblock %}
+{% block js %}
+<!-- HERE -->
+<script>
+$(document).ready(function() {
+
+    FormValidation.init(); 
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+            $(".form-horizontal").validate({
+                onfocusout: function(element) {
+                    this.element(element);
+                },
+                rules: {
+                    name: {
+                        required: true
+                    },
+                    leasor: {
+                        required: true
+                    },
+                    contact_number: {
+                        required: true
+                    },
+                    type: {
+                        required: true
+                    },
+                    brand: {
+                        required: true
+                    },
+                    area: {
+                        required: true
+                    },
+                    status: {
+                        required: true
+                    },
+                    city: {
+                        required: true
+                    }
+                },
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+
+});
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#
+v
+v
+v
+v
+v
+v
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
 {% block content %}
     <div class="row">
         <div class="col-md-12">
@@ -122,3 +291,4 @@
         });
     </script>
 {% endblock %}
+#}
