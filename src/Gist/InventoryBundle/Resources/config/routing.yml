@@ -52,6 +52,10 @@ cat_inv_wh:
     resource: "@GistInventoryBundle/Resources/config/routes/warehouse.yml"
     prefix: /warehouses
 
+gist_supp:
+    resource: "@GistInventoryBundle/Resources/config/routes/supplier.yml"
+    prefix: /supps
+
 cat_inv_accnt:
     resource: "@GistInventoryBundle/Resources/config/routes/account.yml"
     prefix: /accounts
@@ -177,3 +181,5 @@ cat_inv_borrowed_entry_delete:
 cat_inv_prod_check_sku:
     pattern: /product/check_sku/{sku}
     defaults: { _controller: GistInventoryBundle:Product:ajaxCheckSKU }
+
+# SUPPLIERS

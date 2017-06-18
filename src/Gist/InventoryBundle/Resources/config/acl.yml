@@ -81,3 +81,17 @@ acl:
       entries:
         - id: cat_inv_trans.menu
           label: "Menu"
+    - category: Supplier
+      entries:
+        - id: gist_supplier.menu
+          label: "Parent Menu"
+        - id: gist_supp.menu
+          label: "Menu"
+        - id: gist_supp.view
+          label: "View"
+        - id: gist_supp.add
+          label: "Add"
+        - id: gist_supp.edit
+          label: "Edit"
+        - id: gist_supp.delete
+          label: "Delete"
