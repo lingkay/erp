@@ -27,7 +27,7 @@ class POSLocations
 
 
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $name;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -68,6 +68,138 @@ class POSLocations
      * @ORM\JoinColumn(name="area_id", referencedColumnName="id")
      */
     protected $area;
+
+    // PERMITS
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="barangay_clearance_file_id", referencedColumnName="id")
+     */
+    protected $barangay_clearance;
+
+    /** @ORM\Column(type="date") */
+    protected $barangay_clearance_expiration;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="bir_0605_file_id", referencedColumnName="id")
+     */
+    protected $bir_0605;
+
+    /** @ORM\Column(type="date") */
+    protected $bir_0605_expiration;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="mayors_permit_file_id", referencedColumnName="id")
+     */
+    protected $mayors_permit;
+
+    /** @ORM\Column(type="date") */
+    protected $mayors_permit_expiration;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="bir_2303_file_id", referencedColumnName="id")
+     */
+    protected $bir_2303;
+
+    /** @ORM\Column(type="date") */
+    protected $bir_2303_expiration;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="fire_permit_file_id", referencedColumnName="id")
+     */
+    protected $fire_permit;
+
+    /** @ORM\Column(type="date") */
+    protected $fire_permit_expiration;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="sanitary_permit_file_id", referencedColumnName="id")
+     */
+    protected $sanitary_permit;
+
+    /** @ORM\Column(type="date") */
+    protected $sanitary_permit_expiration;
+    // END PERMITS
+
+    // RENTAL
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $rent_payment_amount;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $rent_payment_due;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $rent_security_deposit_amount;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $rent_security_deposit_returned;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $rent_security_deposit_returned_amount;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_security_deposit_remarks;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="sanitary_permit_file_id", referencedColumnName="id")
+     */
+    protected $rent_design_criteria;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_dimension;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_price_per_sq_meter;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_unit_number;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_contact_person;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_cp_position;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_cp_contact_number;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $rent_cp_email;
+    // END RENTAL
+
+    // INSURANCE
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $insurance_company;
+
+    /** @ORM\Column(type="date") */
+    protected $insurance_expiration;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $insurance_policy;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="fire_permit_file_id", referencedColumnName="id")
+     */
+    protected $insurance_policy_document;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $insurance_contact_person1;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $insurance_contact_number1;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $insurance_contact_person2;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $insurance_contact_number2;
+    // END INSURANCE
 
 
 
@@ -388,5 +520,821 @@ class POSLocations
     public function getArea()
     {
         return $this->area;
+    }
+
+    /**
+     * Set barangayClearanceExpiration
+     *
+     * @param \DateTime $barangayClearanceExpiration
+     *
+     * @return POSLocations
+     */
+    public function setBarangayClearanceExpiration($barangayClearanceExpiration)
+    {
+        $this->barangay_clearance_expiration = $barangayClearanceExpiration;
+
+        return $this;
+    }
+
+    /**
+     * Get barangayClearanceExpiration
+     *
+     * @return \DateTime
+     */
+    public function getBarangayClearanceExpiration()
+    {
+        return $this->barangay_clearance_expiration;
+    }
+
+    /**
+     * Set bir0605Expiration
+     *
+     * @param \DateTime $bir0605Expiration
+     *
+     * @return POSLocations
+     */
+    public function setBir0605Expiration($bir0605Expiration)
+    {
+        $this->bir_0605_expiration = $bir0605Expiration;
+
+        return $this;
+    }
+
+    /**
+     * Get bir0605Expiration
+     *
+     * @return \DateTime
+     */
+    public function getBir0605Expiration()
+    {
+        return $this->bir_0605_expiration;
+    }
+
+    /**
+     * Set mayorsPermitExpiration
+     *
+     * @param \DateTime $mayorsPermitExpiration
+     *
+     * @return POSLocations
+     */
+    public function setMayorsPermitExpiration($mayorsPermitExpiration)
+    {
+        $this->mayors_permit_expiration = $mayorsPermitExpiration;
+
+        return $this;
+    }
+
+    /**
+     * Get mayorsPermitExpiration
+     *
+     * @return \DateTime
+     */
+    public function getMayorsPermitExpiration()
+    {
+        return $this->mayors_permit_expiration;
+    }
+
+    /**
+     * Set bir2303Expiration
+     *
+     * @param \DateTime $bir2303Expiration
+     *
+     * @return POSLocations
+     */
+    public function setBir2303Expiration($bir2303Expiration)
+    {
+        $this->bir_2303_expiration = $bir2303Expiration;
+
+        return $this;
+    }
+
+    /**
+     * Get bir2303Expiration
+     *
+     * @return \DateTime
+     */
+    public function getBir2303Expiration()
+    {
+        return $this->bir_2303_expiration;
+    }
+
+    /**
+     * Set firePermitExpiration
+     *
+     * @param \DateTime $firePermitExpiration
+     *
+     * @return POSLocations
+     */
+    public function setFirePermitExpiration($firePermitExpiration)
+    {
+        $this->fire_permit_expiration = $firePermitExpiration;
+
+        return $this;
+    }
+
+    /**
+     * Get firePermitExpiration
+     *
+     * @return \DateTime
+     */
+    public function getFirePermitExpiration()
+    {
+        return $this->fire_permit_expiration;
+    }
+
+    /**
+     * Set sanitaryPermitExpiration
+     *
+     * @param \DateTime $sanitaryPermitExpiration
+     *
+     * @return POSLocations
+     */
+    public function setSanitaryPermitExpiration($sanitaryPermitExpiration)
+    {
+        $this->sanitary_permit_expiration = $sanitaryPermitExpiration;
+
+        return $this;
+    }
+
+    /**
+     * Get sanitaryPermitExpiration
+     *
+     * @return \DateTime
+     */
+    public function getSanitaryPermitExpiration()
+    {
+        return $this->sanitary_permit_expiration;
+    }
+
+    /**
+     * Set rentPaymentAmount
+     *
+     * @param string $rentPaymentAmount
+     *
+     * @return POSLocations
+     */
+    public function setRentPaymentAmount($rentPaymentAmount)
+    {
+        $this->rent_payment_amount = $rentPaymentAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get rentPaymentAmount
+     *
+     * @return string
+     */
+    public function getRentPaymentAmount()
+    {
+        return $this->rent_payment_amount;
+    }
+
+    /**
+     * Set rentPaymentDue
+     *
+     * @param string $rentPaymentDue
+     *
+     * @return POSLocations
+     */
+    public function setRentPaymentDue($rentPaymentDue)
+    {
+        $this->rent_payment_due = $rentPaymentDue;
+
+        return $this;
+    }
+
+    /**
+     * Get rentPaymentDue
+     *
+     * @return string
+     */
+    public function getRentPaymentDue()
+    {
+        return $this->rent_payment_due;
+    }
+
+    /**
+     * Set rentSecurityDepositAmount
+     *
+     * @param string $rentSecurityDepositAmount
+     *
+     * @return POSLocations
+     */
+    public function setRentSecurityDepositAmount($rentSecurityDepositAmount)
+    {
+        $this->rent_security_deposit_amount = $rentSecurityDepositAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get rentSecurityDepositAmount
+     *
+     * @return string
+     */
+    public function getRentSecurityDepositAmount()
+    {
+        return $this->rent_security_deposit_amount;
+    }
+
+    /**
+     * Set rentSecurityDepositReturned
+     *
+     * @param string $rentSecurityDepositReturned
+     *
+     * @return POSLocations
+     */
+    public function setRentSecurityDepositReturned($rentSecurityDepositReturned)
+    {
+        $this->rent_security_deposit_returned = $rentSecurityDepositReturned;
+
+        return $this;
+    }
+
+    /**
+     * Get rentSecurityDepositReturned
+     *
+     * @return string
+     */
+    public function getRentSecurityDepositReturned()
+    {
+        return $this->rent_security_deposit_returned;
+    }
+
+    /**
+     * Set rentSecurityDepositReturnedAmount
+     *
+     * @param string $rentSecurityDepositReturnedAmount
+     *
+     * @return POSLocations
+     */
+    public function setRentSecurityDepositReturnedAmount($rentSecurityDepositReturnedAmount)
+    {
+        $this->rent_security_deposit_returned_amount = $rentSecurityDepositReturnedAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get rentSecurityDepositReturnedAmount
+     *
+     * @return string
+     */
+    public function getRentSecurityDepositReturnedAmount()
+    {
+        return $this->rent_security_deposit_returned_amount;
+    }
+
+    /**
+     * Set rentSecurityDepositRemarks
+     *
+     * @param string $rentSecurityDepositRemarks
+     *
+     * @return POSLocations
+     */
+    public function setRentSecurityDepositRemarks($rentSecurityDepositRemarks)
+    {
+        $this->rent_security_deposit_remarks = $rentSecurityDepositRemarks;
+
+        return $this;
+    }
+
+    /**
+     * Get rentSecurityDepositRemarks
+     *
+     * @return string
+     */
+    public function getRentSecurityDepositRemarks()
+    {
+        return $this->rent_security_deposit_remarks;
+    }
+
+    /**
+     * Set rentDimension
+     *
+     * @param string $rentDimension
+     *
+     * @return POSLocations
+     */
+    public function setRentDimension($rentDimension)
+    {
+        $this->rent_dimension = $rentDimension;
+
+        return $this;
+    }
+
+    /**
+     * Get rentDimension
+     *
+     * @return string
+     */
+    public function getRentDimension()
+    {
+        return $this->rent_dimension;
+    }
+
+    /**
+     * Set rentPricePerSqMeter
+     *
+     * @param string $rentPricePerSqMeter
+     *
+     * @return POSLocations
+     */
+    public function setRentPricePerSqMeter($rentPricePerSqMeter)
+    {
+        $this->rent_price_per_sq_meter = $rentPricePerSqMeter;
+
+        return $this;
+    }
+
+    /**
+     * Get rentPricePerSqMeter
+     *
+     * @return string
+     */
+    public function getRentPricePerSqMeter()
+    {
+        return $this->rent_price_per_sq_meter;
+    }
+
+    /**
+     * Set rentUnitNumber
+     *
+     * @param string $rentUnitNumber
+     *
+     * @return POSLocations
+     */
+    public function setRentUnitNumber($rentUnitNumber)
+    {
+        $this->rent_unit_number = $rentUnitNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get rentUnitNumber
+     *
+     * @return string
+     */
+    public function getRentUnitNumber()
+    {
+        return $this->rent_unit_number;
+    }
+
+    /**
+     * Set rentContactPerson
+     *
+     * @param string $rentContactPerson
+     *
+     * @return POSLocations
+     */
+    public function setRentContactPerson($rentContactPerson)
+    {
+        $this->rent_contact_person = $rentContactPerson;
+
+        return $this;
+    }
+
+    /**
+     * Get rentContactPerson
+     *
+     * @return string
+     */
+    public function getRentContactPerson()
+    {
+        return $this->rent_contact_person;
+    }
+
+    /**
+     * Set rentCpPosition
+     *
+     * @param string $rentCpPosition
+     *
+     * @return POSLocations
+     */
+    public function setRentCpPosition($rentCpPosition)
+    {
+        $this->rent_cp_position = $rentCpPosition;
+
+        return $this;
+    }
+
+    /**
+     * Get rentCpPosition
+     *
+     * @return string
+     */
+    public function getRentCpPosition()
+    {
+        return $this->rent_cp_position;
+    }
+
+    /**
+     * Set rentCpContactNumber
+     *
+     * @param string $rentCpContactNumber
+     *
+     * @return POSLocations
+     */
+    public function setRentCpContactNumber($rentCpContactNumber)
+    {
+        $this->rent_cp_contact_number = $rentCpContactNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get rentCpContactNumber
+     *
+     * @return string
+     */
+    public function getRentCpContactNumber()
+    {
+        return $this->rent_cp_contact_number;
+    }
+
+    /**
+     * Set rentCpEmail
+     *
+     * @param string $rentCpEmail
+     *
+     * @return POSLocations
+     */
+    public function setRentCpEmail($rentCpEmail)
+    {
+        $this->rent_cp_email = $rentCpEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get rentCpEmail
+     *
+     * @return string
+     */
+    public function getRentCpEmail()
+    {
+        return $this->rent_cp_email;
+    }
+
+    /**
+     * Set barangayClearance
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $barangayClearance
+     *
+     * @return POSLocations
+     */
+    public function setBarangayClearance(\Gist\MediaBundle\Entity\Upload $barangayClearance = null)
+    {
+        $this->barangay_clearance = $barangayClearance;
+
+        return $this;
+    }
+
+    /**
+     * Get barangayClearance
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getBarangayClearance()
+    {
+        return $this->barangay_clearance;
+    }
+
+    /**
+     * Set bir0605
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $bir0605
+     *
+     * @return POSLocations
+     */
+    public function setBir0605(\Gist\MediaBundle\Entity\Upload $bir0605 = null)
+    {
+        $this->bir_0605 = $bir0605;
+
+        return $this;
+    }
+
+    /**
+     * Get bir0605
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getBir0605()
+    {
+        return $this->bir_0605;
+    }
+
+    /**
+     * Set mayorsPermit
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $mayorsPermit
+     *
+     * @return POSLocations
+     */
+    public function setMayorsPermit(\Gist\MediaBundle\Entity\Upload $mayorsPermit = null)
+    {
+        $this->mayors_permit = $mayorsPermit;
+
+        return $this;
+    }
+
+    /**
+     * Get mayorsPermit
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getMayorsPermit()
+    {
+        return $this->mayors_permit;
+    }
+
+    /**
+     * Set bir2303
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $bir2303
+     *
+     * @return POSLocations
+     */
+    public function setBir2303(\Gist\MediaBundle\Entity\Upload $bir2303 = null)
+    {
+        $this->bir_2303 = $bir2303;
+
+        return $this;
+    }
+
+    /**
+     * Get bir2303
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getBir2303()
+    {
+        return $this->bir_2303;
+    }
+
+    /**
+     * Set firePermit
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $firePermit
+     *
+     * @return POSLocations
+     */
+    public function setFirePermit(\Gist\MediaBundle\Entity\Upload $firePermit = null)
+    {
+        $this->fire_permit = $firePermit;
+
+        return $this;
+    }
+
+    /**
+     * Get firePermit
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getFirePermit()
+    {
+        return $this->fire_permit;
+    }
+
+    /**
+     * Set sanitaryPermit
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $sanitaryPermit
+     *
+     * @return POSLocations
+     */
+    public function setSanitaryPermit(\Gist\MediaBundle\Entity\Upload $sanitaryPermit = null)
+    {
+        $this->sanitary_permit = $sanitaryPermit;
+
+        return $this;
+    }
+
+    /**
+     * Get sanitaryPermit
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getSanitaryPermit()
+    {
+        return $this->sanitary_permit;
+    }
+
+    /**
+     * Set rentDesignCriteria
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $rentDesignCriteria
+     *
+     * @return POSLocations
+     */
+    public function setRentDesignCriteria(\Gist\MediaBundle\Entity\Upload $rentDesignCriteria = null)
+    {
+        $this->rent_design_criteria = $rentDesignCriteria;
+
+        return $this;
+    }
+
+    /**
+     * Get rentDesignCriteria
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getRentDesignCriteria()
+    {
+        return $this->rent_design_criteria;
+    }
+
+    /**
+     * Set insuranceCompany
+     *
+     * @param string $insuranceCompany
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceCompany($insuranceCompany)
+    {
+        $this->insurance_company = $insuranceCompany;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceCompany
+     *
+     * @return string
+     */
+    public function getInsuranceCompany()
+    {
+        return $this->insurance_company;
+    }
+
+    /**
+     * Set insuranceExpiration
+     *
+     * @param \DateTime $insuranceExpiration
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceExpiration($insuranceExpiration)
+    {
+        $this->insurance_expiration = $insuranceExpiration;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceExpiration
+     *
+     * @return \DateTime
+     */
+    public function getInsuranceExpiration()
+    {
+        return $this->insurance_expiration;
+    }
+
+    /**
+     * Set insurancePolicy
+     *
+     * @param string $insurancePolicy
+     *
+     * @return POSLocations
+     */
+    public function setInsurancePolicy($insurancePolicy)
+    {
+        $this->insurance_policy = $insurancePolicy;
+
+        return $this;
+    }
+
+    /**
+     * Get insurancePolicy
+     *
+     * @return string
+     */
+    public function getInsurancePolicy()
+    {
+        return $this->insurance_policy;
+    }
+
+    /**
+     * Set insuranceContactPerson1
+     *
+     * @param string $insuranceContactPerson1
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactPerson1($insuranceContactPerson1)
+    {
+        $this->insurance_contact_person1 = $insuranceContactPerson1;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactPerson1
+     *
+     * @return string
+     */
+    public function getInsuranceContactPerson1()
+    {
+        return $this->insurance_contact_person1;
+    }
+
+    /**
+     * Set insuranceContactNumber1
+     *
+     * @param string $insuranceContactNumber1
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactNumber1($insuranceContactNumber1)
+    {
+        $this->insurance_contact_number1 = $insuranceContactNumber1;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactNumber1
+     *
+     * @return string
+     */
+    public function getInsuranceContactNumber1()
+    {
+        return $this->insurance_contact_number1;
+    }
+
+    /**
+     * Set insuranceContactPerson2
+     *
+     * @param string $insuranceContactPerson2
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactPerson2($insuranceContactPerson2)
+    {
+        $this->insurance_contact_person2 = $insuranceContactPerson2;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactPerson2
+     *
+     * @return string
+     */
+    public function getInsuranceContactPerson2()
+    {
+        return $this->insurance_contact_person2;
+    }
+
+    /**
+     * Set insuranceContactNumber2
+     *
+     * @param string $insuranceContactNumber2
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactNumber2($insuranceContactNumber2)
+    {
+        $this->insurance_contact_number2 = $insuranceContactNumber2;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactNumber2
+     *
+     * @return string
+     */
+    public function getInsuranceContactNumber2()
+    {
+        return $this->insurance_contact_number2;
+    }
+
+    /**
+     * Set insurancePolicyDocument
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $insurancePolicyDocument
+     *
+     * @return POSLocations
+     */
+    public function setInsurancePolicyDocument(\Gist\MediaBundle\Entity\Upload $insurancePolicyDocument = null)
+    {
+        $this->insurance_policy_document = $insurancePolicyDocument;
+
+        return $this;
+    }
+
+    /**
+     * Get insurancePolicyDocument
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getInsurancePolicyDocument()
+    {
+        return $this->insurance_policy_document;
     }
 }
