@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+            <div class="form-body">
+                {{ form.group_textarea('Description', 'desc_description',object.getDescription|default(''),3,3,4)}}
+                {{ form.group_textarea('Ingredients', 'desc_ingredients',object.getIngredients|default(''),3,3,4)}}
+                {{ form.group_textarea('Directions', 'desc_directions',object.getDirections|default(''),3,3,4)}}
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-9">
+                    {% if not readonly %}
+                        <button type="submit" class="btn blue">Save</button>
+                    {% endif %}
+                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                </div>
+            </div>
+        <!-- END FORM-->
+    </div>
+</div>

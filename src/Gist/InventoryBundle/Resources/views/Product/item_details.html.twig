@@ -1,0 +1,54 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+            <div class="form-body">
+                {{ form.group_upload_image('Primary photo','photo',object.getPrimaryPhoto|default(''),3,4)}}
+                {{ form.group_text('Product Name', 'name', object.getName, 3, 4, readonly) }}
+                {{ form.group_text('Item Code', 'item_code', object.getItemCode|default(''), 3, 4, readonly) }}
+                {{ form.group_text('Barcode', 'barcode', object.getBarcode|default(''), 3, 4, readonly) }}
+                {{ form.group_select("Category", "category", category_opts, category.getID|default(''), 3, 4, readonly) }}
+                {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
+                {{ form.group_select("Type", "item_type", type_opts, ptype|default(''), 3, 4, readonly) }}
+                <div id="composition_div" style="margin-top: 10px;">
+                    <h4 class="form-section">Package Contents</h4>
+                    <div class="col-md-4" style="padding-bottom: 20px;">
+                    {{ form.group_select_only("Item", "item_opt", item_opts, '', 3, 7, readonly) }}
+                    <a href="javascript:void(0)" class="btn default green add-prod_comp-field" style="margin=0">Add Item</a>
+                    </div>
+                    <div class="col-md-4" style="padding-bottom: 20px;">
+                    </div>
+
+                    <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th width="80px">Quantity</th>
+                                <th width="40px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="product_composition_tbody">
+                            {% for key,val in product_composition %}
+                              <tr>
+                                <input type="hidden" name="item_id[]" value="{{val[0]}}">
+                                
+                                <td>{{ form.group_select_only2("Item", "item_opt", item_opts, val[0], 3, 7, true) }}</td>
+                                <td><input type="number" name="qty[]" class="form-control qty" value="{{val[1]}}" min="1"></td>
+                                <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>
+                              </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-9">
+                    {% if not readonly %}
+                        <button type="submit" class="btn blue">Save</button>
+                    {% endif %}
+                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                </div>
+            </div>
+        <!-- END FORM-->
+    </div>
+</div>

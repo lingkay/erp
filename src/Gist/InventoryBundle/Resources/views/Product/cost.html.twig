@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+            <div class="form-body">
+                {{ form.group_number('Cost', 'cost', object.getCost|default(''), 3, 4, readonly) }}
+                {{ form.group_select("Cost Currency", "cost_currency", currency_opts, object.getCostCurrency|default(''), 3, 4, readonly) }}
+                {{ form.group_number('SRP', 'srp', object.getSRP|default(''), 3, 4, readonly) }}
+                {{ form.group_number('Min. Price', 'min_price', object.getMinPrice|default(''), 3, 4, readonly) }}
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-9">
+                    {% if not readonly %}
+                        <button type="submit" class="btn blue">Save</button>
+                    {% endif %}
+                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                </div>
+            </div>
+        <!-- END FORM-->
+    </div>
+</div>
