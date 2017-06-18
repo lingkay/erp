@@ -3,24 +3,23 @@
     <div class="col-md-6">
         <!-- BEGIN FORM-->
             <div class="form-body">
-                {{ form.group_upload_file2('Barangay Clearance Document','upl_barangay_clearance',object.getFileEmploymentContract|default(''),4,4)}}
-                {{ form.group_date('Barangay Clearance Expiration','exp_barangay_clearance', object.getDOB|default('')|date('m/d/Y'),4,3) }}
+                {{ form.group_upload_file2('Barangay Clearance Document','upl_barangay_clearance',object.getBarangayClearance|default(''),4,4)}}
+                {{ form.group_date('Barangay Clearance Expiration','exp_barangay_clearance', object.getBarangayClearanceExpiration|default('')|date('m/d/Y'),4,4) }}
 
-                {{ form.group_upload_file2('BIR Permit 0605 Document','upl_barangay_clearance',object.getFileEmploymentContract|default(''),4,4)}}
-                {{ form.group_date('BIR Permit 0605 Expiration','exp_barangay_clearance', object.getDOB|default('')|date('m/d/Y'),4,3) }}
+                {{ form.group_upload_file2('BIR Permit 0605 Document','upl_bir0605',object.getBir0605|default(''),4,4)}}
+                {{ form.group_date('BIR Permit 0605 Expiration','exp_bir0605', object.getBir0605Expiration|default('')|date('m/d/Y'),4,4) }}
 
-                {{ form.group_upload_file2("Mayor's Permit Document",'upl_barangay_clearance',object.getFileEmploymentContract|default(''),4,4)}}
-                {{ form.group_date("Mayor's Permit Expiration",'exp_barangay_clearance', object.getDOB|default('')|date('m/d/Y'),4,3) }}
+                {{ form.group_upload_file2("Mayor's Permit Document",'upl_mayors_permit',object.getMayorsPermit|default(''),4,4)}}
+                {{ form.group_date("Mayor's Permit Expiration",'exp_mayors_permit', object.getMayorsPermitExpiration|default('')|date('m/d/Y'),4,4) }}
 
-                {{ form.group_upload_file2('BIR Permit 2303 Document','upl_barangay_clearance',object.getFileEmploymentContract|default(''),4,4)}}
-                {{ form.group_date('BIR Permit 2303 Expiration','exp_barangay_clearance', object.getDOB|default('')|date('m/d/Y'),4,3) }}
+                {{ form.group_upload_file2('BIR Permit 2303 Document','upl_bir2303',object.getBir2303|default(''),4,4)}}
+                {{ form.group_date('BIR Permit 2303 Expiration','exp_bir2303', object.getBir2303Expiration|default('')|date('m/d/Y'),4,4) }}
 
-                {{ form.group_upload_file2('Fire Permit Document','upl_barangay_clearance',object.getFileEmploymentContract|default(''),4,4)}}
-                {{ form.group_date('Fire Permit Expiration','exp_barangay_clearance', object.getDOB|default('')|date('m/d/Y'),4,3) }}
+                {{ form.group_upload_file2('Fire Permit Document','upl_fire_permit',object.getFirePermit|default(''),4,4)}}
+                {{ form.group_date('Fire Permit Expiration','exp_fire_permit', object.getFirePermitExpiration|default('')|date('m/d/Y'),4,4) }}
 
-                {{ form.group_upload_file2('Sanitary Permit Document','upl_barangay_clearance',object.getFileEmploymentContract|default(''),4,4)}}
-                {{ form.group_date('Sanitary Permit Expiration','exp_barangay_clearance', object.getDOB|default('')|date('m/d/Y'),4,3) }}
-            
+                {{ form.group_upload_file2('Sanitary Permit Document','upl_sanitary_permit',object.getSanitaryPermit|default(''),4,4)}}
+                {{ form.group_date('Sanitary Permit Expiration','exp_sanitary_permit', object.getSanitaryPermitExpiration|default('')|date('m/d/Y'),4,4) }}
             </div>
             
             <div class="form-actions fluid" style="margin-top: 40px;">

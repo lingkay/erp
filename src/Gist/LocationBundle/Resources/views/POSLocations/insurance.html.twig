@@ -2,8 +2,15 @@
     <div class="col-md-12">
         <!-- BEGIN FORM-->
             <div class="form-body">
+            {{ form.group_text('Company', 'insurance_company', object.getInsuranceCompany|default(), 3, 4, readonly) }}
+            {{ form.group_date('Expiration','insurance_expiration', object.getInsuranceExpiration|default('')|date('m/d/Y'),3,4) }}
+            {{ form.group_text('Policy Number', 'insurance_policy', object.getInsurancePolicy|default(), 3, 4, readonly) }}
+            {{ form.group_upload_file2('Scanned Document of Policy','insurance_policy_document',object.getInsurancePolicyDocument|default(''),3,4)}}
 
-
+            {{ form.group_text('Contact Person 1', 'insurance_contact1_person', object.getInsuranceContactPerson1|default(), 3, 4, readonly) }}
+            {{ form.group_text('Contact number 1', 'insurance_contact1_number', object.getInsuranceContactNumber1|default(), 3, 4, readonly) }}
+            {{ form.group_text('Contact Person 2', 'insurance_contact2_person', object.getInsuranceContactPerson2|default(), 3, 4, readonly) }}
+            {{ form.group_text('Contact number 2', 'insurance_contact2_number', object.getInsuranceContactNumber2|default(), 3, 4, readonly) }}
             </div>
             <div class="form-actions fluid">
                 <div class="col-md-9">

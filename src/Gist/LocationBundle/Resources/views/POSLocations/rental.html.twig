@@ -3,21 +3,21 @@
         <!-- BEGIN FORM-->
             <div class="form-body">
 
-            {{ form.group_number('Rental Payment Amount', 'rental_payment_amount', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_text('Rental Payment Due Date', 'rental_due_date', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_number('Security Deposit Amount', 'security_deposit_amount', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_select('Security Deposit Returned', 'security_deposit_returned', area_opts, object.getArea.getID|default(''), 3, 4, readonly) }}
-            {{ form.group_number('Security Deposit Returned Amount', 'security_deposit_amount', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_textarea('Security Deposit Remarks', 'security_deposit_remarks',object.getECRemarks|default(''),3,3,6)}}
-            {{ form.group_upload_file2('Design Criteria','design_criteria',object.getFileEmploymentContract|default(''),3,4)}}
-            {{ form.group_number('Dimension (Meter)', 'dimension_meter', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_number('Price per Square-Meter', 'price_sq_meter', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_text('Unit/Slot No.', 'unit_no', object.getLeasor|default(), 3, 4, readonly) }}
+            {{ form.group_number('Rental Payment Amount', 'rental_payment_amount', object.getRentPaymentAmount|default(), 3, 4, readonly) }}
+            {{ form.group_text('Rental Payment Due Date', 'rental_due_date', object.getRentPaymentDue|default(), 3, 4, readonly) }}
+            {{ form.group_number('Security Deposit Amount', 'security_deposit_amount', object.getRentSecurityDepositAmount|default(), 3, 4, readonly) }}
+            {{ form.group_select('Security Deposit Returned', 'security_deposit_returned', area_opts, '', 3, 4, readonly) }}
+            {{ form.group_number('Security Deposit Returned Amount', 'security_deposit_amount_returned', object.getRentSecurityDepositReturnedAmount|default(), 3, 4, readonly) }}
+            {{ form.group_textarea('Security Deposit Remarks', 'security_deposit_remarks',object.getRentSecurityDepositRemarks|default(''),3,3,6)}}
+            {{ form.group_upload_file2('Design Criteria','design_criteria',object.getRentDesignCriteria|default(''),3,4)}}
+            {{ form.group_number('Dimension (Meter)', 'dimension_meter', object.getRentDimension|default(), 3, 4, readonly) }}
+            {{ form.group_number('Price per Square-Meter', 'price_sq_meter', object.getRentPricePerSqMeter|default(), 3, 4, readonly) }}
+            {{ form.group_text('Unit/Slot No.', 'unit_no', object.getRentUnitNumber|default(), 3, 4, readonly) }}
 
-            {{ form.group_text('Contact Person', 'contact_person', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_text('Position', 'position', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_text('Contact No', 'contact_number', object.getLeasor|default(), 3, 4, readonly) }}
-            {{ form.group_text('Email', 'email', object.getLeasor|default(), 3, 4, readonly) }}
+            {{ form.group_text('Contact Person', 'contact_person', object.getRentContactPerson|default(), 3, 4, readonly) }}
+            {{ form.group_text('Position', 'contact_position', object.getRentCpPosition|default(), 3, 4, readonly) }}
+            {{ form.group_text('Contact No', 'contact_number', object.getRentCpContactNumber|default(), 3, 4, readonly) }}
+            {{ form.group_text('Email', 'contact_email', object.getRentCpEmail|default(), 3, 4, readonly) }}
             </div>
             <div class="form-actions fluid">
                 <div class="col-md-9">
