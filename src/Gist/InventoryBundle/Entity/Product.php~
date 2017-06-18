@@ -3,70 +3,35 @@
 namespace Gist\InventoryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Gist\CoreBundle\Template\Entity\HasGeneratedID;
-use Gist\CoreBundle\Template\Entity\HasName;
-use Gist\CoreBundle\Template\Entity\TrackCreate;
-use Gist\CoreBundle\Template\Entity\TrackUpdate;
-
 use stdClass;
+use DateTime;
 
 /**
  * @ORM\Entity
- * @ORM\Table(
- *      name="inv_product",
- *      indexes={@ORM\Index(name="prod_sale_idx", columns={"flag_sale"}),
- *          @ORM\Index(name="prod_pur_idx", columns={"flag_purchase"})}
- * )
+ * @ORM\Table(name="inv_product")
  */
 class Product
 {
-    const TYPE_RAW_MATERIAL         = 1; // to be used as raw materials for manufacturing
-    const TYPE_FINISHED_GOOD        = 2; // result of manufacturing
-    const TYPE_INVENTORY            = 3; // anything classified under inventory but not raw materials or finished goods
-    const TYPE_SERVICE              = 4; // services 
-    const TYPE_VIRTUAL              = 5; // virtual products
-    const TYPE_FIXED_ASSET          = 6; // fixed assets / capital goods. PP&E
-    const TYPE_CUSTOMER_ITEM        = 7; // customer items given by customer and to be returned after servicing.
-    const TYPE_OTHER                = 100; // anything else that's not covered (should not reach this)
-
-    use HasGeneratedID;
-    use HasName;
-    use TrackCreate;
-    use TrackUpdate;
-    
-    /** @ORM\Column(type="string", length=25, nullable=false) */
-    protected $sku;
-
-    /** @ORM\Column(type="string", length=20) */
-    protected $uom;
-
-    /** @ORM\Column(type="boolean", nullable=true) */
-    protected $flag_sale;
-
-    /** @ORM\Column(type="boolean", nullable=true) */
-    protected $flag_purchase;
-
-     /** @ORM\Column(type="boolean", nullable=true) */
-    protected $flag_perishable;
-    
-    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
-    protected $price_sale;
-
-    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
-    protected $price_purchase;
-
-    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
-    protected $stock_min;
-
-    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
-    protected $stock_max;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ProductGroup", inversedBy="products")
-     * @ORM\JoinColumn(name="prodgroup_id", referencedColumnName="id")
+     * @ORM\Column(type="string", length=50)
      */
-    protected $prodgroup;
+    protected $name;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $product_compositions;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $item_code;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $barcode;
 
     /**
      * @ORM\ManyToOne(targetEntity="Brand")
@@ -75,154 +40,95 @@ class Product
     protected $brand;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="variants")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
-     **/
-    protected $parent;
+     * @ORM\ManyToOne(targetEntity="ProductCategory")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     */
+    protected $category;
 
-    /** @ORM\OneToMany(targetEntity="Product", mappedBy="parent") */
-    protected $variants;
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="photo_id", referencedColumnName="id")
+     */
+    protected $primary_photo;
 
-    /** @ORM\OneToMany(targetEntity="ProductAttribute", mappedBy="product", cascade={"persist"}) */
-    protected $attributes;
+    // COST
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $cost;
 
-    /** @ORM\Column(type="json_array", nullable=true) */
-    protected $attribute_hash;
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $cost_currency;
 
-    /** @ORM\Column(type="integer", nullable=true) */
-    protected $type_id;
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $srp;
+
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $min_price;
+
+    // Permits
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $fda_expiration_price;
+
+    /** @ORM\Column(type="datetime") */
+    protected $permit_date_from;
+
+    /** @ORM\Column(type="datetime") */
+    protected $permit_date_to;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="doc_permit_id", referencedColumnName="id")
+     */
+    protected $scanned_permit;
+
+    // DESCRIPTIONS
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $description;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $ingredients;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $directions;
 
 
     public function __construct()
     {
-        $this->price_sale = 0.00;
-        $this->price_purchase = 0.00;
-
-        $this->stock_min = 0.00;
-        $this->stock_max = 0.00;
-
-        $this->flag_sale = false;
-        $this->flag_purchase = false;
-        $this->flag_perishable = false;
-
-        $this->parent = null;
-        $this->variants = new ArrayCollection();
-
-        $this->attributes = new ArrayCollection();
-        $this->attribute_hash = array();
-
-        $this->type_id = self::TYPE_INVENTORY;
-
-        $this->initHasGeneratedID();
-        $this->initHasName();
-        $this->initTrackCreate();
-        $this->initTrackUpdate();
     }
 
-    public function setSKU($sku)
+    public function getID()
     {
-        $this->sku = $sku;
+        return $this->id;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 
-    public function setUnitOfMeasure($uom)
+    public function getName()
     {
-        $this->uom = $uom;
+        return $this->name;
+    }
+
+    public function setPrimaryPhoto($primary_photo)
+    {
+        $this->primary_photo = $primary_photo;
         return $this;
     }
 
-    public function setFlagSale($flag = true)
+    public function getPrimaryPhoto()
     {
-        $this->flag_sale = $flag;
-        return $this;
+        return $this->primary_photo;
     }
 
-    public function setFlagPurchase($flag = true)
-    {
-        $this->flag_purchase = $flag;
-        return $this;
-    }
-    
-    public function setFlagPerishable($flag = true)
-    {
-        $this->flag_perishable = $flag;
-        return $this;
-    }
 
-    public function setPriceSale($price)
-    {
-        $this->price_sale = $price;
-        return $this;
-    }
-
-    public function setPricePurchase($price)
-    {
-        $this->price_purchase = $price;
-        return $this;
-    }
-
-    public function setProductGroup(ProductGroup $group)
-    {
-        $this->prodgroup = $group;
-        return $this;
-    }
-
-    public function setBrand(Brand $brand)
+    public function setBrand($brand)
     {
         $this->brand = $brand;
         return $this;
-    }
-
-    public function setStockMin($stock)
-    {
-        $this->stock_min = $stock;
-        return $this;
-    }
-
-    public function setStockMax($stock)
-    {
-        $this->stock_max = $stock;
-        return $this;
-    }
-
-    public function getSKU()
-    {
-        return $this->sku;
-    }
-
-    public function getUnitOfMeasure()
-    {
-        return $this->uom;
-    }
-
-    public function isPerishable()
-    {
-        return $this->flag_perishable;
-    }
-
-    public function canSell()
-    {
-        return $this->flag_sale;
-    }
-
-    public function canPurchase()
-    {
-        return $this->flag_purchase;
-    }
-
-    public function getPriceSale()
-    {
-        return $this->price_sale;
-    }
-
-    public function getPricePurchase()
-    {
-        return $this->price_purchase;
-    }
-
-    public function getProductGroup()
-    {
-        return $this->prodgroup;
     }
 
     public function getBrand()
@@ -230,129 +136,322 @@ class Product
         return $this->brand;
     }
 
-    public function getStockMin()
+    public function setCategory($category)
     {
-        return $this->stock_min;
-    }
-
-    public function getStockMax()
-    {
-        return $this->stock_max;
-    }
-
-    public function setParent(Product $prod)
-    {
-        $this->parent = $prod;
+        $this->category = $category;
         return $this;
     }
 
-    public function getParent()
+    public function getCategory()
     {
-        return $this->parent;
+        return $this->category;
     }
 
-    public function addVariant(Product $prod)
+    public function setBarcode($barcode)
     {
-        $prod->setParent($this);
-        $this->variants->add($prod);
+        $this->barcode = $barcode;
         return $this;
     }
 
-    public function getVariants()
+    public function getBarcode()
     {
-        return $this->variants;
+        return $this->barcode;
     }
 
-    public function addVariantAttribute(ProductAttribute $attr)
+    public function setItemCode($item_code)
     {
-        $this->attributes->add($attr);
+        $this->item_code = $item_code;
         return $this;
     }
 
-    public function getVariantAttributes()
+    public function getItemCode()
     {
-        return $this->attributes;
-    }
-    
-    public function getAttributeValue($name)
-    {
-        foreach($this->attributes as $attribute)
-        {
-            if($attribute->getName() == $name)
-            {
-                return $attribute->getValue();
-            }
-        }
-
-        return null;
-    }
-    
-    public function isVariant()
-    {
-        if ($this->parent == null)
-            return false;
-        return true;
+        return $this->item_code;
     }
 
-    public function setTypeID($type)
+
+
+    public function setProductCompositions($product_compositions)
     {
-        // TODO: check if valid type
-        $this->type_id = $type;
+        $this->product_compositions = $product_compositions;
         return $this;
     }
 
-    public function getTypeID()
+    public function getProductCompositions()
     {
-        return $this->type_id;
-    }
-
-    public function getTypeText()
-    {
-        switch ($this->type_id)
-        {
-            case self::TYPE_RAW_MATERIAL:
-                return 'Raw Material';
-            case self::TYPE_FINISHED_GOOD:
-                return 'Finished Good';
-            case self::TYPE_INVENTORY:
-                return 'Inventory';
-            case self::TYPE_FIXED_ASSET:
-                return 'Fixed Asset';
-
-            // TODO: the others
-        }
-
-        return 'Unknown';
+        return $this->product_compositions;
     }
 
     public function toData()
     {
         $data = new stdClass();
-
         $data->id = $this->id;
-        $data->sku = $this->sku;
-        $data->name = $this->name;        
-        $data->prodgroup_id = $this->prodgroup->getID();
-        $data->uom = $this->uom;
-        $data->flag_sale = $this->flag_sale;
-        $data->flag_purchase = $this->flag_purchase;
-        $data->price_sale = $this->price_sale;
-        $data->price_purchase = $this->price_purchase;
-
-        // brand
-        if ($this->brand == null)
-            $data->brand_id = null;
-        else
-            $data->brand_id = $this->brand->getID();
-
-        // traits
-        $this->dataHasGeneratedID($data);
-        $this->dataHasName($data);
-        $this->dataTrackCreate($data);
-        $this->dataTrackUpdate($data);
-
-        // TODO: update for type
+        $data->name = $this->name;
 
         return $data;
+    }
+
+    /**
+     * Set cost
+     *
+     * @param string $cost
+     *
+     * @return Product
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return string
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * Set costCurrency
+     *
+     * @param string $costCurrency
+     *
+     * @return Product
+     */
+    public function setCostCurrency($costCurrency)
+    {
+        $this->cost_currency = $costCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get costCurrency
+     *
+     * @return string
+     */
+    public function getCostCurrency()
+    {
+        return $this->cost_currency;
+    }
+
+    /**
+     * Set srp
+     *
+     * @param string $srp
+     *
+     * @return Product
+     */
+    public function setSRP($srp)
+    {
+        $this->srp = $srp;
+
+        return $this;
+    }
+
+    /**
+     * Get srp
+     *
+     * @return string
+     */
+    public function getSRP()
+    {
+        return $this->srp;
+    }
+
+    /**
+     * Set minPrice
+     *
+     * @param string $minPrice
+     *
+     * @return Product
+     */
+    public function setMinPrice($minPrice)
+    {
+        $this->min_price = $minPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get minPrice
+     *
+     * @return string
+     */
+    public function getMinPrice()
+    {
+        return $this->min_price;
+    }
+
+    /**
+     * Set fdaExpirationPrice
+     *
+     * @param string $fdaExpirationPrice
+     *
+     * @return Product
+     */
+    public function setFDAExpirationPrice($fdaExpirationPrice)
+    {
+        $this->fda_expiration_price = $fdaExpirationPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get fdaExpirationPrice
+     *
+     * @return string
+     */
+    public function getFDAExpirationPrice()
+    {
+        return $this->fda_expiration_price;
+    }
+
+    /**
+     * Set permitDateFrom
+     *
+     * @param \DateTime $permitDateFrom
+     *
+     * @return Product
+     */
+    public function setPermitDateFrom($permitDateFrom)
+    {
+        $this->permit_date_from = $permitDateFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get permitDateFrom
+     *
+     * @return \DateTime
+     */
+    public function getPermitDateFrom()
+    {
+        return $this->permit_date_from;
+    }
+
+    /**
+     * Set scannedPermit
+     *
+     * @param \DateTime $scannedPermit
+     *
+     * @return Product
+     */
+    public function setScannedPermit($scannedPermit)
+    {
+        $this->scanned_permit = $scannedPermit;
+
+        return $this;
+    }
+
+    /**
+     * Get scannedPermit
+     *
+     * @return \DateTime
+     */
+    public function getScannedPermit()
+    {
+        return $this->scanned_permit;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Product
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set ingredients
+     *
+     * @param string $ingredients
+     *
+     * @return Product
+     */
+    public function setIngredients($ingredients)
+    {
+        $this->ingredients = $ingredients;
+
+        return $this;
+    }
+
+    /**
+     * Get ingredients
+     *
+     * @return string
+     */
+    public function getIngredients()
+    {
+        return $this->ingredients;
+    }
+
+    /**
+     * Set directions
+     *
+     * @param string $directions
+     *
+     * @return Product
+     */
+    public function setDirections($directions)
+    {
+        $this->directions = $directions;
+
+        return $this;
+    }
+
+    /**
+     * Get directions
+     *
+     * @return string
+     */
+    public function getDirections()
+    {
+        return $this->directions;
+    }
+
+    /**
+     * Set permitDateTo
+     *
+     * @param \DateTime $permitDateTo
+     *
+     * @return Product
+     */
+    public function setPermitDateTo($permitDateTo)
+    {
+        $this->permit_date_to = $permitDateTo;
+
+        return $this;
+    }
+
+    /**
+     * Get permitDateTo
+     *
+     * @return \DateTime
+     */
+    public function getPermitDateTo()
+    {
+        return $this->permit_date_to;
     }
 }

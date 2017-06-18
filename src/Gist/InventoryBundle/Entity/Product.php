@@ -4,6 +4,7 @@ namespace Gist\InventoryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use stdClass;
+use DateTime;
 
 /**
  * @ORM\Entity
@@ -44,6 +45,54 @@ class Product
      */
     protected $category;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="photo_id", referencedColumnName="id")
+     */
+    protected $primary_photo;
+
+    // COST
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $cost;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $cost_currency;
+
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $srp;
+
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $min_price;
+
+    // Permits
+    /** @ORM\Column(type="decimal", precision=13, scale=2, nullable=true) */
+    protected $fda_expiration_price;
+
+    /** @ORM\Column(type="datetime") */
+    protected $permit_date_from;
+
+    /** @ORM\Column(type="datetime") */
+    protected $permit_date_to;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="doc_permit_id", referencedColumnName="id")
+     */
+    protected $scanned_permit;
+
+    // DESCRIPTIONS
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $description;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $ingredients;
+
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $directions;
+
+
     public function __construct()
     {
     }
@@ -62,6 +111,17 @@ class Product
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setPrimaryPhoto($primary_photo)
+    {
+        $this->primary_photo = $primary_photo;
+        return $this;
+    }
+
+    public function getPrimaryPhoto()
+    {
+        return $this->primary_photo;
     }
 
 
@@ -130,5 +190,268 @@ class Product
 
         return $data;
     }
-}
 
+    /**
+     * Set cost
+     *
+     * @param string $cost
+     *
+     * @return Product
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return string
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * Set costCurrency
+     *
+     * @param string $costCurrency
+     *
+     * @return Product
+     */
+    public function setCostCurrency($costCurrency)
+    {
+        $this->cost_currency = $costCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get costCurrency
+     *
+     * @return string
+     */
+    public function getCostCurrency()
+    {
+        return $this->cost_currency;
+    }
+
+    /**
+     * Set srp
+     *
+     * @param string $srp
+     *
+     * @return Product
+     */
+    public function setSRP($srp)
+    {
+        $this->srp = $srp;
+
+        return $this;
+    }
+
+    /**
+     * Get srp
+     *
+     * @return string
+     */
+    public function getSRP()
+    {
+        return $this->srp;
+    }
+
+    /**
+     * Set minPrice
+     *
+     * @param string $minPrice
+     *
+     * @return Product
+     */
+    public function setMinPrice($minPrice)
+    {
+        $this->min_price = $minPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get minPrice
+     *
+     * @return string
+     */
+    public function getMinPrice()
+    {
+        return $this->min_price;
+    }
+
+    /**
+     * Set fdaExpirationPrice
+     *
+     * @param string $fdaExpirationPrice
+     *
+     * @return Product
+     */
+    public function setFDAExpirationPrice($fdaExpirationPrice)
+    {
+        $this->fda_expiration_price = $fdaExpirationPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get fdaExpirationPrice
+     *
+     * @return string
+     */
+    public function getFDAExpirationPrice()
+    {
+        return $this->fda_expiration_price;
+    }
+
+    /**
+     * Set permitDateFrom
+     *
+     * @param \DateTime $permitDateFrom
+     *
+     * @return Product
+     */
+    public function setPermitDateFrom($permitDateFrom)
+    {
+        $this->permit_date_from = $permitDateFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get permitDateFrom
+     *
+     * @return \DateTime
+     */
+    public function getPermitDateFrom()
+    {
+        return $this->permit_date_from;
+    }
+
+    /**
+     * Set scannedPermit
+     *
+     * @param \DateTime $scannedPermit
+     *
+     * @return Product
+     */
+    public function setScannedPermit($scannedPermit)
+    {
+        $this->scanned_permit = $scannedPermit;
+
+        return $this;
+    }
+
+    /**
+     * Get scannedPermit
+     *
+     * @return \DateTime
+     */
+    public function getScannedPermit()
+    {
+        return $this->scanned_permit;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Product
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set ingredients
+     *
+     * @param string $ingredients
+     *
+     * @return Product
+     */
+    public function setIngredients($ingredients)
+    {
+        $this->ingredients = $ingredients;
+
+        return $this;
+    }
+
+    /**
+     * Get ingredients
+     *
+     * @return string
+     */
+    public function getIngredients()
+    {
+        return $this->ingredients;
+    }
+
+    /**
+     * Set directions
+     *
+     * @param string $directions
+     *
+     * @return Product
+     */
+    public function setDirections($directions)
+    {
+        $this->directions = $directions;
+
+        return $this;
+    }
+
+    /**
+     * Get directions
+     *
+     * @return string
+     */
+    public function getDirections()
+    {
+        return $this->directions;
+    }
+
+    /**
+     * Set permitDateTo
+     *
+     * @param \DateTime $permitDateTo
+     *
+     * @return Product
+     */
+    public function setPermitDateTo($permitDateTo)
+    {
+        $this->permit_date_to = $permitDateTo;
+
+        return $this;
+    }
+
+    /**
+     * Get permitDateTo
+     *
+     * @return \DateTime
+     */
+    public function getPermitDateTo()
+    {
+        return $this->permit_date_to;
+    }
+}
