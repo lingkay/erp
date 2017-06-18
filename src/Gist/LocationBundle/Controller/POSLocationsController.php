@@ -4,7 +4,10 @@ namespace Gist\LocationBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\LocationBundle\Entity\POSLocations;
+use Gist\InventoryBundle\Model\Gallery;
 use Gist\ValidationException;
+
+use DateTime;
 
 class POSLocationsController extends CrudController
 {
@@ -83,6 +86,8 @@ class POSLocationsController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        $media = $this->get('gist_media');
+
         $o->setName($data['name']);
         $o->setLeasor($data['leasor']);
         $o->setContactNumber($data['contact_number']);
@@ -101,6 +106,107 @@ class POSLocationsController extends CrudController
             $area = $em->getRepository('GistLocationBundle:Areas')->find($data['area']);
             $o->setArea($area);
         }
+
+
+
+        // PERMITS
+        if($data['upl_barangay_clearance']!=0 && $data['upl_barangay_clearance'] != ""){
+            $o->setBarangayClearance($media->getUpload($data['upl_barangay_clearance']));
+        }
+
+        if (isset($data['exp_barangay_clearance'])) {
+            $o->setBarangayClearanceExpiration(new DateTime($data['exp_barangay_clearance']));
+        }
+
+        if($data['upl_bir0605']!=0 && $data['upl_bir0605'] != ""){
+            $o->setBir0605($media->getUpload($data['upl_bir0605']));
+        }
+
+        if (isset($data['exp_bir0605'])) {
+            $o->setBir0605Expiration(new DateTime($data['exp_bir0605']));
+        }
+
+        if($data['upl_bir0605']!=0 && $data['upl_bir0605'] != ""){
+            $o->setBir0605($media->getUpload($data['upl_bir0605']));
+        }
+
+        if (isset($data['exp_bir0605'])) {
+            $o->setBir0605Expiration(new DateTime($data['exp_bir0605']));
+        }
+        ///////
+
+        if($data['upl_mayors_permit']!=0 && $data['upl_mayors_permit'] != ""){
+            $o->setMayorsPermit($media->getUpload($data['upl_mayors_permit']));
+        }
+
+        if (isset($data['exp_mayors_permit'])) {
+            $o->setMayorsPermitExpiration(new DateTime($data['exp_mayors_permit']));
+        }
+        ///////
+
+        if($data['upl_bir2303']!=0 && $data['upl_bir2303'] != ""){
+            $o->setBir2303($media->getUpload($data['upl_bir2303']));
+        }
+
+        if (isset($data['exp_bir2303'])) {
+            $o->setBir2303Expiration(new DateTime($data['exp_bir2303']));
+        }
+        ///////
+
+        if($data['upl_fire_permit']!=0 && $data['upl_fire_permit'] != ""){
+            $o->setFirePermit($media->getUpload($data['upl_fire_permit']));
+        }
+
+        if (isset($data['exp_fire_permit'])) {
+            $o->setFirePermitExpiration(new DateTime($data['exp_fire_permit']));
+        }
+        ///////
+
+        if($data['upl_sanitary_permit']!=0 && $data['upl_sanitary_permit'] != ""){
+            $o->setSanitaryPermit($media->getUpload($data['upl_sanitary_permit']));
+        }
+
+        if (isset($data['exp_sanitary_permit'])) {
+            $o->setSanitaryPermitExpiration(new DateTime($data['exp_sanitary_permit']));
+        }
+        ///////
+
+
+        // RENTAL
+        $o->setRentPaymentAmount($data['rental_payment_amount']);
+        $o->setRentPaymentDue($data['rental_due_date']);
+        $o->setRentSecurityDepositAmount($data['security_deposit_amount']);
+        $o->setRentSecurityDepositReturned($data['security_deposit_returned']);
+        $o->setRentSecurityDepositReturnedAmount($data['security_deposit_amount_returned']);
+        $o->setRentSecurityDepositRemarks($data['security_deposit_remarks']);
+
+        if($data['design_criteria']!=0 && $data['design_criteria'] != ""){
+            $o->setRentDesignCriteria($media->getUpload($data['design_criteria']));
+        }
+
+        $o->setRentUnitNumber($data['unit_no']);
+        $o->setRentDimension($data['dimension_meter']);
+        $o->setRentPricePerSqMeter($data['price_sq_meter']);
+        $o->setRentContactPerson($data['contact_person']);
+        $o->setRentCpPosition($data['contact_position']);
+        $o->setRentCpContactNumber($data['contact_number']);
+        $o->setRentCpEmail($data['contact_email']);
+
+
+        //INSURANCE
+
+        $o->setInsuranceCompany($data['insurance_company']);
+        $o->setInsuranceExpiration(new DateTime($data['insurance_expiration']));
+        $o->setInsurancePolicy($data['insurance_policy']);
+
+        if($data['insurance_policy_document']!=0 && $data['insurance_policy_document'] != ""){
+            $o->setInsurancePolicyDocument($media->getUpload($data['insurance_policy_document']));
+        }
+
+        $o->setInsuranceContactPerson1($data['contact_person']);
+        $o->setInsuranceContactNumber1($data['contact_position']);
+        $o->setInsuranceContactPerson2($data['contact_number']);
+        $o->setInsuranceContactNumber2($data['contact_email']);
 
     }
 
