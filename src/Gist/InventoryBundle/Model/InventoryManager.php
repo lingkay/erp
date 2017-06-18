@@ -25,6 +25,39 @@ class InventoryManager
         $this->user = $security->getToken()->getUser();
     }
 
+    public function getSupplierTypeOptions()
+    {
+        return array(
+            'ind' => 'Individual',
+            'cmp' => 'Company'
+        );
+    }
+
+    public function getSupplierCategoryOptions()
+    {
+        return array(
+            'Supplies' => 'Supplies',
+            'Loan' => 'Loan',
+            'Sub Distributors' => 'Sub Distributors',
+            'Publisher' => 'Publisher',
+            'Courier/Forwarder' => 'Courier/Forwarder',
+            'Account Executive' => 'Account Executive',
+            'service' => 'service',
+            'Manpower' => 'Manpower',
+            'Rent' => 'Rent',
+            'Others' => 'Others'
+        );
+    }
+
+    public function getSupplierTaxOptions()
+    {
+        return array(
+            '1' => 'Non-vatable (0%)',
+            '2' => 'Vatable (12%)',
+            '3' => 'Zero-rated (0%)'
+        );
+    }
+
     public function newEntry()
     {
         $entry = new Entry();
