@@ -1,0 +1,33 @@
+gist_supp_index:
+    path:     /suppliers
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:Supplier:index }
+
+gist_supp_add_form:
+    path:     /supplier
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:Supplier:addForm }
+
+gist_supp_add_form_submit:
+    path:     /supplier
+    methods:  [POST]
+    defaults: { _controller: GistInventoryBundle:Supplier:addSubmit }
+
+gist_supp_grid:
+    path:     /suppliers/grid
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:Supplier:grid }
+
+gist_supp_edit_form:
+    path:     /supplier/{id}
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:Supplier:editForm }
+
+gist_supp_edit_submit:
+    pattern: /supplier/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:Supplier:editSubmit }
+
+gist_supp_delete:
+    pattern: /supplier/delete/{id}
+    defaults: { _controller: GistInventoryBundle:Supplier:delete }
