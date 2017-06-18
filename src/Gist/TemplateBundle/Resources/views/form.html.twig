@@ -473,20 +473,24 @@
 
 {% macro group_upload_image(label,name,upload,label_size,body_size,readonly = false,prefix = 'c') %}
 <input type="hidden" id="{{ prefix }}form-{{ name }}" name="{{name}}" value="{{ upload.getID|default('0')}}">
-<div id="{{ prefix }}dropzone" class="form-group">
+<div id="{{ prefix }}-{{name}}-dropzone" class="form-group x123">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class="col-md-{{ body_size }}">
         <div id="real-container">
             <div style="width:200px; overflow:hidden;">
             <a id="main-image-link" class="dzp-image" href="{{ upload.getURL|default(asset('bundles/gistmedia/img/no_image.jpg')) }}" data-lightbox="media-upload">
-                <img id="{{ prefix }}main-image" src="{{ upload.getURL|default(asset('bundles/gistmedia/img/no_image.jpg'))|replace({'\\': '/'}) }}" style="min-height:150px;max-height:150px;" data-id="{{ upload.getID|default('0') }}">
+                <img id="{{ prefix }}-{{name}}main-image" src="{{ upload.getURL|default(asset('bundles/gistmedia/img/no_image.jpg'))|replace({'\\': '/'}) }}" style="min-height:150px;max-height:150px;" data-id="{{ upload.getID|default('0') }}">
             </a>
             </div>
             <br>
         </div>
-        <div id="{{ prefix }}prev-container">
+        <div id="{{ prefix }}-{{name}}prev-container">
         </div>
-        <a href="javascript:void(0)" id="{{ prefix }}dz-upload" class="btn btn-primary {{ readonly ? "disabled" : "" }}">Upload</a>
+        {% if upload.getURL|default('') == '' %}
+        <a href="javascript:void(0)" id="{{ prefix }}-{{name}}dz-upload" class="btn btn-primary btn-sm {{ readonly ? "disabled" : "" }}">Upload</a>
+        {% else %}
+        <a href="javascript:void(0)" id="{{ prefix }}-{{name}}dz-upload" class="btn btn-primary btn-sm {{ readonly ? "disabled" : "" }}">Replace</a>
+        {% endif %}
     </div>
 </div>
 
@@ -512,11 +516,11 @@ $(document).ready(function() {
     var upload_config = {
         'preview': '#dz-preview',
         'url': '{{ path('cat_media_upload_file') }}',
-        'dropzone': '#{{ prefix }}dropzone',
-        'preview_container': '#{{ prefix }}prev-container',
+        'dropzone': '#{{ prefix }}-{{name}}-dropzone',
+        'preview_container': '#{{ prefix }}-{{name}}prev-container',
         'accepted_files': 'image/*',
-        'clickable': '#{{ prefix }}dz-upload',
-        'display_image': '#{{ prefix }}main-image',
+        'clickable': '#{{ prefix }}-{{name}}dz-upload',
+        'display_image': '#{{ prefix }}-{{name}}main-image',
         'form_field': '#{{ prefix }}form-{{ name }}'
     };
     setup_image_upload(upload_config);
@@ -592,7 +596,7 @@ $(document).ready(function() {
 
 {% macro group_upload_file2(label,name,upload,label_size,body_size,readonly = false,prefix = 'c') %}
 <input type="hidden" id="{{ prefix }}form-{{ name }}" name="{{name}}" value="{{ upload.getID|default('0')}}">
-<div id="{{ prefix }}-{{name}}-dropzone" class="form-group">
+<div id="{{ prefix }}-{{name}}-dropzone" class="form-group x123">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class="col-md-{{ body_size }}">
         <div id="real-container">        
@@ -606,6 +610,13 @@ $(document).ready(function() {
                     {% set uploadClass = 'fa-file-excel-o' %}
                 {% elseif upload.getFileType in ['pdf'] %}
                     {% set uploadClass = 'fa-file-pdf-o' %}
+                {% else %}
+                    <div style="width:200px; overflow:hidden;">
+                    <a id="main-image-link" class="dzp-image" href="{{ upload.getURL|default(asset('bundles/gistmedia/img/no_image.jpg')) }}" data-lightbox="media-upload">
+                        <img id="{{ prefix }}main-image" src="{{ upload.getURL|default(asset('bundles/gistmedia/img/no_image.jpg'))|replace({'\\': '/'}) }}" style="min-height:150px;max-height:150px;" data-id="{{ upload.getID|default('0') }}">
+                    </a>
+                    </div>
+                    <br>
                 {% endif %}
             {% endif %}
             <a id="main-image-link"  href="{{ upload.getURL|default(asset('bundles/gistmedia/img/no_image.jpg')) }}">
@@ -648,7 +659,7 @@ $(document).ready(function() {
         'url': '{{ path('cat_media_upload_doc') }}',
         'dropzone': '#{{ prefix }}-{{name}}-dropzone',
         'preview_container': '#{{ prefix }}-{{name}}prev-container',
-        'accepted_files': 'application/pdf, .pdf, .xls, .xlsx, .doc, .docx, .ppt',
+        'accepted_files': 'application/pdf, .pdf, .xls, .xlsx, .doc, .docx, .ppt, .png, .PNG',
         'clickable': '#{{ prefix }}-{{name}}dz-upload',
         'display_image': '#{{ prefix }}-{{name}}main-image',
         'form_field': '#{{ prefix }}form-{{ name }}'
@@ -717,7 +728,7 @@ $(document).ready(function() {
         'url': '{{ path('cat_media_upload_doc') }}',
         'dropzone': '#{{ prefix }}-{{name}}-dropzone',
         'preview_container': '#{{ prefix }}prev-container',
-        'accepted_files': 'application/pdf, .pdf, .xls, .xlsx, .doc, .docx, .ppt',
+        'accepted_files': 'application/pdf, .pdf, .xls, .xlsx, .doc, .docx, .ppt, .png, .PNG',
         'clickable': '#{{ prefix }}dz-upload',
         'display_image': '#{{ prefix }}main-image',
         'form_field': '#{{ prefix }}form-{{ name }}'

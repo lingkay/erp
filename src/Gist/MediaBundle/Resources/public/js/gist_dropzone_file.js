@@ -1,6 +1,5 @@
 function setup_file_upload2(config) {
     var template = $(config.preview).html();
-
     $(config.dropzone).dropzone({
         url: config.url,
         previewTemplate: template,
@@ -14,11 +13,8 @@ function setup_file_upload2(config) {
         init: function() {
             this.on('success', function(file, res) {
                 console.log(res);
-
-                // image modal update
-                // $(file.previewElement).find('.dzp-image').attr('href', res.url);
-                // console.log($('#main-image'));
-                //$(config.display_image).attr('src', res.url);
+                console.log(res.filetype);
+                console.log(config.accepted_files);
                 $(config.display_image).data('id', res.id);
                 $(config.display_image).removeClass('fa-file-excel-o fa-file-word-o fa-file-powerpoint-o fa-file-pdf-o');
                 switch(res.filetype)
@@ -35,18 +31,18 @@ function setup_file_upload2(config) {
                                 break;
                     case 'pdf': $(config.display_image).addClass('fa-file-pdf-o');
                                 break;
+                    default: $(config.display_image).attr('src', res.url);
                 }
                 $(config.form_field).val(res.id);
                 $(config.display_image).parent().attr('href', res.url);
                 // console.log(object_images);
             });
-
             this.on('complete', function(file) {
                 // $(file.previewElement).find('.dzp-progress').remove();
                 $(config.preview_container).html('');
             });
 
-            this.on("error", function(file, message) { 
+            this.on('error', function(file, message) { 
                 alert(message);
                 this.removeFile(file); 
             });
