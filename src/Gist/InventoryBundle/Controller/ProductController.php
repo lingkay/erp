@@ -57,11 +57,14 @@ class ProductController extends CrudController
     protected function padFormParams(&$params, $product = null)
     {
         $em = $this->getDoctrine()->getManager();
+        $am = $this->get('gist_accounting');
 
         $params['type_opts'] = array(
             'single' => 'Single Product',
             'package' => 'Package'
         );
+
+        $params['currency_opts'] = $am->getCurrencyOptions();
 
         $params['ptype'] = 'single';
 
@@ -90,8 +93,15 @@ class ProductController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        // var_dump($data);
+        // die();
+        $media = $this->get('gist_media');
         $em = $this->getDoctrine()->getManager();
         $o->setName($data['name']);
+
+        if($data['photo']!=0 && $data['photo'] != ""){
+            $o->setPrimaryPhoto($media->getUpload($data['photo']));
+        }
 
         if (isset($data['brand'])) {
             $brand = $em->getRepository('GistInventoryBundle:Brand')->find($data['brand']);
@@ -125,6 +135,25 @@ class ProductController extends CrudController
         } else {
             $o->setProductCompositions(null);
         }
+
+        //COST
+        $o->setCost($data['cost']);
+        $o->setCostCurrency($data['cost_currency']);
+        $o->setSRP($data['srp']);
+        $o->setMinPrice($data['min_price']);
+
+        //PERMITS
+        $o->setFDAExpirationPrice($data['fda_exp_price']);
+        $o->setPermitDateFrom(new DateTime($data['fda_date_from']));
+        $o->setPermitDateTo(new DateTime($data['fda_date_to']));
+        if($data['insurance_policy_document']!=0 && $data['insurance_policy_document'] != ""){
+            $o->setScannedPermit($media->getUpload($data['insurance_policy_document']));
+        }
+
+        //DESCRIPTON
+        $o->setDescription($data['desc_description']);
+        $o->setIngredients($data['desc_ingredients']);
+        $o->setDirections($data['desc_directions']);
     }
 
     protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
