@@ -45,7 +45,7 @@
                                         <tbody id="items_given_tbody">
                                             {% for rate in rates %}
                                               <tr>
-                                                <td><input type="text" name="rate_name[]" value="{{rate.getRateName|default('')}}" class="form-control"></td>
+                                                <td><input type="text" name="rate_name[]" value="{{rate.getRateName|default('')}}" class="form-control rate_name"></td>
                                                 <td><input type="number" name="rate_value[]" class="form-control qty" value="{{rate.getRateValue}}" min="1"></td>
                                                 <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>
                                               </tr>
@@ -77,13 +77,12 @@
         function appendItemsField(item_id, item_name)
         { 
             var field = '<tr>';     
-                field += '<td><input type="text" name="rate_name[]" class="form-control"></td>';
+                field += '<td><input type="text" name="rate_name[]" class="form-control rate_name"></td>';
                 field += '<td><input type="number" name="rate_value[]" class="form-control qty" min="1"></td>';     
                 field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>'; 
                 field += '</tr>';
 
                 $('#items_given_tbody').append(field);
-
         }
 
         $(document).ready(function() {
@@ -145,16 +144,39 @@
 
             // validate form elements
             $(".form-horizontal").validate({
+                ignore: "#items_given_tbody, .qty",
                 onfocusout: function(element) {
                     this.element(element);
                 },
                 rules: {
                     name: {
                         required: true
+                    },
+                    rate_name: {
+                        required: true
                     }
                 },
                 submitHandler: function(form) {
-                    form.submit();
+                    var isValid = true;
+                    $(".rate_name").each(function() {
+                       var element = $(this);
+                       if (element.val() == "") {
+                           toastr['error']('Check bank charge rate table', 'Error');
+                           isValid = false;
+                       } 
+                    });
+
+                    $(".qty").each(function() {
+                       var element = $(this);
+                       if (element.val() == "") {
+                           toastr['error']('Check bank charge rate table', 'Error');
+                           isValid = false;
+                       } 
+                    });
+
+
+                    if (isValid) {form.submit();}
+                    
                 }
             });
         });

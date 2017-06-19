@@ -251,6 +251,7 @@ $(document).ready(function() {
 
     // validate form elements
     $(".form-horizontal").validate({
+        ignore: "#items_given_tbody, .qty",
         onfocusout: function(element) {
            this.element(element);
         },

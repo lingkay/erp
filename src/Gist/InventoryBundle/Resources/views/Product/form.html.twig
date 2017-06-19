@@ -61,7 +61,7 @@
     { 
         var field = '<tr>';     
             field += '<input type="hidden" name="item_id[]" value="'+item_id+'">';
-            field += '<td><input type="text" value="'+item_name+'" readonly="true" class="form-control"></td>';
+            field += '<td><input type="text" value="'+item_name+'" readonly="true" class="form-control item_name"></td>';
             field += '<td><input type="number" name="qty[]" class="form-control qty" min="1"></td>';     
             field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>'; 
             field += '</tr>';
@@ -172,6 +172,7 @@ $(document).ready(function() {
 
     // validate form elements
     $(".form-horizontal").validate({
+        ignore: "#product_composition_tbody , .qty",
         onfocusout: function(element) {
            this.element(element);
         },
