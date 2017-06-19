@@ -34,6 +34,7 @@ class TerminalController extends CrudController
             $grid->newJoin('a', 'bank_account', 'getBankAccount'),
             $grid->newJoin('l', 'actual_location', 'getActualLocation'),
             $grid->newJoin('x', 'registered_location', 'getRegisteredLocation'),
+            $grid->newJoin('t', 'terminal_operator', 'getTerminalOperator'),
         );
     }
 
@@ -44,7 +45,7 @@ class TerminalController extends CrudController
         return array(
             $grid->newColumn('Actual Location', 'getName', 'name','l'),
             $grid->newColumn('Registered Location', 'getName', 'name','x'),
-            $grid->newColumn('Company', 'getCompany', 'company'),
+            $grid->newColumn('Operator', 'getName', 'name','t'),
             $grid->newColumn('Bank', 'getBank', 'bank'),
             $grid->newColumn('Account Number', 'getNameFormatted', 'id','a'),
             $grid->newColumn('MID', 'getMID', 'mid'),
@@ -92,7 +93,7 @@ class TerminalController extends CrudController
         if (isset($data['bank'])) {
            $o->setBank(implode(",", $data['bank']));
         }
-        $o->setCompany($data['company']);
+        
         $o->setMID($data['mid']);
         $o->setTID($data['tid']);
         $o->setSerialNumber($data['serial_number']);

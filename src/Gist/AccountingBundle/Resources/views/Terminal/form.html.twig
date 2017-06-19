@@ -16,7 +16,7 @@
                             <input type="hidden" id="sourceValues" value="{{object.getBank|default('')}}">
                             {{ form.group_select('Actual Location', 'actual_location',pos_locations_opts, object.getActualLocation.getID|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Registered Location', 'registered_location',pos_locations_opts, object.getRegisteredLocation.getID|default(''), 3, 4, readonly) }}
-                            {{ form.group_select('Company', 'company', terminal_company_opts, object.getCompany|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Terminal Operator', 'terminal_operator', terminal_operator_opts, object.getTerminalOperator.getID|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Terminal of', 'terminal_of', bank_opts, object.getTerminalOf|default(''), 3, 4, readonly) }}
                             {{ form.group_select_multiple('Bank', 'bank[]', bank_opts, '', 3, 4, readonly) }}
                             {{ form.group_select('Account', 'bank_account',bank_account_opts, object.getBankAccount.getID|default(''), 3, 4, readonly) }}
@@ -28,7 +28,7 @@
                             {{ form.group_text('Brand', 'tid', object.getTID|default(''), 3, 4, readonly) }}
                             {{ form.group_text('Model', 'tid', object.getTID|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
-                            {{ form.group_select('Terminal Operator', 'terminal_operator', terminal_operator_opts, object.getTerminalOperator.getID|default(''), 3, 4, readonly) }}
+                            
                             {{ form.group_textarea('Remarks', 'remarks',object.getRemarks|default(''),3,3,4)}}
                         </div>
                         <div class="form-actions fluid">

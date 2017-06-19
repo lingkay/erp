@@ -38,8 +38,7 @@ class Terminal
      */
     protected $registered_location;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
-    protected $company;
+    
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $terminal_of;
@@ -150,29 +149,7 @@ class Terminal
         return $this->registered_location;
     }
 
-    /**
-     * Set company
-     *
-     * @param string $company
-     *
-     * @return Terminal
-     */
-    public function setCompany($company)
-    {
-        $this->company = $company;
-
-        return $this;
-    }
-
-    /**
-     * Get company
-     *
-     * @return string
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
+    
 
     /**
      * Set terminalOf
