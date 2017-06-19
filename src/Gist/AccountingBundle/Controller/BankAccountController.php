@@ -4,6 +4,7 @@ namespace Gist\AccountingBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\AccountingBundle\Entity\BankAccount;
+use Gist\AccountingBundle\Entity\BankCharge;
 use Gist\ValidationException;
 
 class BankAccountController extends CrudController
@@ -49,7 +50,7 @@ class BankAccountController extends CrudController
         );
     }
 
-    protected function padFormParams(&$params, $user = null)
+    protected function padFormParams(&$params, $o = null)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -61,12 +62,24 @@ class BankAccountController extends CrudController
         $params['currency_opts'] = $am->getCurrencyOptions();
         $params['status_opts'] = $am->getStatusOptions();
 
+        $params['rates'] = $em->getRepository('GistAccountingBundle:BankCharge')->findBy(array('bank'=>$o->getID()));
+
         return $params;
     }
 
     protected function update($o, $data, $is_new = false)
     {
+        // echo "<pre>";
+        // var_dump($data);
+        // echo "</pre>";
+        // die();
         $em = $this->getDoctrine()->getManager();
+        //remove all rates first
+        $ext_rates = $em->getRepository('GistAccountingBundle:BankCharge')->findBy(array('bank'=>$o->getID()));
+        foreach ($ext_rates as $i => $rate) {
+            $em->remove($rate);
+        }
+        $em->flush();
 
         $o->setName($data['name']);
         $o->setAccountNumber($data['account_number']);
@@ -79,6 +92,17 @@ class BankAccountController extends CrudController
         if (isset($data['bank'])) {
             $bank = $em->getRepository('GistAccountingBundle:Bank')->find($data['bank']);
             $o->setBank($bank);
+        }
+
+
+        if (isset($data['rate_name'])) {
+            foreach ($data['rate_name'] as $i => $rate_name) {
+                $rate = new BankCharge();
+                $rate->setRateName($rate_name);
+                $rate->setRateValue($data['rate_value'][$i]);
+                $rate->setBank($o);
+                $em->persist($rate);
+            }
         }
 
     }

@@ -43,12 +43,11 @@
                                             </tr>
                                         </thead>
                                         <tbody id="items_given_tbody">
-                                            {% for key,val in null %}
+                                            {% for rate in rates %}
                                               <tr>
-                                                <input type="hidden" name="item_id[]" value="{{val[0]}}">
-                                                <td>{{ form.group_select_only2("Item", "item_opt", item_opts, val[0], 3, 7, true) }}</td>
-                                                <td><input type="number" name="qty[]" class="form-control qty" value="{{val[1]}}" min="1"></td>
-                                                <td><a href="javascript:void(0)" class="btn btn-xs default red remove_ig_row">Remove</a></td>
+                                                <td><input type="text" name="rate_name[]" value="{{rate.getRateName|default('')}}" class="form-control"></td>
+                                                <td><input type="number" name="rate_value[]" class="form-control qty" value="{{rate.getRateValue}}" min="1"></td>
+                                                <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>
                                               </tr>
                                             {% endfor %}
                                         </tbody>
@@ -78,10 +77,9 @@
         function appendItemsField(item_id, item_name)
         { 
             var field = '<tr>';     
-                field += '<input type="hidden" name="item_id[]" value="'+item_id+'">';
-                field += '<td><input type="text" class="form-control"></td>';
-                field += '<td><input type="number" name="qty[]" class="form-control qty" min="1"></td>';     
-                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_ig_row">Remove</a></td>'; 
+                field += '<td><input type="text" name="rate_name[]" class="form-control"></td>';
+                field += '<td><input type="number" name="rate_value[]" class="form-control qty" min="1"></td>';     
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>'; 
                 field += '</tr>';
 
                 $('#items_given_tbody').append(field);
@@ -91,6 +89,12 @@
         $(document).ready(function() {
             FormValidation.init(); // init form validation
 
+            $(document).on("click",".remove_row", function(e){
+            e.preventDefault();            
+            var tr = $(this).closest('tr');
+            tr.remove();
+            return false;
+        });
 
             var add_button = $(".add-ig-field");
             $(add_button).on('click',function(){      

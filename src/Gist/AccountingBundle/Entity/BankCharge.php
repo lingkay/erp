@@ -30,7 +30,7 @@ class BankCharge
     protected $rate_value;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Bank")
+     * @ORM\ManyToOne(targetEntity="BankAccount")
      * @ORM\JoinColumn(name="bank_id", referencedColumnName="id")
      */
     protected $bank;
@@ -108,7 +108,7 @@ class BankCharge
      *
      * @return BankCharge
      */
-    public function setBank(\Gist\AccountingBundle\Entity\Bank $bank = null)
+    public function setBank(\Gist\AccountingBundle\Entity\BankAccount $bank = null)
     {
         $this->bank = $bank;
 
