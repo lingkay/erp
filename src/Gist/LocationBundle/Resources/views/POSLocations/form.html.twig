@@ -77,21 +77,23 @@
                                             <th width="10%"></th>
                                         </tr>
                                     </thead>
-                                    <tbody id="items_given_tbody">
+                                    <tbody id="entries_table">
                                         {#{% for rate in rates %}
                                           <tr>
                                             <td><input type="text" name="rate_name[]" value="{{rate.getRateName|default('')}}" class="form-control rate_name"></td>
                                             <td><input type="number" name="rate_value[]" class="form-control qty" value="{{rate.getRateValue}}" min="1"></td>
                                             <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">X</a></td>
                                           </tr>
-                                        {% endfor %}#}
+                                        {% endfor %}
                                             <tr>
-                                                <td><input type="text" name="rate_name[]" value="{{rate.getRateName|default('')}}" class="form-control rate_name"></td>
-                                                <td><input type="text" name="rate_value[]" class="form-control qty" value="2017-06-22" readonly="true"></td>
+                                                <td><input type="text" name="amount[]" value="{{rate.getRateName|default('')}}" class="form-control rate_name"></td>
+                                                <td><input type="text" name="date[]" class="form-control qty" value="2017-06-23" readonly="true"></td>
                                                 <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row"><i class="fa fa-remove"></i></a></td>
-                                            </tr>
+                                            </tr>#}
                                     </tbody>
                                 </table>
+                                <input type="number" id="amount_field" name="amount_field" min="1">
+                                <a href="javascript:void(0)" class="btn default green add-ig-field" style="margin=0">Add</a>
                             </div>
                         </div>
                     </div>
@@ -109,7 +111,33 @@
 {% block js %}
 <!-- HERE -->
 <script>
+function appendItemsField(amount, date)
+{ 
+    var field = '<tr>';     
+        field += '<td><input type="text" name="amount[]" class="form-control amount" value="'+amount+'"></td>';
+        field += '<td><input type="text" name="date[]" class="form-control date" value="'+date+'"></td>';     
+        field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>'; 
+        field += '</tr>';
+
+        $('#entries_table').append(field);
+}
 $(document).ready(function() {
+
+    var add_button = $(".add-ig-field");
+    $(add_button).on('click',function(){      
+        var amount = $('#amount_field').val();
+        var date = '2017-06-23';
+
+        if (!amount == '') 
+        {
+            appendItemsField(amount, date);
+            $('#amount_field').val('0');
+        }
+        else
+        {
+            toastr['error']('Input an amount.', 'Error');
+        }
+    });   
 
     var selectedValues = $("#sourceValues").val().split(',');
     $(".select_2-multi").val(selectedValues).trigger("change");
