@@ -67,7 +67,7 @@
                         <h4 id="form_title" class="modal-title">Ledger Entries</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row form-horizontal form">
+                        <div class="row form-horizontalx form">
                             <div class="form-body">
                                 <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
                                     <thead>
@@ -114,8 +114,8 @@
 function appendItemsField(amount, date)
 { 
     var field = '<tr>';     
-        field += '<td><input type="text" name="amount[]" class="form-control amount" value="'+amount+'"></td>';
-        field += '<td><input type="text" name="date[]" class="form-control date" value="'+date+'"></td>';     
+        field += '<td><input type="text" name="amount[]" class="form-control amount" value="'+amount+'" readonly="true"></td>';
+        field += '<td><input type="text" name="date[]" class="form-control date" value="'+date+'" readonly="true"></td>';     
         field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>'; 
         field += '</tr>';
 
@@ -195,8 +195,10 @@ $(document).ready(function() {
         }
     });
 
+
     // validate form elements
             $(".form-horizontal").validate({
+                ignore: "#list_table, #entries_table, .amount .date .modal-body",
                 onfocusout: function(element) {
                     this.element(element);
                 },
