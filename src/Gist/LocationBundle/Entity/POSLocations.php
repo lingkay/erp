@@ -184,7 +184,7 @@ class POSLocations
 
     /**
      * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
-     * @ORM\JoinColumn(name="fire_permit_file_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="insurance_policy_document", referencedColumnName="id")
      */
     protected $insurance_policy_document;
 
@@ -201,7 +201,11 @@ class POSLocations
     protected $insurance_contact_number2;
     // END INSURANCE
 
-
+    /**
+     * @ORM\ManyToOne(targetEntity="LedgerEntry")
+     * @ORM\JoinColumn(name="ledger_entry_id", referencedColumnName="id")
+     */
+    protected $ledger_entry_id;
 
 
     public function __construct()
@@ -1336,5 +1340,29 @@ class POSLocations
     public function getInsurancePolicyDocument()
     {
         return $this->insurance_policy_document;
+    }
+
+    /**
+     * Set ledgerEntryId
+     *
+     * @param \Gist\LocationBundle\Entity\LedgerEntry $ledgerEntryId
+     *
+     * @return POSLocations
+     */
+    public function setLedgerEntryId(\Gist\LocationBundle\Entity\LedgerEntry $ledgerEntryId = null)
+    {
+        $this->ledger_entry_id = $ledgerEntryId;
+
+        return $this;
+    }
+
+    /**
+     * Get ledgerEntryId
+     *
+     * @return \Gist\LocationBundle\Entity\LedgerEntry
+     */
+    public function getLedgerEntryId()
+    {
+        return $this->ledger_entry_id;
     }
 }

@@ -184,7 +184,7 @@ class POSLocations
 
     /**
      * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
-     * @ORM\JoinColumn(name="fire_permit_file_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="insurance_policy_document", referencedColumnName="id")
      */
     protected $insurance_policy_document;
 
@@ -201,7 +201,11 @@ class POSLocations
     protected $insurance_contact_number2;
     // END INSURANCE
 
-
+    /**
+     * @ORM\ManyToOne(targetEntity="LedgerEntry")
+     * @ORM\JoinColumn(name="ledger_entry_id", referencedColumnName="id")
+     */
+    protected $ledger_entry_id;
 
 
     public function __construct()
@@ -1144,5 +1148,197 @@ class POSLocations
     public function getRentDesignCriteria()
     {
         return $this->rent_design_criteria;
+    }
+
+    /**
+     * Set insuranceCompany
+     *
+     * @param string $insuranceCompany
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceCompany($insuranceCompany)
+    {
+        $this->insurance_company = $insuranceCompany;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceCompany
+     *
+     * @return string
+     */
+    public function getInsuranceCompany()
+    {
+        return $this->insurance_company;
+    }
+
+    /**
+     * Set insuranceExpiration
+     *
+     * @param \DateTime $insuranceExpiration
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceExpiration($insuranceExpiration)
+    {
+        $this->insurance_expiration = $insuranceExpiration;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceExpiration
+     *
+     * @return \DateTime
+     */
+    public function getInsuranceExpiration()
+    {
+        return $this->insurance_expiration;
+    }
+
+    /**
+     * Set insurancePolicy
+     *
+     * @param string $insurancePolicy
+     *
+     * @return POSLocations
+     */
+    public function setInsurancePolicy($insurancePolicy)
+    {
+        $this->insurance_policy = $insurancePolicy;
+
+        return $this;
+    }
+
+    /**
+     * Get insurancePolicy
+     *
+     * @return string
+     */
+    public function getInsurancePolicy()
+    {
+        return $this->insurance_policy;
+    }
+
+    /**
+     * Set insuranceContactPerson1
+     *
+     * @param string $insuranceContactPerson1
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactPerson1($insuranceContactPerson1)
+    {
+        $this->insurance_contact_person1 = $insuranceContactPerson1;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactPerson1
+     *
+     * @return string
+     */
+    public function getInsuranceContactPerson1()
+    {
+        return $this->insurance_contact_person1;
+    }
+
+    /**
+     * Set insuranceContactNumber1
+     *
+     * @param string $insuranceContactNumber1
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactNumber1($insuranceContactNumber1)
+    {
+        $this->insurance_contact_number1 = $insuranceContactNumber1;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactNumber1
+     *
+     * @return string
+     */
+    public function getInsuranceContactNumber1()
+    {
+        return $this->insurance_contact_number1;
+    }
+
+    /**
+     * Set insuranceContactPerson2
+     *
+     * @param string $insuranceContactPerson2
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactPerson2($insuranceContactPerson2)
+    {
+        $this->insurance_contact_person2 = $insuranceContactPerson2;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactPerson2
+     *
+     * @return string
+     */
+    public function getInsuranceContactPerson2()
+    {
+        return $this->insurance_contact_person2;
+    }
+
+    /**
+     * Set insuranceContactNumber2
+     *
+     * @param string $insuranceContactNumber2
+     *
+     * @return POSLocations
+     */
+    public function setInsuranceContactNumber2($insuranceContactNumber2)
+    {
+        $this->insurance_contact_number2 = $insuranceContactNumber2;
+
+        return $this;
+    }
+
+    /**
+     * Get insuranceContactNumber2
+     *
+     * @return string
+     */
+    public function getInsuranceContactNumber2()
+    {
+        return $this->insurance_contact_number2;
+    }
+
+    /**
+     * Set insurancePolicyDocument
+     *
+     * @param \Gist\MediaBundle\Entity\Upload $insurancePolicyDocument
+     *
+     * @return POSLocations
+     */
+    public function setInsurancePolicyDocument(\Gist\MediaBundle\Entity\Upload $insurancePolicyDocument = null)
+    {
+        $this->insurance_policy_document = $insurancePolicyDocument;
+
+        return $this;
+    }
+
+    /**
+     * Get insurancePolicyDocument
+     *
+     * @return \Gist\MediaBundle\Entity\Upload
+     */
+    public function getInsurancePolicyDocument()
+    {
+        return $this->insurance_policy_document;
     }
 }
