@@ -75,3 +75,8 @@ gist_loc_pos_locations_grid:
     pattern: /pos_locations/grid
     methods: [GET]
     defaults: { _controller: GistLocationBundle:POSLocations:grid }
+
+gist_loc_pos_locations_ajax_ledger_entry:
+    pattern: /pos_locations/ajax/ledger/{pos_location_id}/{amount}/{date}
+    methods: [GET]
+    defaults: { _controller: GistLocationBundle:POSLocations:ajaxLedgerAddEntry }
