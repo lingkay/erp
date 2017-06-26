@@ -5,7 +5,10 @@ namespace Gist\LocationBundle\Controller;
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\LocationBundle\Entity\POSLocations;
 use Gist\InventoryBundle\Model\Gallery;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Gist\ValidationException;
+use Gist\LocationBundle\Entity\LedgerEntry;
 
 use DateTime;
 
@@ -78,6 +81,7 @@ class POSLocationsController extends CrudController
         );
 
         $params['terminals'] = $em->getRepository('GistAccountingBundle:Terminal')->findBy(array('actual_location'=>$o->getID()));
+        $params['ledger_entries'] = $em->getRepository('GistLocationBundle:LedgerEntry')->findBy(array('pos_location'=>$o->getID()));
 
         $params['area_opts'] = $this->getAreaOptions();
 
@@ -237,5 +241,29 @@ class POSLocationsController extends CrudController
         );
     }
 
+    public function ajaxLedgerAddEntryAction($pos_location_id, $amount, $date)
+    {
+        // $list_opts = [];
+        // foreach ($employees as $employee) {
+        //     $list_opts[] = array('id'=>$employee->getID(), 'name'=> $employee->getDisplayName());
+        // }
+        $em = $this->getDoctrine()->getManager();
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_location_id));
+
+
+        $entry = new LedgerEntry();
+        $date_formatted = strtotime($date);
+        $entry->setEntryDate(new DateTime(date('Y-m-d',$date_formatted)));
+        $entry->setAmount($amount);
+        $entry->setPOSLocation($pos_location);
+        $em->persist($entry);
+        $em->flush();
+
+        $ledger_total = $pos_location->getLedgerTotal();
+
+        $resp = array('ledger_total'=>$ledger_total);
+
+        return new JsonResponse($resp);
+    }
 
 }
