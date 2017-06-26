@@ -127,11 +127,19 @@
 <div class="form-group">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class="col-md-{{ body_size }}">
-        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }}>
+        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control gist_number" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }} style="text-align: right !important;">
     </div>
 </div>
 {% endmacro %}
 
+{% macro group_money(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
+<div class="form-group">
+    <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+    <div class="col-md-{{ body_size }}">
+        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control gist_number" placeholder="{{ label }}" value="{{ value|number_format(2) }}" {{ readonly ? 'readonly ' : '' }} style="text-align: right !important;">
+    </div>
+</div>
+{% endmacro %}
 
 {% macro group_price(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 <div class="form-group">
@@ -166,14 +174,7 @@
 </div>
 {% endmacro %}
 
-{% macro group_number(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
-<div id="{{ prefix }}group-{{ name }}" class="form-group">
-    <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
-    <div class="col-md-{{ body_size }}">
-        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control price" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }}>
-    </div>
-</div>
-{% endmacro %}
+
 
 {% macro group_email(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 <div id="{{ prefix }}group-{{ name }}" class="form-group">

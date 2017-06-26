@@ -46,7 +46,13 @@
 <!-- END GLOBAL MANDATORY STYLES -->
 
 
-{% block css %}{% endblock %}
+{% block css %}
+<style type="text/css">
+.gist_number {
+    text-align: right !important;
+}
+</style>
+{% endblock %}
 <!-- BEGIN THEME STYLES -->
 {% stylesheets
     'bundles/gisttemplate/assets/global/css/components.css'
