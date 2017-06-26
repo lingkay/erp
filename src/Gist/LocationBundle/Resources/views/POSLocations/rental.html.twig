@@ -3,22 +3,23 @@
         <!-- BEGIN FORM-->
         
             <div class="form-body">
-            {{ form.group_number('Rental Payment Amount', 'rental_payment_amount', object.getRentPaymentAmount|default(), 3, 4, readonly) }}
+            {{ form.group_money('Rental Payment Amount', 'rental_payment_amount', object.getRentPaymentAmount|default(), 3, 4, readonly) }}
             {{ form.group_text('Rental Payment Due Date', 'rental_due_date', object.getRentPaymentDue|default(), 3, 4, readonly) }}
-            {{ form.group_number('Security Deposit Amount', 'security_deposit_amount', object.getRentSecurityDepositAmount|default(), 3, 4, readonly) }}
+            {{ form.group_money('Security Deposit Amount', 'security_deposit_amount', object.getRentSecurityDepositAmount|default(), 3, 4, readonly) }}
+            {% if object.getRentSecurityDepositAmount|default('') != '' %}
             <div class="form-group">
                 <label class="col-md-3 control-label"></label>
                 <div class="col-md-4">
                     <a id="btn_from_add" href="#ledger_entries_form" class="btn btn-xs green" data-toggle="modal">Create Ledger</a>
                 </div>
             </div>
-            
+            {% endif %}
             {{ form.group_select('Security Deposit Returned', 'security_deposit_returned', area_opts, '', 3, 4, readonly) }}
-            {{ form.group_number('Security Deposit Returned Amount', 'security_deposit_amount_returned', object.getRentSecurityDepositReturnedAmount|default(), 3, 4, readonly) }}
+            {{ form.group_money('Security Deposit Returned Amount', 'security_deposit_amount_returned', object.getRentSecurityDepositReturnedAmount|default(), 3, 4, readonly) }}
             {{ form.group_textarea('Security Deposit Remarks', 'security_deposit_remarks',object.getRentSecurityDepositRemarks|default(''),3,3,6)}}
             {{ form.group_upload_file2('Design Criteria','design_criteria',object.getRentDesignCriteria|default(''),3,4)}}
-            {{ form.group_number('Dimension (Meter)', 'dimension_meter', object.getRentDimension|default(), 3, 4, readonly) }}
-            {{ form.group_number('Price per Square-Meter', 'price_sq_meter', object.getRentPricePerSqMeter|default(), 3, 4, readonly) }}
+            {{ form.group_money('Dimension (Meter)', 'dimension_meter', object.getRentDimension|default(), 3, 4, readonly) }}
+            {{ form.group_money('Price per Square-Meter', 'price_sq_meter', object.getRentPricePerSqMeter|default(), 3, 4, readonly) }}
             {{ form.group_text('Unit/Slot No.', 'unit_no', object.getRentUnitNumber|default(), 3, 4, readonly) }}
 
             {{ form.group_text('Contact Person', 'contact_person', object.getRentContactPerson|default(), 3, 4, readonly) }}
