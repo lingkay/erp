@@ -253,7 +253,6 @@ class POSLocationsController extends CrudController
 
         $entry = new LedgerEntry();
         $date_formatted = strtotime($date);
-        $entry->setEntryDate(new DateTime(date('Y-m-d',$date_formatted)));
         $entry->setAmount($amount);
         $entry->setPOSLocation($pos_location);
         $em->persist($entry);
@@ -261,7 +260,7 @@ class POSLocationsController extends CrudController
 
         $ledger_total = $pos_location->getLedgerTotal();
 
-        $resp = array('ledger_total'=>$ledger_total);
+        $resp = array('ledger_total'=>number_format($ledger_total,2));
 
         return new JsonResponse($resp);
     }

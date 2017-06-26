@@ -30,7 +30,7 @@ class LedgerEntry
     /** @ORM\Column(type="string", length=50) */
     protected $amount;
 
-    /** @ORM\Column(type="date") */
+    /** @ORM\Column(type="date", nullable=true) */
     protected $entry_date;
 
 

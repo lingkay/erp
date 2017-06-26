@@ -6,8 +6,7 @@
 {% block content %}
     <form method="post" class="form-horizontal">
     {#BEGIN TABS#}
-    <!-- start of profile -->
-    <div class="row profile">
+    <div class="row">
         <div class="col-md-12">
             <!--BEGIN TABS-->
             <div class="tabbable tabbable-custom tabbable-full-width">
@@ -82,21 +81,14 @@
                                     <tbody id="entries_table">
                                         {% for entry in ledger_entries %}
                                             <tr>
-                                                <td><input type="text" name="amount[]" class="form-control amount" value="{{entry.getAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
-                                                <td><input type="text" name="date[]" class="form-control date" value="{{entry.getEntryDate|date('m/d/Y')}}" readonly="true" style="text-align: center !important;"></td>
+                                                <td><input type="number" name="amount[]" class="form-control amount" value="{{entry.getAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
+                                                <td><input type="text" name="date[]" class="form-control date" value="{{entry.getDateCreate|date('m/d/Y')}}" readonly="true" style="text-align: center !important;"></td>
                                             </tr>
                                         {% endfor %}
                                         <tr>
-                                            <td><input type="text" name="amount[]" class="form-control amount" value="{{object.getRentSecurityDepositAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
-                                            <td><input type="text" name="date[]" class="form-control date" value="{{object.getDateCreateFormatted2}}" readonly="true"></td>
+                                            <td><input type="number" name="amount[]" class="form-control amount" value="{{object.getRentSecurityDepositAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
+                                            <td><input type="text" name="date[]" class="form-control date" value="{{object.getDateCreateFormatted2}}" readonly="true" style="text-align: center !important;"></td>
                                         </tr>
-                                        {#{% for rate in rates %}
-                                          <tr>
-                                            <td><input type="text" name="rate_name[]" value="{{rate.getRateName|default('')}}" class="form-control rate_name"></td>
-                                            <td><input type="number" name="rate_value[]" class="form-control qty" value="{{rate.getRateValue}}" min="1"></td>
-                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">X</a></td>
-                                          </tr>
-                                        {% endfor %}#}
                                     </tbody>
                                 </table>
                                 <input type="number" id="amount_field" name="amount_field" min="1">
@@ -147,6 +139,21 @@ function ajaxAddLedgerEntry(amount, date)
 }
 $(document).ready(function() {
 
+    $('#list_table').dataTable({
+        "iDisplayLength": 5,
+        "bAutoWidth": false,
+        "bLengthChange": false,
+        "bFilter": false,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        }
+    });
+
     var add_button = $(".add-ig-field");
     $(add_button).on('click',function(){      
         var amount = $('#amount_field').val();
@@ -154,6 +161,7 @@ $(document).ready(function() {
 
         if (!amount == '') 
         {   
+            //amount += parseFloat(amount);
             ajaxAddLedgerEntry(amount, date);
             
             $('#amount_field').val('0');
