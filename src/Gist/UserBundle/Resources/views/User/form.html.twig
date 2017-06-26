@@ -90,9 +90,9 @@
     { 
         var opt = $('#cform-approver').val();
         if (opt == 'yes') {
-            $("#cform-approver-code").prop("disabled", false);
+            $("#cform-approver-code").show();
         } else {
-            $("#cform-approver-code").prop("disabled", true);
+            $("#cform-approver-code").hide();
             $("#cform-approver-code").val('');
         }
     }
