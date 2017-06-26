@@ -202,10 +202,9 @@ class POSLocations
     // END INSURANCE
 
     /**
-     * @ORM\ManyToOne(targetEntity="LedgerEntry")
-     * @ORM\JoinColumn(name="ledger_entry_id", referencedColumnName="id")
+     * @ORM\OneToMany(targetEntity="LedgerEntry", mappedBy="pos_location", cascade={"persist", "remove"})
      */
-    protected $ledger_entry_id;
+    protected $ledger_entries;
 
 
     public function __construct()
@@ -213,6 +212,15 @@ class POSLocations
         $this->initTrackCreate();
     }
 
+    public function getLedgerTotal()
+    {
+        $sum = 0;
+        foreach ($this->ledger_entries as $entry) {
+            $sum += $entry->getAmount();
+        }
+        $sum += $this->rent_security_deposit_amount;
+        return $sum;
+    }
 
 
     public function setName($name)
