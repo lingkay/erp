@@ -34,6 +34,12 @@ class LedgerEntry
     protected $entry_date;
 
 
+    /**
+     * @ORM\ManyToOne(targetEntity="POSLocations")
+     * @ORM\JoinColumn(name="pos_location_id", referencedColumnName="id")
+     */
+    protected $pos_location;
+
 
 
     public function __construct()
@@ -101,5 +107,31 @@ class LedgerEntry
     public function getEntryDate()
     {
         return $this->entry_date;
+    }
+
+    
+
+    /**
+     * Set posLocation
+     *
+     * @param \Gist\LocationBundle\Entity\POSLocations $posLocation
+     *
+     * @return LedgerEntry
+     */
+    public function setPosLocation(\Gist\LocationBundle\Entity\POSLocations $posLocation = null)
+    {
+        $this->pos_location = $posLocation;
+
+        return $this;
+    }
+
+    /**
+     * Get posLocation
+     *
+     * @return \Gist\LocationBundle\Entity\POSLocations
+     */
+    public function getPosLocation()
+    {
+        return $this->pos_location;
     }
 }
