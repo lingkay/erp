@@ -3007,7 +3007,7 @@ CREATE TABLE `ledger_entry` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_create_id` int(11) DEFAULT NULL,
   `amount` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `entry_date` date NOT NULL,
+  `entry_date` date DEFAULT NULL,
   `date_create` datetime NOT NULL,
   `pos_location_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -3015,7 +3015,7 @@ CREATE TABLE `ledger_entry` (
   KEY `IDX_64272A692FDDA7C1` (`pos_location_id`),
   CONSTRAINT `FK_64272A692FDDA7C1` FOREIGN KEY (`pos_location_id`) REFERENCES `loc_pos_locations` (`id`),
   CONSTRAINT `FK_64272A69EEFE5067` FOREIGN KEY (`user_create_id`) REFERENCES `user_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3024,7 +3024,7 @@ CREATE TABLE `ledger_entry` (
 
 LOCK TABLES `ledger_entry` WRITE;
 /*!40000 ALTER TABLE `ledger_entry` DISABLE KEYS */;
-INSERT INTO `ledger_entry` VALUES (1,NULL,'12','1970-01-01','2017-06-26 13:40:37',1),(2,NULL,'34','1970-01-01','2017-06-26 13:46:17',1),(3,NULL,'-12','1970-01-01','2017-06-26 14:04:08',1),(4,NULL,'2','1970-01-01','2017-06-26 14:05:40',1);
+INSERT INTO `ledger_entry` VALUES (12,NULL,'12',NULL,'2017-06-26 14:34:44',1),(13,NULL,'333',NULL,'2017-06-26 14:34:57',1);
 /*!40000 ALTER TABLE `ledger_entry` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4459,4 +4459,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-26  6:07:52
+-- Dump completed on 2017-06-26  6:36:07
