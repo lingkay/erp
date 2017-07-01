@@ -24,7 +24,7 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id: session.handler.native_file
-        save_path: "%kernel.root_dir%/sessions"
+        save_path: "/tmp/gist_erp2/session"
     fragments:       ~
     http_method_override: true
 
@@ -87,6 +87,9 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: Gist\UserBundle\Entity\User
+    from_email:
+        address: you@example.com
+        sender_name: You
 
 ensepar_html2pdf:
     orientation: P
