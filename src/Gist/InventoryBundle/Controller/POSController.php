@@ -53,6 +53,7 @@ class POSController extends CrudController
 
         $params = $this->getViewParams('List');
         $params['product_categories'] = $em->getRepository('GistInventoryBundle:ProductCategory')->findAll();
+        $params['products'] = $em->getRepository('GistInventoryBundle:Product')->findAll();
 
 
         $twig_file = 'GistInventoryBundle:POS:app.html.twig';

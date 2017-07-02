@@ -2,7 +2,7 @@
 {% block content %}
 <br>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
         	<div class="portlet box blue-hoki" style="background-color: #2D2D2D;">
                 <div class="portlet-title">
                     <div class="caption">Product Categories</div>
@@ -15,14 +15,28 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-7">
         	<div class="portlet box blue-hoki">
                 <div class="portlet-title">
                     <div class="caption">Products</div>
                 </div>
                 <div class="portlet-body form">
-
-                    
+                	<br>
+                	<div class="row">
+                		{% for p in products %}
+	        				<div class="col-md-3">
+	        					<a href="" style="text-decoration: none;">
+		                    	<div class="thumbnail">
+	                                <img src="{{ p.getPrimaryPhoto.getURL|default(asset('bundles/gistmedia/img/no_image.jpg'))|replace({'\\': '/'}) }}" style="height: 180px; width: 100%; display: block;">
+	                                <div class="caption" style="font-size: 14px !important;">
+	                                    <h3 style="font-size: 14px !important; margin: 0!important;">{{p.getName|default('')}}</h3>
+	                                    <h3 style="font-size: 14px !important; margin: 0!important;"><b>PHP {{p.getSRP|number_format(2)|default('')}}</b></h3>
+	                                </div>
+	                            </div>
+	                            </a>
+	                        </div>
+                    	{% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
