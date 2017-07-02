@@ -1,0 +1,33 @@
+gist_inv_pos_index:
+    path:     /pos_app
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:POS:index }
+
+gist_inv_pos_add_form:
+    path:     /pos1
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:POS:addForm }
+
+gist_inv_pos_add_form_submit:
+    path:     /pos1
+    methods:  [POST]
+    defaults: { _controller: GistInventoryBundle:POS:addSubmit }
+
+gist_inv_pos_grid:
+    path:     /pos1/grid
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:POS:grid }
+
+gist_inv_pos_edit_form:
+    path:     /pos1/{id}
+    methods:  [GET]
+    defaults: { _controller: GistInventoryBundle:POS:editForm }
+
+gist_inv_pos_edit_submit:
+    pattern: /pos1/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:POS:editSubmit }
+
+gist_inv_pos_delete:
+    pattern: /pos1/delete/{id}
+    defaults: { _controller: GistInventoryBundle:POS:delete }

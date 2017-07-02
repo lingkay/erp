@@ -1,0 +1,229 @@
+{% import "GistTemplateBundle::menu.html.twig" as menu %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+<meta charset="utf-8"/>
+<title>{% block title %}Gist ERP v2{% endblock %}</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+{% block meta %}{% endblock %}
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+
+{% stylesheets
+    'bundles/gisttemplate/assets/global/plugins/font-awesome-4.4.0/css/font-awesome.min.css'
+    'bundles/gisttemplate/assets/global/plugins/simple-line-icons/simple-line-icons.min.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap/css/bootstrap.min.css'
+    'bundles/gisttemplate/assets/global/plugins/uniform/css/uniform.default.css'
+    'bundles/gisttemplate/assets/global/plugins/select2/dist/css/select2.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datetimepicker/css/datetimepicker.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css'
+    'bundles/gisttemplate/assets/global/css/photobooth.css'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css'
+    'bundles/gisttemplate/assets/global/plugins/fullcalendar-2.3.1/fullcalendar.css'
+    'bundles/gisttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.css'
+    'bundles/gisttemplate/assets/admin/pages/css/portfolio.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-toastr/toastr.min.css'
+    'bundles/gisttemplate/assets/global/plugins/dropzone/css/dropzone.css'
+    'bundles/gisttemplate/assets/global/plugins/jquery.orgchart-master/jquery.orgchart.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-colorpicker/css/colorpicker.css'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-summernote/summernote.css'
+    filter='cssrewrite'
+%}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+
+{% endstylesheets %}
+<!-- END GLOBAL MANDATORY STYLES -->
+
+
+{% block css %}
+<style type="text/css">
+.gist_number {
+    text-align: right !important;
+}
+
+.page-content {
+    background-color: #2D2D2D !important;
+}
+</style>
+{% endblock %}
+<!-- BEGIN THEME STYLES -->
+
+{% stylesheets
+    'bundles/gisttemplate/assets/global/css/components.css'
+    'bundles/gisttemplate/assets/global/css/plugins.css'
+    'bundles/gisttemplate/assets/admin/layout/css/layout.css'
+    'bundles/gisttemplate/assets/admin/layout/css/themes/default.css'
+    'bundles/gisttemplate/assets/admin/layout/css/custom.css'
+    'bundles/gistmedia/css/lightbox.css'
+    filter='cssrewrite'
+%}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+     {% embed "HrisTemplateBundle::css.html.twig" with {'conf': conf, 'theme':theme} %}{% endembed %}
+ 
+<!-- END THEME STYLES -->
+<link rel="shortcut icon" href="{{ asset('bundles/gisttemplate/assets/global/img/logo_new.png') }}"/>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
+
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+<body class="page-header-fixed">
+<!-- BEGIN HEADER -->
+<div class="page-header navbar navbar-fixed-top">
+    <!-- BEGIN HEADER INNER -->
+    <div class="page-header-inner">
+        <!-- BEGIN LOGO -->
+
+        <div class="top-menu pull-left">
+            <ul class="nav navbar-nav pull-left">
+                <h3 style="color: #ffffff; margin-left: 20px;">Point of Sales (POS)</h3>
+            </ul>
+        </div>
+            
+       
+        <!-- END LOGO -->
+        <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+        <!-- END RESPONSIVE MENU TOGGLER -->
+        {% embed "GistTemplateBundle::top_nav_menu.html.twig" %}{% endembed %}
+    </div>
+    <!-- END HEADER INNER -->
+</div>
+<!-- END HEADER -->
+<div class="clearfix">
+</div>
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+    
+    <!-- BEGIN CONTENT -->
+    <div class="page-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- END CONTENT -->
+</div>
+<!-- END CONTAINER -->
+<!-- BEGIN FOOTER -->
+<div class="page-footer">
+    <div class="page-footer-inner">
+         2017 &copy; GIST
+    </div>
+    <div class="page-footer-tools">
+        <span class="go-top">
+        <i class="fa fa-angle-up"></i>
+        </span>
+    </div>
+</div>
+<!-- END FOOTER -->
+<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+<!-- BEGIN CORE PLUGINS -->
+<!--[if lt IE 9]>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/respond.min.js') }}"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/excanvas.min.js') }}"></script> 
+<![endif]-->
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-migrate-1.2.1.min.js') }}" type="text/javascript"></script>
+<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+
+{% javascripts
+    'bundles/gisttemplate/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap/js/bootstrap.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery.blockui.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery.cokie.min.js'
+    'bundles/gisttemplate/assets/global/plugins/uniform/jquery.uniform.min.js'
+    'bundles/gisttemplate/assets/global/plugins/mustache.min.js'
+%}
+       <script src="{{ asset_url }}" type="text/javascript"></script>
+{% endjavascripts %}
+<!-- END CORE PLUGINS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+{% javascripts
+
+    'bundles/gisttemplate/assets/global/scripts/metronic.js'
+    'bundles/gisttemplate/assets/admin/layout/scripts/layout.js'
+    'bundles/gisttemplate/assets/global/plugins/select2/dist/js/select2.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js'
+    'bundles/gisttemplate/assets/global/scripts/validation.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js'
+    'bundles/gistnotification/js/notification.js'
+    'bundles/gisttemplate/assets/global/scripts/template.js'
+
+    'bundles/gistcontact/js/gist.has_phones.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-typeahead/bootstrap-typeahead.min.js'
+    'bundles/gistmedia/js/lightbox.min.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/components-pickers.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'
+    'bundles/gisttemplate/assets/global/plugins/clockface/js/clockface.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/moment.min.js'
+
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootbox/bootbox.min.js'
+    'bundles/gistmedia/js/gist_media.js'
+    'bundles/gistmedia/js/gist_dropzone_file.js'
+
+    'bundles/gisttemplate/assets/global/plugins/jquery.orgchart-master/jquery.orgchart.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-mixitup/jquery.mixitup.min.js'
+    'bundles/gisttemplate/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js'
+    'bundles/gisttemplate/assets/global/plugins/fancybox/source/jquery.fancybox.pack.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/portfolio.js'
+    'bundles/gisttemplate/assets/global/plugins/dropzone/dropzone.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/form-dropzone.js'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.fnreloadajax.js'
+    'bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.js'
+    'bundles/gisttemplate/assets/admin/pages/scripts/form-validation.js'
+    'bundles/gisttemplate/assets/global/plugins/highcharts/highcharts.js'
+    'bundles/gisttemplate/assets/global/plugins/fullcalendar-2.3.1/lib/moment.min.js'
+    'bundles/gisttemplate/assets/global/plugins/fullcalendar-2.3.1/fullcalendar.min.js'
+    'bundles/gisttemplate/assets/global/plugins/moment.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-datepaginator/bootstrap-datepaginator.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-toastr/toastr.min.js'
+    'bundles/gisttemplate/assets/global/plugins/bootstrap-summernote/summernote.min.js'
+    'bundles/gisttemplate/assets/global/plugins/photobooth.min.js'
+%}
+<script src="{{ asset_url }}" type="text/javascript"></script>
+{% endjavascripts %}
+<!-- END PAGE LEVEL SCRIPTS -->
+<script>
+jQuery(document).ready(function() {
+
+    
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    Template.init();
+
+    
+});
+</script>
+{% block js %}{% endblock %}
+<!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+</html>

@@ -95,3 +95,15 @@ acl:
           label: "Edit"
         - id: gist_supp.delete
           label: "Delete"
+    - category: Point of Sales (POS)
+      entries:
+        - id: gist_inv_pos.menu
+          label: "Menu"
+        - id: gist_inv_pos.view
+          label: "View"
+        - id: gist_inv_pos.add
+          label: "Add"
+        - id: gist_inv_pos.edit
+          label: "Edit"
+        - id: gist_inv_pos.delete
+          label: "Delete"

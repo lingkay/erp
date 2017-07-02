@@ -1,0 +1,44 @@
+{% extends "GistTemplateBundle::pos_base.html.twig" %}
+{% block content %}
+<br>
+    <div class="row">
+        <div class="col-md-3">
+        	<div class="portlet box blue-hoki" style="background-color: #2D2D2D;">
+                <div class="portlet-title">
+                    <div class="caption">Product Categories</div>
+                </div>
+                <div class="portlet-body form" style="background-color: #2D2D2D;">
+                	<br>
+                	{% for pc in product_categories %}
+                    	<button class="btn btn-lg btn-block" style="background-color: #556E93; color: #ffffff;">{{pc.getName}}</button>
+                	{% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        	<div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">Products</div>
+                </div>
+                <div class="portlet-body form">
+
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+        	<div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">Cart</div>
+                </div>
+                <div class="portlet-body form">
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

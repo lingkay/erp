@@ -2,9 +2,7 @@
 <div class="top-menu">
     <ul class="nav navbar-nav pull-right">
 <!-- BEGIN NOTIFICATION DROPDOWN -->
-            
         <li class="dropdown dropdown-user">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
             {% if app.user.getEmployee != null and app.user.getEmployee.getProfile.getUpload != null %}
                 {% set src = app.user.getEmployee.getProfile.getUpload.getUrl %}
             {% else %}

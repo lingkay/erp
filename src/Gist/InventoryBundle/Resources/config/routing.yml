@@ -56,6 +56,10 @@ gist_supp:
     resource: "@GistInventoryBundle/Resources/config/routes/supplier.yml"
     prefix: /supps
 
+gist_pos:
+    resource: "@GistInventoryBundle/Resources/config/routes/pos.yml"
+    prefix: /pos
+
 cat_inv_accnt:
     resource: "@GistInventoryBundle/Resources/config/routes/account.yml"
     prefix: /accounts
