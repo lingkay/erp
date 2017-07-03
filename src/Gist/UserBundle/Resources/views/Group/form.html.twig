@@ -16,7 +16,7 @@
                         {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
                         {{ form.group_select('Department', 'department', department_opts, object.getDepartment.getID|default('0'), 3, 4, readonly) }}
                         {{ form.group_select('Head', 'head', position_opts, object.getParent.getID|default('0'), 3, 4, readonly) }}
-                        {{ form.group_textarea('Job Description', 'job_description',object.getJobDescription|default(''),3,3,6)}}
+                        {{ form.group_textarea('Job Description', 'job_description',object.getJobDescription|default(''),3,3,4)}}
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
 
                         
@@ -105,6 +105,7 @@ $(document).ready(function() {
         }
     });
 
+
     // validate form elements
     $(".form-horizontal").validate({
         onfocusout: function(element) {
@@ -112,9 +113,6 @@ $(document).ready(function() {
         },
         rules: {
             name: {
-                required: true
-            },
-            head: {
                 required: true
             }
         },  
