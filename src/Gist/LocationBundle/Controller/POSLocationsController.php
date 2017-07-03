@@ -207,10 +207,10 @@ class POSLocationsController extends CrudController
             $o->setInsurancePolicyDocument($media->getUpload($data['insurance_policy_document']));
         }
 
-        $o->setInsuranceContactPerson1($data['contact_person']);
-        $o->setInsuranceContactNumber1($data['contact_position']);
-        $o->setInsuranceContactPerson2($data['contact_number']);
-        $o->setInsuranceContactNumber2($data['contact_email']);
+        $o->setInsuranceContactPerson1($data['insurance_contact1_person']);
+        $o->setInsuranceContactNumber1($data['insurance_contact1_number']);
+        $o->setInsuranceContactPerson2($data['insurance_contact2_person']);
+        $o->setInsuranceContactNumber2($data['insurance_contact2_number']);
 
     }
 
