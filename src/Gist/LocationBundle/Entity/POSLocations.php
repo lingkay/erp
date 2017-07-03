@@ -215,9 +215,12 @@ class POSLocations
     public function getLedgerTotal()
     {
         $sum = 0;
-        foreach ($this->ledger_entries as $entry) {
-            $sum += $entry->getAmount();
+        if ($this->ledger_entries) {
+            foreach ($this->ledger_entries as $entry) {
+                $sum += $entry->getAmount();
+            }
         }
+        
         $sum += $this->rent_security_deposit_amount;
         return $sum;
     }

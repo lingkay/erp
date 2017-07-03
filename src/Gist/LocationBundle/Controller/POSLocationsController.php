@@ -193,7 +193,7 @@ class POSLocationsController extends CrudController
         $o->setRentPricePerSqMeter($data['price_sq_meter']);
         $o->setRentContactPerson($data['contact_person']);
         $o->setRentCpPosition($data['contact_position']);
-        $o->setRentCpContactNumber($data['contact_number']);
+        $o->setRentCpContactNumber($data['rental_contact_number']);
         $o->setRentCpEmail($data['contact_email']);
 
 

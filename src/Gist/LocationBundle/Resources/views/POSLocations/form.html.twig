@@ -79,7 +79,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="entries_table">
-                                        {% for entry in ledger_entries %}
+                                        {% for entry in ledger_entries|default(null) %}
                                             <tr>
                                                 <td><input type="number" name="amount[]" class="form-control amount" value="{{entry.getAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
                                                 <td><input type="text" name="date[]" class="form-control date" value="{{entry.getDateCreate|date('m/d/Y')}}" readonly="true" style="text-align: center !important;"></td>
