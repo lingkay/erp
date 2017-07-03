@@ -123,20 +123,24 @@
     </div>
 {% endmacro %}
 
+
+
+
 {% macro group_number(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 <div class="form-group">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class="col-md-{{ body_size }}">
-        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control gist_number" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }} style="text-align: right !important;">
+        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }} step="0.01">
     </div>
 </div>
 {% endmacro %}
+
 
 {% macro group_money(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 <div class="form-group">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class="col-md-{{ body_size }}">
-        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control gist_number" placeholder="{{ label }}" value="{{ value|number_format(2) }}" {{ readonly ? 'readonly ' : '' }} style="text-align: right !important;">
+        <input type="number" id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" placeholder="{{ label }}" value="{{ value }}" {{ readonly ? 'readonly ' : '' }} step="0.01">
     </div>
 </div>
 {% endmacro %}

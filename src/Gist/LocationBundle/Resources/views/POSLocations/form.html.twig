@@ -69,7 +69,7 @@
                     <div class="modal-body">
                         <div class="row form-horizontalx form">
                             <div class="form-body">
-                                {{ form.group_money('Total Amount', 'ledger_total', object.getLedgerTotal|number_format(2)|default(0.00), 3, 4, true) }}
+                                {{ form.group_text('Total Amount', 'ledger_total', object.getLedgerTotal|number_format(2)|default(0.00), 3, 4, true) }}
                                 <br>
                                 <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
                                     <thead>
@@ -81,12 +81,12 @@
                                     <tbody id="entries_table">
                                         {% for entry in ledger_entries|default(null) %}
                                             <tr>
-                                                <td><input type="number" name="amount[]" class="form-control amount" value="{{entry.getAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
+                                                <td><input type="text" name="amount[]" class="form-control amount" value="{{entry.getAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
                                                 <td><input type="text" name="date[]" class="form-control date" value="{{entry.getDateCreate|date('m/d/Y')}}" readonly="true" style="text-align: center !important;"></td>
                                             </tr>
                                         {% endfor %}
                                         <tr>
-                                            <td><input type="number" name="amount[]" class="form-control amount" value="{{object.getRentSecurityDepositAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
+                                            <td><input type="text" name="amount[]" class="form-control amount" value="{{object.getRentSecurityDepositAmount|number_format(2)}}" style="text-align: right;" readonly="true"></td>
                                             <td><input type="text" name="date[]" class="form-control date" value="{{object.getDateCreateFormatted2}}" readonly="true" style="text-align: center !important;"></td>
                                         </tr>
                                     </tbody>
@@ -98,7 +98,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" data-dismiss="modal" class="btn default">Close</button>
-                        <button id="btn_entry" type="button" class="btn green">Save</button>
                     </div>
                 </form>
             </div>
