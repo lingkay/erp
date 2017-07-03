@@ -24,6 +24,11 @@ class Product
      */
     protected $name;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $type;
+
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $product_compositions;
 
@@ -111,6 +116,17 @@ class Product
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 
     public function setPrimaryPhoto($primary_photo)

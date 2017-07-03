@@ -60,13 +60,15 @@ class ProductController extends CrudController
         $am = $this->get('gist_accounting');
 
         $params['type_opts'] = array(
-            'single' => 'Single Product',
+            'goods' => 'Goods',
+            'fixed' => 'Fixed',
+            'consumables' => 'Consumables',
             'package' => 'Package'
         );
 
         $params['currency_opts'] = $am->getCurrencyOptions();
 
-        $params['ptype'] = 'single';
+        // $params['ptype'] = 'single';
 
         $params['item_opts'] = $this->getProductOptions();
         $params['brand_opts'] = $this->getBrandOptions();
@@ -111,6 +113,11 @@ class ProductController extends CrudController
         if (isset($data['category'])) {
             $category = $em->getRepository('GistInventoryBundle:ProductCategory')->find($data['category']);
             $o->setCategory($category);
+        }
+
+        if (isset($data['item_type'])) {
+           
+            $o->setType($data['item_type']);
         }
 
         if (isset($data['item_code'])) {
