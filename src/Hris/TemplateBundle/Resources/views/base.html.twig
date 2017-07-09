@@ -44,8 +44,7 @@
 
 {% endstylesheets %}
 <!-- END GLOBAL MANDATORY STYLES -->
-
-
+{% block org_css %}{% endblock %}
 {% block css %}
 <style type="text/css">
 .gist_number {
@@ -303,7 +302,7 @@ function clearTypeahead(name, prefix)
 
 }
 jQuery(document).ready(function() {
-
+    $(".select2-search__field").attr("placeholder", "Search...");
     $('#print_btn').prop('target', "_blank");
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout

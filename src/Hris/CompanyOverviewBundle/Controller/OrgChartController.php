@@ -40,11 +40,10 @@ class OrgChartController extends CrudController
     {
         $settings = $this->get('hris_settings');
     	$em = $this->getDoctrine()->getManager();
-    	$query = "SELECT e FROM HrisWorkforceBundle:Employee e WHERE e.employment_status != :status AND e.department = :department";
+    	$query = "SELECT e FROM GistUserBundle:User e WHERE e.group = :group";
 
     	$employees = $em->createQuery($query)
-    					->setParameter('status', Employee::EMP_CONTRACTUAL)
-                        ->setParameter('department', $id)
+                        ->setParameter('group', $id)
     					->getResult();
     	
         $department = $settings->getDepartment($id);
@@ -53,24 +52,11 @@ class OrgChartController extends CrudController
         $parent = 0;
     	foreach($employees as $employee)
     	{
-            if($department->getDeptHead()->getID() == $employee->getID())
-            {
-                $parent = 0;
-            }
-            elseif($employee->getSupervisor() != null)
-            {
-                $parent = $employee->getSupervisor()->getID();
-            } 
-
-            if($employee->getProfile()->getUpload() == null || $employee->getProfile()->getUpload() == 'null')
-            {
-                $picture = "<img src='/bundles/hristemplate/images/no_photo.png' style='width: 80%; height: 80%;'>";
-            }
-            else
-            {
-                $picture = '<img src="'.$employee->getProfile()->getUpload()->getURL().'" style="width: 65%; height: 65%;">';
-            }
-            $employee_information = '<div><span style="font-size: 100%;"><strong>'.' '.$employee->getDisplayName().'</strong></span><br><span style="font-style: italic; font-size: 90%;">'.$employee->getJobTitle()->getName().'</span></div>';
+            $parent = 0;
+            
+            $picture = "<img src='/bundles/hristemplate/images/no_photo.png' style='width: 80%; height: 80%;'>";
+            
+            $employee_information = '<div><span style="font-size: 100%;"><strong>'.' '.$employee->getDisplayName().'</strong></span><br><span style="font-style: italic; font-size: 90%;">'.$employee->getGroup()->getName().'</span></div>';
 
     		$list[] = array('id' => $employee->getID(), 'name' => $picture, 'description' => $employee_information, 'parent' => $parent);
     	}
@@ -84,7 +70,7 @@ class OrgChartController extends CrudController
     {
     	$em = $this->getDoctrine()->getManager();
 
-    	$departments = $em->getRepository('HrisAdminBundle:Department')->findAll();
+    	$departments = $em->getRepository('GistUserBundle:Group')->findAll();
     	
     	$list = [];
     	foreach($departments as $department)
@@ -97,16 +83,8 @@ class OrgChartController extends CrudController
     		{
     			$parent = $department->getParent()->getID();
     		}
-
-            if($department->getDeptHead() == NULL || $department->getDeptHead() == 'null')
-            {
-                // 
-                $dept_head = "<i>Not Available</i>";
-            }
-            else
-            {
-                $dept_head = '<br>'.'<span style="font-style: italic;"><strong>'.$department->getDeptHead()->getDisplayName().'</strong></span>';
-            }
+            $dept_head = "";
+            
     		$list[] = array('id' => $department->getID(), 'name' => $department->getName(), 'description' => $dept_head, 'parent' => $parent);
     	}
         $resp = new Response(json_encode($list));

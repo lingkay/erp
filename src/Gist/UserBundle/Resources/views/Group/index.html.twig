@@ -13,6 +13,7 @@
                 <div class="table-toolbar">
                 {% if app.user.hasAccess(prefix ~ '.add') %}
                     <a href="{{ path(route_add) }}" class="btn green">Add New</a>
+                    <a href="{{ path('cat_user_group_org_chart') }}" class="btn blue">View Org Chart</a>
                 {% endif %}
                 </div>
                 <table class="table table-striped table-bordered table-hover" id="list_table">

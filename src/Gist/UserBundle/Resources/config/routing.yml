@@ -108,6 +108,11 @@ cat_user_group_get_positions:
     methods: [GET]
     defaults: { _controller: GistUserBundle:Group:getPositions }
 
+cat_user_group_org_chart:
+    pattern: /group/view/org_chart
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:Group:orgChart }
+
 cat_user_group_acl_editor:
     pattern: /group/acl_editor/{group_id}
     methods: [GET]

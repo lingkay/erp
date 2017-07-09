@@ -174,9 +174,6 @@ function ajaxAddLedgerEntry(amount, date, description)
     var url = "{{ path('gist_loc_pos_locations_ajax_ledger_entry', { pos_location_id: ':pos_location_id', amount: ':amount', date: ':date', description: ':description' }) }}";
     url = url.replace(":pos_location_id", pos_location_id).replace(':amount', amount).replace(':date', date).replace(':description', description);
 
-
-    //var row = prod_select.closest('tr');
-
     $.getJSON(url, function(json){  
         console.log(json);
         $('#cform-ledger_total').val(json.ledger_total);
@@ -253,8 +250,6 @@ $(document).ready(function() {
             toastr['error']('Input an amount.', 'Error');
         }
     });   
-
-
 
     FormValidation.init(); 
 

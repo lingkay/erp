@@ -118,12 +118,12 @@ class GroupController extends CrudController
         else
             throw new ValidationException('Cannot leave name blank');
 
-        $o->clearAccess();
-        if (isset($data['acl']))
-        {
-            foreach ($data['acl'] as $id => $val)
-                $o->addAccess($id);
-        }
+        // $o->clearAccess();
+        // if (isset($data['acl']))
+        // {
+        //     foreach ($data['acl'] as $id => $val)
+        //         $o->addAccess($id);
+        // }
     }
 
     protected function padFormParams(&$params, $object = null)
@@ -175,6 +175,21 @@ class GroupController extends CrudController
             return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
         }
     }
+
+    public function orgChartAction()
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository($this->repo)->find(21);
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['o_label'] = $this->getObjectLabel($obj);
+        return $this->render('GistUserBundle:Group:org_chart.html.twig', $params);
+    }
+
 
     public function aclEditorAction($group_id)
     {

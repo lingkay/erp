@@ -219,6 +219,11 @@ class User extends BaseUser
         return $this->last_name;
     }
 
+    public function getDisplayName()
+    {
+        return $this->last_name.', '.$this->first_name;
+    }
+
     public function setAgencyName($agency)
     {
         $this->agency = $agency;
