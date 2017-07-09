@@ -118,12 +118,15 @@ class GroupController extends CrudController
         else
             throw new ValidationException('Cannot leave name blank');
 
-        // $o->clearAccess();
-        // if (isset($data['acl']))
-        // {
-        //     foreach ($data['acl'] as $id => $val)
-        //         $o->addAccess($id);
-        // }
+        if ($is_new) {
+            $o->clearAccess();
+            if (isset($data['acl']))
+            {
+                foreach ($data['acl'] as $id => $val)
+                    $o->addAccess($id);
+            }
+        }
+        
     }
 
     protected function padFormParams(&$params, $object = null)
