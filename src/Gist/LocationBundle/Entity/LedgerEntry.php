@@ -30,8 +30,8 @@ class LedgerEntry
     /** @ORM\Column(type="string", length=50) */
     protected $amount;
 
-    /** @ORM\Column(type="date", nullable=true) */
-    protected $entry_date;
+    /** @ORM\Column(type="string", length=250, nullable=true) */
+    protected $entry_description;
 
 
     /**
@@ -61,6 +61,7 @@ class LedgerEntry
     }
 
 
+  
     /**
      * Set amount
      *
@@ -86,30 +87,28 @@ class LedgerEntry
     }
 
     /**
-     * Set entryDate
+     * Set entryDescription
      *
-     * @param \DateTime $entryDate
+     * @param string $entryDescription
      *
      * @return LedgerEntry
      */
-    public function setEntryDate($entryDate)
+    public function setEntryDescription($entryDescription)
     {
-        $this->entry_date = $entryDate;
+        $this->entry_description = $entryDescription;
 
         return $this;
     }
 
     /**
-     * Get entryDate
+     * Get entryDescription
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getEntryDate()
+    public function getEntryDescription()
     {
-        return $this->entry_date;
+        return $this->entry_description;
     }
-
-    
 
     /**
      * Set posLocation
