@@ -93,21 +93,11 @@
             <div class="menu-toggler sidebar-toggler">
                 <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
             </div>
-            {% if app.user.hasAccess('hris_omnibar.view') %}
-            <div class="page-omnibar form-group" >
-                <div class="has-feedback form-group">
-                    <input type="hidden" name="omnibar_hidden" id="omnibar_id" value="">
-                    <input type="text" name="omnibar_hidden" value="" placeholder="" id="omnibar_typeahead" data-path="{{path('hris_workforce_employee_ajax_get')}}" class="form-control" autocomplete="off" />
-                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                </div>
-            </div>
-            <div class=" add-icon form-group">
-                <a href="{{ path('hris_workforce_employee_add_form')}}">
-                    <i class="fa fa-user-plus"></i>
-                </a>
-            </div>
-            {% endif %}
+            
         </div>
+
+         
+
         <!-- END LOGO -->
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
         <div class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
@@ -130,7 +120,7 @@
         <div class="menu-logo">
                 <a href="/">
                     <span class="helper"></span>
-                    <img src="{{ asset('bundles/gisttemplate/assets/global/img/default-logo.png') }}" style="width:100%;" alt="logo" class="logo-default"/>
+                    <img src="{{ asset('bundles/gisttemplate/assets/global/img/cosmeti_logo.png') }}" style="width:100%;" alt="logo" class="logo-default"/>
                     <span class="helper"></span>
                 </a>
         </div>
@@ -204,8 +194,8 @@
 <!-- END CONTAINER -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner">
-         2017 &copy; GIST
+    <div class="page-footer-inner" style="color: white !important;">
+         2017 &copy; CosmetiGroup Int'l Corp. | 22nd Floor Pearl Bank Center 146 Valero St., Salcedo Village, Makati City
     </div>
     <div class="page-footer-tools">
         <span class="go-top">
