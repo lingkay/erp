@@ -231,6 +231,11 @@ class Product
         return $this->cost;
     }
 
+    public function getCostFMTD()
+    {
+        return $this->cost_currency.' '.$this->cost;
+    }
+
     /**
      * Set costCurrency
      *
@@ -279,6 +284,11 @@ class Product
         return $this->srp;
     }
 
+    public function getSRPFMTD()
+    {
+        return "₱".$this->srp;
+    }
+
     /**
      * Set minPrice
      *
@@ -301,6 +311,11 @@ class Product
     public function getMinPrice()
     {
         return $this->min_price;
+    }
+
+    public function getMinPriceFMTD()
+    {
+        return "₱".$this->min_price;
     }
 
     /**

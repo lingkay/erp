@@ -29,14 +29,25 @@ class UserController extends CrudController
         return $obj->getUsername();
     }
 
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('a', 'area', 'getArea'),
+            $grid->newJoin('g', 'group', 'getGroup'),
+        );
+    }
+
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Username', 'getUsername', 'username'),
+            $grid->newColumn('#', 'getUsername', 'username'),
             $grid->newColumn('Email', 'getEmail', 'email'),
-            $grid->newColumn('Name', 'getName', 'name'),
+            $grid->newColumn('Name', 'getDisplayName', 'last_name'),
+            $grid->newColumn('Area', 'getName', 'name','a'),
+            $grid->newColumn('Position', 'getName', 'name','g'),
             // $grid->newColumn('Roles', 'getGroupsText', 'id', 'o', null, false),
             $grid->newColumn('Last Login', 'getLastLoginText', 'lastLogin', 'o', null, false),
             $grid->newColumn('Status', 'getEnabledText', 'enabled', 'o', null, false),
@@ -59,6 +70,10 @@ class UserController extends CrudController
             $images = $gallery->getImages();
             $params['images'] = $images;
         }
+
+        //get last insert id
+        $last_entry = $em->getRepository('GistUserBundle:User')->findOneBy(array(),array('id' => 'DESC'),1);
+        $params['next_id'] = str_pad($last_entry->getID() + 1,6,'0',STR_PAD_LEFT);
 
         // enabled options
         $params['enabled_opts'] = array(
@@ -127,10 +142,6 @@ class UserController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        // echo "<pre>";
-        // var_dump($data);
-        // echo "</pre>";
-        // die();
         $em = $this->getDoctrine()->getManager();
         $uc = $this->get('gist_user');
 

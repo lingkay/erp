@@ -48,9 +48,13 @@ class ProductController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
+            $grid->newColumn('Item Code', 'getItemCode', 'item_code'),
             $grid->newColumn('Name', 'getName', 'name'),
-            $grid->newColumn('Category', 'getName', 'name','c'),
-            $grid->newColumn('Brand', 'getName', 'name','b'),
+            $grid->newColumn('Description', 'getDescription', 'description'),
+            $grid->newColumn('Cost', 'getCostFMTD', 'cost'),
+            $grid->newColumn('SRP', 'getSRPFMTD', 'srp'),
+            $grid->newColumn('Min. Price', 'getMinPriceFMTD', 'min_price'),
+            $grid->newColumn('Status', 'getStatus', 'status'),
         );
     }
 
