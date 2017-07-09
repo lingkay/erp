@@ -1,0 +1,43 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">Organizational Chart - Tree View</div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                <a href="{{ path('cat_user_group_index') }}" class="btn blue">Back</a>
+                </div>
+                <div id="orgChartContainer">
+                    <div id="department">
+                        <div id="org_chart_department"></div>
+                    </div>
+                    <div id="employee">
+                        <div id="org_chart_employee"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+    $(document).ready(function() {
+
+        $.getJSON("{{path ('hris_com_orgchart_ajax_department')}}", function(data){
+    $('#org_chart_department').orgChart({ 
+        data:data
+        
+    });
+});
+
+    });
+</script>
+{% endblock %}
