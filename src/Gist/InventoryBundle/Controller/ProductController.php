@@ -54,7 +54,7 @@ class ProductController extends CrudController
             $grid->newColumn('Cost', 'getCostFMTD', 'cost'),
             $grid->newColumn('SRP', 'getSRPFMTD', 'srp'),
             $grid->newColumn('Min. Price', 'getMinPriceFMTD', 'min_price'),
-            $grid->newColumn('Status', 'getStatus', 'status'),
+            // $grid->newColumn('Status', 'getStatus', 'status'),
         );
     }
 
@@ -63,16 +63,10 @@ class ProductController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $am = $this->get('gist_accounting');
 
-        $params['type_opts'] = array(
-            'goods' => 'Goods',
-            'fixed' => 'Fixed',
-            'consumables' => 'Consumables',
-            'package' => 'Package'
-        );
-
         $params['currency_opts'] = $am->getCurrencyOptions();
 
         // $params['ptype'] = 'single';
+        $params['type_opts'] = $this->getTypeOptions();
 
         $params['item_opts'] = $this->getProductOptions();
         $params['brand_opts'] = $this->getBrandOptions();
@@ -120,8 +114,8 @@ class ProductController extends CrudController
         }
 
         if (isset($data['item_type'])) {
-           
-            $o->setType($data['item_type']);
+            $type = $em->getRepository('GistInventoryBundle:ProductType')->find($data['item_type']);
+            $o->setType($type);
         }
 
         if (isset($data['item_code'])) {
@@ -209,6 +203,17 @@ class ProductController extends CrudController
     {
         return $this->getOptionsArray(
             'GistInventoryBundle:ProductCategory',
+            $filter, 
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
+
+    public function getTypeOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistInventoryBundle:ProductType',
             $filter, 
             array('name' => 'ASC'),
             'getID',

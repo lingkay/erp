@@ -3,8 +3,6 @@
 namespace Gist\InventoryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gist\CoreBundle\Template\Entity\HasGeneratedID;
-use Gist\CoreBundle\Template\Entity\HasName;
 use stdClass;
 
 /**
@@ -13,19 +11,48 @@ use stdClass;
  */
 class ProductType
 {
-	use HasGeneratedID;
-	use HasName;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
-	public function __construct()
-	{
-		$this->initHasGeneratedID();
-	}
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $name;
 
-	public function toData()
-	{
-		$data = new \stdClass();
-		$this->dataHasGeneratedID($data);
-        $this->dataHasName($data);
+
+
+    public function __construct()
+    {
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function getID()
+    {
+        return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+
+    public function toData()
+    {
+        $data = new stdClass();
+        $data->id = $this->id;
+        $data->name = $this->name;
+
         return $data;
-	}
+    }
 }
+

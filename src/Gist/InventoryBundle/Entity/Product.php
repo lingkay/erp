@@ -25,7 +25,8 @@ class Product
     protected $name;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\ManyToOne(targetEntity="ProductType")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="id")
      */
     protected $type;
 

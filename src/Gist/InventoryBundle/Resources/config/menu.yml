@@ -19,6 +19,10 @@ menu_items:
       acl: cat_inv_product_category.menu
       label: Category
       parent: menu_inventory
+    - id: cat_inv_product_type_index
+      acl: cat_inv_product_type.menu
+      label: Type
+      parent: menu_inventory
     # - id: cat_inv_pg_index
     #   acl: cat_inv_pg.menu
     #   label: Product Group

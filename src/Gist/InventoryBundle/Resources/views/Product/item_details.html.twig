@@ -8,7 +8,7 @@
                 {{ form.group_text('Barcode', 'barcode', object.getBarcode|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Category", "category", category_opts, category.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
-                {{ form.group_select("Type", "item_type", type_opts, object.getType|default(''), 3, 4, readonly) }}
+                {{ form.group_select("Type", "item_type", type_opts, object.getType.getID|default(''), 3, 4, readonly) }}
                 <div class="row">
                     <div class="col-md-6">
                         <div id="composition_div" style="margin-top: 10px;">

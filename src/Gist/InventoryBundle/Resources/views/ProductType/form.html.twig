@@ -1,0 +1,134 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">{% block form_header %}{% endblock %}</div>
+                </div>
+                <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group">
+                                {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
+                            </div>
+                        </div>
+
+                        <div class="form-actions fluid">
+                            <div class="col-md-offset-3 col-md-9">
+                                {% if not readonly %}
+                                    <button type="submit" class="btn blue">Submit</button>
+                                {% endif %}
+                                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+<!-- HERE -->
+<script>
+$(document).ready(function() {
+    FormValidation.init();
+
+
+    // set default error and success elements
+    jQuery.validator.setDefaults({
+        errorClass: 'help-block',
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {
+                error.appendTo(element.parent().last());
+                element.parent().parent().addClass('has-error');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                error.appendTo(element.parent().parent().parent().parent().last());
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+            }
+            else
+            {
+                error.appendTo(element.parent().parent().last());
+                element.parent().parent().parent().addClass('has-error');
+            }
+        },
+        success: function(element) {
+            $("#help").html('');
+            if(element.parent().parent().hasClass('form-group'))
+            {  
+                element.parent().parent().removeClass('has-error');
+                element.parent().parent().addClass('has-success');
+            }
+            else if(element.parent().parent().hasClass('checker'))
+            {   
+                element.parent().parent().parent().parent().parent().addClass('has-error');
+                element.parent().parent().parent().parent().parent().addClass('has-success');
+            }
+            else
+            {  
+                element.parent().parent().parent().removeClass('has-error');
+                element.parent().parent().parent().addClass('has-success');
+            }
+
+            element.remove();
+        }
+    });
+
+    // validate form elements
+    $(".form-horizontal").validate({
+        onfocusout: function(element) {
+           this.element(element);
+        },
+        rules: {
+            name: {
+                required: true
+            },
+            brand: {
+                required: true
+            }
+        },
+        submitHandler: function(form) {
+            var pass1 = $("#cform-pass1");
+            var pass2 = $("#cform-pass2");
+            
+            // validate password if password field is changed
+            if(pass1.val() !== '' || pass2.val() !== '')
+            {
+                if(pass1.val() !== pass2.val())
+                {
+                    pass1.rules('add', {
+                        required: true
+                    });
+                    pass2.rules('add', {
+                        required: true,
+                        equalTo: "#cform-pass1",
+                        messages: {
+                            equalTo: "Password do not match."
+                        }
+                    });
+                    pass1.parents('.form-group').addClass('has-error');
+                    pass2.parents('.form-group').addClass('has-error');
+                    if(!$("#help").hasClass('help-block'))
+                        pass2.parent().parent().append('<span id="help" class="help-block">Password do not match.</span>');
+                }
+            }
+
+            if(pass1.val() === pass2.val())
+            {
+                form.submit();
+            }
+        }
+    });
+
+});
+</script>
+{% endblock %}

@@ -39,6 +39,18 @@ acl:
           label: "Edit"
         - id: cat_inv_product_category.delete
           label: "Delete"
+    - category: Product Type
+      entries:
+        - id: cat_inv_product_type.menu
+          label: "Menu"
+        - id: cat_inv_product_type.view
+          label: "View"
+        - id: cat_inv_product_type.add
+          label: "Add"
+        - id: cat_inv_product_type.edit
+          label: "Edit"
+        - id: cat_inv_product_type.delete
+          label: "Delete"
     - category: Product Group
       entries:
         - id: cat_inv_pg.menu
