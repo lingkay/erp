@@ -15,7 +15,7 @@
                 </div>
             </div>
             {% else %}
-            {{ form.group_money('Security Deposit Amount', 'security_deposit_amount', object.getLedgerTotal|default(), 3, 4, readonly) }}
+            {{ form.group_money('Security Deposit Amount', 'security_deposit_amount', object.getRentSecurityDepositAmount|default(), 3, 4, readonly) }}
             {% endif %}
             {{ form.group_select('Security Deposit Returned', 'security_deposit_returned', deposit_return_opts, 'No', 3, 4, readonly) }}
             {{ form.group_money('Security Deposit Returned Amount', 'security_deposit_amount_returned', object.getRentSecurityDepositReturnedAmount|default(), 3, 4, readonly) }}
