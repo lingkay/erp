@@ -25,8 +25,8 @@
                             {{ form.group_text('TID', 'tid', object.getTID|default(''), 3, 4, readonly) }}
                             {{ form.group_text('Serial No.', 'serial_number', object.getSerialNumber|default(''), 3, 4, readonly) }}
                             {{ form.group_text('Sim Card No.', 'sim_number', object.getSimCardNumber|default(''), 3, 4, readonly) }}
-                            {{ form.group_text('Brand', 'tid', object.getTID|default(''), 3, 4, readonly) }}
-                            {{ form.group_text('Model', 'tid', object.getTID|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Brand', 'brand', object.getBrand|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Model', 'model', object.getModel|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
                             
                             {{ form.group_textarea('Remarks', 'remarks',object.getRemarks|default(''),3,3,4)}}

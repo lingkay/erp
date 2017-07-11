@@ -96,6 +96,8 @@ class TerminalController extends CrudController
         
         $o->setMID($data['mid']);
         $o->setTID($data['tid']);
+        $o->setBrand($data['brand']);
+        $o->setModel($data['model']);
         $o->setSerialNumber($data['serial_number']);
         $o->setSimCardNumber($data['sim_number']);
         $o->setRemarks($data['remarks']);
