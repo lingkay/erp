@@ -93,7 +93,25 @@ class AreasController extends CrudController
         $pos = $em->getRepository('GistLocationBundle:POSLocations')->findBy(array('area'=>$id));
         $params['pos'] = $pos;
 
-        
+        $positions = $em->getRepository('GistUserBundle:Group')->findAll();
+        $x = array();
+        $count = 0;
+        foreach ($positions as $position)
+        {
+            $count = 0;
+            foreach ($position->getUsers() as $user) {
+                if ($user->getArea()) {
+                    if ($user->getArea()->getID() == $id) {
+                        $count++;
+                    }   
+                }
+            }
+
+            if ($count > 0) {
+                $x[$position->getName()] = $count;
+            }
+        }
+        $params['positions'] = $x;
 
         $this->padFormParams($params, $obj);
 

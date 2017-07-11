@@ -1,39 +1,62 @@
 {% extends "GistTemplateBundle::base.html.twig" %}
 
 {% block content %}
+<div class="row">
 <h1>{{object.getName}}</h1>
-<hr>
-<h2>Area Managers</h2>
-{% for user in users %}
-	{% if user.getGroup.getName == 'Area Manager' %}
-		<b>{{user.getFirstName}} {{user.getLastName}}</b>
+		<hr>
+	<div class="col-md-8">
+		
+		<h2>Area Managers</h2>
+		{% for user in users %}
+			{% if user.getGroup.getName == 'Area Manager' %}
+				<b>{{user.getFirstName}} {{user.getLastName}}</b>
+				<br>
+			{% endif %}
+
+		{% endfor %}
 		<br>
-	{% endif %}
+		<h2>Assistant Managers</h2>
+		{% for user in users %}
+			{% if user.getGroup.getName == 'Assistant Manager' %}
+				<b>{{user.getFirstName}} {{user.getLastName}}</b>
+				<br>
+			{% endif %}
 
-{% endfor %}
-<br>
-<h2>Assistant Managers</h2>
-{% for user in users %}
-	{% if user.getGroup.getName == 'Assistant Manager' %}
-		<b>{{user.getFirstName}} {{user.getLastName}}</b>
+		{% endfor %}
+
+		<h2>Locations</h2>
+		{% for p in pos %}
+		<b>{{p.getName}}</b><br>
+		{% endfor %}
 		<br>
-	{% endif %}
+		<h2>Personnel</h2>
+		{% for user in users %}
+			{% if user.getGroup.getName != 'Assistant Manager' and user.getGroup.getName != 'Area Manager' %}
+				<b>{{user.getFirstName}} {{user.getLastName}}</b>
+				<br>
+				{{user.getGroup.getName}}
+				<br><br>
+			{% endif %}
 
-{% endfor %}
-
-<h2>Locations</h2>
-{% for p in pos %}
-<b>{{p.getName}}</b><br>
-{% endfor %}
-<br>
-<h2>Personnel</h2>
-{% for user in users %}
-	{% if user.getGroup.getName != 'Assistant Manager' and user.getGroup.getName != 'Area Manager' %}
-		<b>{{user.getFirstName}} {{user.getLastName}}</b>
-		<br>
-		{{user.getGroup.getName}}
-		<br><br>
-	{% endif %}
-
-{% endfor %}
+		{% endfor %}
+	</div>
+	<div class="col-md-4">
+		<table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+            <thead>
+                <tr>
+                    <th width="70%">Position</th>
+                    <th width="30%">Count</th>
+                </tr>
+            </thead>
+            <tbody id="items_given_tbody">
+                {% for p,x in positions|default(null) %}
+                	<tr>
+                		<td>{{p}}</td>
+                		<td>{{x}}</td>
+                	</tr>
+                {% endfor %}
+            </tbody>
+        </table>
+	</div>
+</div>
 {% endblock %}
