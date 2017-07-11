@@ -207,6 +207,17 @@ $(document).ready(function() {
         $('#return_confirmation').modal('show');
     });
 
+    var selectedValues = $("#sourceValues").val().split(',');
+            $(".select_2-multi").val(selectedValues).trigger("change");
+
+    $('#cform-mo_amt').on('keyup keypress', function(e) {
+      var keyCode = e.keyCode || e.which;
+      if (keyCode === 13) { 
+        e.preventDefault();
+        return false;
+      }
+    });
+
     var yes_btn = $(".ret_conf_yes");
     $(yes_btn).on('click',function(){ 
         ajaxReturnDeposit('Y');
