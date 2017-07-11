@@ -28,8 +28,8 @@
                                 {{ form.group_text('TID', 'tid', t.getTID|default(''), 3, 5, true) }}
                                 {{ form.group_text('Serial No.', 'serial_number', t.getSerialNumber|default(''), 3, 5, true) }}
                                 {{ form.group_text('Sim Card No.', 'sim_number', t.getSimCardNumber|default(''), 3, 5, true) }}
-                                {{ form.group_text('Brand', 'tid', t.getTID|default(''), 3, 5, true) }}
-                                {{ form.group_text('Model', 'tid', t.getTID|default(''), 3, 5, true) }}
+                                {{ form.group_text('Brand', 'tid', t.getBrand|default(''), 3, 5, true) }}
+                                {{ form.group_text('Model', 'tid', t.getModel|default(''), 3, 5, true) }}
                                 {{ form.group_text('Status', 'status', t.getStatus|default(''), 3, 5, true) }}
                                 {{ form.group_text('Terminal Operator', 'terminal_operator', t.getTerminalOperator.getName|default(''), 3, 5, true) }}
                                 {{ form.group_textarea('Remarks', 'remarks',t.getRemarks|default(''),3,3,5, true)}}
