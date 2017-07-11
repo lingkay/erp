@@ -118,6 +118,11 @@ class Group extends BaseGroup implements GroupInterface
         return count($this->users);
     }
 
+    public function getVariantCount()
+    {
+        return count($this->variants);
+    }
+
     public function getRoles()
     {
         return array();

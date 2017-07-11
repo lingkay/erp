@@ -155,7 +155,7 @@ class GroupController extends CrudController
             $object = $em->getRepository($this->repo)->find($id);
             $odata = $object->toData();
 
-            if($object->getUserCount() == 0)
+            if($object->getUserCount() == 0 && $object->getVariantCount() == 0)
             {
                 $this->logDelete($odata);
                 $em->remove($object);
@@ -167,7 +167,8 @@ class GroupController extends CrudController
             }
             else
             {
-                $this->addFlash('error', 'Could not delete ' . $this->title . ', ' . $object->getUserCount() . ($object->getUserCount() == 1 ? ' user is' : ' users are') . ' using this role.');
+                // $this->addFlash('error', 'Could not delete ' . $this->title . ', ' . $object->getUserCount() . ($object->getUserCount() == 1 ? ' user is' : ' users are') . ' using this role.');
+                $this->addFlash('error', 'Could not delete ' . $this->title . '.');
                 return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
             }
             
