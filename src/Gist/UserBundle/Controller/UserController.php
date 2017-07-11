@@ -29,6 +29,24 @@ class UserController extends CrudController
         return $obj->getUsername();
     }
 
+    public function callbackGrid($id)
+    {
+        $params = array(
+            'id' => $id,
+            'route_edit' => $this->getRouteGen()->getEdit(),
+            'route_delete' => $this->getRouteGen()->getDelete(),
+            'prefix' => $this->route_prefix,
+        );
+
+        $this->padGridParams($params, $id);
+
+        $engine = $this->get('templating');
+        return $engine->render(
+            'GistUserBundle:User:action.html.twig',
+            $params
+        );
+    }
+
     protected function getGridJoins()
     {
         $grid = $this->get('gist_grid');
