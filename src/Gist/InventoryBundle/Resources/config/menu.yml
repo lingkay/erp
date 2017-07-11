@@ -40,7 +40,7 @@ menu_items:
       label: Supplier
       parent: menu_supplier
 
-    - id: gist_inv_pos_index
+    - id: gist_inv_pos_indexx
       acl: gist_inv_pos.menu
       label: Point of Sales (POS)
       icon: fa-calculator
