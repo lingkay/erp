@@ -9,6 +9,8 @@
                 {{ form.group_select("Category", "category", category_opts, category.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Type", "item_type", type_opts, object.getType.getID|default(''), 3, 4, readonly) }}
+                {{ form.group_select("Class", "class", class_opts, object.getClass|default(''), 3, 4, readonly) }}
+                <input type="hidden" id="typex" value="">
                 <div class="row">
                     <div class="col-md-6">
                         <div id="composition_div" style="margin-top: 10px;">

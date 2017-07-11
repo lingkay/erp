@@ -87,7 +87,8 @@ $(document).ready(function() {
     );
     //END Date Range
 
-    if ($('#cform-item_type option:selected').val() == "package") {
+
+    if ($('#cform-class option:selected').val() == "package") {
         $('#composition_div').show();
     } else {
         $('#composition_div').hide();
@@ -117,7 +118,7 @@ $(document).ready(function() {
         });
 
 
-    $('#cform-item_type').on("change", function()
+    $('#cform-class').on("change", function()
     {
         if ($(this).val() == 'package') { 
             $('#composition_div').show(); 

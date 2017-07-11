@@ -65,6 +65,11 @@ class ProductController extends CrudController
 
         $params['currency_opts'] = $am->getCurrencyOptions();
 
+        $params['class_opts'] = array(
+            'single' => 'Single',
+            'package' => 'Package'
+        );
+
         // $params['ptype'] = 'single';
         $params['type_opts'] = $this->getTypeOptions();
 
@@ -106,6 +111,10 @@ class ProductController extends CrudController
         if (isset($data['brand'])) {
             $brand = $em->getRepository('GistInventoryBundle:Brand')->find($data['brand']);
             $o->setBrand($brand);
+        }
+
+        if (isset($data['class'])) {
+            $o->setClass($data['class']);
         }
 
         if (isset($data['category'])) {
