@@ -33,7 +33,7 @@ class Group extends BaseGroup implements GroupInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="Group", inversedBy="variants")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
      **/
     protected $parent;
 
@@ -47,7 +47,7 @@ class Group extends BaseGroup implements GroupInterface
     protected $job_description;
 
     //parent&child
-    public function setParent(Group $group)
+    public function setParent($group)
     {
         $this->parent = $group;
         return $this;
