@@ -73,12 +73,11 @@ class OrgChartController extends CrudController
     	$departments = $em->getRepository('GistUserBundle:Group')->findAll();
     	
     	$list = [];
-        $list[] = array('id' => -1, 'name' => "Cosmeti", 'description' => '', 'parent' => 0);
     	foreach($departments as $department)
     	{
     		if($department->getParent() == NULL || $department->getParent() == 'null')
     		{
-    			$parent = -1;
+    			$parent = 0;
     		}
     		else
     		{
