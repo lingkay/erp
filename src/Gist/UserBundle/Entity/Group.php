@@ -123,6 +123,11 @@ class Group extends BaseGroup implements GroupInterface
         return count($this->variants);
     }
 
+    public function getVariants()
+    {
+        return $this->variants;
+    }
+
     public function getRoles()
     {
         return array();

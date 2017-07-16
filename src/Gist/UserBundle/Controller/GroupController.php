@@ -189,9 +189,13 @@ class GroupController extends CrudController
 
         $this->hookPreAction();
         $em = $this->getDoctrine()->getManager();
+        //fix this
         $obj = $em->getRepository($this->repo)->find(21);
 
+
+
         $params = $this->getViewParams('Edit');
+        $params['parents'] = $em->getRepository('GistUserBundle:Group')->findBy(array('parent'=>null));
         $params['object'] = $obj;
         $params['o_label'] = $this->getObjectLabel($obj);
         return $this->render('GistUserBundle:Group:org_chart.html.twig', $params);

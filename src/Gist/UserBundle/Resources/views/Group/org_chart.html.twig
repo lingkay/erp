@@ -12,14 +12,66 @@
                 <div class="table-toolbar">
                 <a href="{{ path('cat_user_group_index') }}" class="btn blue">Back</a>
                 </div>
-                <div id="orgChartContainer">
-                    <div id="department">
-                        <div id="org_chart_department"></div>
+                {% for p in parents|default(null) %}
+                    <div id="chart-{{p.getID}}">
                     </div>
-                    <div id="employee">
-                        <div id="org_chart_employee"></div>
-                    </div>
-                </div>
+
+                    <ul id="chart-{{p.getID}}-source" class="hide">
+                        <li>
+                            {{p.getName}}
+                            <ul>
+                                {% for l1 in p.getVariants|default() %}
+                                <li>
+                                    {{l1.getName}}
+                                    <ul>
+                                        {% for l2 in l1.getVariants|default() %}
+                                            <li>
+                                                {{l2.getName}}
+                                                <ul>
+                                                    {% for l3 in l2.getVariants|default() %}
+                                                    <li>
+                                                        {{l3.getName}}
+                                                        <ul>
+                                                            {% for l4 in l3.getVariants|default() %}
+                                                                <li>
+                                                                    {{l4.getName}}
+                                                                    <ul>
+                                                                        {% for l5 in l4.getVariants|default() %}
+                                                                        <li>
+                                                                            {{l5.getName}}
+                                                                            <ul>
+                                                                                {% for l6 in l5.getVariants|default() %}
+                                                                                    <li>
+                                                                                        {{l6.getName}}
+                                                                                        <ul>
+                                                                                            {% for l7 in l6.getVariants|default() %}
+                                                                                            <li>
+                                                                                                {{l7.getName}}
+                                                                                                
+                                                                                            </li>
+                                                                                            {% endfor %}
+                                                                                        </ul>
+                                                                                    </li>
+                                                                                {% endfor %}
+                                                                            </ul>
+                                                                        </li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                {% endfor %} 
             </div>
         </div>
     </div>
@@ -29,15 +81,14 @@
 {% block js %}
 
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
 
-        $.getJSON("{{path ('hris_com_orgchart_ajax_department')}}", function(data){
-    $('#org_chart_department').orgChart({ 
-        data:data
-        
+    $(function() {
+        {% for p in parents %}
+            $("#chart-{{p.getID}}-source").orgChart({container: $("#chart-{{p.getID}}"),interactive: true});
+        {% endfor %}
     });
+
 });
-
-    });
 </script>
 {% endblock %}
