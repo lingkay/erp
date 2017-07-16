@@ -608,6 +608,11 @@ class User extends BaseUser
         // if ($this->getUsername() == 'admin')
           //   return true;
 
+        //FOR INACTIVE
+        if (!$this->enabled) {
+            return false;
+        }
+
         // check acl cache
         if (isset($this->acl_cache[$acl_key]))
             return $this->acl_cache[$acl_key];

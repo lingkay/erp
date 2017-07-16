@@ -196,6 +196,27 @@ class GroupController extends CrudController
 
         $params = $this->getViewParams('Edit');
         $params['parents'] = $em->getRepository('GistUserBundle:Group')->findBy(array('parent'=>null));
+
+        $departments = $em->getRepository('GistUserBundle:Group')->findAll();
+        $list = [];
+        foreach($departments as $department)
+        {
+            if($department->getParent() == NULL || $department->getParent() == 'null')
+            {
+                $parent = 0;
+            }
+            else
+            {
+                $parent = $department->getParent()->getID();
+            }
+            $dept_head = "";
+            
+            $list[] = array('id' => $department->getID(), 'name' => $department->getName(), 'description' => $dept_head, 'parent' => $parent);
+        }
+        $params['departments'] = $list;
+
+
+
         $params['object'] = $obj;
         $params['o_label'] = $this->getObjectLabel($obj);
         return $this->render('GistUserBundle:Group:org_chart.html.twig', $params);
