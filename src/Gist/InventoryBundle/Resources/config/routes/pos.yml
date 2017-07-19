@@ -31,3 +31,9 @@ gist_inv_pos_edit_submit:
 gist_inv_pos_delete:
     pattern: /pos1/delete/{id}
     defaults: { _controller: GistInventoryBundle:POS:delete }
+
+
+gist_inv_pos_get_categories:
+    pattern: /get/product_categories
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getProductCategories }

@@ -5,6 +5,8 @@ namespace Gist\InventoryBundle\Controller;
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\InventoryBundle\Entity\Brand;
 use Gist\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class POSController extends CrudController
 {
@@ -63,5 +65,27 @@ class POSController extends CrudController
         //$params['grid_cols'] = $gl->getColumns();
 
         return $this->render($twig_file, $params);
+    }
+
+    public function getProductCategoriesAction()
+    {   
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('GistInventoryBundle:ProductCategory')->findAll();
+        $list_opts = [];
+        foreach ($categories as $c) {
+            $list_opts[] = array('id'=>$c->getID(), 'name'=> $c->getName());
+        }
+        return new JsonResponse($list_opts);
+    }
+
+    public function getProducts($category_id)
+    {
+        
+    }
+
+    public function getAllProducts()
+    {
+        
     }
 }
