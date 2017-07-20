@@ -34,4 +34,5 @@ security:
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login_check$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/pos/get/product_categories$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/pos/get/products, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }

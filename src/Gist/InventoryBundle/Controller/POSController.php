@@ -79,9 +79,21 @@ class POSController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    public function getProducts($category_id)
+    public function getProductsAction($category_id)
     {
-        
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
+        $list_opts = [];
+        foreach ($products as $p) {
+            if ($p->getPrimaryPhoto()) {
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL());
+            } else {
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null);
+            }
+            
+        }
+        return new JsonResponse($list_opts);
     }
 
     public function getAllProducts()
