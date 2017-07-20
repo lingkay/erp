@@ -87,7 +87,7 @@ class POSController extends CrudController
         $list_opts = [];
         foreach ($products as $p) {
             if ($p->getPrimaryPhoto()) {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL());
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$p->getSRP());
             } else {
                 $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null);
             }
