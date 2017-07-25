@@ -24,6 +24,3 @@ monolog:
         console:
             type:  console
 
-# accelerator_cache:
-#     host: lilys.qalphalabs.com
-#     web_dir: %kernel.root_dir%/../web
