@@ -74,7 +74,12 @@ class POSController extends CrudController
         $categories = $em->getRepository('GistInventoryBundle:ProductCategory')->findAll();
         $list_opts = [];
         foreach ($categories as $c) {
-            $list_opts[] = array('id'=>$c->getID(), 'name'=> $c->getName());
+            if ($c->getPrimaryPhoto()) {
+                $list_opts[] = array('id'=>$c->getID(), 'name'=> $c->getName(), 'image_url'=>$c->getPrimaryPhoto()->getURL());
+            } else {
+                $list_opts[] = array('id'=>$c->getID(), 'name'=> $c->getName(), 'image_url'=>null);
+            }
+            
         }
         return new JsonResponse($list_opts);
     }

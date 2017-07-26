@@ -29,6 +29,12 @@ class ProductCategory
      */
     protected $brand;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
+     * @ORM\JoinColumn(name="photo_id", referencedColumnName="id")
+     */
+    protected $primary_photo;
+
     public function __construct()
     {
     }
@@ -58,6 +64,17 @@ class ProductCategory
     public function getBrand()
     {
         return $this->brand;
+    }
+
+    public function setPrimaryPhoto($primary_photo)
+    {
+        $this->primary_photo = $primary_photo;
+        return $this;
+    }
+
+    public function getPrimaryPhoto()
+    {
+        return $this->primary_photo;
     }
 
     public function toData()

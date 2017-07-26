@@ -3,6 +3,7 @@
 namespace Gist\InventoryBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
+use Gist\InventoryBundle\Model\Gallery;
 use Gist\InventoryBundle\Entity\ProductCategory;
 use Gist\ValidationException;
 
@@ -48,11 +49,16 @@ class ProductCategoryController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
+        $media = $this->get('gist_media');
         $o->setName($data['name']);
 
         if (isset($data['brand'])) {
             $brand = $em->getRepository('GistInventoryBundle:Brand')->find($data['brand']);
             $o->setBrand($brand);
+        }
+
+        if($data['photo']!=0 && $data['photo'] != ""){
+            $o->setPrimaryPhoto($media->getUpload($data['photo']));
         }
     }
 

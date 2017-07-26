@@ -13,6 +13,7 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             <div class="form-group">
+                                {{ form.group_upload_image('Primary photo','photo',object.getPrimaryPhoto|default(''),3,4)}}
                                 {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
                                 {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
                             </div>
