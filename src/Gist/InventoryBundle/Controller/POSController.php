@@ -105,4 +105,15 @@ class POSController extends CrudController
     {
         
     }
+
+    public function getVATAction()
+    {
+        $list_opts = [];
+        header("Access-Control-Allow-Origin: *");
+        $config = $this->get('gist_configuration');
+        $vat = $config->get('gist_acct_vat_percentage');
+        $list_opts[] = array('vat_pct'=>$vat);
+        return new JsonResponse($vat);
+
+    }
 }
