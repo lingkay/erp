@@ -16,6 +16,8 @@
                             {% for e in cat.getEntries %}
                                 {% if e.getType == 'select' %}
                                     {{ form.group_select(e.getLabel, e.getID, e.getOptions, e.getValue , 3, 5, not app.user.hasAccess('cat_config.edit')) }}
+                                {% elseif e.getType == 'number' %}
+                                    {{ form.group_number(e.getLabel, e.getID,e.getValue ,3,1)}}
                                 {% elseif e.getType == 'color' %}
                                     {{ form.group_color(e.getLabel, e.getID,e.getValue ,3,4)}}
                                 {% endif %}

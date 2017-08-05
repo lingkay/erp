@@ -1,0 +1,6 @@
+config:
+    - category: "Accounting Settings"
+      entries:
+        - id: gist_acct_vat_percentage
+          label: "VAT %"
+          type: number
