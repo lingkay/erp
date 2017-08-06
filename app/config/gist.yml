@@ -43,6 +43,7 @@ gist_user:
 gist_configuration:
     bundles:
         - GistTemplateBundle
+        - GistAccountingBundle
 
 
 gist_media:
