@@ -153,5 +153,17 @@ class AccountingManager
     //         ->find($id);
     // }
 
+    public function getTaxOpts($filter = array())
+    {
+
+
+
+        $tax['incl'] = 'Inclusive';
+        $tax['excl'] = 'Exclusive';
+
+        return $tax;
+    }
+
+
 
 }

@@ -117,11 +117,37 @@ class POSController extends CrudController
 
     }
 
+    public function getTaxCoverageAction()
+    {
+        $list_opts = [];
+        header("Access-Control-Allow-Origin: *");
+        $config = $this->get('gist_configuration');
+        $vat = $config->get('gist_acct_tax_opt');
+        $list_opts[] = array('tax_cover'=>$vat);
+        return new JsonResponse($vat);
+
+    }
+
     public function getBanksAction()
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $objects = $em->getRepository('GistAccountingBundle:Bank')
+            ->findAll();
+
+        $opts = array();
+        foreach ($objects as $o)
+            $opts[$o->getID()] = $o->getName();
+
+        //return $opts;
+        return new JsonResponse($opts);
+    }
+    //GistAccountingBundle:TerminalOperator
+    public function getTerminalOperatorsAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $objects = $em->getRepository('GistAccountingBundle:TerminalOperator')
             ->findAll();
 
         $opts = array();

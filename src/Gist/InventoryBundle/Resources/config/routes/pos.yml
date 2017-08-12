@@ -52,3 +52,13 @@ gist_inv_pos_get_banks:
     pattern: /get/banks
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:POS:getBanks }
+
+gist_inv_pos_get_termnil_operators:
+    pattern: /get/terminal_operators
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getTerminalOperators }
+
+gist_inv_pos_get_tax_coverage:
+    pattern: /get/tax_coverage
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getTaxCoverage }
