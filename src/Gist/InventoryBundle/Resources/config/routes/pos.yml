@@ -47,3 +47,8 @@ gist_inv_pos_get_vat:
     pattern: /get/vat
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:POS:getVAT }
+
+gist_inv_pos_get_banks:
+    pattern: /get/banks
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getBanks }

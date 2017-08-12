@@ -116,4 +116,19 @@ class POSController extends CrudController
         return new JsonResponse($vat);
 
     }
+
+    public function getBanksAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $objects = $em->getRepository('GistAccountingBundle:Bank')
+            ->findAll();
+
+        $opts = array();
+        foreach ($objects as $o)
+            $opts[$o->getID()] = $o->getName();
+
+        //return $opts;
+        return new JsonResponse($opts);
+    }
 }
