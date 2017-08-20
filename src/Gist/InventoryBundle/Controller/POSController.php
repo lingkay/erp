@@ -98,6 +98,7 @@ class POSController extends CrudController
             $srp = 0;
             $min = 0;
             if ($vat == 'excl') {
+                $o_srp = round($p->getSRP(),2);
                 $srp = round($p->getSRP() + ($p->getSRP()*($vat_rate/100)),2);
                 $min = round($p->getMinPrice() + ($p->getMinPrice()*($vat_rate/100)),2);
             } elseif ($vat == 'incl') {
@@ -109,9 +110,9 @@ class POSController extends CrudController
             }
 
             if ($p->getPrimaryPhoto()) {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$srp, 'min_price'=>$min);
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp);
             } else {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null, 'srp'=>$srp, 'min_price'=>$min);
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null, 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp);
             }
             
         }
