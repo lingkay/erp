@@ -89,12 +89,29 @@ class POSController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
+        $config = $this->get('gist_configuration');
+        $vat = $config->get('gist_acct_tax_opt');
+        $vat_rate = $config->get('gist_acct_vat_percentage');
         $list_opts = [];
         foreach ($products as $p) {
-            if ($p->getPrimaryPhoto()) {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$p->getSRP(), 'min_price'=>$p->getMinPrice());
+
+            $srp = 0;
+            $min = 0;
+            if ($vat == 'excl') {
+                $srp = round($p->getSRP() + ($p->getSRP()*($vat_rate/100)),2);
+                $min = round($p->getMinPrice() + ($p->getMinPrice()*($vat_rate/100)),2);
+            } elseif ($vat == 'incl') {
+                $srp = round($p->getSRP(),2);
+                $min = round($p->getMinPrice(),2);
             } else {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null);
+                $srp = round($p->getSRP(),2);
+                $min = round($p->getMinPrice(),2);
+            }
+
+            if ($p->getPrimaryPhoto()) {
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$srp, 'min_price'=>$min);
+            } else {
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null, 'srp'=>$srp, 'min_price'=>$min);
             }
             
         }
