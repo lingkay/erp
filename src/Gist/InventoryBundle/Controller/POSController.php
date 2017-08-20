@@ -97,14 +97,17 @@ class POSController extends CrudController
 
             $srp = 0;
             $min = 0;
+            $o_srp = 0;
             if ($vat == 'excl') {
                 $o_srp = round($p->getSRP(),2);
                 $srp = round($p->getSRP() + ($p->getSRP()*($vat_rate/100)),2);
                 $min = round($p->getMinPrice() + ($p->getMinPrice()*($vat_rate/100)),2);
             } elseif ($vat == 'incl') {
+                $o_srp = round($p->getSRP(),2);
                 $srp = round($p->getSRP(),2);
                 $min = round($p->getMinPrice(),2);
             } else {
+                $o_srp = round($p->getSRP(),2);
                 $srp = round($p->getSRP(),2);
                 $min = round($p->getMinPrice(),2);
             }
