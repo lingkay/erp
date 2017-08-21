@@ -65,6 +65,11 @@ class CustomerController extends CrudController
 
     public function searchCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
     {
+    	$first_name = mysql_real_escape_string($first_name);
+    	$last_name = mysql_real_escape_string($last_name);
+    	$email = mysql_real_escape_string($email);
+    	$number = mysql_real_escape_string($number);
+
     	header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         // $customers = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
@@ -86,6 +91,11 @@ class CustomerController extends CrudController
 
     public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
     {
+    	$first_name = mysql_real_escape_string($first_name);
+    	$last_name = mysql_real_escape_string($last_name);
+    	$email = mysql_real_escape_string($email);
+    	$number = mysql_real_escape_string($number);
+    	
     	header("Access-Control-Allow-Origin: *");
     	$em = $this->getDoctrine()->getManager();
     	$customer = new Customer();
