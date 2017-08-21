@@ -5,6 +5,8 @@ namespace Gist\CustomerBundle\Controller;
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\CustomerBundle\Entity\Customer;
 use Gist\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CustomerController extends CrudController
 {
@@ -59,5 +61,26 @@ class CustomerController extends CrudController
         $o->setMobileNumber($data['contact_number']);
         $o->setStatus($data['status']);
 
+    }
+
+    public function searchCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
+    {
+    	header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        // $customers = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
+        $customers = $em->getRepository("GistCustomerBundle:Customer")->createQueryBuilder('o')
+		   ->where('o.c_email_address LIKE :email OR o.first_name LIKE :first_name OR o.last_name LIKE :last_name OR o.mobile_number LIKE :mobile_number')
+		   ->setParameter('email', '%'.$email.'%')
+		   ->setParameter('first_name', '%'.$first_name.'%')
+		   ->setParameter('last_name', '%'.$last_name.'%')
+		   ->setParameter('mobile_number', '%'.$number.'%')
+		   ->getQuery()
+		   ->getResult();
+     
+        $list_opts = [];
+        foreach ($customers as $p) {
+			$list_opts[] = array('id'=>$p->getID(), 'first_name'=> $p->getFirstName(), 'last_name'=> $p->getLastName(), 'email'=> $p->getCEmailAddress(), 'number'=> $p->getMobileNumber());
+        }
+        return new JsonResponse($list_opts);
     }
 }

@@ -39,4 +39,5 @@ security:
         - { path: ^/inventory/pos/get/banks, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/pos/get/terminal_operators, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/pos/get/tax_coverage, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/customer/pos/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
