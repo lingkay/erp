@@ -66,10 +66,10 @@ class CustomerController extends CrudController
     public function searchCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
     {
     	header("Access-Control-Allow-Origin: *");
-    	$first_name = mysql_real_escape_string($first_name);
-    	$last_name = mysql_real_escape_string($last_name);
-    	$email = mysql_real_escape_string($email);
-    	$number = mysql_real_escape_string($number);
+    	// $first_name = mysql_real_escape_string($first_name);
+    	// $last_name = mysql_real_escape_string($last_name);
+    	// $email = mysql_real_escape_string($email);
+    	// $number = mysql_real_escape_string($number);
 
     	
         $em = $this->getDoctrine()->getManager();
@@ -93,10 +93,10 @@ class CustomerController extends CrudController
     public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
     {
     	header("Access-Control-Allow-Origin: *");
-    	$first_name = mysql_real_escape_string($first_name);
-    	$last_name = mysql_real_escape_string($last_name);
-    	$email = mysql_real_escape_string($email);
-    	$number = mysql_real_escape_string($number);
+    	// $first_name = mysql_real_escape_string($first_name);
+    	// $last_name = mysql_real_escape_string($last_name);
+    	// $email = mysql_real_escape_string($email);
+    	// $number = mysql_real_escape_string($number);
 
     	
     	$em = $this->getDoctrine()->getManager();
