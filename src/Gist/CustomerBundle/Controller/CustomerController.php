@@ -86,6 +86,7 @@ class CustomerController extends CrudController
 
     public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
     {
+    	header("Access-Control-Allow-Origin: *");
     	$em = $this->getDoctrine()->getManager();
     	$customer = new Customer();
     	$customer->setFirstName($first_name);
