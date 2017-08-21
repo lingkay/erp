@@ -122,3 +122,7 @@ gist_inventory:
 gist_accounting:
     resource: "@GistAccountingBundle/Resources/config/routing.yml"
     prefix:   /accounting
+
+gist_customer:
+    resource: "@GistCustomerBundle/Resources/config/routing.yml"
+    prefix:   /customer

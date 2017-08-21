@@ -9,7 +9,7 @@ gist_menu:
         - GistAccountingBundle
         - GistInventoryBundle
         - GistConfigurationBundle
-        
+        - GistCustomerBundle
         #- HrisBiometricsBundle
         #- HrisWorkforceBundle
         #- HrisRemunerationBundle
@@ -38,7 +38,8 @@ gist_user:
           label: User
         - id: GistInventoryBundle
           label: Inventory
-
+        - id: GistCustomerBundle
+          label: Customer
 
 gist_configuration:
     bundles:

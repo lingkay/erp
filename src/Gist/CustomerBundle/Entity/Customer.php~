@@ -1,0 +1,57 @@
+<?php
+
+namespace Gist\CustomerBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+
+use DateTime;
+use stdClass;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="customer_customer_info")
+ */
+
+class Customer
+{
+
+
+    use HasGeneratedID;
+    use TrackCreate;
+
+
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $first_name;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $last_name;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $c_email_address;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $mobile_number;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $status;
+
+
+    public function __construct()
+    {
+        $this->initTrackCreate();
+    }
+
+    
+    public function toData()
+    {
+        $data = new \stdClass();
+        $this->dataHasGeneratedID($data);
+        $this->dataTrackCreate($data);
+        return $data;
+    }
+}

@@ -1,0 +1,17 @@
+acl:
+    - category: Customer
+      entries:
+        - id: gist_customer.menu
+          label: "Menu"
+    - category: Customer List
+      entries:
+        - id: gist_customer_list.menu
+          label: "Menu"
+        - id: gist_customer_list.view
+          label: "View"
+        - id: gist_customer_list.add
+          label: "Add"
+        - id: gist_customer_list.edit
+          label: "Edit"
+        - id: gist_customer_list.delete
+          label: "Delete"

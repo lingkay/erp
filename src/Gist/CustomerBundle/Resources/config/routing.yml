@@ -1,0 +1,40 @@
+# gist_customer_index:
+#     path:     /list
+#     defaults: { _controller: GistCustomerBundle:List:index }
+
+
+#LIST
+gist_customer_list_index:
+    pattern: /customer_list
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Customer:index }
+
+gist_customer_list_add_form:
+    pattern: /customer
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Customer:addForm }
+
+gist_customer_list_add_submit:
+    pattern: /customer
+    methods: [POST]
+    defaults: { _controller: GistCustomerBundle:Customer:addSubmit }
+
+gist_customer_list_edit_form:
+    pattern: /customer/{id}
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Customer:editForm }
+
+gist_customer_list_edit_submit:
+    pattern: /customer/{id}
+    methods: [POST]
+    defaults: { _controller: GistCustomerBundle:Customer:editSubmit }
+
+gist_customer_list_delete:
+    pattern: /customer/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Customer:delete }
+
+gist_customer_list_grid:
+    pattern: /customer_list/grid
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Customer:grid }

@@ -1,0 +1,10 @@
+menu_items:
+    - id: menu_customer
+      acl: gist_customer.menu
+      label: Customer
+      icon: fa-user
+    - id: gist_customer_list_index
+      acl: gist_customer_list.menu
+      label: List
+      parent: menu_customer
+
