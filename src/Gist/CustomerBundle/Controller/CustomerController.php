@@ -83,4 +83,22 @@ class CustomerController extends CrudController
         }
         return new JsonResponse($list_opts);
     }
+
+    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
+    {
+    	$em = $this->getDoctrine()->getManager();
+    	$customer = new Customer();
+    	$customer->setFirstName($first_name);
+        $customer->setLastName($last_name);
+        $customer->setCEmailAddress($email);
+        $customer->setMobileNumber($number);
+        $customer->setStatus('Active');
+
+        $em->persist($customer);
+        $em->flush();
+
+        $list_opts[] = array('new_customer_id'=>$customer->getID());
+        return new JsonResponse($list_opts);
+
+    }
 }

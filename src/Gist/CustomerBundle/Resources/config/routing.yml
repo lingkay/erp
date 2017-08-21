@@ -44,3 +44,8 @@ gist_customer_pos_search:
     pattern: /pos/search/{first_name}/{last_name}/{email}/{number}
     methods: [GET]
     defaults: { _controller: GistCustomerBundle:Customer:searchCustomer }
+
+gist_customer_pos_add:
+    pattern: /pos/add/{first_name}/{last_name}/{email}/{number}
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Customer:addCustomer }
