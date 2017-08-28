@@ -50,6 +50,17 @@ class CustomerController extends CrudController
         $am = $this->get('gist_accounting');
         $params['status_opts'] = $am->getStatusOptions();
 
+        $params['gender_options'] = array(
+            'male' => 'Male',
+            'female' => 'Female'
+        );
+
+        $params['marital_options'] = array(
+            'single' => 'Single',
+            'married' => 'Married',
+            'widow' => 'Widow'
+        );
+
         return $params;
     }
 
@@ -60,6 +71,20 @@ class CustomerController extends CrudController
         $o->setCEmailAddress($data['email']);
         $o->setMobileNumber($data['contact_number']);
         $o->setStatus($data['status']);
+
+        $o->setMiddleName($data['middle_name']);
+        $o->setGender($data['gender']);
+        $o->setMaritalStatus($data['marital_status']);
+        $o->setDateMarried($data['date_married']);
+        $o->setHomePhone($data['home_phone']);
+        $o->setBirthdate($data['dob']);
+        $o->setAddress1($data['address_1']);
+        $o->setAddress2($data['address_2']);
+        $o->setCity($data['city']);
+        $o->setState($data['state']);
+        $o->setCountry($data['country']);
+        $o->setZip($data['zip']);
+
 
     }
 
@@ -92,8 +117,14 @@ class CustomerController extends CrudController
         $customers = $em->getRepository("GistCustomerBundle:Customer")->createQueryBuilder('o');
         foreach ($search_array as $key => $value) {
             if (trim($value) != '') {
-                $customers->andWhere('o.'.$key .' LIKE :o_'.$key)
+                if ($key == 'id') {
+                    $customers->andWhere('o.'.$key .' = :o_'.$key)
+                      ->setParameter('o_'.$key,''.$value.'');
+                } else {
+                    $customers->andWhere('o.'.$key .' LIKE :o_'.$key)
                       ->setParameter('o_'.$key,'%'.$value.'%');
+                }
+                
             }
             
         }

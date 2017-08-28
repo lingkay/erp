@@ -332,7 +332,7 @@
 {% if readonly %}
     {{ self.group_text(label, name, value, label_size, body_size, readonly, prefix) }}
 {% else %}
-<div class="form-group">
+<div id="cgroup-{{name}}" class="form-group">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class ="col-md-{{ body_size }}">
         <div class="input-group date date-picker" data-date-format="mm/dd/yyyy">

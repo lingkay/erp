@@ -13,8 +13,23 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
-                            {{ form.group_text('First Name', 'first_name', object.getFirstName, 3, 4, readonly) }}
-                            {{ form.group_text('Last Name', 'last_name', object.getLastName, 3, 4, readonly) }}
+                            {{ form.group_text('First Name', 'first_name', object.getFirstName|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Middle Name', 'middle_name', object.getMiddleName|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Last Name', 'last_name', object.getLastName|default(''), 3, 4, readonly) }}
+                            {{ form.group_date('Date of Birth','dob', object.getBirthdate|default('')|date('m/d/Y'),3,4) }}
+                            
+                            {{ form.group_select('Gender', 'gender', gender_options, object.getGender|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Marital Status', 'marital_status', marital_options, object.getMaritalStatus|default(''), 3, 4, readonly) }}
+                            {{ form.group_date('Date Married','date_married', object.getDateMarried|default('')|date('m/d/Y'),3,4) }}
+                            {{ form.group_text('Home Phone', 'home_phone', object.getHomePhone|default(''), 3, 4, readonly) }}
+                            {{ form.group_textarea('Address 1', 'address_1', object.getAddress1|default(''), 3, 3, 4, readonly) }}
+                            {{ form.group_textarea('Address 2', 'address_2', object.getAddress2|default(''), 3, 3, 4, readonly) }}
+                            {{ form.group_text('City', 'city', object.getCity|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('State', 'state', object.getState|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('Country', 'country', object.getCountry|default(''), 3, 4, readonly) }}
+                            {{ form.group_text('ZIP', 'zip', object.getZip|default(''), 3, 4, readonly) }}
+
+
                             {{ form.group_text('Email', 'email', object.getCEmailAddress, 3, 4, readonly) }}
                             {{ form.group_text('Contact Number', 'contact_number', object.getMobileNumber, 3, 4, readonly) }}
                             {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
@@ -39,6 +54,20 @@
     <script>
         $(document).ready(function() {
             FormValidation.init(); // init form validation
+            $('#cform-date_married').select2().trigger('change');
+
+            $('#cgroup-date_married').hide();
+
+            $('#cform-marital_status').on("change", function()
+            {
+                var opt = $('#cform-marital_status').val();
+                if (opt == 'married') {
+                    $('#cgroup-date_married').show();
+                } else {
+                    $('#cgroup-date_married').hide();
+                    $('#cform-date_married').val('');
+                }
+            });
 
             // set default error and success elements
             jQuery.validator.setDefaults({
