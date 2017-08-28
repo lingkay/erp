@@ -157,7 +157,7 @@ class CustomerController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $id = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null, $notes = null)
+    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null, $notes = null)
     {
     	header("Access-Control-Allow-Origin: *");
 
