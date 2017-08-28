@@ -5,6 +5,8 @@ namespace Gist\POSERPBundle\Controller;
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\POSERPBundle\Entity\POSChargeRates;
 use Gist\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class POSChargeRatesController extends CrudController
 {
