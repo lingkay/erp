@@ -56,6 +56,32 @@ class POSTransaction
     /** @ORM\OneToMany(targetEntity="POSTransactionPayment", mappedBy="transaction") */
     protected $payments;
 
+        /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $tax_rate;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $orig_vat_amt;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $new_vat_amt;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $orig_amt_net_vat;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $new_amt_net_vat;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $tax_coverage;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $cart_min;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $cart_orig_total;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $cart_new_total;
 
 
 
@@ -346,4 +372,268 @@ class POSTransaction
     }
 
 
+
+    /**
+     * Set taxRate
+     *
+     * @param string $taxRate
+     *
+     * @return POSTransaction
+     */
+    public function setTaxRate($taxRate)
+    {
+        $this->tax_rate = $taxRate;
+
+        return $this;
+    }
+
+    /**
+     * Get taxRate
+     *
+     * @return string
+     */
+    public function getTaxRate()
+    {
+        return $this->tax_rate;
+    }
+
+    /**
+     * Set origVatAmt
+     *
+     * @param string $origVatAmt
+     *
+     * @return POSTransaction
+     */
+    public function setOrigVatAmt($origVatAmt)
+    {
+        $this->orig_vat_amt = $origVatAmt;
+
+        return $this;
+    }
+
+    /**
+     * Get origVatAmt
+     *
+     * @return string
+     */
+    public function getOrigVatAmt()
+    {
+        return $this->orig_vat_amt;
+    }
+
+    /**
+     * Set newVatAmt
+     *
+     * @param string $newVatAmt
+     *
+     * @return POSTransaction
+     */
+    public function setNewVatAmt($newVatAmt)
+    {
+        $this->new_vat_amt = $newVatAmt;
+
+        return $this;
+    }
+
+    /**
+     * Get newVatAmt
+     *
+     * @return string
+     */
+    public function getNewVatAmt()
+    {
+        return $this->new_vat_amt;
+    }
+
+    /**
+     * Set origAmtNetVat
+     *
+     * @param string $origAmtNetVat
+     *
+     * @return POSTransaction
+     */
+    public function setOrigAmtNetVat($origAmtNetVat)
+    {
+        $this->orig_amt_net_vat = $origAmtNetVat;
+
+        return $this;
+    }
+
+    /**
+     * Get origAmtNetVat
+     *
+     * @return string
+     */
+    public function getOrigAmtNetVat()
+    {
+        return $this->orig_amt_net_vat;
+    }
+
+    /**
+     * Set newAmtNetVat
+     *
+     * @param string $newAmtNetVat
+     *
+     * @return POSTransaction
+     */
+    public function setNewAmtNetVat($newAmtNetVat)
+    {
+        $this->new_amt_net_vat = $newAmtNetVat;
+
+        return $this;
+    }
+
+    /**
+     * Get newAmtNetVat
+     *
+     * @return string
+     */
+    public function getNewAmtNetVat()
+    {
+        return $this->new_amt_net_vat;
+    }
+
+    /**
+     * Set taxCoverage
+     *
+     * @param string $taxCoverage
+     *
+     * @return POSTransaction
+     */
+    public function setTaxCoverage($taxCoverage)
+    {
+        $this->tax_coverage = $taxCoverage;
+
+        return $this;
+    }
+
+    /**
+     * Get taxCoverage
+     *
+     * @return string
+     */
+    public function getTaxCoverage()
+    {
+        return $this->tax_coverage;
+    }
+
+    /**
+     * Set cartMin
+     *
+     * @param string $cartMin
+     *
+     * @return POSTransaction
+     */
+    public function setCartMin($cartMin)
+    {
+        $this->cart_min = $cartMin;
+
+        return $this;
+    }
+
+    /**
+     * Get cartMin
+     *
+     * @return string
+     */
+    public function getCartMin()
+    {
+        return $this->cart_min;
+    }
+
+    /**
+     * Set cartOrigTotal
+     *
+     * @param string $cartOrigTotal
+     *
+     * @return POSTransaction
+     */
+    public function setCartOrigTotal($cartOrigTotal)
+    {
+        $this->cart_orig_total = $cartOrigTotal;
+
+        return $this;
+    }
+
+    /**
+     * Get cartOrigTotal
+     *
+     * @return string
+     */
+    public function getCartOrigTotal()
+    {
+        return $this->cart_orig_total;
+    }
+
+    /**
+     * Set cartNewTotal
+     *
+     * @param string $cartNewTotal
+     *
+     * @return POSTransaction
+     */
+    public function setCartNewTotal($cartNewTotal)
+    {
+        $this->cart_new_total = $cartNewTotal;
+
+        return $this;
+    }
+
+    /**
+     * Get cartNewTotal
+     *
+     * @return string
+     */
+    public function getCartNewTotal()
+    {
+        return $this->cart_new_total;
+    }
+
+    /**
+     * Add item
+     *
+     * @param \Gist\POSERPBundle\Entity\POSTransactionItem $item
+     *
+     * @return POSTransaction
+     */
+    public function addItem(\Gist\POSERPBundle\Entity\POSTransactionItem $item)
+    {
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove item
+     *
+     * @param \Gist\POSERPBundle\Entity\POSTransactionItem $item
+     */
+    public function removeItem(\Gist\POSERPBundle\Entity\POSTransactionItem $item)
+    {
+        $this->items->removeElement($item);
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \Gist\POSERPBundle\Entity\POSTransactionPayment $payment
+     *
+     * @return POSTransaction
+     */
+    public function addPayment(\Gist\POSERPBundle\Entity\POSTransactionPayment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \Gist\POSERPBundle\Entity\POSTransactionPayment $payment
+     */
+    public function removePayment(\Gist\POSERPBundle\Entity\POSTransactionPayment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
 }
