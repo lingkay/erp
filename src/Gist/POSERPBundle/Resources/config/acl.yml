@@ -27,4 +27,16 @@ acl:
           label: "Edit"
         - id: gist_poserp_chg_rates.delete
           label: "Delete"
+    - category: POS Transactions
+      entries:
+        - id: gist_poserp_transaction.menu
+          label: "Menu"
+        - id: gist_poserp_transaction.view
+          label: "View"
+        - id: gist_poserp_transaction.add
+          label: "Add"
+        - id: gist_poserp_transaction.edit
+          label: "Edit"
+        - id: gist_poserp_transaction.delete
+          label: "Delete"
 

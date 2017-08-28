@@ -42,4 +42,7 @@ security:
         - { path: ^/customer/pos/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/customer/pos/add, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/pos_erp/get/charge_rates, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/pos_erp/save_transaction, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/pos_erp/save_item, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/pos_erp/save_payment, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }

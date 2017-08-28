@@ -74,3 +74,55 @@ gist_poserp_chg_rates_get_rates:
     pattern: /get/charge_rates
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSChargeRates:getChargeRates }
+
+
+gist_poserp_save_transaction:
+    path:     /save_transaction/{id}/{display_id}/{total}/{balance}/{type}/{customer_id}/{status}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSync:saveTransaction }
+
+gist_poserp_save_item:
+    path:     /save_item/{trans_sys_id}/{prod_id}/{prod_name}/{orig_price}/{min_price}/{adjusted_price}/{discount_type}/{discount_value}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionItems }
+
+gist_poserp_save_payment:
+    path:     /save_payment/{trans_sys_id}/{payment_type}/{amount}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionPayments }
+
+#POS TRANSACTIONS
+gist_poserp_transaction_index:
+    pattern: /transactions
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSTransaction:index }
+
+gist_poserp_transaction_add_form:
+    pattern: /transaction
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSTransaction:addForm }
+
+gist_poserp_transaction_add_submit:
+    pattern: /transaction
+    methods: [POST]
+    defaults: { _controller: GistPOSERPBundle:POSTransaction:addSubmit }
+
+gist_poserp_transaction_edit_form:
+    pattern: /transaction/{id}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSTransaction:editForm }
+
+gist_poserp_transaction_edit_submit:
+    pattern: /transaction/{id}
+    methods: [POST]
+    defaults: { _controller: GistPOSERPBundle:POSTransaction:editSubmit }
+
+gist_poserp_transaction_delete:
+    pattern: /transaction/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSTransaction:delete }
+
+gist_poserp_transaction_grid:
+    pattern: /transactions/grid
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSTransaction:grid }

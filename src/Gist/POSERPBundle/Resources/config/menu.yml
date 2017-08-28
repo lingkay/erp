@@ -11,3 +11,7 @@ menu_items:
       acl: gist_poserp_chg_rates.menu
       label: Charge Interest Rates
       parent: gist_poserp_menu
+    - id: gist_poserp_transaction_index
+      acl:  gist_poserp_transaction.menu
+      label: Transactions
+      parent: gist_poserp_menu
