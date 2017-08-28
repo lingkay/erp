@@ -63,40 +63,73 @@ class CustomerController extends CrudController
 
     }
 
-    public function searchCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
+    public function searchCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $id = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null)
     {
     	header("Access-Control-Allow-Origin: *");
-    	// $first_name = mysql_real_escape_string($first_name);
-    	// $last_name = mysql_real_escape_string($last_name);
-    	// $email = mysql_real_escape_string($email);
-    	// $number = mysql_real_escape_string($number);
+
+        $search_array = array();
+        $search_array['first_name'] = $first_name;
+        $search_array['last_name'] = $last_name;
+        $search_array['c_email_address'] = $email;
+        $search_array['mobile_number'] = $number;
+        $search_array['middle_name'] = $mname;
+        $search_array['id'] = $id;
+        $search_array['gender'] = $gender;
+        $search_array['marital_status'] = $marital_status;
+        $search_array['date_married'] = $date_married;
+        $search_array['home_phone'] = $home_phone;
+        $search_array['birthdate'] = $birthdate;
+        $search_array['address1'] = $add1;
+        $search_array['address2'] = $add2;
+        $search_array['city'] = $city;
+        $search_array['state'] = $state;
+        $search_array['country'] = $country;
+        $search_array['zip'] = $zip;
 
     	
         $em = $this->getDoctrine()->getManager();
-        // $customers = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
-        $customers = $em->getRepository("GistCustomerBundle:Customer")->createQueryBuilder('o')
-		   ->where('o.c_email_address LIKE :email OR o.first_name LIKE :first_name OR o.last_name LIKE :last_name OR o.mobile_number LIKE :mobile_number')
-		   ->setParameter('email', '%'.$email.'%')
-		   ->setParameter('first_name', '%'.$first_name.'%')
-		   ->setParameter('last_name', '%'.$last_name.'%')
-		   ->setParameter('mobile_number', '%'.$number.'%')
-		   ->getQuery()
-		   ->getResult();
+
+        $customers = $em->getRepository("GistCustomerBundle:Customer")->createQueryBuilder('o');
+        foreach ($search_array as $key => $value) {
+            if (trim($value) != '') {
+                $customers->andWhere($customers->expr()->eq('o.'.$key, ':o_'.$key))
+                      ->setParameter('o_'.$key,''.$value.'');
+            }
+            
+        }
+		$results = $customers->getQuery()->getResult();
+
+
      
         $list_opts = [];
-        foreach ($customers as $p) {
-			$list_opts[] = array('id'=>$p->getID(), 'first_name'=> $p->getFirstName(), 'last_name'=> $p->getLastName(), 'email'=> $p->getCEmailAddress(), 'number'=> $p->getMobileNumber());
+        foreach ($results as $p) {
+			$list_opts[] = array(
+                'id'=>$p->getID(), 
+                'first_name'=> $p->getFirstName(), 
+                'last_name'=> $p->getLastName(), 
+                'email'=> $p->getCEmailAddress(), 
+                'number'=> $p->getMobileNumber(),
+                'middle_name' => $p->getMiddleName(),
+                'id' => $p->getID(),
+                'gender' => $p->getGender(),
+                'marital_status' => $p->getMaritalStatus(),
+                'date_married' => $p->getDateMarried(),
+                'home_phone' => $p->getHomePhone(),
+                'birthdate' => $p->getBirthdate(),
+                'address1' => $p->getAddress1(),
+                'address2' => $p->getAddress2(),
+                'city' => $p->getCity(),
+                'state' => $p->getState(),
+                'country' => $p->getCountry(),
+                'zip' => $p->getZip(),
+            );
         }
         return new JsonResponse($list_opts);
     }
 
-    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null)
+    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $id = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null)
     {
     	header("Access-Control-Allow-Origin: *");
-    	// $first_name = mysql_real_escape_string($first_name);
-    	// $last_name = mysql_real_escape_string($last_name);
-    	// $email = mysql_real_escape_string($email);
-    	// $number = mysql_real_escape_string($number);
 
     	
     	$em = $this->getDoctrine()->getManager();
@@ -105,6 +138,21 @@ class CustomerController extends CrudController
         $customer->setLastName($last_name);
         $customer->setCEmailAddress($email);
         $customer->setMobileNumber($number);
+
+        $customer->setMiddleName($mname);
+        $customer->setGender($gender);
+        $customer->setMaritalStatus($marital_status);
+        $customer->setDateMarried($date_married);
+        $customer->setHomePhone($home_phone);
+        $customer->setBirthdate($birthdate);
+        $customer->setAddress1($add1);
+        $customer->setAddress2($add2);
+        $customer->setCity($city);
+        $customer->setState($state);
+        $customer->setCountry($country);
+        $customer->setZip($zip);
+
+
         $customer->setStatus('Active');
 
         $em->persist($customer);

@@ -29,6 +29,9 @@ class Customer
     protected $first_name;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $middle_name;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $last_name;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
@@ -39,6 +42,39 @@ class Customer
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $status;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $gender;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $marital_status;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $date_married;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $home_phone;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $birthdate;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $address1;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $address2;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $city;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $state;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $country;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $zip;
 
 
     public function __construct()
@@ -53,5 +89,125 @@ class Customer
         $this->dataHasGeneratedID($data);
         $this->dataTrackCreate($data);
         return $data;
+    }
+
+    /**
+     * Set firstName
+     *
+     * @param string $firstName
+     *
+     * @return Customer
+     */
+    public function setFirstName($firstName)
+    {
+        $this->first_name = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     *
+     * @return Customer
+     */
+    public function setLastName($lastName)
+    {
+        $this->last_name = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * Set cEmailAddress
+     *
+     * @param string $cEmailAddress
+     *
+     * @return Customer
+     */
+    public function setCEmailAddress($cEmailAddress)
+    {
+        $this->c_email_address = $cEmailAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get cEmailAddress
+     *
+     * @return string
+     */
+    public function getCEmailAddress()
+    {
+        return $this->c_email_address;
+    }
+
+    /**
+     * Set mobileNumber
+     *
+     * @param string $mobileNumber
+     *
+     * @return Customer
+     */
+    public function setMobileNumber($mobileNumber)
+    {
+        $this->mobile_number = $mobileNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get mobileNumber
+     *
+     * @return string
+     */
+    public function getMobileNumber()
+    {
+        return $this->mobile_number;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return Customer
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }
