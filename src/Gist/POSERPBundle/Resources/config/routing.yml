@@ -69,3 +69,8 @@ gist_poserp_chg_rates_grid:
     pattern: /interest_rates/grid
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSChargeRates:grid }
+
+gist_poserp_chg_rates_get_rates:
+    pattern: /get/charge_rates
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:getChargeRates }

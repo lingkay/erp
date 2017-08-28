@@ -51,4 +51,17 @@ class POSChargeRatesController extends CrudController
         $o->setRateName($data['rate_name']);
         $o->setRateValue($data['rate_value']);
     }
+
+    public function getChargeRatesAction()
+    {   
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $rates = $em->getRepository('GistPOSERPBundle:POSChargeRates')->findAll();
+        $list_opts = [];
+        foreach ($rates as $c) {
+            $list_opts[] = array('id'=>$c->getID(), 'name'=> $c->getRateName(), 'value'=> $c->getRateValue());
+
+        }
+        return new JsonResponse($list_opts);
+    }
 }
