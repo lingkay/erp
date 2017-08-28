@@ -25,19 +25,19 @@ class Customer
 
 
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $first_name;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $middle_name;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $last_name;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $c_email_address;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $mobile_number;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -46,35 +46,38 @@ class Customer
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $gender;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $marital_status;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $date_married;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $home_phone;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $birthdate;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $address1;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $address2;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $city;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $state;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $country;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="string", length=25, nullable=true) */
     protected $zip;
+
+    /** @ORM\Column(type="string", length=25, nullable=true) */
+    protected $notes;
 
 
     public function __construct()
@@ -497,5 +500,29 @@ class Customer
     public function getZip()
     {
         return $this->zip;
+    }
+
+    /**
+     * Set notes
+     *
+     * @param string $notes
+     *
+     * @return Customer
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    /**
+     * Get notes
+     *
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
     }
 }

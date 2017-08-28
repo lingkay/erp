@@ -84,6 +84,7 @@ class CustomerController extends CrudController
         $o->setState($data['state']);
         $o->setCountry($data['country']);
         $o->setZip($data['zip']);
+        $o->setNotes($data['notes']);
 
 
     }
@@ -130,35 +131,33 @@ class CustomerController extends CrudController
         }
 		$results = $customers->getQuery()->getResult();
 
-
-     
         $list_opts = [];
         foreach ($results as $p) {
 			$list_opts[] = array(
                 'id'=>$p->getID(), 
-                'first_name'=> $p->getFirstName(), 
-                'last_name'=> $p->getLastName(), 
-                'email'=> $p->getCEmailAddress(), 
-                'number'=> $p->getMobileNumber(),
-                'middle_name' => $p->getMiddleName(),
-                'id' => $p->getID(),
-                'gender' => $p->getGender(),
-                'marital_status' => $p->getMaritalStatus(),
-                'date_married' => $p->getDateMarried(),
-                'home_phone' => $p->getHomePhone(),
-                'birthdate' => $p->getBirthdate(),
-                'address1' => $p->getAddress1(),
-                'address2' => $p->getAddress2(),
-                'city' => $p->getCity(),
-                'state' => $p->getState(),
-                'country' => $p->getCountry(),
-                'zip' => $p->getZip(),
+                'first_name'=> ($p->getFirstName() == null) ? '':$p->getFirstName(), 
+                'last_name'=> ($p->getLastName() == null) ? '':$p->getLastName(), 
+                'email'=> ($p->getCEmailAddress() == null) ? '':$p->getCEmailAddress(), 
+                'number'=> ($p->getMobileNumber() == null) ? '':$p->getMobileNumber(),
+                'middle_name' => ($p->getMiddleName() == null) ? '':$p->getMiddleName(),
+                'gender' => ($p->getGender() == null) ? '':$p->getGender(),
+                'marital_status' => ($p->getMaritalStatus() == null) ? '':$p->getMaritalStatus(),
+                'date_married' => ($p->getDateMarried() == null) ? '':$p->getDateMarried(),
+                'home_phone' => ($p->getHomePhone() == null) ? '':$p->getHomePhone(),
+                'birthdate' => ($p->getBirthdate() == null) ? '':$p->getBirthdate(),
+                'address1' => ($p->getAddress1() == null) ? '':$p->getAddress1(),
+                'address2' => ($p->getAddress2() == null) ? '':$p->getAddress2(),
+                'city' => ($p->getCity() == null) ? '':$p->getCity(),
+                'state' => ($p->getState() == null) ? '':$p->getState(),
+                'country' => ($p->getCountry() == null) ? '':$p->getCountry(),
+                'zip' => ($p->getZip() == null) ? '':$p->getZip(),
+                'notes' => ($p->getNotes() == null) ? '':$p->getNotes(),
             );
         }
         return new JsonResponse($list_opts);
     }
 
-    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $id = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null)
+    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $id = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null, $notes = null)
     {
     	header("Access-Control-Allow-Origin: *");
 
@@ -182,6 +181,7 @@ class CustomerController extends CrudController
         $customer->setState($state);
         $customer->setCountry($country);
         $customer->setZip($zip);
+        $customer->setNotes($notes);
 
 
         $customer->setStatus('Active');
