@@ -92,7 +92,7 @@ class CustomerController extends CrudController
         $customers = $em->getRepository("GistCustomerBundle:Customer")->createQueryBuilder('o');
         foreach ($search_array as $key => $value) {
             if (trim($value) != '') {
-                $customers->andWhere('o.'.$key .'LIKE :o_'.$key)
+                $customers->andWhere('o.'.$key .' LIKE :o_'.$key)
                       ->setParameter('o_'.$key,'%'.$value.'%');
             }
             
