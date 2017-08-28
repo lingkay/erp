@@ -51,6 +51,7 @@ class AppKernel extends Kernel
             new Gist\LocationBundle\GistLocationBundle(),
             new Gist\AccountingBundle\GistAccountingBundle(),
             new Gist\CustomerBundle\GistCustomerBundle(),
+            new Gist\POSERPBundle\GistPOSERPBundle(),
 
             //Hris modules
             new Hris\AdminBundle\HrisAdminBundle(),

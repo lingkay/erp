@@ -1,0 +1,13 @@
+menu_items:
+    - id: gist_poserp_menu
+      acl: gist_poserp.menu
+      label: Point of Sales
+      icon: fa-calculator
+    - id: gist_poserp_settings_index
+      acl: gist_poserp_settings.menu
+      label: Settings
+      parent: gist_poserp_menu
+    - id: gist_poserp_chg_rates_index
+      acl: gist_poserp_chg_rates.menu
+      label: Charge Interest Rates
+      parent: gist_poserp_menu

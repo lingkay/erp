@@ -126,3 +126,7 @@ gist_accounting:
 gist_customer:
     resource: "@GistCustomerBundle/Resources/config/routing.yml"
     prefix:   /customer
+
+gist_poserp:
+    resource: "@GistPOSERPBundle/Resources/config/routing.yml"
+    prefix:   /pos_erp

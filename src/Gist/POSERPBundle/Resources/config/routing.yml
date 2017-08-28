@@ -1,0 +1,71 @@
+#POS ERP SETTINGS
+gist_poserp_settings_index:
+    pattern: /possettings
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSettings:index }
+
+gist_poserp_settings_add_form:
+    pattern: /possetting
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSettings:addForm }
+
+gist_poserp_settings_add_submit:
+    pattern: /possetting
+    methods: [POST]
+    defaults: { _controller: GistPOSERPBundle:POSSettings:addSubmit }
+
+gist_poserp_settings_edit_form:
+    pattern: /possetting/{id}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSettings:editForm }
+
+gist_poserp_settings_edit_submit:
+    pattern: /possetting/{id}
+    methods: [POST]
+    defaults: { _controller: GistPOSERPBundle:POSSettings:editSubmit }
+
+gist_poserp_settings_delete:
+    pattern: /possetting/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSettings:delete }
+
+gist_poserp_settings_grid:
+    pattern: /possettings/grid
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSettings:grid }
+
+# CHARGE INT RATES
+gist_poserp_chg_rates_index:
+    pattern: /interest_rates
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:index }
+
+gist_poserp_chg_rates_add_form:
+    pattern: /interest_rate
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:addForm }
+
+gist_poserp_chg_rates_add_submit:
+    pattern: /interest_rate
+    methods: [POST]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:addSubmit }
+
+gist_poserp_chg_rates_edit_form:
+    pattern: /interest_rate/{id}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:editForm }
+
+gist_poserp_chg_rates_edit_submit:
+    pattern: /interest_rate/{id}
+    methods: [POST]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:editSubmit }
+
+gist_poserp_chg_rates_delete:
+    pattern: /interest_rate/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:delete }
+
+gist_poserp_chg_rates_grid:
+    pattern: /interest_rates/grid
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSChargeRates:grid }

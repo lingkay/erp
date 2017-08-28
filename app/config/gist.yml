@@ -10,6 +10,7 @@ gist_menu:
         - GistInventoryBundle
         - GistConfigurationBundle
         - GistCustomerBundle
+        - GistPOSERPBundle
         #- HrisBiometricsBundle
         #- HrisWorkforceBundle
         #- HrisRemunerationBundle
@@ -40,6 +41,8 @@ gist_user:
           label: Inventory
         - id: GistCustomerBundle
           label: Customer
+        - id: GistPOSERPBundle
+          label: POS
 
 gist_configuration:
     bundles:

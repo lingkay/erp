@@ -1,0 +1,30 @@
+acl:
+    - category: POS
+      entries:
+        - id: gist_poserp.menu
+          label: "Menu"
+    - category: POS Settings
+      entries:
+        - id: gist_poserp_settings.menu
+          label: "Menu"
+        - id: gist_poserp_settings.view
+          label: "View"
+        - id: gist_poserp_settings.add
+          label: "Add"
+        - id: gist_poserp_settings.edit
+          label: "Edit"
+        - id: gist_poserp_settings.delete
+          label: "Delete"
+    - category: POS Charge Interest Rates
+      entries:
+        - id: gist_poserp_chg_rates.menu
+          label: "Menu"
+        - id: gist_poserp_chg_rates.view
+          label: "View"
+        - id: gist_poserp_chg_rates.add
+          label: "Add"
+        - id: gist_poserp_chg_rates.edit
+          label: "Edit"
+        - id: gist_poserp_chg_rates.delete
+          label: "Delete"
+
