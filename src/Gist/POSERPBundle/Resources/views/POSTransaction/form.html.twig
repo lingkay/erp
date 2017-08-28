@@ -6,14 +6,61 @@
         <div class="col-md-12">
             <div class="portlet box blue-hoki">
                 <div class="portlet-title">
-                    <div class="caption">{% block form_header %}Role{% endblock %}</div>
+                    <div class="caption">Transaction {{object.getTransDisplayId|default('')}} Details</div>
                 </div>
                 <div class="portlet-body form">
                     <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
-                            {{ form.group_text('Transaction Code', 'trans_code', object.getTransDisplayId, 3, 4, true) }}
+                            {{ form.group_text('Transaction Code', 'trans_code', object.getTransDisplayId|default(''), 3, 4, true) }}
+                            {{ form.group_text('Transaction Type', 'trans_type', object.getTransactionTypeFormatted|default(''), 3, 4, true) }}
+                            {{ form.group_text('Customer', 'customer', customer.getNameFormatted|default('n/a'), 3, 4, true) }}
+                            {{ form.group_text('Total', 'total', object.getTransactionTotal|number_format(2, '.', ',')|default(''), 3, 4, true) }}
+                            {{ form.group_text('Balance', 'Balance', object.getTransactionBalance|number_format(2, '.', ',')|default(''), 3, 4, true) }}
+                            <h4 class="form-section">Items</h4>
+                            <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th width="20%">Item Name</th>
+                                        <th width="20%">SRP</th>
+                                        <th width="20%">Discount Type</th>
+                                        <th width="20%">Discount Value</th>
+                                        <th width="20%">Adjusted Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="items_given_tbody">
+                                    {% for i in object.getItems|default('') %}
+                                      <tr>
+                                        <td><input type="text" name="rate_name[]" value="{{i.getName|default('')}}" class="form-control rate_name" readonly="true"></td>
+                                        <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getOrigPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                        <td><input type="text" name="x" class="form-control" value="{{i.getDiscountType|default('')}}"  readonly="true"></td>
+                                        <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getDiscountValue|number_format(0, '.', ',')|default('')}}"  readonly="true"></td>
+                                        <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getAdjustedPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                      </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <h4 class="form-section">Payments</h4>
+                            <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th width="20%">Type</th>
+                                        <th width="20%">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="items_given_tbody">
+                                    {% for i in object.getPayments|default('') %}
+                                      <tr>
+                                        <td><input type="text" name="rate_name[]" value="{{i.getType|default('')}}" class="form-control rate_name" readonly="true"></td>
+                                        <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getAmount|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                      </tr>
+                                    {% endfor %}
+                                    <tr>
+                                    <td colspan="2"><b class="pull-right">Total Payments</b><input type="text" name="x" class="form-control qty" style="text-align: right !important;" value="{{object.getTotalPayments|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="form-actions fluid">
                             <div class="col-md-9">

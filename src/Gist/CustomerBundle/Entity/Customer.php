@@ -94,6 +94,11 @@ class Customer
         return $data;
     }
 
+    public function getNameFormatted()
+    {
+        return $this->last_name . ', '.$this->first_name;
+    }
+
     /**
      * Set firstName
      *

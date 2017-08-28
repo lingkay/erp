@@ -35,6 +35,12 @@ class POSTransaction
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $customer_id;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\CustomerBundle\Entity\Customer")
+     * @ORM\JoinColumn(name="cust_link_id", referencedColumnName="id")
+     */
+    protected $customer;
+
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $transaction_type;
 
@@ -43,6 +49,12 @@ class POSTransaction
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $synced_to_erp;
+
+    /** @ORM\OneToMany(targetEntity="POSTransactionItem", mappedBy="transaction") */
+    protected $items;
+
+    /** @ORM\OneToMany(targetEntity="POSTransactionPayment", mappedBy="transaction") */
+    protected $payments;
 
 
 
@@ -59,6 +71,27 @@ class POSTransaction
         $this->dataHasGeneratedID($data);
         $this->dataTrackCreate($data);
         return $data;
+    }
+
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    public function getTotalPayments()
+    {
+        $total = 0;
+
+        foreach ($this->payments as $p) {
+            $total = $total + $p->getAmount();
+        }
+
+        return $total;
     }
 
     /**
@@ -236,6 +269,22 @@ class POSTransaction
         return $this->transaction_type;
     }
 
+    public function getTransactionTypeFormatted()
+    {
+        $ret_val = 'n/a';
+        if ($this->transaction_type == 'reg') {
+            $ret_val = 'Regular';
+        } elseif ($this->transaction_type == 'bulk') {
+            $ret_val = 'Bulk Discount';
+        } elseif ($this->transaction_type == 'per') {
+            $ret_val = 'Per-item Discount';
+        } else {
+            $ret_val = 'N/A';
+        }
+
+        return $ret_val;
+    }
+
     /**
      * Set syncedToErp
      *
@@ -283,4 +332,18 @@ class POSTransaction
     {
         return $this->transaction_balance;
     }
+
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+
 }

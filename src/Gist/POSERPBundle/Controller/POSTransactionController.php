@@ -56,11 +56,11 @@ class POSTransactionController extends CrudController
         );
     }
 
-    protected function padFormParams(&$params, $user = null)
+    protected function padFormParams(&$params, $o = null)
     {
         $em = $this->getDoctrine()->getManager();
 
-
+        $params['customer'] = $em->getRepository('GistCustomerBundle:Customer')->findOneBy(array('id'=>$o->getCustomerId()));
 
         return $params;
     }

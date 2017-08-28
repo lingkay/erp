@@ -26,7 +26,34 @@ class POSSyncController extends CrudController
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
+
+
+        // REMOVE EXISTING TRANSACTION
+        $existing_transactions = $em->getRepository('GistPOSERPBundle:POSTransaction')->findBy(array('trans_display_id'=>$display_id));   
+        foreach ($existing_transactions as $et) {
+            // REMOVE PAYMENTS
+            foreach ($et->getItems() as $item) {
+                $em->remove($item);
+            }
+            // REMOVE ITEMS
+            foreach ($et->getPayments() as $payment) {
+                $em->remove($payment);
+            }
+            $em->flush();
+            $em->remove($et);
+            $em->flush();
+        }
+        
+
+
+
         $transaction = new POSTransaction();
+
+        if (trim($customer_id) != 0 || trim($customer_id) != '') {
+            $cust_obj = $em->getRepository('GistCustomerBundle:Customer')->findOneBy(array('id'=>$customer_id));   
+            $transaction->setCustomer($cust_obj);
+        }
+        
 
         $transaction->setId($id);
         $transaction->setTransDisplayId($display_id);
