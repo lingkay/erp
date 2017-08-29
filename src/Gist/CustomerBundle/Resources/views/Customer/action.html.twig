@@ -1,0 +1,4 @@
+{% if app.user.hasAccess(prefix ~ '.view') %}
+<a href="{{ path(route_edit, { 'id': id }) }}" class="btn default btn-xs green-meadow"><i class="fa fa-eye"></i> View</a>
+<a href="{{ path('gist_customer_list_logs', { 'id': id }) }}" class="btn default btn-xs blue"><i class="fa fa-list"></i> Logs</a>
+{% endif %}

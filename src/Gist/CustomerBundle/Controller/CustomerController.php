@@ -29,6 +29,47 @@ class CustomerController extends CrudController
         return $obj->getID();
     }
 
+    public function viewLogsAction($id)
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository($this->repo)->find($id);
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['o_label'] = $this->getObjectLabel($obj);
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
+
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistCustomerBundle:Customer:logs.html.twig', $params);
+    }
+
+    public function callbackGrid($id)
+    {
+        $params = array(
+            'id' => $id,
+            'route_edit' => $this->getRouteGen()->getEdit(),
+            'route_delete' => $this->getRouteGen()->getDelete(),
+            'prefix' => $this->route_prefix,
+        );
+
+        $this->padGridParams($params, $id);
+
+        $engine = $this->get('templating');
+        return $engine->render(
+            'GistCustomerBundle:Customer:action.html.twig',
+            $params
+        );
+    }
+
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');

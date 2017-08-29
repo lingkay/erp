@@ -79,10 +79,18 @@ class Customer
     /** @ORM\Column(type="string", length=25, nullable=true) */
     protected $notes;
 
+    /** @ORM\OneToMany(targetEntity="Gist\POSERPBundle\Entity\POSTransaction", mappedBy="customer") */
+    protected $transactions;
+
 
     public function __construct()
     {
         $this->initTrackCreate();
+    }
+
+    public function getTransactions()
+    {
+        return $this->transactions;
     }
 
     
