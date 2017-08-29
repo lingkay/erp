@@ -13,22 +13,28 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
-                            {{ form.group_text('Transaction Code', 'trans_code', object.getTransDisplayId|default(''), 3, 4, true) }}
-                            {{ form.group_text('Transaction Type', 'trans_type', object.getTransactionTypeFormatted|default(''), 3, 4, true) }}
-                            {{ form.group_text('Total', 'total', object.getCartOrigTotal|number_format(2, '.', ',')|default(''), 3, 4, true) }}
-                            {{ form.group_text('Bulk Discount', 'bulk_discount', object.getBulkDiscountType|default(''), 3, 4, true) }}
-                            {{ form.group_text('Customer', 'customer', customer.getNameFormatted|default('n/a'), 3, 4, true) }}
-                            {{ form.group_text('Discounted Total', 'total', object.getTransactionTotal|number_format(2, '.', ',')|default(''), 3, 4, true) }}
-                            {{ form.group_text('Balance', 'Balance', object.getTransactionBalance|number_format(2, '.', ',')|default(''), 3, 4, true) }}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.group_text('Code', 'trans_code', object.getTransDisplayId|default(''), 4, 5, true) }}
+                                    {{ form.group_text('Customer', 'customer', customer.getNameFormatted|default('N/A'), 4, 5, true) }}
+                                    {{ form.group_text('Type', 'trans_type', object.getTransactionTypeFormatted|default(''), 4, 5, true) }}
+                                    {{ form.group_text('Bulk Discount', 'bulk_discount', object.getBulkDiscountType|default(''), 4, 5, true) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.group_text('Total', 'total', object.getCartOrigTotal|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                    {{ form.group_text('Discounted Total', 'discounted_total', object.getTransactionTotal|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                    {{ form.group_text('Balance', 'Balance', object.getTransactionBalance|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                </div>
+                            </div>                           
                             <h4 class="form-section">Items</h4>
                             <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
                                 <thead>
                                     <tr>
-                                        <th width="20%">Item Name</th>
-                                        <th width="20%">SRP</th>
-                                        <th width="20%">Discount Type</th>
-                                        <th width="20%">Discount Value</th>
-                                        <th width="20%">Adjusted Price</th>
+                                        <th width="40%">Item Name</th>
+                                        <th width="10%">SRP</th>
+                                        <th width="10%">Discount Type</th>
+                                        <th width="10%">Discount Value</th>
+                                        <th width="10%">Adjusted Price</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items_given_tbody">
@@ -81,9 +87,13 @@
     <script>
         $(document).ready(function() {
             var discount = "{{object.getTransactionTypeFormatted|default('')}}";
-            $('#cform-bulk_discount').hide();
+            $('#cgroup-bulk_discount').hide();
+            $('#cgroup-discounted_total').hide();
             if (discount == "Bulk Discount") {
-                $('#cform-bulk_discount').show();
+                $('#cgroup-bulk_discount').show();
+                $('#cgroup-discounted_total').show();
+            } else if(discount == 'Per-item Discount') {
+                $('#cgroup-discounted_total').show();
             }
         });
     </script>
