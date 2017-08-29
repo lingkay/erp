@@ -15,6 +15,7 @@
                             <h4 class="form-section">Information</h4>
                             {{ form.group_text('Transaction Code', 'trans_code', object.getTransDisplayId|default(''), 3, 4, true) }}
                             {{ form.group_text('Transaction Type', 'trans_type', object.getTransactionTypeFormatted|default(''), 3, 4, true) }}
+                            {{ form.group_text('Bulk Discount', 'bulk_discount', object.getBulkDiscountType|default(''), 3, 4, true) }}
                             {{ form.group_text('Customer', 'customer', customer.getNameFormatted|default('n/a'), 3, 4, true) }}
                             {{ form.group_text('Total', 'total', object.getTransactionTotal|number_format(2, '.', ',')|default(''), 3, 4, true) }}
                             {{ form.group_text('Balance', 'Balance', object.getTransactionBalance|number_format(2, '.', ',')|default(''), 3, 4, true) }}
@@ -78,7 +79,11 @@
 {% block js %}
     <script>
         $(document).ready(function() {
-            
+            var discount = "{{object.getTransactionTypeFormatted|default('')}}";
+            $('#cform-bulk_discount').hide();
+            if (discount == "Bulk Discount") {
+                $('#cform-bulk_discount').show();
+            }
         });
     </script>
 {% endblock %}

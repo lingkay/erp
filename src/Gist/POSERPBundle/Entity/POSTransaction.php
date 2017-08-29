@@ -83,6 +83,9 @@ class POSTransaction
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $cart_new_total;
 
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $bulk_discount_type;
+
 
 
     public function __construct()
@@ -635,5 +638,29 @@ class POSTransaction
     public function removePayment(\Gist\POSERPBundle\Entity\POSTransactionPayment $payment)
     {
         $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Set bulkDiscountType
+     *
+     * @param string $bulkDiscountType
+     *
+     * @return POSTransaction
+     */
+    public function setBulkDiscountType($bulkDiscountType)
+    {
+        $this->bulk_discount_type = $bulkDiscountType;
+
+        return $this;
+    }
+
+    /**
+     * Get bulkDiscountType
+     *
+     * @return string
+     */
+    public function getBulkDiscountType()
+    {
+        return $this->bulk_discount_type;
     }
 }
