@@ -28,7 +28,7 @@
                                         <tbody id="items_given_tbody">
                                             {% for i in object.getTransactions|default('') %}
                                               <tr>
-                                                <td><input type="text" name="rate_name[]" value="{{i.getTransDisplayId|default('')}}" class="form-control rate_name" readonly="true"></td>
+                                                <td><input type="text" name="rate_name[]" value="{{i.getTransDisplayIdFormatted|default('')}}" class="form-control rate_name" readonly="true"></td>
                                                 <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getCartNewTotal|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
                                                 <td><input type="text" name="x" class="form-control" value="{{i.getTransactionTypeFormatted|default('')}}"  readonly="true"></td>
                                                 <td><a href="{{ path('gist_poserp_transaction_edit_form', { 'id': i.getID }) }}" class="btn default btn-xs green"><i class="fa fa-eye"></i> View</a></td>

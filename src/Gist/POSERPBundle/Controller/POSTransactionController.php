@@ -52,7 +52,7 @@ class POSTransactionController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Transaction Code', 'getTransDisplayId', 'trans_display_id')
+            $grid->newColumn('Transaction Code', 'getTransDisplayIdFormatted', 'trans_display_id')
         );
     }
 

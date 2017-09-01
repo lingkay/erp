@@ -6,7 +6,11 @@
         <div class="col-md-12">
             <div class="portlet box blue-hoki">
                 <div class="portlet-title">
-                    <div class="caption">Transaction {{object.getTransDisplayId|default('')}} Details</div>
+                    {% if object.getTransactionModeFormatted|default('na') == 'Normal' %}
+                        <div class="caption">Transaction {{object.getTransDisplayId|default('')}} Details</div>
+                    {% else %}
+                        <div class="caption">Quotation Details</div>
+                    {% endif %}
                 </div>
                 <div class="portlet-body form">
                     <!-- BEGIN FORM-->
@@ -15,7 +19,11 @@
                             <h4 class="form-section">Information</h4>
                             <div class="row">
                                 <div class="col-md-6">
-                                    {{ form.group_text('Code', 'trans_code', object.getTransDisplayId|default(''), 4, 5, true) }}
+                                    {% if object.getTransactionModeFormatted|default('na') == 'Normal' %}
+                                        {{ form.group_text('Code', 'trans_code', object.getTransDisplayId|default(''), 4, 5, true) }}
+                                    {% else %}
+                                        {{ form.group_text('Code', 'trans_code', 'N/A - Quotation', 4, 5, true) }}
+                                    {% endif %}
                                     {{ form.group_text('Customer', 'customer', customer.getNameFormatted|default('N/A'), 4, 5, true) }}
                                     {{ form.group_text('Type', 'trans_type', object.getTransactionTypeFormatted|default(''), 4, 5, true) }}
                                     {{ form.group_text('Bulk Discount', 'bulk_discount', object.getBulkDiscountType|default(''), 4, 5, true) }}
