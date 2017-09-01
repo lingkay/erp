@@ -306,10 +306,9 @@ class POSTransaction
 
     public function getTransDisplayIdFormatted()
     {
-        $ret = '';
-        if ($this->transaction_mode == 'normal') {
-            $ret = $this->trans_display_id;
-        } else {
+        $ret = $this->trans_display_id;
+        
+        if ($this->transaction_mode == 'quotation') {
             $ret = 'Quotation';
         }
         return $ret;
