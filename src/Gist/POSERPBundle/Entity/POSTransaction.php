@@ -138,6 +138,21 @@ class POSTransaction
         return $this->transaction_mode;
     }
 
+    public function getTransactionModeFormatted()
+    {
+        $ret = '';
+
+        if ($this->transaction_mode == 'normal') {
+            $ret = 'Normal';
+        } elseif ($this->transaction_mode == 'quotation') {
+            $ret = 'Quotation';
+        }
+
+        return $ret;
+    }
+
+    
+
     /**
      * Set transactionTotal
      *

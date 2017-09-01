@@ -21,6 +21,7 @@
                                     {{ form.group_text('Bulk Discount', 'bulk_discount', object.getBulkDiscountType|default(''), 4, 5, true) }}
                                 </div>
                                 <div class="col-md-6">
+                                    {{ form.group_text('Mode', 'mode', object.getTransactionModeFormatted|default(''), 4, 5, true) }}
                                     {{ form.group_text('Total', 'total', object.getCartOrigTotal|number_format(2, '.', ',')|default(''), 4, 5, true) }}
                                     {{ form.group_text('Discounted Total', 'discounted_total', object.getTransactionTotal|number_format(2, '.', ',')|default(''), 4, 5, true) }}
                                     {{ form.group_text('Balance', 'Balance', object.getTransactionBalance|number_format(2, '.', ',')|default(''), 4, 5, true) }}
