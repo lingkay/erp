@@ -20,6 +20,25 @@
 {% endfor %}
 {% endmacro %}
 
+{% macro group_date_pos(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
+{% import _self as self %}
+{% if readonly %}
+    {{ self.group_text(label, name, value, label_size, body_size, readonly, prefix) }}
+{% else %}
+<div class="form-group posgrp_{{name}}">
+    <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+    <div class ="col-md-{{ body_size }}">
+        <div class="input-group date date-picker" data-date-format="mm-dd-yyyy">
+            <input id="{{ prefix }}form-{{ name }}" type="text" class="form-control" name="{{ name }}" placeholder="{{ label }}" value="{{ value }}" readonly>
+            <span class="input-group-btn">
+                <button class="btn default calendar" type="button"><i class="fa fa-calendar"></i></button>
+            </span>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
+
 {% macro autosuggest(label, name, label_size, body_size, readonly = false) %}
 <input id="{{ name }}" type="text" name="{{ name }}" class="form-control" placeholder="{{ label }}" {{ readonly ? 'readonly ' : '' }}>
 {% endmacro %}
