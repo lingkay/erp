@@ -29,6 +29,9 @@ class Customer
     protected $first_name;
 
     /** @ORM\Column(type="string", length=245, nullable=true) */
+    protected $display_id;
+
+    /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $middle_name;
 
     /** @ORM\Column(type="string", length=245, nullable=true) */
@@ -537,5 +540,18 @@ class Customer
     public function getNotes()
     {
         return $this->notes;
+    }
+
+
+    public function setDisplayID($display_id)
+    {
+        $this->display_id = $display_id;
+
+        return $this;
+    }
+
+    public function getDisplayID()
+    {
+        return $this->display_id;
     }
 }

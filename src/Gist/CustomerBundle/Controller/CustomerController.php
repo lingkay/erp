@@ -140,7 +140,7 @@ class CustomerController extends CrudController
         $search_array['c_email_address'] = $email;
         $search_array['mobile_number'] = $number;
         $search_array['middle_name'] = $mname;
-        $search_array['id'] = $id;
+        $search_array['display_id'] = $id;
         $search_array['gender'] = $gender;
         $search_array['marital_status'] = $marital_status;
         $search_array['date_married'] = $date_married;
@@ -159,7 +159,7 @@ class CustomerController extends CrudController
         $customers = $em->getRepository("GistCustomerBundle:Customer")->createQueryBuilder('o');
         foreach ($search_array as $key => $value) {
             if (trim($value) != '') {
-                if ($key == 'id') {
+                if ($key == 'display_id') {
                     $customers->andWhere('o.'.$key .' = :o_'.$key)
                       ->setParameter('o_'.$key,''.$value.'');
                 } else {
@@ -225,8 +225,15 @@ class CustomerController extends CrudController
         $customer->setNotes($notes);
 
 
+
+
         $customer->setStatus('Active');
 
+        $em->persist($customer);
+        $em->flush();
+
+        $new_display_id = str_pad($customer->getID() + 1,7,'0',STR_PAD_LEFT);
+        $customer->setDisplayID($new_display_id);
         $em->persist($customer);
         $em->flush();
 
