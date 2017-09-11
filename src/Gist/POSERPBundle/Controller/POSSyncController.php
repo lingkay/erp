@@ -22,7 +22,7 @@ class POSSyncController extends CrudController
         return $obj->getID();
     }
 
-    public function saveTransactionAction($id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode)
+    public function saveTransactionAction($id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -75,6 +75,7 @@ class POSSyncController extends CrudController
         $transaction->setCartOrigTotal($orig_cart_total);
         $transaction->setCartNewTotal($new_cart_total);
         $transaction->setBulkDiscountType($bulk_type);
+        $transaction->setTransactionCCInterest($transaction_cc_interest);
 
 
 

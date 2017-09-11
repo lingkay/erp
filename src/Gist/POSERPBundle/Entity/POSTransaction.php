@@ -36,6 +36,9 @@ class POSTransaction
     protected $transaction_mode;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $transaction_cc_interest;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $customer_id;
 
     /**
@@ -103,6 +106,18 @@ class POSTransaction
         $this->dataHasGeneratedID($data);
         $this->dataTrackCreate($data);
         return $data;
+    }
+
+    public function setTransactionCCInterest($transaction_cc_interest)
+    {
+        $this->transaction_cc_interest = $transaction_cc_interest;
+
+        return $this;
+    }
+
+    public function getTransactionCCInterest()
+    {
+        return $this->transaction_cc_interest;
     }
 
     public function getItems()
