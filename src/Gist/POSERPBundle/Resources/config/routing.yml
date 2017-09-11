@@ -91,6 +91,11 @@ gist_poserp_save_payment:
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionPayments }
 
+gist_poserp_get_users:
+    path:     /get/users/{area_id}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSync:getUsers }
+
 #POS TRANSACTIONS
 gist_poserp_transaction_index:
     pattern: /transactions

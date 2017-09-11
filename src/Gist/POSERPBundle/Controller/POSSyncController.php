@@ -128,4 +128,52 @@ class POSSyncController extends CrudController
         $list_opts[] = array('status'=>'ok');
         return new JsonResponse($list_opts);
     }
+
+    public function getUsersAction($area_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        $search_array = array();
+        $search_array['area'] = $area_id;
+
+        
+        $em = $this->getDoctrine()->getManager();
+
+        $customers = $em->getRepository("GistUserBundle:User")->createQueryBuilder('o');
+        foreach ($search_array as $key => $value) {
+            if (trim($value) != '') {
+                if ($key == 'area') {
+                    $customers->andWhere('IDENTITY(o.'.$key .') = :o_'.$key)
+                      ->setParameter('o_'.$key,''.$value.'');
+                }
+            }
+            
+        }
+        $results = $customers->getQuery()->getResult();
+
+        $list_opts = [];
+        foreach ($results as $p) {
+            $list_opts[] = array(
+                'id'=>$p->getID(), 
+                'username'=> ($p->getUsername() == null) ? '':$p->getUsername(),    
+                'username_canonical'=> ($p->getUsernameCanonical() == null) ? '':$p->getUsernameCanonical(), 
+                'salt'=> ($p->getSalt() == null) ? '':$p->getSalt(), 
+                'position'=> ($p->getGroup()->getName() == null) ? '':$p->getGroup()->getName(), 
+                'department'=> ($p->getGroup()->getDepartment()->getDepartmentName() == null) ? '':$p->getGroup()->getDepartment()->getDepartmentName(),
+                'email'=> ($p->getEmail() == null) ? '':$p->getEmail(), 
+                'password'=> ($p->getPassword() == null) ? '':$p->getPassword(), 
+                'plainPassword'=> ($p->getPlainPassword() == null) ? '':$p->getPlainPassword(), 
+                'confirmationToken'=> ($p->getConfirmationToken() == null) ? '':$p->getConfirmationToken(), 
+                'enabled'=> ($p->isEnabled() == null) ? '':$p->isEnabled(), 
+                'first_name'=> ($p->getFirstName() == null) ? '':$p->getFirstName(), 
+                'middle_name'=> ($p->getMiddleName() == null) ? '':$p->getMiddleName(), 
+                'last_name'=> ($p->getLastName() == null) ? '':$p->getLastName(), 
+                'brand'=> ($p->getBrand()->getName() == null) ? '':$p->getBrand()->getName(), 
+                'commission_type'=> ($p->getCommissionType() == null) ? '':$p->getCommissionType(), 
+                'contact_number'=> ($p->getContactNumber() == null) ? '':$p->getContactNumber(),
+            );
+        }
+
+        return new JsonResponse($list_opts);
+    }
 }
