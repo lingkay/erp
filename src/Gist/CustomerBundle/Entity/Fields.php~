@@ -1,0 +1,36 @@
+<?php
+
+namespace Gist\CustomerBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
+
+use DateTime;
+use stdClass;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="customer_customer_fields")
+ */
+
+class Fields
+{
+
+
+    use HasGeneratedID;
+    use TrackCreate;
+
+
+
+    /** @ORM\Column(type="string", length=245, nullable=true) */
+    protected $field_name;
+
+    /** @ORM\Column(type="string", length=245, nullable=true) */
+    protected $required_flag;
+
+
+
+}

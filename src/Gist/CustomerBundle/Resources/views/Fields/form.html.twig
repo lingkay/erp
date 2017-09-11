@@ -1,0 +1,68 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="portlet box blue-hoki">
+			<div class="portlet-title">
+				<div class="caption"> POS Customer Form Required Fields </div>
+			</div>
+			<div class="portlet-body">
+				<div class="table-toolbar">
+				</div>
+                    <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                        {% for ecat in ecols %}
+                            {% if ecat.getFieldName != 'id' and ecat.getFieldName != '' %}
+                                <div class="form-group">
+                                    <div class="col-md-5 checkbox-list">
+
+                                    {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, ecat.getFieldName, ecat.getRequiredFlag|default(false), false) }}
+
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for cat in cols %}
+                            {% if cat != 'id' and cat != 'status' and cat != 'date_create' %}
+                                <div class="form-group {{cat}}">
+                                    <div class="col-md-5 checkbox-list">
+
+                                    {{ form.checkbox('fields[' ~ cat ~ ']', 1, cat, getRequiredFlag|default(false), false) }}
+
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                        <div class="form-actions fluid">
+                            {% if app.user.hasAccess(prefix ~ '.add') %}
+                            <div class="col-md-9">
+                                <button type="submit" class="btn blue">Submit</button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </form>                
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}
+{% block js %}
+<script>
+
+
+$(document).ready(function() {
+
+});
+
+</script>
+{% endblock %}

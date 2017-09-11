@@ -7,4 +7,8 @@ menu_items:
       acl: gist_customer_list.menu
       label: List
       parent: menu_customer
+    - id: gist_customer_fields_index
+      acl: gist_customer_fields.menu
+      label: POS Fields
+      parent: menu_customer
 

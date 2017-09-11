@@ -15,3 +15,15 @@ acl:
           label: "Edit"
         - id: gist_customer_list.delete
           label: "Delete"
+    - category: POS Customer Fields
+      entries:
+        - id: gist_customer_fields.menu
+          label: "Menu"
+        - id: gist_customer_fields.view
+          label: "View"
+        - id: gist_customer_fields.add
+          label: "Add"
+        - id: gist_customer_fields.edit
+          label: "Edit"
+        - id: gist_customer_fields.delete
+          label: "Delete"

@@ -45,4 +45,5 @@ security:
         - { path: ^/pos_erp/save_transaction, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/pos_erp/save_item, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/pos_erp/save_payment, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/customer/fields/get_req, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
