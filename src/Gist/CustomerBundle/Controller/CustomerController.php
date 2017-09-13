@@ -75,6 +75,7 @@ class CustomerController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
+            $grid->newColumn('Customer ID', 'getDisplayID', 'display_id'),
             $grid->newColumn('First Name', 'getFirstName', 'first_name'),
             $grid->newColumn('Last Name', 'getLastName', 'first_name'),
             $grid->newColumn('Email', 'getCEmailAddress', 'c_email_address'),
@@ -140,7 +141,7 @@ class CustomerController extends CrudController
         $search_array['c_email_address'] = $email;
         $search_array['mobile_number'] = $number;
         $search_array['middle_name'] = $mname;
-        $search_array['display_id'] = $id;
+        $search_array['display_id'] = trim($id);
         $search_array['gender'] = $gender;
         $search_array['marital_status'] = $marital_status;
         $search_array['date_married'] = $date_married;
@@ -232,7 +233,7 @@ class CustomerController extends CrudController
         $em->persist($customer);
         $em->flush();
 
-        $new_display_id = str_pad($customer->getID() + 1,7,'0',STR_PAD_LEFT);
+        $new_display_id = str_pad($customer->getID() + 1,9,'0',STR_PAD_LEFT);
         $customer->setDisplayID($new_display_id);
         $em->persist($customer);
         $em->flush();
