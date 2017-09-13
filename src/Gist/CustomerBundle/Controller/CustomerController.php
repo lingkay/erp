@@ -131,6 +131,16 @@ class CustomerController extends CrudController
 
     }
 
+    protected function hookPostSave($obj, $is_new = false)
+    {
+        //action after save
+        $em = $this->getDoctrine()->getManager();
+        $new_display_id = str_pad($obj->getID(),9,'0',STR_PAD_LEFT);
+        $obj->setDisplayID($new_display_id);
+        $em->persist($obj);
+        $em->flush();
+    }
+
     public function searchCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $id = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null)
     {
     	header("Access-Control-Allow-Origin: *");
@@ -233,7 +243,7 @@ class CustomerController extends CrudController
         $em->persist($customer);
         $em->flush();
 
-        $new_display_id = str_pad($customer->getID() + 1,9,'0',STR_PAD_LEFT);
+        $new_display_id = str_pad($customer->getID(),9,'0',STR_PAD_LEFT);
         $customer->setDisplayID($new_display_id);
         $em->persist($customer);
         $em->flush();
