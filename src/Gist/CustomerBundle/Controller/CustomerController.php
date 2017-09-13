@@ -151,7 +151,7 @@ class CustomerController extends CrudController
         $search_array['c_email_address'] = $email;
         $search_array['mobile_number'] = $number;
         $search_array['middle_name'] = $mname;
-        $search_array['display_id'] = trim($id);
+        $search_array['display_id'] = preg_replace('/\s+/', '', $id);
         $search_array['gender'] = $gender;
         $search_array['marital_status'] = $marital_status;
         $search_array['date_married'] = $date_married;
