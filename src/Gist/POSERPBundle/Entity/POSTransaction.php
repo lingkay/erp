@@ -647,6 +647,15 @@ class POSTransaction
         return $this->cart_new_total;
     }
 
+    public function getCartTotalFormatted()
+    {
+        if ($this->cart_new_total != 0) {
+            return $this->cart_new_total;
+        } else {
+            return $this->cart_orig_total;
+        }
+    }
+
     /**
      * Add item
      *
