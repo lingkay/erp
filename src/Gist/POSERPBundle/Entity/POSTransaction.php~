@@ -33,6 +33,12 @@ class POSTransaction
     protected $transaction_balance;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $transaction_mode;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $transaction_cc_interest;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $customer_id;
 
     /**
@@ -86,6 +92,17 @@ class POSTransaction
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $bulk_discount_type;
 
+    /**
+     * @ORM\OneToOne(targetEntity="POSTransaction")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
+     */
+    private $reference_transaction;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $extra_amount;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $date_modified;
 
 
     public function __construct()
@@ -100,6 +117,18 @@ class POSTransaction
         $this->dataHasGeneratedID($data);
         $this->dataTrackCreate($data);
         return $data;
+    }
+
+    public function setTransactionCCInterest($transaction_cc_interest)
+    {
+        $this->transaction_cc_interest = $transaction_cc_interest;
+
+        return $this;
+    }
+
+    public function getTransactionCCInterest()
+    {
+        return $this->transaction_cc_interest;
     }
 
     public function getItems()
@@ -122,6 +151,33 @@ class POSTransaction
 
         return $total;
     }
+
+    public function setTransactionMode($transaction_mode)
+    {
+        $this->transaction_mode = $transaction_mode;
+
+        return $this;
+    }
+
+    public function getTransactionMode()
+    {
+        return $this->transaction_mode;
+    }
+
+    public function getTransactionModeFormatted()
+    {
+        $ret = '';
+
+        if ($this->transaction_mode == 'normal') {
+            $ret = 'Normal';
+        } elseif ($this->transaction_mode == 'quotation') {
+            $ret = 'Quotation';
+        }
+
+        return $ret;
+    }
+
+    
 
     /**
      * Set transactionTotal
@@ -272,6 +328,16 @@ class POSTransaction
     public function getTransDisplayId()
     {
         return $this->trans_display_id;
+    }
+
+    public function getTransDisplayIdFormatted()
+    {
+        $ret = $this->trans_display_id;
+        
+        if ($this->transaction_mode == 'quotation') {
+            $ret = 'Quotation';
+        }
+        return $ret;
     }
 
     /**
@@ -592,6 +658,15 @@ class POSTransaction
         return $this->cart_new_total;
     }
 
+    public function getCartTotalFormatted()
+    {
+        if ($this->cart_new_total != 0) {
+            return $this->cart_new_total;
+        } else {
+            return $this->cart_orig_total;
+        }
+    }
+
     /**
      * Add item
      *
@@ -638,5 +713,29 @@ class POSTransaction
     public function removePayment(\Gist\POSERPBundle\Entity\POSTransactionPayment $payment)
     {
         $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Set bulkDiscountType
+     *
+     * @param string $bulkDiscountType
+     *
+     * @return POSTransaction
+     */
+    public function setBulkDiscountType($bulkDiscountType)
+    {
+        $this->bulk_discount_type = $bulkDiscountType;
+
+        return $this;
+    }
+
+    /**
+     * Get bulkDiscountType
+     *
+     * @return string
+     */
+    public function getBulkDiscountType()
+    {
+        return $this->bulk_discount_type;
     }
 }
