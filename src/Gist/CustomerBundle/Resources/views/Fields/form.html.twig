@@ -32,14 +32,14 @@
                                                 <td>
                                                      <div class="form-group {{cat.getFieldDisplayName|default('N/A')}}">
                                                         <div class="col-md-5 checkbox-list">
-                                                            {{ form.checkbox('required[' ~ cat.getID ~ ']', 1, '', cat.getRequiredFlag|default(false), false) }}
+                                                            {{ form.checkbox('visible[' ~ cat.getID ~ ']', 1, '', cat.getVisibilityFlag|default(false), false) }}
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
                                                      <div class="form-group {{cat.getFieldDisplayName|default('N/A')}}">
                                                         <div class="col-md-5 checkbox-list">
-                                                            {{ form.checkbox('visible[' ~ cat.getID ~ ']', 1, '', cat.getVisibilityFlag|default(false), false) }}
+                                                            {{ form.checkbox('required[' ~ cat.getID ~ ']', 1, '', cat.getRequiredFlag|default(false), false) }}
                                                         </div>
                                                     </div>
                                                 </td>
