@@ -75,6 +75,11 @@ gist_customer_fields_get:
     methods: [GET]
     defaults: { _controller: GistCustomerBundle:Fields:getRequiredFields }
 
+gist_customer_fields_get_visible:
+    pattern: /fields/get_visible    
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Fields:getVisibleFields }
+
 # gist_customer_fields_edit_form:
 #     pattern: /field/{id}
 #     methods: [GET]

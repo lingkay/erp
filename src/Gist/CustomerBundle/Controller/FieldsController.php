@@ -140,7 +140,18 @@ class FieldsController extends CrudController
     {
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findAll();   
+        $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findBy(array('required_flag'=>true));   
+        foreach ($fields_ext as $fe) {
+            $list_opts[] = $fe->getFieldName();
+        }
+        return new JsonResponse($list_opts);
+    }
+
+    public function getVisibleFieldsAction()
+    {
+        $list_opts = [];
+        $em = $this->getDoctrine()->getManager();
+        $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findBy(array('visibility_flag'=>true));   
         foreach ($fields_ext as $fe) {
             $list_opts[] = $fe->getFieldName();
         }
