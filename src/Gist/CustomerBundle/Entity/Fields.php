@@ -28,11 +28,19 @@ class Fields
     /** @ORM\Column(type="string", length=245, nullable=true) */
     protected $field_name;
 
-    /** @ORM\Column(type="string", length=245, nullable=true) */
+    /** @ORM\Column(type="string", length=245, nullable=false) */
+    protected $field_display_name;
+
+    /** @ORM\Column(type="boolean", length=245, nullable=true) */
     protected $required_flag;
 
+    /** @ORM\Column(type="boolean", length=245, nullable=false) */
+    protected $visibility_flag;
 
-
+    public function __construct()
+    {
+        //$this->initTrackCreate();
+    }
 
     /**
      * Set fieldName
@@ -89,5 +97,53 @@ class Fields
         $this->dataHasGeneratedID($data);
         // $this->dataTrackCreate($data);
         return $data;
+    }
+
+    /**
+     * Set visibilityFlag
+     *
+     * @param string $visibilityFlag
+     *
+     * @return Fields
+     */
+    public function setVisibilityFlag($visibilityFlag)
+    {
+        $this->visibility_flag = $visibilityFlag;
+
+        return $this;
+    }
+
+    /**
+     * Get visibilityFlag
+     *
+     * @return string
+     */
+    public function getVisibilityFlag()
+    {
+        return $this->visibility_flag;
+    }
+
+    /**
+     * Set fieldDisplayName
+     *
+     * @param string $fieldDisplayName
+     *
+     * @return Fields
+     */
+    public function setFieldDisplayName($fieldDisplayName)
+    {
+        $this->field_display_name = $fieldDisplayName;
+
+        return $this;
+    }
+
+    /**
+     * Get fieldDisplayName
+     *
+     * @return string
+     */
+    public function getFieldDisplayName()
+    {
+        return $this->field_display_name;
     }
 }

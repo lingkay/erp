@@ -15,87 +15,39 @@
                     <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
-                        {% for ecat in ecols %}
-                            {% if ecat.getFieldName != 'id' and ecat.getFieldName != '' %}
-                                <div class="form-group">
-                                    <div class="col-md-5 checkbox-list">
-                                    {% if ecat.getFieldName == 'first_name' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'First Name', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'middle_name' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Middle Name', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'last_name' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Last Name', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'c_email_address' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Email Address', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'mobile_number' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Mobile Number', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'marital_status' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Marital Status', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'home_phone' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Home Phone Number', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'birthdate' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Birthday', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'address1' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Address 1', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'address2' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Address 2', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'city' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'City', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'state' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'State', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'country' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Country', ecat.getRequiredFlag|default(false), false) }}
-                                    {% elseif ecat.getFieldName == 'zip' %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, 'Zip Code', ecat.getRequiredFlag|default(false), false) }}
-                                    {% else %}
-                                        {{ form.checkbox('fields[' ~ ecat.getFieldName ~ ']', 1, ecat.getFieldName, ecat.getRequiredFlag|default(false), false) }}
-                                    {% endif %}
-
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% for cat in cols %}
-                            {% if cat != 'id' and cat != 'status' and cat != 'date_create' and cat != 'notes' and cat != 'gender' and cat != 'display_id' and cat != 'date_married'  %}
-                                <div class="form-group {{cat}}">
-                                    <div class="col-md-5 checkbox-list">
-                                    {% if cat == 'first_name' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'First Name', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'middle_name' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Middle Name', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'last_name' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Last Name', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'c_email_address' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Email Address', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'mobile_number' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Mobile Number', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'marital_status' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Marital Status', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'home_phone' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Home Phone Number', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'birthdate' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Birthday', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'address1' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Address 1', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'address2' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Address 2', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'city' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'City', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'state' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'State', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'country' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Country', getRequiredFlag|default(false), false) }}
-                                    {% elseif cat == 'zip' %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, 'Zip Code', getRequiredFlag|default(false), false) }}
-                                    {% else %}
-                                        {{ form.checkbox('fields[' ~ cat ~ ']', 1, cat, getRequiredFlag|default(false), false) }}
-                                    {% endif %}
-
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+                            <table class="table table-striped table-bordered table-hover" id="fields_table">
+                                <thead>
+                                    <tr>
+                                        <th>Field Name</th>
+                                        <th>Visible</th>
+                                        <th>Required</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cat in fields %}
+                                        {% if cat != 'id' and cat != '' %}
+                                            <tr>
+                                                <input type="hidden" name="field_id[]" value="{{cat.getID}}">
+                                                <td>{{ cat.getFieldDisplayName|default('N/A') }}</td>
+                                                <td>
+                                                     <div class="form-group {{cat.getFieldDisplayName|default('N/A')}}">
+                                                        <div class="col-md-5 checkbox-list">
+                                                            {{ form.checkbox('required[' ~ cat.getID ~ ']', 1, '', cat.getRequiredFlag|default(false), false) }}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                     <div class="form-group {{cat.getFieldDisplayName|default('N/A')}}">
+                                                        <div class="col-md-5 checkbox-list">
+                                                            {{ form.checkbox('visible[' ~ cat.getID ~ ']', 1, '', cat.getVisibilityFlag|default(false), false) }}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                         <div class="form-actions fluid">
                             {% if app.user.hasAccess(prefix ~ '.add') %}
