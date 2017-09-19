@@ -129,23 +129,27 @@ class POSController extends CrudController
 
     public function getVATAction()
     {
-        $list_opts = [];
         header("Access-Control-Allow-Origin: *");
-        $config = $this->get('gist_configuration');
-        $vat = $config->get('gist_acct_vat_percentage');
-        $list_opts[] = array('vat_pct'=>$vat);
-        return new JsonResponse($vat);
+        $em = $this->getDoctrine()->getManager();
+        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'tax_rate'));
+        if (count($opt) > 0) {
+            return new JsonResponse($opt->getValue());
+        }
+        //default value
+        return new JsonResponse("12");
 
     }
 
     public function getTaxCoverageAction()
     {
-        $list_opts = [];
         header("Access-Control-Allow-Origin: *");
-        $config = $this->get('gist_configuration');
-        $vat = $config->get('gist_acct_tax_opt');
-        $list_opts[] = array('tax_cover'=>$vat);
-        return new JsonResponse($vat);
+        $em = $this->getDoctrine()->getManager();
+        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'tax_option'));
+        if (count($opt) > 0) {
+            return new JsonResponse($opt->getValue());
+        }
+        //default value
+        return new JsonResponse("incl");
 
     }
 
