@@ -55,7 +55,7 @@ class POSSyncController extends CrudController
         }
         
 
-        $transaction->setId($id);
+        // $transaction->setId($id);
         $transaction->setTransDisplayId($display_id);
         $transaction->setCustomerId($customer_id);
         $transaction->setTransactionBalance($balance);
