@@ -172,15 +172,7 @@ class POSTransaction
 
     public function getTransactionModeFormatted()
     {
-        $ret = '';
-
-        if ($this->transaction_mode == 'normal') {
-            $ret = 'Normal';
-        } elseif ($this->transaction_mode == 'quotation') {
-            $ret = 'Quotation';
-        }
-
-        return $ret;
+        return ucfirst($this->transaction_mode);
     }
 
     
