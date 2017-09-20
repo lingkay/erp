@@ -222,6 +222,8 @@ class POSTransactionItem
         } elseif ($type == 'disc') {
             $type = 'Discount Percentage';
         }
+
+        return $type;
     }
 
     /**
