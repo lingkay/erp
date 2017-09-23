@@ -252,4 +252,45 @@ class CustomerController extends CrudController
         return new JsonResponse($list_opts);
 
     }
+
+     public function getCustomersAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+
+
+
+        
+        $em = $this->getDoctrine()->getManager();
+
+        $customers = $em->getRepository("GistCustomerBundle:Customer")->findAll();
+
+
+        $list_opts = [];
+        foreach ($customers as $p) {
+            $list_opts[] = array(
+                'id'=>$p->getID(), 
+                'email'=> ($p->getCEmailAddress() == null) ? '':$p->getCEmailAddress(), 
+                'first_name'=> ($p->getFirstName() == null) ? '':$p->getFirstName(), 
+                'middle_name'=> ($p->getMiddleName() == null) ? '':$p->getMiddleName(), 
+                'last_name'=> ($p->getLastName() == null) ? '':$p->getLastName(), 
+                'mobile_number'=> ($p->getMobileNumber() == null) ? '':$p->getMobileNumber(), 
+                'status'=> ($p->getStatus() == null) ? '':$p->getStatus(), 
+                'gender'=> ($p->getGender() == null) ? '':$p->getGender(), 
+                'marital_status'=> ($p->getMaritalStatus() == null) ? '':$p->getMaritalStatus(), 
+                'date_married'=> ($p->getDateMarried() == null) ? '':$p->getDateMarried(), 
+                'home_phone'=> ($p->getHomePhone() == null) ? '':$p->getHomePhone(), 
+                'birthdate'=> ($p->getBirthdate() == null) ? '':$p->getBirthdate(), 
+                'address1'=> ($p->getAddress1() == null) ? '':$p->getAddress1(), 
+                'address2'=> ($p->getAddress2() == null) ? '':$p->getAddress2(), 
+                'city'=> ($p->getCity() == null) ? '':$p->getCity(), 
+                'state'=> ($p->getState() == null) ? '':$p->getState(), 
+                'country'=> ($p->getCountry() == null) ? '':$p->getCountry(), 
+                'zip'=> ($p->getZip() == null) ? '':$p->getZip(), 
+                'notes'=> ($p->getNotes() == null) ? '':$p->getNotes(), 
+                'last_name'=> ($p->getLastName() == null) ? '':$p->getLastName()
+            );
+        }
+
+        return new JsonResponse($list_opts);
+    }
 }

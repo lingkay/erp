@@ -54,6 +54,11 @@ gist_customer_pos_add:
     methods: [GET]
     defaults: { _controller: GistCustomerBundle:Customer:addCustomer }
 
+gist_customer_fetch_all:
+    pattern: /get/all
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Customer:getCustomers }
+
 #FIELDS
 gist_customer_fields_index:
     pattern: /fields
