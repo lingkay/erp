@@ -287,7 +287,7 @@ class CustomerController extends CrudController
                 'country'=> ($p->getCountry() == null) ? '':$p->getCountry(), 
                 'zip'=> ($p->getZip() == null) ? '':$p->getZip(), 
                 'notes'=> ($p->getNotes() == null) ? '':$p->getNotes(), 
-                'last_name'=> ($p->getLastName() == null) ? '':$p->getLastName()
+                'display_id' => ($p->getDisplayID() == null) ? '':$p->getDisplayID()
             );
         }
 
