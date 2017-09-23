@@ -19,7 +19,7 @@ class FieldsController extends CrudController
         $this->title = 'POS Customer Form Required Fields';
 
         $this->list_title = 'POS Customer Form Required Fields';
-        $this->list_type = 'dynamic';
+        $this->list_type = 'static';
     }
 
     public function indexAction()
@@ -48,7 +48,7 @@ class FieldsController extends CrudController
         $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findAll(); 
 
 
-        $params['ecols'] = $fields_ext;
+        $params['fields'] = $fields_ext;
 
         foreach ($fields_ext as $fe) {
             foreach (array_keys($values, $fe->getFieldName()) as $key) {
@@ -70,42 +70,88 @@ class FieldsController extends CrudController
  
     }
 
-    protected function update($obj,$is_new = false)
+    public function editSubmit2Action()
+    {
+        $this->checkAccess($this->route_prefix . '.edit');
+
+        $this->hookPreAction();
+        try
+        {
+            
+            $this->update();
+            
+            //$this->hookPostSave($object);
+            // log
+            
+
+            $this->addFlash('success', ' edited successfully.');
+
+            return $this->redirect($this->generateUrl('gist_customer_fields_index'));
+        }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('Database error occured. Possible duplicate.');
+            //return $this->editError($object, $id);
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('Database error occured. Possible duplicate.');
+            error_log($e->getMessage());
+
+            //return $this->editError($object, $id);
+        }
+    }
+
+    protected function update()
     {
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
         $conf = $this->get('gist_configuration');
 
-        // var_dump($data);
-        // die();
-        $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findAll();   
-        foreach ($fields_ext as $fe) 
-        {
-            $em->remove($fe);
-        }
-        $em->flush();
+        foreach ($data['field_id'] as $key => $id) {
+            $field = $em->getRepository('GistCustomerBundle:Fields')->findOneById($id);
+
+            //reset
+            $field->setRequiredFlag(false);
+            $field->setVisibilityFlag(false);
+
+            //check if required
+            if (isset($data['required'][$id])) {
+                $isRequired = $data['required'][$id];
+                if ($isRequired != null) {
+                    $field->setRequiredFlag(true);
+                }
+            }
         
-
-        foreach ($data['fields'] as $key => $value) {
-            if ($value != '') {
-                $field = new Fields();
-                $field->setFieldName($key);
-                $field->setRequiredFlag(true);
-                $em->persist($field);
-            }   
+            //check if visible
+            if (isset($data['visible'][$id])) {
+                $isVisible = $data['visible'][$id];
+                if ($isVisible != null) {
+                    $field->setVisibilityFlag(true);
+                }
+            }
+            
+            $em->persist($field);
         }
-
         $em->flush();
-
     }
     
-    
-
     public function getRequiredFieldsAction()
     {
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findAll();   
+        $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findBy(array('required_flag'=>true));   
+        foreach ($fields_ext as $fe) {
+            $list_opts[] = $fe->getFieldName();
+        }
+        return new JsonResponse($list_opts);
+    }
+
+    public function getVisibleFieldsAction()
+    {
+        $list_opts = [];
+        $em = $this->getDoctrine()->getManager();
+        $fields_ext = $em->getRepository('GistCustomerBundle:Fields')->findBy(array('visibility_flag'=>true));   
         foreach ($fields_ext as $fe) {
             $list_opts[] = $fe->getFieldName();
         }

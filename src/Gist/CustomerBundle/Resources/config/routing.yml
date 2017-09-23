@@ -73,12 +73,17 @@ gist_customer_fields_index:
 gist_customer_fields_add_submit:
     pattern: /fields
     methods: [POST]
-    defaults: { _controller: GistCustomerBundle:Fields:addSubmit }
+    defaults: { _controller: GistCustomerBundle:Fields:editSubmit2 }
 
 gist_customer_fields_get:
     pattern: /fields/get_req    
     methods: [GET]
     defaults: { _controller: GistCustomerBundle:Fields:getRequiredFields }
+
+gist_customer_fields_get_visible:
+    pattern: /fields/get_visible    
+    methods: [GET]
+    defaults: { _controller: GistCustomerBundle:Fields:getVisibleFields }
 
 # gist_customer_fields_edit_form:
 #     pattern: /field/{id}

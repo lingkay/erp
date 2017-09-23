@@ -19,11 +19,7 @@
                             <h4 class="form-section">Information</h4>
                             <div class="row">
                                 <div class="col-md-6">
-                                    {% if object.getTransactionModeFormatted|default('na') == 'Normal' %}
-                                        {{ form.group_text('Code', 'trans_code', object.getTransDisplayId|default(''), 4, 5, true) }}
-                                    {% else %}
-                                        {{ form.group_text('Code', 'trans_code', 'N/A - Quotation', 4, 5, true) }}
-                                    {% endif %}
+                                    {{ form.group_text('Receipt Number', 'trans_code', object.getTransDisplayId|default(''), 4, 5, true) }}
                                     {{ form.group_text('Customer', 'customer', customer.getNameFormatted|default('N/A'), 4, 5, true) }}
                                     {{ form.group_text('Type', 'trans_type', object.getTransactionTypeFormatted|default(''), 4, 5, true) }}
                                     {{ form.group_text('Bulk Discount', 'bulk_discount', object.getBulkDiscountType|default(''), 4, 5, true) }}
@@ -51,7 +47,7 @@
                                       <tr>
                                         <td><input type="text" name="rate_name[]" value="{{i.getName|default('')}}" class="form-control rate_name" readonly="true"></td>
                                         <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getOrigPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
-                                        <td><input type="text" name="x" class="form-control" value="{{i.getDiscountType|default('')}}"  readonly="true"></td>
+                                        <td><input type="text" name="x" class="form-control" value="{{i.getDiscountTypeFormatted|default('')}}"  readonly="true"></td>
                                         <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getDiscountValue|number_format(0, '.', ',')|default('')}}"  readonly="true"></td>
                                         <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getAdjustedPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
                                       </tr>

@@ -52,7 +52,9 @@ class POSTransactionController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Transaction Code', 'getTransDisplayIdFormatted', 'trans_display_id')
+            $grid->newColumn('Receipt Number', 'getTransDisplayId', 'trans_display_id'),
+            $grid->newColumn('Transaction Date','getDateCreateFormatted','date_create'),
+            $grid->newColumn('Type', 'getTransactionModeFormatted', 'mode')
         );
     }
 
