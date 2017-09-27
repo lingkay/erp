@@ -209,7 +209,7 @@ class CustomerController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null, $notes = null)
+    public function addCustomerAction($first_name = null, $last_name = null, $email = null, $number = null, $mname = null, $gender = null, $marital_status = null, $date_married = null, $home_phone = null, $birthdate = null, $add1 = null, $add2 = null, $city = null, $state = null, $country = null, $zip = null, $notes = null, $consultant_id = null)
     {
     	header("Access-Control-Allow-Origin: *");
 
@@ -245,6 +245,9 @@ class CustomerController extends CrudController
 
         $new_display_id = str_pad($customer->getID(),9,'0',STR_PAD_LEFT);
         $customer->setDisplayID($new_display_id);
+
+        $user_created = $em->getRepository("GistUserBundle:User")->findOneByID($consultant);
+        // $customer->setUserCreate();
         $em->persist($customer);
         $em->flush();
 
@@ -287,7 +290,8 @@ class CustomerController extends CrudController
                 'country'=> ($p->getCountry() == null) ? '':$p->getCountry(), 
                 'zip'=> ($p->getZip() == null) ? '':$p->getZip(), 
                 'notes'=> ($p->getNotes() == null) ? '':$p->getNotes(), 
-                'display_id' => ($p->getDisplayID() == null) ? '':$p->getDisplayID()
+                'display_id' => ($p->getDisplayID() == null) ? '':$p->getDisplayID(),
+                'created_by' => ($p->getUserCreate()->getID() == null) ? '':$p->getUserCreate()->getID()
             );
         }
 

@@ -50,7 +50,7 @@ gist_customer_pos_search:
     defaults: { _controller: GistCustomerBundle:Customer:searchCustomer }
 
 gist_customer_pos_add:
-    pattern: /pos/add/{first_name}/{last_name}/{email}/{number}/{mname}/{gender}/{marital_status}/{date_married}/{home_phone}/{birthdate}/{add1}/{add2}/{city}/{state}/{country}/{zip}/{notes}
+    pattern: /pos/add/{first_name}/{last_name}/{email}/{number}/{mname}/{gender}/{marital_status}/{date_married}/{home_phone}/{birthdate}/{add1}/{add2}/{city}/{state}/{country}/{zip}/{notes}/{consultant_id}
     methods: [GET]
     defaults: { _controller: GistCustomerBundle:Customer:addCustomer }
 
