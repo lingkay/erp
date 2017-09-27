@@ -291,7 +291,12 @@ class CustomerController extends CrudController
                 'zip'=> ($p->getZip() == null) ? '':$p->getZip(), 
                 'notes'=> ($p->getNotes() == null) ? '':$p->getNotes(), 
                 'display_id' => ($p->getDisplayID() == null) ? '':$p->getDisplayID(),
-                'created_by' => ($p->getUserCreate()->getID() == null) ? '':$p->getUserCreate()->getID()
+                if ($p->getUserCreate()) {
+                    'created_by' => ($p->getUserCreate()->getID() == null) ? '':$p->getUserCreate()->getID()
+                } else {
+                    'created_by' => ''
+                }
+                
             );
         }
 
