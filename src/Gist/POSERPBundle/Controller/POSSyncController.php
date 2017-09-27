@@ -139,17 +139,17 @@ class POSSyncController extends CrudController
         
         $em = $this->getDoctrine()->getManager();
 
-        $customers = $em->getRepository("GistUserBundle:User")->createQueryBuilder('o');
+        $users = $em->getRepository("GistUserBundle:User")->createQueryBuilder('o');
         foreach ($search_array as $key => $value) {
             if (trim($value) != '') {
                 if ($key == 'area') {
-                    $customers->andWhere('IDENTITY(o.'.$key .') = :o_'.$key)
+                    $users->andWhere('IDENTITY(o.'.$key .') = :o_'.$key)
                       ->setParameter('o_'.$key,''.$value.'');
                 }
             }
             
         }
-        $results = $customers->getQuery()->getResult();
+        $results = $users->getQuery()->getResult();
 
         $list_opts = [];
         foreach ($results as $p) {
@@ -173,6 +173,29 @@ class POSSyncController extends CrudController
                 'contact_number'=> ($p->getContactNumber() == null) ? '':$p->getContactNumber(),
             );
         }
+
+        $admin_user = $em->getRepository('GistUserBundle:User')->findOneBy(array('username'=>'admin'));
+        $list_opts[] = array(
+            'id'=>$admin_user->getID(), 
+            'username'=> ($admin_user->getUsername() == null) ? '':$admin_user->getUsername(),    
+            'username_canonical'=> ($admin_user->getUsernameCanonical() == null) ? '':$admin_user->getUsernameCanonical(), 
+            'salt'=> ($admin_user->getSalt() == null) ? '':$admin_user->getSalt(), 
+            'position'=> ($admin_user->getGroup()->getName() == null) ? '':$admin_user->getGroup()->getName(), 
+            'department'=> ($admin_user->getGroup()->getDepartment()->getDepartmentName() == null) ? '':$admin_user->getGroup()->getDepartment()->getDepartmentName(),
+            'email'=> ($admin_user->getEmail() == null) ? '':$admin_user->getEmail(), 
+            'password'=> ($admin_user->getPassword() == null) ? '':$admin_user->getPassword(), 
+            'plainPassword'=> ($admin_user->getPlainPassword() == null) ? '':$admin_user->getPlainPassword(), 
+            'confirmationToken'=> ($admin_user->getConfirmationToken() == null) ? '':$admin_user->getConfirmationToken(), 
+            'enabled'=> ($admin_user->isEnabled() == null) ? '':$admin_user->isEnabled(), 
+            'first_name'=> ($admin_user->getFirstName() == null) ? '':$admin_user->getFirstName(), 
+            'middle_name'=> ($admin_user->getMiddleName() == null) ? '':$admin_user->getMiddleName(), 
+            'last_name'=> ($admin_user->getLastName() == null) ? '':$admin_user->getLastName(), 
+            'brand'=> 'null', 
+            'commission_type'=> ($admin_user->getCommissionType() == null) ? '':$admin_user->getCommissionType(), 
+            'contact_number'=> ($admin_user->getContactNumber() == null) ? '':$admin_user->getContactNumber(),
+        );
+
+
 
         return new JsonResponse($list_opts);
     }
