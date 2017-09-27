@@ -270,6 +270,11 @@ class CustomerController extends CrudController
 
         $list_opts = [];
         foreach ($customers as $p) {
+            $c_by = '';
+            if ($p->getUserCreate()) {
+                $c_by => ($p->getUserCreate()->getID() == null) ? '':$p->getUserCreate()->getID();
+            }
+
             $list_opts[] = array(
                 'id'=>$p->getID(), 
                 'email'=> ($p->getCEmailAddress() == null) ? '':$p->getCEmailAddress(), 
@@ -291,11 +296,8 @@ class CustomerController extends CrudController
                 'zip'=> ($p->getZip() == null) ? '':$p->getZip(), 
                 'notes'=> ($p->getNotes() == null) ? '':$p->getNotes(), 
                 'display_id' => ($p->getDisplayID() == null) ? '':$p->getDisplayID(),
-                if ($p->getUserCreate()) {
-                    'created_by' => ($p->getUserCreate()->getID() == null) ? '':$p->getUserCreate()->getID()
-                } else {
-                    'created_by' => ''
-                }
+                'created_by' => $c_by
+
                 
             );
         }
