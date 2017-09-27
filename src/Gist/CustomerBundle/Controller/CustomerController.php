@@ -246,8 +246,8 @@ class CustomerController extends CrudController
         $new_display_id = str_pad($customer->getID(),9,'0',STR_PAD_LEFT);
         $customer->setDisplayID($new_display_id);
 
-        $user_created = $em->getRepository("GistUserBundle:User")->findOneByID($consultant);
-        // $customer->setUserCreate();
+        $user_created = $em->getRepository("GistUserBundle:User")->findOneByID($consultant_id);
+        $customer->setUserCreate($user_created);
         $em->persist($customer);
         $em->flush();
 
