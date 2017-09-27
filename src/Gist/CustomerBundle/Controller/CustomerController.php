@@ -272,7 +272,7 @@ class CustomerController extends CrudController
         foreach ($customers as $p) {
             $c_by = '';
             if ($p->getUserCreate()) {
-                $c_by => ($p->getUserCreate()->getID() == null) ? '':$p->getUserCreate()->getID();
+                $c_by = ($p->getUserCreate()->getID() == null) ? '':$p->getUserCreate()->getID();
             }
 
             $list_opts[] = array(
