@@ -113,9 +113,9 @@ class POSController extends CrudController
             }
 
             if ($p->getPrimaryPhoto()) {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp);
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp, 'barcode' => $p->getBarcode(), 'item_code'=>$p->getItemCode());
             } else {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null, 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp);
+                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null, 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp, 'barcode' => $p->getBarcode(), 'item_code'=>$p->getItemCode());
             }
             
         }
