@@ -50,7 +50,7 @@
     "config": {
         "bin-dir": "bin",
         "discard-changes": true,
-        "vendor-dir": "/home/vagrant/gist_erp2/vendor"
+        "vendor-dir": "/home/gist_erp2/vendor"
     },
     "extra": {
         "symfony-app-dir": "app",

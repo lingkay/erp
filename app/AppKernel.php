@@ -91,12 +91,12 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
-        return '/tmp/gist_erp2/cache';
+        return '/home/gist_erp2/cache';
     }
 
     public function getLogDir()
     {
-        return '/tmp/gist_erp2/logs';
+        return '/home/gist_erp2/logs';
     }
 
 }
