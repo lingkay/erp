@@ -186,7 +186,8 @@ class CustomerController extends CrudController
         $list_opts = [];
         foreach ($results as $p) {
 			$list_opts[] = array(
-                'id'=>$p->getID(), 
+                'id'=>$p->getID(),
+                'display_id'=>($p->getDisplayID() == null) ? '':$p->getDisplayID(),
                 'first_name'=> ($p->getFirstName() == null) ? '':$p->getFirstName(), 
                 'last_name'=> ($p->getLastName() == null) ? '':$p->getLastName(), 
                 'email'=> ($p->getCEmailAddress() == null) ? '':$p->getCEmailAddress(), 
