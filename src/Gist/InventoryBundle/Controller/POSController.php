@@ -93,11 +93,17 @@ class POSController extends CrudController
         $vat = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Mode'));
         if (count($vat) == 0) {
             $vat = 'incl';
+        } else {
+            $vat = $vat->getValue();
         }
+        
         $vat_rate = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Rate'));
         if (count($vat_rate) == 0) {
-            $vat = '12';
+            $vat_rate = '12';
+        } else {
+            $vat_rate = $vat_rate->getValue();
         }
+        
         $list_opts = [];
         foreach ($products as $p) {
 
