@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="portlet box blue-hoki">
                 <div class="portlet-title">
-                    <div class="caption">{% block form_header %}Role{% endblock %}</div>
+                    <div class="caption">{{object.getName|default('')}}</div>
                 </div>
                 <div class="portlet-body form">
                     <!-- BEGIN FORM-->
@@ -14,7 +14,11 @@
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
                             {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
-                            {{ form.group_text('Value', 'value', object.getValue, 3, 4, readonly) }}
+                            {% if object.getName|default('') == 'Tax Mode' %}
+                                {{ form.group_select("Mode", "value", tax, object.getValue|default(''), 3, 4, readonly) }}
+                            {% else %}
+                                {{ form.group_text('Value', 'value', object.getValue, 3, 4, readonly) }}
+                            {% endif %}
                         </div>
                         <div class="form-actions fluid">
                             <div class="col-md-9">

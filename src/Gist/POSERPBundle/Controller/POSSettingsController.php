@@ -41,7 +41,10 @@ class POSSettingsController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
 
-
+        $params['tax'] = array(
+            'incl'=>'Inclusive',
+            'excl'=>'Exclusive'
+        );
 
         return $params;
     }

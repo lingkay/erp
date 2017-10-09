@@ -90,8 +90,14 @@ class POSController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
         $config = $this->get('gist_configuration');
-        $vat = $config->get('gist_acct_tax_opt');
-        $vat_rate = $config->get('gist_acct_vat_percentage');
+        $vat = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Mode'));
+        if (count($vat) == 0) {
+            $vat = 'incl';
+        }
+        $vat_rate = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Rate'));
+        if (count($vat_rate) == 0) {
+            $vat = '12';
+        }
         $list_opts = [];
         foreach ($products as $p) {
 
@@ -131,7 +137,7 @@ class POSController extends CrudController
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
-        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'tax_rate'));
+        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Rate'));
         if (count($opt) > 0) {
             return new JsonResponse($opt->getValue());
         }
@@ -144,7 +150,7 @@ class POSController extends CrudController
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
-        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'tax_option'));
+        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Mode'));
         if (count($opt) > 0) {
             return new JsonResponse($opt->getValue());
         }
