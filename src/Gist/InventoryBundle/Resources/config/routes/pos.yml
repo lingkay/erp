@@ -62,3 +62,8 @@ gist_inv_pos_get_tax_coverage:
     pattern: /get/tax_coverage
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:POS:getTaxCoverage }
+
+gist_inv_pos_get_min_deposit_pct:
+    pattern: /get/deposit_minimum
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getMinimumDepositPercentage }

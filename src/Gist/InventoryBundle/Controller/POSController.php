@@ -165,6 +165,19 @@ class POSController extends CrudController
 
     }
 
+    public function getMinimumDepositPercentageAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Minimum Deposit Percentage'));
+        if (count($opt) > 0) {
+            return new JsonResponse($opt->getValue());
+        }
+        //default value
+        return new JsonResponse("20");
+
+    }
+
     public function getBanksAction()
     {
         header("Access-Control-Allow-Origin: *");
