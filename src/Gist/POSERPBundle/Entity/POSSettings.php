@@ -61,6 +61,8 @@ class POSSettings
         return $this->name;
     }
 
+
+
     /**
      * Set value
      *
@@ -82,6 +84,17 @@ class POSSettings
      */
     public function getValue()
     {
+        return $this->value;
+    }
+
+    public function getValueFormatted()
+    {
+        if ($this->value == 'incl') {
+            return 'Inclusive';
+        } elseif ($this->value == 'excl') {
+            return 'Exclusive';
+        }
+        
         return $this->value;
     }
 

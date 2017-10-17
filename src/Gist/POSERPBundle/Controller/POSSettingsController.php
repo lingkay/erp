@@ -33,7 +33,7 @@ class POSSettingsController extends CrudController
 
         return array(
             $grid->newColumn('Name', 'getName', 'name'),
-            $grid->newColumn('Value', 'getValue', 'value')
+            $grid->newColumn('Value', 'getValueFormatted', 'value')
         );
     }
 
