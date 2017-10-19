@@ -165,6 +165,19 @@ class POSController extends CrudController
 
     }
 
+    public function getUpsellTimeAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Upsell Time (seconds)'));
+        if (count($opt) > 0) {
+            return new JsonResponse($opt->getValue());
+        }
+        //default value
+        return new JsonResponse("1800");
+
+    }
+
     public function getMinimumDepositPercentageAction()
     {
         header("Access-Control-Allow-Origin: *");

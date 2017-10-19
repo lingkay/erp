@@ -67,3 +67,8 @@ gist_inv_pos_get_min_deposit_pct:
     pattern: /get/deposit_minimum
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:POS:getMinimumDepositPercentage }
+
+gist_inv_pos_get_upsell_time:
+    pattern: /get/upsell_time
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getUpsellTimes }
