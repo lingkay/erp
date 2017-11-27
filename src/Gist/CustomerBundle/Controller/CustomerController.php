@@ -252,7 +252,7 @@ class CustomerController extends CrudController
         $em->persist($customer);
         $em->flush();
 
-        $list_opts[] = array('new_customer_id'=>$customer->getID());
+        $list_opts[] = array('new_customer_id'=>$customer->getID(), 'status'=>'registered');
         return new JsonResponse($list_opts);
 
     }

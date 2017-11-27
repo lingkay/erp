@@ -72,3 +72,8 @@ gist_inv_pos_get_upsell_time:
     pattern: /get/upsell_time
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:POS:getUpsellTime }
+
+gist_inv_pos_get_exchange_rule_below:
+    pattern: /get/exchange_rule_below
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getExchangeRuleBelow }

@@ -41,6 +41,7 @@ security:
         - { path: ^/inventory/pos/get/terminal_operators, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/pos/get/tax_coverage, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/pos/get/upsell_time, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/pos/get/exchange_rule_below, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/customer/pos/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/customer/pos/add, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/pos_erp/get/charge_rates, roles: IS_AUTHENTICATED_ANONYMOUSLY }
