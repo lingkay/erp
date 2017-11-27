@@ -16,6 +16,8 @@
                             {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
                             {% if object.getName|default('') == 'Tax Mode' %}
                                 {{ form.group_select("Mode", "value", tax, object.getValue|default(''), 3, 4, readonly) }}
+                            {% elseif object.getName|default('') == 'Exhange Item Price Limit' %}
+                                {{ form.group_select("Value", "value", exchange_rules, object.getValue|default(''), 3, 4, readonly) }}
                             {% else %}
                                 {{ form.group_text('Value', 'value', object.getValue, 3, 4, readonly) }}
                             {% endif %}

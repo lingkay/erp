@@ -46,6 +46,11 @@ class POSSettingsController extends CrudController
             'excl'=>'Exclusive'
         );
 
+        $params['exchange_rules'] = array(
+            'True'=>'True',
+            'False'=>'False'
+        );
+
         return $params;
     }
 
