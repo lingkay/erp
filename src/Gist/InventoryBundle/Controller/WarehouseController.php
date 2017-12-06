@@ -7,6 +7,7 @@ use Gist\TemplateBundle\Model\CrudController;
 use Gist\InventoryBundle\Entity\Warehouse;
 use Gist\InventoryBundle\Template\Controller\HasInventoryAccount;
 use Gist\ValidationException;
+use Gist\InventoryBundle\Entity\Account;
 
 class WarehouseController extends CrudController
 {
@@ -43,7 +44,6 @@ class WarehouseController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        // validate name
         if (empty($data['name']))
             throw new ValidationException('Cannot leave name blank');
             
@@ -61,43 +61,23 @@ class WarehouseController extends CrudController
             $o->setUserCreate($this->getUser());
         }
         $this->updateHasInventoryAccount($o, $data, $is_new);
-        
-        if (isset($data['flag_threshold']) && $data['flag_threshold'])
-            $o->setFlagThreshold();
-        else
-            $o->setFlagThreshold(false);
 
-        if (isset($data['flag_shopfront']) && $data['flag_shopfront'])
-            $o->setFlagShopfront();
-        else
-            $o->setFlagShopfront(false);
+    }
 
-        if (isset($data['flag_stocktrack']) && $data['flag_stocktrack'])
-            $o->setFlagStocktrack();
-        else
-            $o->setFlagStocktrack(false);
+    protected function createInventoryAccount($o, $data)
+    {
+        $allow = false;
 
-        if (isset($data['flag_finished_goods']) && $data['flag_finished_goods'])
-            $o->setFlagFinishedGoods();
-        else
-            $o->setFlagFinishedGoods(false);
+        $account = new Account();
+        $account->setName('Warehouse: '.$data['name'])
+            ->setUserCreate($this->getUser())
+            ->setAllowNegative($allow);
 
-        if (isset($data['flag_equipment']) && $data['flag_equipment'])
-            $o->setFlagEquipment();
-        else
-            $o->setFlagEquipment(false);
-
-        if (isset($data['flag_purchased_goods']) && $data['flag_purchased_goods'])
-            $o->setReceivingWarehouse();
-        else
-            $o->setReceivingWarehouse(false);
-        
-        
-}
+        return $account;
+    }
 
     protected function padFormParams(&$params, $o = null)
     {
-        // warehouse types
         $params['wh_type_opts'] = array(
             'physical' => 'Physical',
             'virtual' => 'Virtual',
@@ -105,7 +85,6 @@ class WarehouseController extends CrudController
             'adjustment' => 'Adjustment'
         );
 
-        // stock columns
         if ($o->getID())
             $params['stock_cols'] = $this->getStockColumns();
 
@@ -171,3 +150,4 @@ class WarehouseController extends CrudController
         return $data;
     }
 }
+

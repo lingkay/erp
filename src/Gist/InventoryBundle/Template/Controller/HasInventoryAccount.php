@@ -21,7 +21,7 @@ trait HasInventoryAccount
 
     protected function updateHasInventoryAccount($o, $data, $is_new)
     {
-        if ($is_new)
+        if ($is_new || $o->getInventoryAccount() == null)
         {
             // create inventory account for new objects
             $account = $this->createInventoryAccount($o, $data);
@@ -31,38 +31,6 @@ trait HasInventoryAccount
             $em->flush();
             $o->setInventoryAccount($account);
         }
-
-        /*
-            // TERRIBLE implementation since it has to be updated for each child
-            // loses all the benefits of having traits
-            // should be the other way around
-            $allow = false;
-            if($this->newBaseClass() instanceof Warehouse)
-            {
-                $prefix = 'Warehouse: ';
-                $allow = false;
-            }
-            else if($this->newBaseClass() instanceof Supplier){
-                $prefix = 'Supplier: ';
-                $allow = true;
-            }
-            if($this->newBaseClass() instanceof Department)
-            {
-                $prefix = 'Department: ';
-                $allow = true;
-            }
-                        
-           
-            $account = new Account();
-            $account->setAllowNegative($allow)
-                ->setUserCreate($this->getUser())
-                ->setName($prefix . $o->getName());
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($account);
-            $em->flush();
-            $o->setInventoryAccount($account);
-        }
-        */
     }
 }
+

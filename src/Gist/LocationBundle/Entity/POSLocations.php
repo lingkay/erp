@@ -9,6 +9,7 @@ use Gist\CoreBundle\Template\Entity\HasGeneratedID;
 use Gist\CoreBundle\Template\Entity\HasCode;
 use Gist\CoreBundle\Template\Entity\HasNotes;
 use Gist\CoreBundle\Template\Entity\TrackCreate;
+use Gist\InventoryBundle\Template\Entity\HasInventoryAccount;
 
 use DateTime;
 use stdClass;
@@ -24,6 +25,7 @@ class POSLocations
 
     use HasGeneratedID;
     use TrackCreate;
+    use HasInventoryAccount;
 
 
 
@@ -210,6 +212,7 @@ class POSLocations
     public function __construct()
     {
         $this->initTrackCreate();
+        $this->initHasInventoryAccount();
     }
 
     public function getLedgerTotal()

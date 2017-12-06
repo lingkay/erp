@@ -1,1 +1,8 @@
-
+config:
+    - category: "Inventory Settings"
+      entries:
+        - id: gist_main_warehouse
+          label: "Main Warehouse"
+          type: select
+          options_service: gist_inventory
+          options_method: getWarehouseOptions

@@ -1,14 +1,13 @@
 gist_menu:
     bundle_menu:
         - GistDashboardBundle
-        #- GistAdminBundle
+#        - GistAdminBundle
         #- HrisAdminBundle
-        
         - GistUserBundle
         - GistLocationBundle
         - GistAccountingBundle
         - GistInventoryBundle
-        # - GistConfigurationBundle
+        - GistConfigurationBundle
         - GistCustomerBundle
         - GistPOSERPBundle
         #- HrisBiometricsBundle
@@ -22,13 +21,12 @@ gist_menu:
         #- HrisProfileBundle
         #- HrisArchivesBundle
         #- HrisReportBundle
-
 gist_user:
     acl_entries:
         - id: HrisDashboardBundle
           label: Dashboard
-        # - id: GistAdminBundle
-        #   label: Administration
+#        - id: GistAdminBundle
+#          label: Administration
         - id: GistConfigurationBundle
           label: Settings
         - id: GistAccountingBundle
@@ -46,8 +44,8 @@ gist_user:
 
 gist_configuration:
     bundles:
-        - GistTemplateBundle
-        - GistAccountingBundle
+        - GistInventoryBundle
+#        - GistAccountingBundle
 
 
 gist_media:

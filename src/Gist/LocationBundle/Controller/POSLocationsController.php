@@ -9,11 +9,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Gist\ValidationException;
 use Gist\LocationBundle\Entity\LedgerEntry;
+use Gist\InventoryBundle\Template\Controller\HasInventoryAccount;
+use Gist\InventoryBundle\Entity\Account;
 
 use DateTime;
 
+
 class POSLocationsController extends CrudController
 {
+    use HasInventoryAccount;
+
     public function __construct()
     {
         $this->route_prefix = 'gist_loc_pos_locations';
@@ -21,6 +26,7 @@ class POSLocationsController extends CrudController
 
         $this->list_title = 'POS Locations';
         $this->list_type = 'dynamic';
+
     }
 
     protected function newBaseClass()
@@ -226,6 +232,20 @@ class POSLocationsController extends CrudController
         $o->setInsuranceContactPerson2($data['insurance_contact2_person']);
         $o->setInsuranceContactNumber2($data['insurance_contact2_number']);
 
+        $this->updateHasInventoryAccount($o, $data, $is_new);
+
+    }
+
+    protected function createInventoryAccount($o, $data)
+    {
+        $allow = false;
+
+        $account = new Account();
+        $account->setName('POS: '.$data['name'])
+            ->setUserCreate($this->getUser())
+            ->setAllowNegative($allow);
+
+        return $account;
     }
 
     protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)

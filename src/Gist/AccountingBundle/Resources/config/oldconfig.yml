@@ -1,0 +1,11 @@
+#config:
+#    - category: "Accounting Settings"
+#      entries:
+#        - id: gist_acct_vat_percentage
+#          label: "VAT %"
+#          type: number
+#        - id: gist_acct_tax_opt
+#          label: "Tax Option"
+#          type: select
+#          options_service: gist_accounting
+#          options_method: getTaxOpts
