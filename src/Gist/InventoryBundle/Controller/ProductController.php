@@ -8,6 +8,8 @@ use Gist\InventoryBundle\Model\Gallery;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Gist\ValidationException;
+use Gist\InventoryBundle\Entity\Transaction;
+use Gist\InventoryBundle\Entity\Entry;
 
 use DateTime;
 use SplFileObject;
@@ -69,6 +71,9 @@ class ProductController extends CrudController
             'single' => 'Single',
             'package' => 'Package'
         );
+
+        $inv = $this->get('gist_inventory');
+        $params['wh_opts'] = $inv->getWarehouseOptions();
 
         // $params['ptype'] = 'single';
         $params['type_opts'] = $this->getTypeOptions();
@@ -168,6 +173,61 @@ class ProductController extends CrudController
         $o->setDescription($data['desc_description']);
         $o->setIngredients($data['desc_ingredients']);
         $o->setDirections($data['desc_directions']);
+    }
+
+    protected function hookPostSave($obj, $is_new = false)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $data = $this->getRequest()->request->all();
+        $config = $this->get('gist_configuration');
+        if ($data['qty'] != '') {
+            $main_warehouse = $inv->findWarehouse($data['warehouse']);
+            $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+            $wh_acc = $main_warehouse->getInventoryAccount();
+            $adj_acc = $adj_warehouse->getInventoryAccount();
+            $new_qty = $data['qty'];
+            $old_qty = 0;
+
+            // setup transaction
+            $trans = new Transaction();
+            $trans->setUserCreate($this->getUser())
+                ->setDescription('Initial balance');
+
+            // add entries
+            // entry for warehouse
+            $wh_entry = new Entry();
+            $wh_entry->setInventoryAccount($wh_acc)
+                ->setProduct($obj);
+
+            // entry for adjustment
+            $adj_entry = new Entry();
+            $adj_entry->setInventoryAccount($adj_acc)
+                ->setProduct($obj);
+
+            // check if debit or credit
+            if ($new_qty > $old_qty)
+            {
+                $qty = $new_qty - $old_qty;
+                $wh_entry->setDebit($qty);
+                $adj_entry->setCredit($qty);
+            }
+            else
+            {
+                $qty = $old_qty - $new_qty;
+                $wh_entry->setCredit($qty);
+                $adj_entry->setDebit($qty);
+            }
+            $entries[] = $wh_entry;
+            $entries[] = $adj_entry;
+
+            foreach ($entries as $ent)
+                $trans->addEntry($ent);
+
+            $inv->persistTransaction($trans);
+            $em->flush();
+        }
+
     }
 
     protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)

@@ -6,3 +6,8 @@ config:
           type: select
           options_service: gist_inventory
           options_method: getWarehouseOptions
+        - id: gist_adjustment_warehouse
+          label: "Adjustment Warehouse"
+          type: select
+          options_service: gist_inventory
+          options_method: getWarehouseOptions

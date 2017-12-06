@@ -10,6 +10,11 @@
                 {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Type", "item_type", type_opts, object.getType.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Class", "class", class_opts, object.getClass|default(''), 3, 4, readonly) }}
+                {% if object.getID == '' %}
+                    <h4 class="form-section">Initial Balance</h4>
+                    {{ form.group_select('Warehouse', 'warehouse', wh_opts, '', 3, 4, readonly) }}
+                    {{ form.group_text('Quantity', 'qty', '0', 3, 4, readonly) }}
+                {% endif %}
                 <input type="hidden" id="typex" value="">
                 <div class="row">
                     <div class="col-md-6">
@@ -47,6 +52,7 @@
                     <div class="col-md-6">
                     </div>
                 </div>
+
             </div>
             <div class="form-actions fluid">
                 <div class="col-md-9">
