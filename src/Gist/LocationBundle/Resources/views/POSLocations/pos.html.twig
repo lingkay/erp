@@ -3,14 +3,15 @@
         <!-- BEGIN FORM-->
             <div class="form-body">
                 {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
-
+                <input type="hidden" id="sourceValues" value="{{object.getBrand|default('')}}">
                 {{ form.group_text('Leasor', 'leasor', object.getLeasor, 3, 4, readonly) }}
                 {{ form.group_text('Contact No', 'contact_number', object.getContactNumber, 3, 4, readonly) }}
                 {{ form.group_text('Map Coor.', 'coordinates', object.getCoordinates, 3, 4, readonly) }}
                 {{ form.group_textarea('Locator Description', 'locator_desc',object.getLocatorDesc|default(''),3,3,4)}}
 
                 {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
-                {{ form.group_select('Brand', 'brand', brand_opts, object.getBrand|default(''), 3, 4, readonly) }}
+                {#{{ form.group_select('Brand', 'brand', brand_opts, object.getBrand|default(''), 3, 4, readonly) }}#}
+                {{ form.group_select_multiple('Brand', 'brand[]', brand_opts, '', 3, 4, readonly) }}
 
                 {{ form.group_text('City', 'city', object.getCity, 3, 4, readonly) }}
                 {{ form.group_text('Postal', 'postal', object.getPostal|default(''), 3, 4, readonly) }}

@@ -221,8 +221,11 @@ $(document).ready(function() {
     var yes_btn = $(".ret_conf_yes");
     $(yes_btn).on('click',function(){ 
         ajaxReturnDeposit('Y');
-    }); 
-   
+    });
+
+
+    var selectedValues = $("#sourceValues").val().split(',');
+    $(".select_2-multi").val(selectedValues).trigger("change");
 
     $('#list_table').dataTable({
         "iDisplayLength": 4,

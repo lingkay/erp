@@ -110,6 +110,7 @@ class POSLocationsController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+
         $media = $this->get('gist_media');
 
         $o->setName($data['name']);
@@ -118,7 +119,12 @@ class POSLocationsController extends CrudController
         $o->setCoordinates($data['coordinates']);
         $o->setLocatorDesc($data['locator_desc']);
         $o->setType($data['type']);
-        $o->setBrand($data['brand']);
+//        $o->setBrand($data['brand']);
+        if (isset($data['brand'])) {
+//            var_dump(implode(",", $data['brand']));
+//            die();
+            $o->setBrand(implode(",", $data['brand']));
+        }
         $o->setCity($data['city']);
         $o->setPostal($data['postal']);
         $o->setRegion($data['region']);
