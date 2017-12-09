@@ -3,7 +3,7 @@
         <!-- BEGIN FORM-->
             <div class="form-body">
             {{object.getPermitDateFrom|default('')|date('m/d/Y')}}
-                {{ form.group_number('FDA Expiration Price', 'fda_exp_price', object.getFDAExpirationPrice|default(''), 3, 4, readonly) }}
+                {{ form.group_number('FDA Expiration Price', 'fda_exp_price', object.getFDAExpirationPrice|default('0.00'), 3, 4, readonly) }}
                 {{ form.group_date_range('daterange', 'FDA Expiration', 'fda_date_from', 'fda_date_to', object.getPermitDateFrom|default('')|date('m/d/Y'), object.getPermitDateTo|default('')|date('m/d/Y'), 3, 4) }}
                 {{ form.group_upload_image('Scanned Document of Policy','insurance_policy_document',object.getScannedPermit|default(''),3,4)}}
             </div>
