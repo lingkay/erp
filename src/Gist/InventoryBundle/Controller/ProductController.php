@@ -73,7 +73,7 @@ class ProductController extends CrudController
         );
 
         $inv = $this->get('gist_inventory');
-        $params['wh_opts'] = $inv->getWarehouseOptions();
+        //$params['wh_opts'] = $inv->getWarehouseOptions();
 
         // $params['ptype'] = 'single';
         $params['type_opts'] = $this->getTypeOptions();
@@ -122,6 +122,18 @@ class ProductController extends CrudController
             $o->setClass($data['class']);
         }
 
+        if (isset($data['min_stock'])) {
+            $o->setMinStock($data['min_stock']);
+        } else {
+            $o->setMinStock(0);
+        }
+
+        if (isset($data['max_stock'])) {
+            $o->setMaxStock($data['max_stock']);
+        } else {
+            $o->setMaxStock(0);
+        }
+
         if (isset($data['category'])) {
             $category = $em->getRepository('GistInventoryBundle:ProductCategory')->find($data['category']);
             $o->setCategory($category);
@@ -157,14 +169,29 @@ class ProductController extends CrudController
 
         //COST
         $o->setCost($data['cost']);
-        $o->setCostCurrency($data['cost_currency']);
+
+        if (isset($data['cost_currency'])) {
+            $o->setCostCurrency($data['cost_currency']);
+        }
+
         $o->setSRP($data['srp']);
         $o->setMinPrice($data['min_price']);
 
         //PERMITS
-        $o->setFDAExpirationPrice($data['fda_exp_price']);
-        $o->setPermitDateFrom(new DateTime($data['fda_date_from']));
-        $o->setPermitDateTo(new DateTime($data['fda_date_to']));
+        if (isset($data['fda_exp_price'])) {
+            $o->setFDAExpirationPrice($data['fda_exp_price']);
+        }
+
+        if (isset($data['fda_date_from'])) {
+            $o->setPermitDateFrom(new DateTime($data['fda_date_from']));
+        }
+
+        if (isset($data['fda_date_to'])) {
+            $o->setPermitDateTo(new DateTime($data['fda_date_to']));
+        }
+
+
+
         if($data['insurance_policy_document']!=0 && $data['insurance_policy_document'] != ""){
             $o->setScannedPermit($media->getUpload($data['insurance_policy_document']));
         }
@@ -181,53 +208,54 @@ class ProductController extends CrudController
         $inv = $this->get('gist_inventory');
         $data = $this->getRequest()->request->all();
         $config = $this->get('gist_configuration');
-        if ($data['qty'] != '') {
-            $main_warehouse = $inv->findWarehouse($data['warehouse']);
-            $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
-            $wh_acc = $main_warehouse->getInventoryAccount();
-            $adj_acc = $adj_warehouse->getInventoryAccount();
-            $new_qty = $data['qty'];
-            $old_qty = 0;
+        if (isset($data['qty'])) {
+            if ($data['qty'] != '') {
+                $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+                $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+                $wh_acc = $main_warehouse->getInventoryAccount();
+                $adj_acc = $adj_warehouse->getInventoryAccount();
+                $new_qty = $data['qty'];
+                $old_qty = 0;
 
-            // setup transaction
-            $trans = new Transaction();
-            $trans->setUserCreate($this->getUser())
-                ->setDescription('Initial balance');
+                // setup transaction
+                $trans = new Transaction();
+                $trans->setUserCreate($this->getUser())
+                    ->setDescription('Initial balance');
 
-            // add entries
-            // entry for warehouse
-            $wh_entry = new Entry();
-            $wh_entry->setInventoryAccount($wh_acc)
-                ->setProduct($obj);
+                // add entries
+                // entry for warehouse
+                $wh_entry = new Entry();
+                $wh_entry->setInventoryAccount($wh_acc)
+                    ->setProduct($obj);
 
-            // entry for adjustment
-            $adj_entry = new Entry();
-            $adj_entry->setInventoryAccount($adj_acc)
-                ->setProduct($obj);
+                // entry for adjustment
+                $adj_entry = new Entry();
+                $adj_entry->setInventoryAccount($adj_acc)
+                    ->setProduct($obj);
 
-            // check if debit or credit
-            if ($new_qty > $old_qty)
-            {
-                $qty = $new_qty - $old_qty;
-                $wh_entry->setDebit($qty);
-                $adj_entry->setCredit($qty);
+                // check if debit or credit
+                if ($new_qty > $old_qty)
+                {
+                    $qty = $new_qty - $old_qty;
+                    $wh_entry->setDebit($qty);
+                    $adj_entry->setCredit($qty);
+                }
+                else
+                {
+                    $qty = $old_qty - $new_qty;
+                    $wh_entry->setCredit($qty);
+                    $adj_entry->setDebit($qty);
+                }
+                $entries[] = $wh_entry;
+                $entries[] = $adj_entry;
+
+                foreach ($entries as $ent)
+                    $trans->addEntry($ent);
+
+                $inv->persistTransaction($trans);
+                $em->flush();
             }
-            else
-            {
-                $qty = $old_qty - $new_qty;
-                $wh_entry->setCredit($qty);
-                $adj_entry->setDebit($qty);
-            }
-            $entries[] = $wh_entry;
-            $entries[] = $adj_entry;
-
-            foreach ($entries as $ent)
-                $trans->addEntry($ent);
-
-            $inv->persistTransaction($trans);
-            $em->flush();
         }
-
     }
 
     protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
