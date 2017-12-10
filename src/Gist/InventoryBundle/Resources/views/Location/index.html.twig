@@ -11,11 +11,11 @@
                 <div class="portlet-body">
                     <!-- BEGIN FORM-->
                     <div class="row">
-                        <div class="col-md-5 col-md-offset-4" style="margin-bottom: 10px;">
-                            {{ form_tools.group_select('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(0),3,5) }}
+                        <div class="col-md-5 col-md-offset-3" style="margin-bottom: 10px;">
+                            {{ form_tools.group_select('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(0),3,7) }}
                         </div>
                     </div>
-                    <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <table class="table table-bordered table-hover" id="list_table">
                         <thead>
                         <tr>
                             {% for col in grid_cols %}
@@ -88,7 +88,8 @@
                     },
                     "aoColumnDefs": [
                         {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
-                    ]
+                    ],
+                    "aaSorting": [[5,'desc']]
                 });
 
                 $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input

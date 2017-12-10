@@ -57,7 +57,7 @@ abstract class BaseController extends Controller
         return $menu_handler->getMenu();
     }
 
-    protected function addFlash($type, $message)
+    protected function addFlash($type, $message = null)
     {
         $this->get('session')->getFlashBag()->add($type, $message);
     }

@@ -11,6 +11,7 @@ use Gist\ValidationException;
 use Gist\LocationBundle\Entity\LedgerEntry;
 use Gist\InventoryBundle\Template\Controller\HasInventoryAccount;
 use Gist\InventoryBundle\Entity\Account;
+use Gist\InventoryBundle\Entity\Stock;
 
 use DateTime;
 
@@ -240,6 +241,61 @@ class POSLocationsController extends CrudController
 
         $this->updateHasInventoryAccount($o, $data, $is_new);
 
+
+
+    }
+
+    protected function hookPostSave($obj, $is_new = false)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $main_warehouse = $obj;
+        $wh_acc = $main_warehouse->getInventoryAccount();
+        $existing_stocks = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$wh_acc->getID()));
+        //create ZERO stock entries for products
+        if ($obj->getBrand() != '') {
+            $brands = explode(',', $obj->getBrand());
+            foreach ($brands as $brand) {
+
+                $brand_object = $em->getRepository('GistInventoryBundle:Brand')->findOneBy(array('name'=>$brand));
+
+                if ($brand_object) {
+                    $brand_id = $brand_object->getID();
+                    $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('brand'=>$brand_id));
+
+                    if ($products) {
+                        if (count($existing_stocks) > 0) {
+                            foreach ($existing_stocks as $es) {
+                                foreach ($products as $product_object) {
+                                    if ($es->getProduct()->getID() == $product_object->getID() && $es->getInventoryAccount()->getID() == $wh_acc->getID()) {
+                                        //create ZERO entry
+                                        $stock_entry = new Stock($wh_acc, $product_object);
+                                        $stock_entry->setInventoryAccount($wh_acc);
+                                        $stock_entry->setProduct($product_object);
+                                        $stock_entry->setQuantity(0);
+                                        $em->persist($stock_entry);
+                                        $em->flush();
+                                    }
+                                }
+                            }
+                        } else {
+                            foreach ($products as $product_object) {
+                                //create ZERO entry
+                                $stock_entry = new Stock($wh_acc, $product_object);
+                                $stock_entry->setInventoryAccount($wh_acc);
+                                $stock_entry->setProduct($product_object);
+                                $stock_entry->setQuantity(0);
+                                $em->persist($stock_entry);
+                                $em->flush();
+                            }
+                        }
+                    } else {
+
+                    }
+                }
+            }
+        }
     }
 
     protected function createInventoryAccount($o, $data)

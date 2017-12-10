@@ -108,11 +108,22 @@ class LocationController extends Controller
         return array(
             $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
             $grid->newColumn('Item Barcode','getBarcode','item_code', 'prod'),
-            $grid->newColumn('Item Name','getName','name', 'prod'),
+            $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
             $grid->newColumn('Min. Stock','getMinStock','min_stock', 'prod', array($this,'formatNumeric')),
             $grid->newColumn('Max. Stock','getMaxStock','max_stock', 'prod', array($this,'formatNumeric')),
-            $grid->newColumn('Current Stock','getID','quantity','o',array($this,'formatStock')),
+            $grid->newColumn('Current Stock','getQuantity','quantity', 'o', array($this,'formatNumeric')),
+//            $grid->newColumn('Current Stock','getID','quantity','o',array($this,'formatStock')),
         );
+    }
+
+    public function formatProductLink($id) {
+        $em = $this->getDoctrine()->getManager();
+        $router = $this->get('router');
+        $obj = $em->getRepository('GistInventoryBundle:Product')->find($id);
+        if($obj->getID() != null)
+            return "<a style=\"text-decoration: none;\" href=\"".$router->generate('cat_inv_prod_edit_form', array('id' => $obj->getID()))."\">".$obj->getName()."</a>";
+        else
+            return "-";
     }
 
     public function formatNumeric($number)
@@ -195,7 +206,10 @@ class LocationController extends Controller
         if($pos_loc_id != 0)
         {
             $selected_loc = $inv->findPOSLocation($pos_loc_id);
-            $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+            if ($selected_loc->getInventoryAccount()) {
+                $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+            }
+
         }
         else
         {
