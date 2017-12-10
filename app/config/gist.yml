@@ -7,7 +7,7 @@ gist_menu:
         - GistLocationBundle
         - GistAccountingBundle
         - GistInventoryBundle
-        - GistConfigurationBundle
+#        - GistConfigurationBundle
         - GistCustomerBundle
         - GistPOSERPBundle
         #- HrisBiometricsBundle

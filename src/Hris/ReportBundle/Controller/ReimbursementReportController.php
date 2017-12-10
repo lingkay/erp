@@ -232,6 +232,7 @@ class ReimbursementReportController extends CrudController
         $html = $this->render($twig, $params);
         return $pdf->printPdf($html->getContent());
     }
+
     public function gridReimbursementAction($department = null, $date_from = null, $date_to = null, $status = null)
     {
         $gl = $this->setupGridLoader();

@@ -36,7 +36,12 @@ class Stock
         $this->inv_account = $inv_account;
         $this->product = $product;
         $this->quantity = $qty;
-    }    
+    }
+
+    public function getID()
+    {
+        return $this->product->getID();
+    }
 
     public function setProduct(Product $prod)
     {

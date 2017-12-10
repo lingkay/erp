@@ -75,6 +75,11 @@ class InventoryManager
         return $this->em->getRepository('GistInventoryBundle:Warehouse')->find($id);
     }
 
+    public function findPOSLocation($id)
+    {
+        return $this->em->getRepository('GistLocationBundle:POSLocations')->find($id);
+    }
+
     public function findProductGroup($id)
     {
         return $this->em->getRepository('GistInventoryBundle:ProductGroup')->find($id);
@@ -143,6 +148,25 @@ class InventoryManager
             );
 
         $wh_opts = array();
+        foreach ($whs as $wh)
+            $wh_opts[$wh->getID()] = $wh->getName();
+
+        return $wh_opts;
+    }
+
+    public function getPOSLocationOptions($filter = array())
+    {
+        $config = new ConfigurationManager($this->container);
+        $main_warehouse = $this->findWarehouse($config->get('gist_main_warehouse'));
+        $whs = $this->em
+            ->getRepository('GistLocationBundle:POSLocations')
+            ->findBy(
+                $filter,
+                array('name' => 'ASC')
+            );
+
+        $wh_opts = array();
+        $wh_opts[0] = $main_warehouse->getName();
         foreach ($whs as $wh)
             $wh_opts[$wh->getID()] = $wh->getName();
 

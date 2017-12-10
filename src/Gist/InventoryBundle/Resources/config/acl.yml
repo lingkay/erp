@@ -3,17 +3,29 @@ acl:
       entries:
         - id: cat_inv.menu
           label: "Menu"
-    - category: Warehouse
+#    - category: Warehouse
+#      entries:
+#        - id: cat_inv_wh.menu
+#          label: "Menu"
+#        - id: cat_inv_wh.view
+#          label: "View"
+#        - id: cat_inv_wh.add
+#          label: "Add"
+#        - id: cat_inv_wh.edit
+#          label: "Edit"
+#        - id: cat_inv_wh.delete
+#          label: "Delete"
+    - category: Inventory Locations
       entries:
-        - id: cat_inv_wh.menu
+        - id: gist_inv_loc.menu
           label: "Menu"
-        - id: cat_inv_wh.view
+        - id: gist_inv_loc.view
           label: "View"
-        - id: cat_inv_wh.add
+        - id: gist_inv_loc.add
           label: "Add"
-        - id: cat_inv_wh.edit
+        - id: gist_inv_loc.edit
           label: "Edit"
-        - id: cat_inv_wh.delete
+        - id: gist_inv_loc.delete
           label: "Delete"
     - category: Brand
       entries:
