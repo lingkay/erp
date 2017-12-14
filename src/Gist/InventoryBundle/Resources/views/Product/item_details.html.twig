@@ -6,8 +6,8 @@
                 {{ form.group_text('Product Name', 'name', object.getName, 3, 4, readonly) }}
                 {{ form.group_text('Item Code', 'item_code', object.getItemCode|default(''), 3, 4, readonly) }}
                 {{ form.group_text('Barcode', 'barcode', object.getBarcode|default(''), 3, 4, readonly) }}
-                {{ form.group_number('Minimum Stock', 'min_stock', object.getMinStock|default(''), 3, 4, readonly) }}
-                {{ form.group_number('Maximum Stock', 'max_stock', object.getMaxStock|default(''), 3, 4, readonly) }}
+                {#{{ form.group_number('Minimum Stock', 'min_stock', object.getMinStock|default(''), 3, 4, readonly) }}#}
+                {#{{ form.group_number('Maximum Stock', 'max_stock', object.getMaxStock|default(''), 3, 4, readonly) }}#}
                 {{ form.group_select("Category", "category", category_opts, category.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Type", "item_type", type_opts, object.getType.getID|default(''), 3, 4, readonly) }}

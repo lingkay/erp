@@ -36,6 +36,36 @@
         </div>
     </div>
 
+    <div id="change_stock_threshold" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="">
+                    <div class="modal-header">
+                        <a type="button" class="close" data-dismiss="modal" aria-hidden="true"></a>
+                        <h4 id="form_title" class="modal-title">Change Stock Threshold</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-horizontal form" style="margin-top: 20px;">
+                            <div class="col-md-12">
+                                <input type="hidden" id="product_id_to_edit" value="0">
+                                <input type="hidden" id="formula_min" value="0">
+                                <input type="hidden" id="formula_max" value="0">
+                                {{ form.group_text('Product', 'product', '', 4, 7, true) }}
+                                {{ form.radio_set_pos_white('Computation', 'computation', computation_opts, 'manual', false, '') }}
+                                {{ form.group_text('Min. Quantity', 'min_qty', '', 4, 7, false) }}
+                                {{ form.group_text('Max. Quantity', 'max_qty', '', 4, 7, false) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="javascript:void(0)" class="btn save_threshold_btn" style="background-color: #556E93; color: #ffffff;">Save</a>
+                        <button type="button" data-dismiss="modal" class="btn default" data-toggle="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 {% endblock %}
 
@@ -99,6 +129,39 @@
                 $("#cform-pos_location").live('change', function(){
                     path = generatePath();
                     dTable.fnReloadAjax(path);
+                });
+
+                $('.radio').on("click",function(){
+                    if ($('#uniform-cform-computation input:radio:checked').val() == 'manual') {
+                        $('#cform-min_qty').prop('readonly', false);
+                        $('#cform-max_qty').prop('readonly', false);
+                    } else {
+                        var formula_min = $('#formula_min').val();
+                        var formula_max = $('#formula_max').val();
+                        $('#cform-min_qty').val(formula_min);
+                        $('#cform-max_qty').val(formula_max);
+                        $('#cform-min_qty').prop('readonly', true);
+                        $('#cform-max_qty').prop('readonly', true);
+                    }
+                });
+
+                $(document).on("click",".change_threshold_btn", function(e){
+                    var row = $(this).closest('tr');
+                    var prod_id = row.find('.row_prod_id').val();
+                    $('#product_id_to_edit').val(prod_id);
+
+
+                    var url = "/inventory/locations/grid/get_prod_info/" + prod_id;
+                    $.getJSON(url, function(json){
+                        $.each(json, function(i, item) {
+                            name = item.name;
+                            $('#cform-product').val(name);
+                            $('#formula_min').val(item.f_min);
+                            $('#formula_max').val(item.f_max);
+                        });
+                    });
+
+                    $('#change_stock_threshold').modal('show');
                 });
             });
         </script>

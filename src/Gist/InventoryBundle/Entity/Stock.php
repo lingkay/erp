@@ -31,6 +31,16 @@ class Stock
      */
     protected $inv_account;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $min_stock;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $max_stock;
+
     public function __construct($inv_account, $product, $qty = 0.00)
     {
         $this->inv_account = $inv_account;
@@ -41,6 +51,28 @@ class Stock
     public function getID()
     {
         return $this->product->getID();
+    }
+
+    public function setMinStock($min_stock)
+    {
+        $this->min_stock = $min_stock;
+        return $this;
+    }
+
+    public function getMinStock()
+    {
+        return $this->min_stock;
+    }
+
+    public function setMaxStock($max_stock)
+    {
+        $this->max_stock = $max_stock;
+        return $this;
+    }
+
+    public function getMaxStock()
+    {
+        return $this->max_stock;
     }
 
     public function setProduct(Product $prod)

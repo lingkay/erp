@@ -122,17 +122,17 @@ class ProductController extends CrudController
             $o->setClass($data['class']);
         }
 
-        if (isset($data['min_stock'])) {
-            $o->setMinStock($data['min_stock']);
-        } else {
-            $o->setMinStock(0);
-        }
-
-        if (isset($data['max_stock'])) {
-            $o->setMaxStock($data['max_stock']);
-        } else {
-            $o->setMaxStock(0);
-        }
+//        if (isset($data['min_stock'])) {
+//            $o->setMinStock($data['min_stock']);
+//        } else {
+//            $o->setMinStock(0);
+//        }
+//
+//        if (isset($data['max_stock'])) {
+//            $o->setMaxStock($data['max_stock']);
+//        } else {
+//            $o->setMaxStock(0);
+//        }
 
         if (isset($data['category'])) {
             $category = $em->getRepository('GistInventoryBundle:ProductCategory')->find($data['category']);

@@ -101,15 +101,7 @@ class Product
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $directions;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $min_stock;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $max_stock;
 
 
     public function __construct()
@@ -121,27 +113,7 @@ class Product
         return $this->id;
     }
 
-    public function setMinStock($min_stock)
-    {
-        $this->min_stock = $min_stock;
-        return $this;
-    }
 
-    public function getMinStock()
-    {
-        return $this->min_stock;
-    }
-
-    public function setMaxStock($max_stock)
-    {
-        $this->max_stock = $max_stock;
-        return $this;
-    }
-
-    public function getMaxStock()
-    {
-        return $this->max_stock;
-    }
 
     public function setName($name)
     {

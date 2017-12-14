@@ -33,6 +33,11 @@ class LocationController extends Controller
         $params['grid_cols'] = $gl->getColumns();
 //        $this->inv_acct_id = '0';
 
+        $params['computation_opts'] = array(
+            'manual' => 'Manual',
+            'formula' => 'Formula'
+        );
+
         $inv = $this->get('gist_inventory');
         $params['pos_loc_opts'] = $inv->getPOSLocationOptions();
 
@@ -109,11 +114,21 @@ class LocationController extends Controller
             $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
             $grid->newColumn('Item Barcode','getBarcode','item_code', 'prod'),
             $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
-            $grid->newColumn('Min. Stock','getMinStock','min_stock', 'prod', array($this,'formatNumeric')),
-            $grid->newColumn('Max. Stock','getMaxStock','max_stock', 'prod', array($this,'formatNumeric')),
+            $grid->newColumn('Min. Stock','getMinStock','min_stock', 'o', array($this,'formatNumericLinkThreshold')),
+            $grid->newColumn('Max. Stock','getMaxStock','max_stock', 'o', array($this,'formatNumericLinkThreshold')),
             $grid->newColumn('Current Stock','getQuantity','quantity', 'o', array($this,'formatNumeric')),
 //            $grid->newColumn('Current Stock','getID','quantity','o',array($this,'formatStock')),
         );
+    }
+
+    public function formatNumericLinkThreshold($number) {
+//        $em = $this->getDoctrine()->getManager();
+//        $router = $this->get('router');
+//        $obj = $em->getRepository('GistInventoryBundle:Product')->find($id);
+//        if($obj->getID() != null)
+            return "<div class=\"numeric\"><a style=\"text-decoration: none;\" href=\"javascript:void(0)\" class=\"change_threshold_btn\">".number_format($number, 0)."</a></div>";
+//        else
+//            return "-";
     }
 
     public function formatProductLink($id) {
@@ -121,7 +136,10 @@ class LocationController extends Controller
         $router = $this->get('router');
         $obj = $em->getRepository('GistInventoryBundle:Product')->find($id);
         if($obj->getID() != null)
-            return "<a style=\"text-decoration: none;\" href=\"".$router->generate('cat_inv_prod_edit_form', array('id' => $obj->getID()))."\">".$obj->getName()."</a>";
+            return "
+                <input type=\"hidden\" class=\"row_prod_id\" value=\"".$obj->getID()."\">
+                <a style=\"text-decoration: none;\" href=\"".$router->generate('cat_inv_prod_edit_form', array('id' => $obj->getID()))."\">".$obj->getName()."</a>
+            ";
         else
             return "-";
     }
@@ -253,6 +271,26 @@ class LocationController extends Controller
         $this->base_view = $base;
 
         return $base;
+    }
+
+    /**
+     *
+     * (AJAX)
+     * @param $trans_sys_id
+     * @return JsonResponse
+     */
+    public function getProductDetailsStockAction($id)
+    {
+        $split_trans_total = 0;
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$id));
+
+        //calculate min and max based on formula and span in settings
+        $f_min = 0;
+        $f_max = 0;
+
+        $list_opts[] = array('name'=>$product->getName(), 'f_min'=>$f_min, 'f_max'=>$f_max);
+        return new JsonResponse($list_opts);
     }
 
     protected function filterGrid(){

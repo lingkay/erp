@@ -52,6 +52,8 @@
 {% endfor %}
 {% endmacro %}
 
+
+
 {% macro checkbox(name, value, display, checked, group, disabled = false, prefix = 'c') %}
 <label>
 {% if group == null %}
@@ -467,6 +469,21 @@
     {{ form.radio(name, id, display, value == id ? true : false, name, disabled) }}
 {% endfor %}
 </div>
+{% endmacro %}
+
+{% macro radio_set_pos_white(label, name, fields, value, disabled = false, class = '') %}
+    {% import _self as form %}
+    <div class="form-group">
+        <label style="" class="col-md-4 control-label">{{ label }}</label>
+        <div class="col-md-7">
+            <div class="radio-list">
+                {% for id,display in fields %}
+                    {{ form.radio(name, id, display, value == id ? true : false, name, disabled, 'c', class) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 {% endmacro %}
 
 
