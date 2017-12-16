@@ -33,6 +33,15 @@ class InventoryManager
         );
     }
 
+    public function getFormulaSpanOptions()
+    {
+        return array(
+            'past_week' => 'Last 7 Days',
+            'past_month' => 'Last 30 Days',
+            'past_month2' => 'Last 60 Days'
+        );
+    }
+
     public function getSupplierCategoryOptions()
     {
         return array(
