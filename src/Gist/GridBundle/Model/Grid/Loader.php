@@ -284,6 +284,75 @@ class Loader
         return $this;
     }
 
+    protected function processDataStockGroup()
+    {
+        // query
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('o')
+            ->groupBy('o.product')
+            ->from($this->repository, 'o');
+
+
+        // joins
+        foreach ($this->joins as $alias => $join){
+            switch($join->getType()){
+                case 'inner': $qb->innerJoin('o.' . $join->getField(), $alias);
+                    break;
+                case 'left': $qb->leftJoin('o.' . $join->getField(), $alias);
+                    break;
+            }
+        }
+        // filter
+        if ($this->qb_filter_group != null)
+            $this->qb_filter_group->apply($qb);
+
+        // search
+        $this->qbSearchFilter($qb);
+
+        // hooks
+        if (isset($this->callbacks[Event::QB_BUILD]))
+        {
+            foreach ($this->callbacks[Event::QB_BUILD] as $qb_call)
+            {
+                call_user_func($qb_call, $qb);
+            }
+        }
+
+        // order
+        if (isset($this->columns[$this->sort_col]))
+            $qb->orderBy($this->columns[$this->sort_col]->getFullOrderField(), $this->sort_dir);
+
+        // paging
+        $qb->setFirstResult($this->start)
+            ->setMaxResults($this->limit);
+
+        // debug
+        // error_log('dql - ' . $qb->getQuery()->getDQL());
+
+        // process rows
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as $obj)
+        {
+            $row = array();
+
+            foreach ($this->columns as $col)
+            {
+                if (isset($this->joins[$col->getObjectAlias()]))
+                {
+                    $getter = $this->joins[$col->getObjectAlias()]->getGetter();
+                    $join_obj = $obj->$getter();
+                    $row[] = $col->getValue($join_obj);
+                }
+                else
+                    $row[] = $col->getValue($obj);
+            }
+
+            $this->res->addRow($row);
+        }
+
+        return $this;
+    }
+
     protected function processData2($restrict)
     {
         // query
@@ -439,6 +508,15 @@ class Loader
         $this->res->setSEcho($this->s_echo);
         $this->processCounts();
         $this->processData();
+
+        return $this->res;
+    }
+
+    public function loadStockGroup()
+    {
+        $this->res->setSEcho($this->s_echo);
+        $this->processCounts();
+        $this->processDataStockGroup();
 
         return $this->res;
     }

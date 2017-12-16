@@ -12,7 +12,7 @@
                     <!-- BEGIN FORM-->
                     <div class="row">
                         <div class="col-md-5 col-md-offset-3" style="margin-bottom: 10px;">
-                            {{ form_tools.group_select('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(0),3,7) }}
+                            {{ form_tools.group_select('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(-1),3,7) }}
                         </div>
                     </div>
                     <table class="table table-bordered table-hover" id="list_table">
@@ -48,12 +48,13 @@
                         <div class="row form-horizontal form" style="margin-top: 20px;">
                             <div class="col-md-12">
                                 <input type="hidden" id="product_id_to_edit" value="0">
+                                <input type="hidden" id="inv_id_to_edit" value="0">
                                 <input type="hidden" id="formula_min" value="0">
                                 <input type="hidden" id="formula_max" value="0">
                                 {{ form.group_text('Product', 'product', '', 4, 7, true) }}
                                 {{ form.radio_set_pos_white('Computation', 'computation', computation_opts, 'manual', false, '') }}
-                                {{ form.group_text('Min. Quantity', 'min_qty', '', 4, 7, false) }}
-                                {{ form.group_text('Max. Quantity', 'max_qty', '', 4, 7, false) }}
+                                {{ form.group_number_no_step('Min. Quantity', 'min_qty', '', 4, 7, false) }}
+                                {{ form.group_number_no_step('Max. Quantity', 'max_qty', '', 4, 7, false) }}
                             </div>
                         </div>
                     </div>
@@ -80,6 +81,14 @@
 
 
         <script>
+
+            function clearStockModal() {
+                $('#cform-min_qty').val('0');
+                $('#cform-max_qty').val('0');
+                $('#cform-product').val('');
+                $('#product_id_to_edit').val('0');
+                $('#inv_id_to_edit').val('0');
+            }
 
             function generatePath() {
                 var pos_loc_id = $('#cform-pos_location').val();
@@ -119,7 +128,7 @@
                     "aoColumnDefs": [
                         {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
                     ],
-                    "aaSorting": [[5,'desc']]
+                    "aaSorting": [[4,'desc']]
                 });
 
                 $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
@@ -148,16 +157,20 @@
                 $(document).on("click",".change_threshold_btn", function(e){
                     var row = $(this).closest('tr');
                     var prod_id = row.find('.row_prod_id').val();
+                    var inv_id = row.find('.row_inv_id').val();
                     $('#product_id_to_edit').val(prod_id);
+                    $('#inv_id_to_edit').val(inv_id);
 
 
-                    var url = "/inventory/locations/grid/get_prod_info/" + prod_id;
+                    var url = "/inventory/locations/grid/get_prod_info/" + prod_id + "/" + inv_id;
                     $.getJSON(url, function(json){
                         $.each(json, function(i, item) {
                             name = item.name;
                             $('#cform-product').val(name);
                             $('#formula_min').val(item.f_min);
                             $('#formula_max').val(item.f_max);
+                            $('#cform-min_qty').val(item.min);
+                            $('#cform-max_qty').val(item.max);
                         });
                     });
 
@@ -169,6 +182,16 @@
                     var max = $('#cform-max_qty').val();
                     var prod_id = $('#product_id_to_edit').val();
                     var pos_loc_id = $('#cform-pos_location').val();
+                    var inv_id = 0;
+
+                    if (min < 0 || max < 0) {
+                        toastr['error']('Invalid inputs', 'Error');
+                        return 0;
+                    }
+
+                    if (pos_loc_id == -1) {
+                        inv_id = $('#inv_id_to_edit').val();
+                    }
 
                     if (min == '') {
                         min = 0;
@@ -178,20 +201,26 @@
                         max = 0;
                     }
 
-                    var url = "/inventory/locations/grid/save_stock_threshold/" + prod_id +"/"+ min +"/"+ max +"/"+ pos_loc_id;
+                    var url = "/inventory/locations/grid/save_stock_threshold/" + prod_id +"/"+ min +"/"+ max +"/"+ pos_loc_id +"/"+ inv_id;
                     $.getJSON(url, function(json){
                         $.each(json, function(i, msg) {
                            if (msg.status == 'success') {
                                toastr['success']('Stock threshold changed', 'Success');
-                                dTable.fnReloadAjax();
+                               clearStockModal();
+                               dTable.fnReloadAjax();
                            } else {
                                toastr['error']('Stock threshold not changed', 'Error');
+                               clearStockModal();
                            }
                         });
                     });
 
                     $('#change_stock_threshold').modal('hide');
                 });
+
+                $('#change_stock_threshold').on('hidden.bs.modal', function () {
+                    clearStockModal();
+                })
             });
         </script>
 {% endblock %}

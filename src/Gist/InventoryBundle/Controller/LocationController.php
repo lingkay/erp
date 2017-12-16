@@ -103,6 +103,7 @@ class LocationController extends Controller
         $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('prod','product','getProduct'),
+            $grid->newJoin('inv','inv_account','getInventoryAccount'),
         );
     }
 
@@ -111,24 +112,18 @@ class LocationController extends Controller
     {
         $grid = $this->get('gist_grid');
         return array(
-            $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
-            $grid->newColumn('Item Barcode','getBarcode','item_code', 'prod'),
+            $grid->newColumn('Location','getID','name', 'inv', array($this,'formatInv')),
+//            $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
+//            $grid->newColumn('Item Barcode','getBarcode','item_code', 'prod'),
             $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
             $grid->newColumn('Min. Stock','getMinStock','min_stock', 'o', array($this,'formatNumericLinkThreshold')),
             $grid->newColumn('Max. Stock','getMaxStock','max_stock', 'o', array($this,'formatNumericLinkThreshold')),
-            $grid->newColumn('Current Stock','getQuantity','quantity', 'o', array($this,'formatNumeric')),
-//            $grid->newColumn('Current Stock','getID','quantity','o',array($this,'formatStock')),
+            $grid->newColumn('Current Stock','getQuantityColored','quantity', 'o', array($this,'formatNumeric'))
         );
     }
 
     public function formatNumericLinkThreshold($number) {
-//        $em = $this->getDoctrine()->getManager();
-//        $router = $this->get('router');
-//        $obj = $em->getRepository('GistInventoryBundle:Product')->find($id);
-//        if($obj->getID() != null)
-            return "<div class=\"numeric\"><a style=\"text-decoration: none;\" href=\"javascript:void(0)\" class=\"change_threshold_btn\">".number_format($number, 0)."</a></div>";
-//        else
-//            return "-";
+        return "<div class=\"numeric\"><a style=\"text-decoration: none;\" href=\"javascript:void(0)\" class=\"change_threshold_btn\">".number_format($number, 2)."</a></div>";
     }
 
     public function formatProductLink($id) {
@@ -144,9 +139,22 @@ class LocationController extends Controller
             return "-";
     }
 
+    public function formatInv($id) {
+        $em = $this->getDoctrine()->getManager();
+        $router = $this->get('router');
+        $obj = $em->getRepository('GistInventoryBundle:Account')->find($id);
+        if($obj->getID() != null)
+            return "
+                <input type=\"hidden\" class=\"row_inv_id\" value=\"".$obj->getID()."\">".
+                $obj->getName();
+
+        else
+            return "-";
+    }
+
     public function formatNumeric($number)
     {
-        return '<div class="numeric">'.number_format($number, 0).'</div>';
+        return '<div class="numeric">'.$number.'</div>';
     }
 
     public function formatStock($id)
@@ -166,7 +174,7 @@ class LocationController extends Controller
         }
     }
 
-    public function gridAction($pos_loc_id = null)
+    public function gridAction($pos_loc_id = -1)
     {
         $this->getControllerBase();
         $inv = $this->get('gist_inventory');
@@ -178,18 +186,22 @@ class LocationController extends Controller
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
 
-
-
-        if($pos_loc_id != 0)
-        {
-            $selected_loc = $inv->findPOSLocation($pos_loc_id);
-            $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
-        }
-        else
+        if($pos_loc_id == 0)
         {
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
             $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
         }
+        elseif ($pos_loc_id == -1)
+        {
+            //ALL
+            $qry[] = "(o.quantity > -1)";
+        }
+        else
+        {
+            $selected_loc = $inv->findPOSLocation($pos_loc_id);
+            $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+        }
+
 
 
         if (!empty($qry))
@@ -221,18 +233,20 @@ class LocationController extends Controller
 
 
 
-        if($pos_loc_id != 0)
-        {
-            $selected_loc = $inv->findPOSLocation($pos_loc_id);
-            if ($selected_loc->getInventoryAccount()) {
-                $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
-            }
-
-        }
-        else
+        if($pos_loc_id == 0)
         {
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
             $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
+        }
+        elseif ($pos_loc_id == -1)
+        {
+            //ALL
+            $qry[] = "(o.quantity > -1)";
+        }
+        else
+        {
+            $selected_loc = $inv->findPOSLocation($pos_loc_id);
+            $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
         }
 
 
@@ -279,17 +293,20 @@ class LocationController extends Controller
      * @param $trans_sys_id
      * @return JsonResponse
      */
-    public function getProductDetailsStockAction($id)
+    public function getProductDetailsStockAction($id, $inv_id)
     {
         $split_trans_total = 0;
         $em = $this->getDoctrine()->getManager();
         $product = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$id));
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$inv_id));
 
         //calculate min and max based on formula and span in settings
         $f_min = 0;
         $f_max = 0;
+        $max = $stock->getMaxStock();
+        $min = $stock->getMinStock();
 
-        $list_opts[] = array('name'=>$product->getName(), 'f_min'=>$f_min, 'f_max'=>$f_max);
+        $list_opts[] = array('name'=>$product->getName(), 'f_min'=>$f_min, 'f_max'=>$f_max, 'min'=>$min, 'max'=>$max);
         return new JsonResponse($list_opts);
     }
 
@@ -299,11 +316,23 @@ class LocationController extends Controller
      * @param $trans_sys_id
      * @return JsonResponse
      */
-    public function saveStockThresholdAction($id, $min, $max, $pos_loc_id)
+    public function saveStockThresholdAction($id, $min, $max, $pos_loc_id, $inv_id)
     {
         $em = $this->getDoctrine()->getManager();
-        $posLocation = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$posLocation->getInventoryAccount()->getID()));
+        if ($inv_id == 0) {
+            if ($pos_loc_id == 0) {
+                $inv = $this->get('gist_inventory');
+                $config = $this->get('gist_configuration');
+                $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+                $posLocation = $main_warehouse;
+            } else {
+                $posLocation = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+            }
+
+            $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$posLocation->getInventoryAccount()->getID()));
+        } else {
+            $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$inv_id));
+        }
 
         try {
             $stock->setMaxStock($max);

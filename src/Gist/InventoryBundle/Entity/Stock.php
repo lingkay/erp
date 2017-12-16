@@ -81,6 +81,15 @@ class Stock
         return $this;
     }
 
+    public function getQuantityColored()
+    {
+        if ($this->quantity <= $this->min_stock || $this->quantity >= $this->max_stock) {
+            return '<span style="color: red;">'.number_format($this->quantity, 2).'</span>';
+        } else {
+            return '<span>'.number_format($this->quantity, 2).'</span>';
+        }
+    }
+
     public function getProduct()
     {
         return $this->product;

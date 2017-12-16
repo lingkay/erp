@@ -50,11 +50,11 @@ gist_inv_loc_grid_search:
     defaults: { _controller: GistInventoryBundle:Location:gridSearch }
 
 gist_inv_loc_get_prod_details:
-    path:     /grid/get_prod_info/{id}
+    path:     /grid/get_prod_info/{id}/{inv_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:Location:getProductDetailsStock }
 
 gist_inv_loc_save_stock_threshold:
-    path:     /grid/save_stock_threshold/{id}/{min}/{max}/{pos_loc_id}
+    path:     /grid/save_stock_threshold/{id}/{min}/{max}/{pos_loc_id}/{inv_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:Location:saveStockThreshold }

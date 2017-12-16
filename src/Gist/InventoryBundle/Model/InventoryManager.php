@@ -175,6 +175,7 @@ class InventoryManager
             );
 
         $wh_opts = array();
+        $wh_opts[-1] = 'All';
         $wh_opts[0] = $main_warehouse->getName();
         foreach ($whs as $wh)
             $wh_opts[$wh->getID()] = $wh->getName();
