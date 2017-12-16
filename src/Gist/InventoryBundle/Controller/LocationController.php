@@ -293,6 +293,31 @@ class LocationController extends Controller
         return new JsonResponse($list_opts);
     }
 
+    /**
+     *
+     * (AJAX)
+     * @param $trans_sys_id
+     * @return JsonResponse
+     */
+    public function saveStockThresholdAction($id, $min, $max, $pos_loc_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $posLocation = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$posLocation->getInventoryAccount()->getID()));
+
+        try {
+            $stock->setMaxStock($max);
+            $stock->setMinStock($min);
+            $em->persist($stock);
+            $em->flush();
+            $list_opts[] = array('status'=>'success');
+        } catch (\Exception $e) {
+            $list_opts[] = array('status'=>'error');
+        }
+
+        return new JsonResponse($list_opts);
+    }
+
     protected function filterGrid(){
         $grid = $this->get('gist_grid');
         return $grid->newFilterGroup();

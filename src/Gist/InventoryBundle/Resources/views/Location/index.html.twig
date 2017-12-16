@@ -82,7 +82,7 @@
         <script>
 
             function generatePath() {
-                pos_loc_id = $('#cform-pos_location').val();
+                var pos_loc_id = $('#cform-pos_location').val();
 
 
                 var path = "{{ path('gist_inv_loc_grid_search', {
@@ -162,6 +162,35 @@
                     });
 
                     $('#change_stock_threshold').modal('show');
+                });
+
+                $(document).on("click",".save_threshold_btn", function(e){
+                    var min = $('#cform-min_qty').val();
+                    var max = $('#cform-max_qty').val();
+                    var prod_id = $('#product_id_to_edit').val();
+                    var pos_loc_id = $('#cform-pos_location').val();
+
+                    if (min == '') {
+                        min = 0;
+                    }
+
+                    if (max == '') {
+                        max = 0;
+                    }
+
+                    var url = "/inventory/locations/grid/save_stock_threshold/" + prod_id +"/"+ min +"/"+ max +"/"+ pos_loc_id;
+                    $.getJSON(url, function(json){
+                        $.each(json, function(i, msg) {
+                           if (msg.status == 'success') {
+                               toastr['success']('Stock threshold changed', 'Success');
+                                dTable.fnReloadAjax();
+                           } else {
+                               toastr['error']('Stock threshold not changed', 'Error');
+                           }
+                        });
+                    });
+
+                    $('#change_stock_threshold').modal('hide');
                 });
             });
         </script>
