@@ -131,7 +131,7 @@
                 }
 
                 if (rowCount > 1 && source != '-1' && destination != '-1' && source != destination) {
-                   this.submit();
+                    $('#transfer_form').submit();
                 } else {
                     if (source == destination) {
                         toastr['error']('Source and destination location should be distinct', 'Form validation');
