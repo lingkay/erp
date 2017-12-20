@@ -78,10 +78,13 @@
                         </div>
                         <div class="form-actions fluid">
                             <div class="col-md-9">
-                                {% if not readonly %}
+                                {% if object.getID|default('') == '' %}
                                     <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue">Submit</a>
+                                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                                {% else %}
+                                    <a href="{{ path(route_list) }}" class="btn default">Go back</a>
                                 {% endif %}
-                                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+
                             </div>
                         </div>
                     </form>
