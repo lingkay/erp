@@ -1,0 +1,106 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    {% if app.user.hasAccess(prefix ~ '.add') %}
+                        <a href="{{ path(route_add) }}" class="btn green">Add New</a>
+                    {% endif %}
+                </div>
+                {#<div class="row">#}
+                    {#<div class="col-md-12">#}
+                        {#<div class="portlet box blue">#}
+                            {#<div class="portlet-title">#}
+                                {#<div class="caption">#}
+                                    {#<i class="fa fa-filter"></i>Filters#}
+                                {#</div>#}
+                            {#</div>#}
+                            {#<div class="portlet-body">#}
+                                {#<div class="row">#}
+                                    {#<div class="col-md-12">#}
+                                        {#<div class="form-horizontal">#}
+                                            {#{{ form.group_date("Transfer Date",'transfer_date', '' ,4,4) }}#}
+                                        {#</div>#}
+                                    {#</div>#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                {#</div>#}
+                {#<div class="row">#}
+                    {#<div class="col-md-12" style="margin-bottom: 10px;">#}
+                        {#<button class="btn blue pull-left" id="filter_button" style="margin-right: 10px;">Apply Filters</button>#}
+                        {#<button class="btn red" id="clear_filter">Clear Filters</button>#}
+                    {#</div>#}
+                {#</div>#}
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                    <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                                <th style="width: 165px">{{ col.getLabel }}</th>
+                            {% else %}
+                                <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block js %}
+        <script>
+
+            $(document).ready(function() {
+
+
+                var dTable;
+
+
+                dTable = $('#list_table').dataTable({
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "sAjaxSource": "{{ path('gist_inv_stock_transfer_grid') }}",
+                    "iDisplayLength": 10,
+                    "bFilter" : false,
+                    "bInfo" : false,
+                    "bLengthChange": false,
+                    "sPaginationType": "bootstrap",
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_ records",
+                        "oPaginate": {
+                            "sPrevious": "Prev",
+                            "sNext": "Next"
+                        }
+                    },
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+                    ]
+                });
+
+                $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+                $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+                $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+
+            });
+        </script>
+    {% endblock %}
+
+    {% block css %}
+    {% endblock %}

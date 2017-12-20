@@ -15,6 +15,18 @@ acl:
 #          label: "Edit"
 #        - id: cat_inv_wh.delete
 #          label: "Delete"
+    - category: Stock Transfer
+      entries:
+        - id: gist_inv_stock_transfer.menu
+          label: "Menu"
+        - id: gist_inv_stock_transfer.view
+          label: "View"
+        - id: gist_inv_stock_transfer.add
+          label: "Add"
+        - id: gist_inv_stock_transfer.edit
+          label: "Edit"
+        - id: gist_inv_stock_transfer.delete
+          label: "Delete"
     - category: Inventory Locations
       entries:
         - id: gist_inv_loc.menu

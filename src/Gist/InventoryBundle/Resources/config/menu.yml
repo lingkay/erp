@@ -27,10 +27,14 @@ menu_items:
     #   acl: cat_inv_pg.menu
     #   label: Product Group
     #   parent: menu_inventory
-    # - id: cat_inv_trans_index
-    #   acl: cat_inv_trans.menu
-    #   label: Transfer Stock
-    #   parent: menu_inventory
+#    - id: cat_inv_trans_index
+#      acl: cat_inv_trans.menu
+#      label: Transfer Stock
+#      parent: menu_inventory
+    - id: gist_inv_stock_transfer_index
+      acl: gist_inv_stock_transfer.menu
+      label: Stock Transfer
+      parent: menu_inventory
     - id: gist_inv_loc_index
       acl: gist_inv_loc.menu
       label: Location

@@ -92,6 +92,10 @@ cat_inv_adjust:
     resource: "@GistInventoryBundle/Resources/config/routes/stock_adjust.yml"
     prefix: /stock_adjustment
 
+gist_inv_stock_transfer:
+    resource: "@GistInventoryBundle/Resources/config/routes/stock_transfer.yml"
+    prefix: /stock_transfer
+
 cat_inv_adjust_wh_products:
     pattern: /stock_adjustment/products/{wh_id}
     methods: [GET]

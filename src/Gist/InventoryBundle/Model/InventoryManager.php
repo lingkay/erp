@@ -284,17 +284,36 @@ class InventoryManager
     
     public function getProductOptions($filter = array())
     {
-        $filter = array_merge($filter, array('parent'=> null));
+        //$filter = array_merge($filter, array('parent'=> null));
+        //$filter = null;
         $products = $this->em
             ->getRepository('GistInventoryBundle:Product')
             ->findBy(
                 $filter,
-                array('sku' => 'ASC')
+                array('id' => 'ASC')
             );
 
         $prod_opts = array();
         foreach ($products as $prod)
             $prod_opts[$prod->getID()] = $prod->getName();
+
+        return $prod_opts;
+    }
+
+    public function getProductOptionsTransfer($filter = array())
+    {
+        //$filter = array_merge($filter, array('parent'=> null));
+        //$filter = null;
+        $products = $this->em
+            ->getRepository('GistInventoryBundle:Product')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $prod_opts = array();
+        foreach ($products as $prod)
+            $prod_opts[$prod->getItemCode()] = $prod->getName();
 
         return $prod_opts;
     }

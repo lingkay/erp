@@ -81,8 +81,7 @@
     </div>
 </div>
 
-
-<div id="entry_form" class="modal fade" tabindex="-1" aria-hidden="true">
+<div id="entry_form" class="modal fade" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" action="">
@@ -136,6 +135,15 @@ function escape_html(s) {
 }
 
 $(document).ready(function() {
+
+    $("#en_warehouse_id").select2({
+        dropdownParent: $("#entry_form")
+    });
+
+    $("#en_product_id").select2({
+        dropdownParent: $("#entry_form")
+    });
+
     // add from entry form
     $('#btn_from_add').click(function() {
         $('#form_title').html('Add Source Entry');

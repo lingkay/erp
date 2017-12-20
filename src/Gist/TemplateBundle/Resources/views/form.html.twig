@@ -280,6 +280,21 @@
 </div>
 {% endmacro %}
 
+{% macro group_select_transfer(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
+    {% import _self as self %}
+    <div id="{{ prefix }}group-{{ name }}" class="form-group">
+        <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+        <div class="col-md-{{ body_size-1 }}">
+            <select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control select_2" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --">
+                {{ self.options(options, value) }}
+            </select>
+        </div>
+        <div class="col-md-1">
+            <a href="javascript:void(0)" class="btn green add_transfer_item">Add Item</a>
+        </div>
+    </div>
+{% endmacro %}
+
 {% macro group_select_approver(label, name, options, value, value2, label_size, body_size, disabled = false, prefix = 'c') %}
 {% import _self as self %}
 <div id="{{ prefix }}group-{{ name }}" class="form-group">

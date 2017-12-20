@@ -1,0 +1,39 @@
+gist_inv_stock_transfer_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:index }
+
+gist_inv_stock_transfer_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:addForm }
+
+gist_inv_stock_transfer_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:addSubmit }
+
+gist_inv_stock_transfer_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:editForm }
+
+gist_inv_stock_transfer_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:editSubmit }
+
+gist_inv_stock_transfer_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:delete }
+
+gist_inv_stock_transfer_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:grid }
+
+gist_inv_stock_transfer_ajax_get:
+    pattern: /ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:ajaxGet }
