@@ -157,6 +157,7 @@ class StockTransferController extends CrudController
 
         if ($is_new) {
             $o->setStatus('requested');
+            $o->setRequestingUser($this->getUser());
 
             // initialize entries
             $entries = array();
@@ -214,6 +215,18 @@ class StockTransferController extends CrudController
             return $entries;
         } else {
             $o->setStatus($data['status']);
+
+            if($data['status'] == 'processed') {
+                $o->setProcessedUser($this->getUser());
+                $o->setDateProcessed(new DateTime());
+
+            } elseif ($data['status'] == 'delivered') {
+                $o->setDeliverUser($this->getUser());
+                $o->setDateDelivered(new DateTime());
+            } elseif ($data['status'] == 'arrived') {
+                $o->setReceivingUser($this->getUser());
+                $o->setDateReceived(new DateTime());
+            }
         }
     }
 

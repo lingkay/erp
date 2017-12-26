@@ -31,19 +31,19 @@
                                         <ol class="ProgressBar">
                                             <li class="ProgressBar-step is-current">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Pending</span>
+                                                <span class="ProgressBar-stepLabel">Pending<br>{{ object.getDateCreate|date('M d, Y h:i a')|default('') }}</span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Processed</span>
+                                                <span class="ProgressBar-stepLabel">Processed<br>{{ object.getDateProcessed|date('M d, Y h:i a')|default('') }}</span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">In-transit</span>
+                                                <span class="ProgressBar-stepLabel">In-transit<br>{{ object.getDateDelivered|date('M d, Y h:i a')|default('') }}</span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Arrived</span>
+                                                <span class="ProgressBar-stepLabel">Arrived<br>{{ object.getDateReceived|date('M d, Y h:i a')|default('') }}</span>
                                             </li>
                                         </ol>
                                     </div>
