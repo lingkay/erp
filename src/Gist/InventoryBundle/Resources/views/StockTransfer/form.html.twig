@@ -15,9 +15,15 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4 class="form-section">Information</h4>
-                                    {{ form.group_select("Source", "source", wh_opts, object.getSource.getID|default(-1), 3, 5, readonly) }}
-                                    {{ form.group_select("Destination", "destination", wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly) }}
-                                    {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5)}}
+                                    {% if object.getID|default('') == '' %}
+                                        {{ form.group_select("Source", "source", wh_opts, object.getSource.getID|default(-1), 3, 5, readonly) }}
+                                        {{ form.group_select("Destination", "destination", wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly) }}
+                                        {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5)}}
+                                    {% else %}
+                                        {{ form.group_text('Source', 'source', object.getSource.getName, 3, 4, true) }}
+                                        {{ form.group_text('Destination', 'destination', object.getDestination.getName, 3, 4, true) }}
+                                        {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5, true)}}
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-6">
                                     <h4 class="form-section">Status</h4>
@@ -41,8 +47,7 @@
                                             </li>
                                         </ol>
                                     </div>
-
-                                    <svg xmlns="http://www.w3.org/2000/svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
                                         <symbol id="checkmark-bold" viewBox="0 0 24 24">
                                             <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/>
                                         </symbol>
@@ -52,14 +57,18 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h4 class="form-section">Items to transfer</h4>
-                                    {{ form.group_select_transfer("Item", "item", item_opts, '000', 3, 5, readonly) }}
+                                    {% if object.getID|default('') == '' %}
+                                        {{ form.group_select_transfer("Item", "item", item_opts, '000', 3, 5, readonly) }}
+                                    {% endif %}
                                     <table class="table table-striped table-bordered table-hover" id="list_table">
                                         <thead>
                                             <tr>
                                                 <td width="20%">Item Code</td>
                                                 <td width="50%">Item Name</td>
                                                 <td width="20%">Quantity</td>
-                                                <td width="10%"></td>
+                                                {% if object.getID|default('') == '' %}
+                                                    <td width="10%"></td>
+                                                {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody id="transfer_table_body">
@@ -82,6 +91,15 @@
                                     <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue">Submit</a>
                                     <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
                                 {% else %}
+                                    {% if object.getStatus|default('') == 'requested' %}
+                                        <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Process</button>
+                                    {% elseif object.getStatus|default('') == 'processed' %}
+                                        <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
+                                        <button name="status" type="submit" value="delivered" class="btn blue"><i class="fa fa-truck"></i> Deliver</button>
+                                    {% elseif object.getStatus|default('') == 'delivered' %}
+                                        <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
+                                        <button name="status" type="submit" value="arrived" class="btn blue"><i class="fa fa-check"></i> Receive</button>
+                                    {% endif %}
                                     <a href="{{ path(route_list) }}" class="btn default">Go back</a>
                                 {% endif %}
 
@@ -109,6 +127,12 @@
                 statusCount = 0;
             } else if (currentStatus == 'requested') {
                 statusCount = 1;
+            } else if (currentStatus == 'processed') {
+                statusCount = 2;
+            } else if (currentStatus == 'delivered') {
+                statusCount = 3;
+            } else if (currentStatus == 'arrived') {
+                statusCount = 4;
             }
 
             for (var i = 0; i < statusCount; i++) {

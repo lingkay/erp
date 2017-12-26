@@ -149,66 +149,116 @@ class StockTransferController extends CrudController
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
 
-
+//        echo "<pre>";
+//        var_dump($data);
+//        echo "</pre>";
+//
+//        die();
 
         if ($is_new) {
             $o->setStatus('requested');
-        }
 
-        // initialize entries
-        $entries = array();
+            // initialize entries
+            $entries = array();
 
-        // warehouse
-        if ($data['source'] == 0) {
-            $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
-        } else {
-            $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($data['source']);
-        }
+            // warehouse
+            if ($data['source'] == 0) {
+                $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            } else {
+                $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($data['source']);
+            }
 
-        if ($data['destination'] == 0) {
-            $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
-        } else {
-            $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
-        }
+            if ($data['destination'] == 0) {
+                $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            } else {
+                $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
+            }
 
-        $o->setDescription($data['description']);
-        $o->setSource($wh_src->getInventoryAccount());
-        $o->setDestination($wh_destination->getInventoryAccount());
+            $o->setDescription($data['description']);
+            $o->setSource($wh_src->getInventoryAccount());
+            $o->setDestination($wh_destination->getInventoryAccount());
 
-        $em->persist($o);
-        $em->flush();
-
-
-        foreach ($data['product_item_code'] as $index => $value)
-        {
-            $prod_item_code = $value;
-            $qty = $data['quantity'][$index];
-
-
-
-            // product
-            $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
-            if ($prod == null)
-                throw new ValidationException('Could not find product.');
-
-            //from src
-            $entry = new StockTransferEntry();
-            $entry->setStockTransfer($o)
-                ->setProduct($prod)
-                ->setQuantity($qty);
-
-            $em->persist($entry);
+            $em->persist($o);
             $em->flush();
 
 
-            $em->persist($entry);
-            $em->flush();
+            foreach ($data['product_item_code'] as $index => $value)
+            {
+                $prod_item_code = $value;
+                $qty = $data['quantity'][$index];
 
-            $entries[] = $entry;
+
+
+                // product
+                $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
+                if ($prod == null)
+                    throw new ValidationException('Could not find product.');
+
+                //from src
+                $entry = new StockTransferEntry();
+                $entry->setStockTransfer($o)
+                    ->setProduct($prod)
+                    ->setQuantity($qty);
+
+                $em->persist($entry);
+                $em->flush();
+
+
+                $em->persist($entry);
+                $em->flush();
+
+                $entries[] = $entry;
+            }
+
+
+            return $entries;
+        } else {
+            $o->setStatus($data['status']);
         }
+    }
+
+    public function printPDFAction($id)
+    {
+        $settings = $this->get('hris_settings');
+        $wf = $this->get('hris_workforce');
+        $em = $this->getDoctrine()->getManager();
+        $twig = "GistInventoryBundle:StockTransfer:print.html.twig";
+
+        $conf = $this->get('gist_configuration');
+
+        //getOutputData
+        $data = $this->getOutputData($id);
+
+        $params['emp'] = null;
+        $params['dept'] = null;
 
 
-        return $entries;
+        $params['all'] = $data;
+        $pdf = $this->get('gist_pdf');
+        $pdf->newPdf('A4');
+        $html = $this->render($twig, $params);
+        return $pdf->printPdf($html->getContent());
+    }
+
+    private function getOutputData($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $date = new DateTime();
+
+
+        $query = $em    ->createQueryBuilder();
+        $query          ->from('GistInventoryBundle:StockTransfer', 'o');
+//        $query          ->join('HrisWorkforceBundle:Employee','e','WITH','o.employee=e.id');
+
+
+        $query      ->andwhere("o.id = '".$id."'");
+
+
+        $data = $query          ->select('o')
+            ->getQuery()
+            ->getResult();
+
+        return $data;
     }
 
 

@@ -37,3 +37,8 @@ gist_inv_stock_transfer_ajax_get:
     pattern: /ajax/{id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:StockTransfer:ajaxGet }
+
+gist_inv_stock_transfer_print:
+    pattern: /print/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:printPDF }

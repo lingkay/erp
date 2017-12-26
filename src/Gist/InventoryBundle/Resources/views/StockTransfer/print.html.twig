@@ -1,0 +1,67 @@
+<style type="text/css">
+    div.container4 {
+        height: 100%;
+        width: 100%;
+        position: relative
+    }
+    div.container_logo {
+        width: 100%;
+        max-height: 50px;
+        position: relative;
+    }
+    .img_logo {
+        width: 280px;
+        position: absolute;
+        left: 55%;
+        margin-left: -150px;
+    }
+    .page_label {
+        text-align:center;
+    }
+    .parag {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        text-align:center;
+        left: 50%;
+        margin-right: -50%;
+        font-size: 28px;
+    }
+</style>
+<page>
+    <div class="container_logo">
+        <img class="img_logo" src="{{ 'bundles/gisttemplate/assets/global/img/cosmeti_logo.png' }}">
+    </div>
+    <p align="center" style="font-size: 18px;"><b>COSMETIGROUP INT'L CORP.</b></p>
+    <br>
+    <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="left" border="1">
+        <tr>
+            <th width="180px">Document ID</th>
+            <td width="180px">{{ all[0].getID }}</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    <br>
+    <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
+        <tr>
+            <th width="180px">Item Code</th>
+            <th width="350px">Item Name</th>
+            <th width="60px">Quantity</th>
+        </tr>
+        {% for a in all[0].getEntries %}
+            <tr>
+                <td style="width: 180px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getItemCode|default('-')}}</td>
+                <td style="width: 300px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getName|default('-')}}</td>
+                <td style="width: 60px; padding-top: 1px; padding-bottom: 1px; text-align: center;">{{a.getQuantity|default('-')}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <page_footer>
+        <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_name|default('Quadrant Alpha Technology Solutions Inc.')}}</b></p></div>
+        <div align="center" style="margin: 0;"><p style="color: black; font-size: 10px; margin: 0;">{{company_address.getFullAddress|default('Unit 102 Legaspi Suites, Brgy. San Lorenzo, Makati City')}}</p></div>
+        <div align="center" style="margin: 0;"><p style="color: green; font-size: 16px; margin: 0;"><b>{{company_website|default('www.quadrantalpha.com')}}</b></p></div>
+    </page_footer>
+</page>

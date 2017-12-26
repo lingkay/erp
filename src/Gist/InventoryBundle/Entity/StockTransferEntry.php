@@ -65,9 +65,9 @@ class StockTransferEntry
 
         $this->dataHasGeneratedID($data);
         $this->dataHasProduct($data);
-        $this->dataHasInventoryAccount($data);
-        $data->credit = $this->credit;
-        $data->debit = $this->debit;
+        //$this->dataHasInventoryAccount($data);
+//        $data->credit = $this->credit;
+//        $data->debit = $this->debit;
         $data->stock_transfer_id = $this->getStockTransfer()->getID();
 
         return $data;
