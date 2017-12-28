@@ -386,12 +386,12 @@ class StockTransferController extends CrudController
                 'status'=> $st->getStatus(),
                 'description'=> $st->getDescription(),
                 'user_create' => $st->getRequestingUser()->getDisplayName(),
-                'user_processed' => $st->getProcessedUser()->getDisplayName(),
-                'user_delivered' => $st->getDeliverUser()->getDisplayName(),
-                'user_received' => $st->getReceivingUser()->getDisplayName(),
-                'date_processed' => $st->getDateProcessed()->format('y-m-d H:i:s'),
-                'date_delivered' => $st->getDateDelivered()->format('y-m-d H:i:s'),
-                'date_received' => $st->getDateReceived()->format('y-m-d H:i:s'),
+                'user_processed' => ($st->getProcessedUser() == null ? '' : $st->getProcessedUser()->getDisplayName()),
+                'user_delivered' => ($st->getDeliverUser() == null ? '' : $st->getDeliverUser()->getDisplayName()),
+                'user_received' => ($st->getReceivingUser() == null ? '' : $st->getReceivingUser()->getDisplayName()),
+                'date_processed' => ($st->getDateProcessed() == null ? '' : $st->getDateProcessed()->format('y-m-d H:i:s')),
+                'date_delivered' => ($st->getDateDelivered() == null ? '' : $st->getDateDelivered()->format('y-m-d H:i:s')),
+                'date_received' => ($st->getDateReceived() == null ? '' : $st->getDateReceived()->format('y-m-d H:i:s')),
                 'invalid'=>'false',
             );
         } else {
