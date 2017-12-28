@@ -52,5 +52,9 @@ security:
         - { path: ^/customer/get/all, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/pos_erp/get/users, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/pos_erp/get/products, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/inventory/stock_transfer/get/from, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/stock_transfer/get/to, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
         - { path: ^/customer/fields/get_visible, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }

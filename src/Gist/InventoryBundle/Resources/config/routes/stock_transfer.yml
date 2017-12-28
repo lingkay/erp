@@ -42,3 +42,14 @@ gist_inv_stock_transfer_print:
     pattern: /print/{id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:StockTransfer:printPDF }
+
+#    FOR POS
+gist_inv_stock_transfer_get_from_pos:
+    path:     /get/from/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:getSentFromPOS }
+
+gist_inv_stock_transfer_get_to_pos:
+    path:     /get/to/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:getSentToPOS }

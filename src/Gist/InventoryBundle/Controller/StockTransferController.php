@@ -6,6 +6,8 @@ use Gist\TemplateBundle\Model\CrudController;
 use Gist\InventoryBundle\Entity\StockTransfer;
 use Gist\InventoryBundle\Entity\StockTransferEntry;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use DateTime;
 
 class StockTransferController extends CrudController
@@ -278,6 +280,65 @@ class StockTransferController extends CrudController
     protected function hookPostSave($obj, $is_new = false)
     {
 
+    }
+
+
+    /**
+     *
+     * Function for POS to fetch stock transfer records
+     *
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getSentFromPOSAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $stock_transfers = $em->getRepository('GistInventoryBundle:StockTransfer')->findBy(array('source_inv_account'=>$pos_location->getInventoryAccount()->getID()));
+
+        $list_opts = [];
+        foreach ($stock_transfers as $p) {
+            $list_opts[] = array(
+                'id'=>$p->getID(),
+                'source'=> $p->getSource()->getName(),
+                'destination'=> $p->getDestination()->getName(),
+                'date_create'=> $p->getDateCreateFormatted(),
+                'status'=> ucfirst($p->getStatus()),
+            );
+
+        }
+
+        return new JsonResponse($list_opts);
+    }
+
+    /**
+     *
+     * Function for POS to fetch stock transfer records
+     *
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getSentToPOSAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $stock_transfers = $em->getRepository('GistInventoryBundle:StockTransfer')->findBy(array('destination_inv_account'=>$pos_location->getInventoryAccount()->getID()));
+
+        $list_opts = [];
+        foreach ($stock_transfers as $p) {
+            $list_opts[] = array(
+                'id'=>$p->getID(),
+                'source'=> $p->getSource()->getName(),
+                'destination'=> $p->getDestination()->getName(),
+                'date_create'=> $p->getDateCreateFormatted(),
+                'status'=> ucfirst($p->getStatus()),
+            );
+
+        }
+
+        return new JsonResponse($list_opts);
     }
 
 }
