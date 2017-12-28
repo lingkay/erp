@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use DateTime;
 
+
 class StockTransferController extends CrudController
 {
     use TrackCreate;
@@ -334,6 +335,111 @@ class StockTransferController extends CrudController
                 'destination'=> $p->getDestination()->getName(),
                 'date_create'=> $p->getDateCreateFormatted(),
                 'status'=> ucfirst($p->getStatus()),
+            );
+
+        }
+
+        return new JsonResponse($list_opts);
+    }
+
+    /**
+     *
+     * Function for POS to fetch location options
+     *
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getLocationOptionsAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+
+        $inv = $this->get('gist_inventory');
+        $list_opts = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
+
+        return new JsonResponse($list_opts);
+    }
+
+    /**
+     *
+     * Function for POS to fetch stock transfer form data
+     *
+     * @param $id
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getPOSFormDataAction($id, $pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $pos_iacc_id = $pos_location->getInventoryAccount()->getID();
+        $list_opts = [];
+
+        if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
+            $list_opts[] = array(
+                'id'=>$st->getID(),
+                'source'=> $st->getSource()->getName(),
+                'destination'=> $st->getDestination()->getName(),
+                'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
+                'status'=> $st->getStatus(),
+                'description'=> $st->getDescription(),
+                'user_create' => $st->getRequestingUser()->getDisplayName(),
+                'user_processed' => $st->getProcessedUser()->getDisplayName(),
+                'user_delivered' => $st->getDeliverUser()->getDisplayName(),
+                'user_received' => $st->getReceivingUser()->getDisplayName(),
+                'date_processed' => $st->getDateProcessed()->format('y-m-d H:i:s'),
+                'date_delivered' => $st->getDateDelivered()->format('y-m-d H:i:s'),
+                'date_received' => $st->getDateReceived()->format('y-m-d H:i:s'),
+                'invalid'=>'false',
+            );
+        } else {
+            $list_opts[] = array(
+                'id'=>0,
+                'source'=> 0,
+                'destination'=> 0,
+                'date_create'=> 0,
+                'status'=> 0,
+                'description'=> 0,
+                'user_create' => 0,
+                'user_processed' => 0,
+                'user_delivered' => 0,
+                'user_received' => 0,
+                'date_processed' => 0,
+                'date_delivered' => 0,
+                'date_received' => 0,
+                'invalid'=>'true',
+            );
+        }
+
+
+
+        return new JsonResponse($list_opts);
+    }
+
+    /**
+     *
+     * Function for POS to fetch stock transfer form data
+     *
+     * @param $id
+     * @return JsonResponse
+     * @internal param $pos_loc_id
+     */
+    public function getPOSFormDataEntriesAction($id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $st = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findBy(array('stock_transfer'=>$id));
+
+
+        $list_opts = [];
+        foreach ($st as $p) {
+            $list_opts[] = array(
+                'id'=>$p->getID(),
+                'item_code'=>$p->getProduct()->getItemCode(),
+                'product_name'=> $p->getProduct()->getName(),
+                'quantity'=> $p->getQuantity(),
             );
 
         }

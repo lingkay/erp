@@ -55,6 +55,9 @@ security:
 
         - { path: ^/inventory/stock_transfer/get/from, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/get/to, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/stock_transfer/get/data, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/stock_transfer/get/data_entries, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/stock_transfer/get/loc_options, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/customer/fields/get_visible, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }

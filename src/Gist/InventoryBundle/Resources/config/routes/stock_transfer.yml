@@ -53,3 +53,18 @@ gist_inv_stock_transfer_get_to_pos:
     path:     /get/to/{pos_loc_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:StockTransfer:getSentToPOS }
+
+gist_inv_stock_transfer_get_location_options:
+    path:     /get/loc_options/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:getLocationOptions }
+
+gist_inv_stock_transfer_get_data:
+    path:     /get/data/{id}/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:getPOSFormData }
+
+gist_inv_stock_transfer_get_data_entries:
+    path:     /get/data_entries/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:getPOSFormDataEntries }
