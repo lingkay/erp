@@ -96,6 +96,11 @@ gist_poserp_get_users:
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSSync:getUsers }
 
+gist_poserp_get_products:
+    path:     /get/products/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSync:getProducts }
+
 #POS TRANSACTIONS
 gist_poserp_transaction_index:
     pattern: /transactions

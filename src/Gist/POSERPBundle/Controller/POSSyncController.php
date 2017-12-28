@@ -199,4 +199,33 @@ class POSSyncController extends CrudController
 
         return new JsonResponse($list_opts);
     }
+
+    public function getProductsAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $locations_brands = explode(',', $pos_location->getBrand());
+
+        $em = $this->getDoctrine()->getManager();
+
+        $products = $em->getRepository("GistInventoryBundle:Product")->createQueryBuilder('o');
+        $results = $products->getQuery()->getResult();
+
+        $list_opts = [];
+        foreach ($results as $p) {
+            if (in_array($p->getBrand()->getName(), $locations_brands)) {
+                $list_opts[] = array(
+                    'id'=>$p->getID(),
+                    'item_code'=> $p->getItemCode(),
+                    'bar_code'=> $p->getBarCode(),
+                    'name'=> $p->getName(),
+                    'brand'=> $p->getBrand()->getName(),
+                );
+            }
+        }
+
+        return new JsonResponse($list_opts);
+    }
 }
