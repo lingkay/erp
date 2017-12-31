@@ -386,9 +386,9 @@ class StockTransferController extends CrudController
                 'status'=> $st->getStatus(),
                 'description'=> $st->getDescription(),
                 'user_create' => $st->getRequestingUser()->getDisplayName(),
-                'user_processed' => ($st->getProcessedUser() == null ? '' : $st->getProcessedUser()->getDisplayName()),
-                'user_delivered' => ($st->getDeliverUser() == null ? '' : $st->getDeliverUser()->getDisplayName()),
-                'user_received' => ($st->getReceivingUser() == null ? '' : $st->getReceivingUser()->getDisplayName()),
+                'user_processed' => ($st->getProcessedUser() == null ? '-' : $st->getProcessedUser()->getDisplayName()),
+                'user_delivered' => ($st->getDeliverUser() == null ? '-' : $st->getDeliverUser()->getDisplayName()),
+                'user_received' => ($st->getReceivingUser() == null ? '-' : $st->getReceivingUser()->getDisplayName()),
                 'date_processed' => ($st->getDateProcessed() == null ? '' : $st->getDateProcessed()->format('y-m-d H:i:s')),
                 'date_delivered' => ($st->getDateDelivered() == null ? '' : $st->getDateDelivered()->format('y-m-d H:i:s')),
                 'date_received' => ($st->getDateReceived() == null ? '' : $st->getDateReceived()->format('y-m-d H:i:s')),
@@ -462,35 +462,34 @@ class StockTransferController extends CrudController
         $st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$userId));
 
-
         $st->setStatus($status);
 
-        if($status == 'processed') {
+        if($status == 'processed' && $st->getStatus() != 'processed') {
             $st->setProcessedUser($user);
             $st->setDateProcessed(new DateTime());
 
-        } elseif ($status == 'delivered') {
+        } elseif ($status == 'delivered' && $st->getStatus() != 'delivered') {
             $st->setDeliverUser($user);
             $st->setDateDelivered(new DateTime());
-        } elseif ($status == 'arrived') {
+        } elseif ($status == 'arrived' && $st->getStatus() != 'arrived') {
             $st->setReceivingUser($user);
             $st->setDateReceived(new DateTime());
+        } else {
+            // for overwrite scenario
+            $list_opts[] = array(
+                'status'=>'failed'
+            );
+
+            return new JsonResponse($list_opts);
         }
 
         $em->persist($st);
         $em->flush();
 
-
-
         $list_opts[] = array(
-            'id'=>$st->getID(),
-            'uid'=>$user->getID(),
-            'proc_user'=>$st->getProcessedUser()
+            'status'=>'success'
         );
-
-
 
         return new JsonResponse($list_opts);
     }
-
 }
