@@ -464,14 +464,14 @@ class StockTransferController extends CrudController
 
         $st->setStatus($status);
 
-        if($status == 'processed' && $st->getStatus() != 'processed') {
+        if($status == 'processed') {
             $st->setProcessedUser($user);
             $st->setDateProcessed(new DateTime());
 
-        } elseif ($status == 'delivered' && $st->getStatus() != 'delivered') {
+        } elseif ($status == 'delivered') {
             $st->setDeliverUser($user);
             $st->setDateDelivered(new DateTime());
-        } elseif ($status == 'arrived' && $st->getStatus() != 'arrived') {
+        } elseif ($status == 'arrived') {
             $st->setReceivingUser($user);
             $st->setDateReceived(new DateTime());
         } else {
