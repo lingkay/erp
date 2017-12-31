@@ -68,3 +68,8 @@ gist_inv_stock_transfer_get_data_entries:
     path:     /get/data_entries/{id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:StockTransfer:getPOSFormDataEntries }
+
+gist_inv_stock_transfer_update_status:
+    path:     /update_status/{id}/{userId}/{status}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:updatePOSStockTransfer }

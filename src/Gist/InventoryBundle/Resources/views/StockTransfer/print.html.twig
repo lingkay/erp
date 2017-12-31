@@ -39,7 +39,7 @@
     <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="left" border="1">
         <tr>
             <th style="width: 160px;height: 20px;">Status</th>
-            <td style="width: 220px;">{{ all[0].getStatus }}</td>
+            <td style="width: 220px;">{{ all[0].getStatusFMTD }}</td>
             <th style="width: 140px;">Document ID</th>
             <td style="width: 180px;">{{ all[0].getID }}</td>
         </tr>
@@ -80,15 +80,15 @@
         <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="left" border="1">
             <tr>
                 <th style="width: 100px;height: 20px;">Prepared by</th>
-                <td style="width: 260px;">{{ all[0].getRequestingUser.getDisplayName|default('-') }} ({{ all[0].getDateCreate|date('y-m-d H:i:s')|default('') }})</td>
+                <td style="width: 260px;">{% if all[0].getRequestingUser.getDisplayName|default('-') != '-' %}{{ all[0].getRequestingUser.getDisplayName|default('-') }} ({{ all[0].getDateCreate|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
                 <th style="width: 100px;height: 20px;">Processed by</th>
-                <td style="width: 260px;">{{ all[0].getProcessedUser.getDisplayName|default('-') }} ({{ all[0].getDateProcessed|date('y-m-d H:i:s')|default('') }})</td>
+                <td style="width: 260px;">{% if all[0].getProcessedUser.getDisplayName|default('-') != '-' %}{{ all[0].getProcessedUser.getDisplayName|default('-') }} ({{ all[0].getDateProcessed|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
             </tr>
             <tr>
                 <th style="width: 100px;">Delivered by</th>
-                <td style="width: 260px;">{{ all[0].getDeliverUser.getDisplayName|default('-') }} ({{ all[0].getDateDelivered|date('y-m-d H:i:s')|default('') }})</td>
+                <td style="width: 260px;">{% if all[0].getDeliverUser.getDisplayName|default('-') != '-' %}{{ all[0].getDeliverUser.getDisplayName|default('-') }} ({{ all[0].getDateDelivered|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
                 <th style="width: 100px;">Received by</th>
-                <td style="width: 260px;">{{ all[0].getReceivingUser.getDisplayName|default('-') }} ({{ all[0].getDateReceived|date('y-m-d H:i:s')|default('') }})</td>
+                <td style="width: 260px;">{% if all[0].getReceivingUser.getDisplayName|default('-') != '-' %}{{ all[0].getReceivingUser.getDisplayName|default('-') }} ({{ all[0].getDateReceived|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
             </tr>
         </table>
     </page_footer>

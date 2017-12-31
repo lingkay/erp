@@ -134,6 +134,11 @@ class StockTransfer
         return $this->status;
     }
 
+    public function getStatusFMTD()
+    {
+        return ucfirst($this->status);
+    }
+
     public function getDestination()
     {
         return $this->destination_inv_account;

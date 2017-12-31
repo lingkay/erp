@@ -111,7 +111,7 @@ class StockTransferController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('ID','getID','id'),
-            $grid->newColumn('Status','getStatus','status'),
+            $grid->newColumn('Status','getStatusFMTD','status'),
             $grid->newColumn('Source','getName','name','s_inv'),
             $grid->newColumn('Destination','getName','name','d_inv'),
         );
@@ -443,6 +443,52 @@ class StockTransferController extends CrudController
             );
 
         }
+
+        return new JsonResponse($list_opts);
+    }
+
+    /**
+     *
+     * Function for POS to update stock transfer status
+     *
+     * @param $id
+     * @return JsonResponse
+     * @internal param $pos_loc_id
+     */
+    public function updatePOSStockTransferAction($id, $userId, $status)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$userId));
+
+
+        $st->setStatus($status);
+
+        if($status == 'processed') {
+            $st->setProcessedUser($user);
+            $st->setDateProcessed(new DateTime());
+
+        } elseif ($status == 'delivered') {
+            $st->setDeliverUser($user);
+            $st->setDateDelivered(new DateTime());
+        } elseif ($status == 'arrived') {
+            $st->setReceivingUser($user);
+            $st->setDateReceived(new DateTime());
+        }
+
+        $em->persist($st);
+        $em->flush();
+
+
+
+        $list_opts[] = array(
+            'id'=>$st->getID(),
+            'uid'=>$user->getID(),
+            'proc_user'=>$st->getProcessedUser()
+        );
+
+
 
         return new JsonResponse($list_opts);
     }
