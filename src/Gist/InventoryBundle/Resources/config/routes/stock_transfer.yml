@@ -73,3 +73,8 @@ gist_inv_stock_transfer_update_status:
     path:     /update_status/{id}/{userId}/{status}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:StockTransfer:updatePOSStockTransfer }
+
+gist_inv_stock_transfer_add_new:
+    path:     /add_new/{src}/{dest}/{user}/{description}/{entries}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:addPOSStockTransfer }

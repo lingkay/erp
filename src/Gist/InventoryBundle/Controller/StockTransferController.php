@@ -492,4 +492,91 @@ class StockTransferController extends CrudController
 
         return new JsonResponse($list_opts);
     }
+
+    //{src}/{dest}/{user}/{description}/{entries}
+
+    /**
+     *
+     * Function for POS to add stock transfer
+     *
+     * @param $src
+     * @param $dest
+     * @param $user
+     * @param $description
+     * @param $entries
+     * @return JsonResponse
+     * @internal param $pos_loc_id
+     */
+    public function addPOSStockTransferAction($src, $dest, $user, $description, $entries)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        //$st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user));
+
+        parse_str($entries, $entriesParsed);
+
+        //$pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$src));
+
+        $st = new StockTransfer();
+        $st->setStatus('requested');
+        $st->setRequestingUser($user);
+
+        // warehouse
+        if ($src == '0') {
+            $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        } else {
+            $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($src);
+        }
+
+        if ($dest == '0') {
+            $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        } else {
+            $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($dest);
+        }
+
+        $st->setDescription($description);
+        $st->setSource($wh_src->getInventoryAccount());
+        $st->setDestination($wh_destination->getInventoryAccount());
+
+        $em->persist($st);
+        $em->flush();
+
+        foreach ($entriesParsed as $e) {
+            $prod_item_code = $e['code'];
+            $qty = $e['quantity'];
+            $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
+            if ($prod == null)
+                throw new ValidationException('Could not find product.');
+
+            //from src
+            $entry = new StockTransferEntry();
+            $entry->setStockTransfer($st)
+                ->setProduct($prod)
+                ->setQuantity($qty);
+
+            $em->persist($entry);
+            $em->flush();
+
+
+            $em->persist($entry);
+            $em->flush();
+
+            //$entries[] = $entry;
+        }
+
+
+
+        $em->persist($st);
+        $em->flush();
+
+        $list_opts[] = array(
+            'status'=>'success',
+            'id'=>$st->getID()
+        );
+
+        return new JsonResponse($list_opts);
+    }
 }
