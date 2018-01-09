@@ -36,20 +36,15 @@
     </div>
 </div>
 {% endblock %}
-
 {% block js %}
     <script>
-
         $(document).ready(function() {
 
-
             var dTable;
-
-
             dTable = $('#list_table').dataTable({
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "{{ path('gist_inv_stock_transfer_grid') }}",
+                "sAjaxSource": "{{ path('gist_inv_damaged_items_grid') }}",
                 "iDisplayLength": 10,
                 "bFilter" : false,
                 "bInfo" : false,
@@ -70,11 +65,8 @@
             $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
             $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
             $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
-
-
         });
     </script>
 {% endblock %}
-
 {% block css %}
 {% endblock %}

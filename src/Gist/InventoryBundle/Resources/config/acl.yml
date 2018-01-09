@@ -27,6 +27,18 @@ acl:
           label: "Edit"
         - id: gist_inv_stock_transfer.delete
           label: "Delete"
+    - category: Damaged Items
+      entries:
+        - id: gist_inv_damaged_items.menu
+          label: "Menu"
+        - id: gist_inv_damaged_items.view
+          label: "View"
+        - id: gist_inv_damaged_items.add
+          label: "Add"
+        - id: gist_inv_damaged_items.edit
+          label: "Edit"
+        - id: gist_inv_damaged_items.delete
+          label: "Delete"
     - category: Inventory Locations
       entries:
         - id: gist_inv_loc.menu

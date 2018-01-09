@@ -1,0 +1,95 @@
+<style type="text/css">
+    div.container4 {
+        height: 100%;
+        width: 100%;
+        position: relative
+    }
+    div.container_logo {
+        width: 100%;
+        max-height: 50px;
+        position: relative;
+    }
+    .img_logo {
+        width: 160px;
+        position: absolute;
+        left: 60%;
+        margin-left: -150px;
+    }
+    .page_label {
+        text-align:center;
+    }
+    .parag {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        text-align:center;
+        left: 50%;
+        margin-right: -50%;
+        font-size: 28px;
+    }
+</style>
+<page>
+    <div class="container_logo">
+        <img class="img_logo" src="{{ 'bundles/gisttemplate/assets/global/img/cosmeti_logo.png' }}">
+    </div>
+    <p align="center" style="font-size: 18px;"><b>COSMETIGROUP INT'L CORP.</b></p>
+    <p align="center" style="font-size: 16px;">22nd Floor Pearl Bank Tower 146 Valero St. Makati city, Metro Manila</p>
+    <p  align="center" style="font-size: 20px;"><b>STOCK TRANSFER</b></p>
+    <br>
+    <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="left" border="1">
+        <tr>
+            <th style="width: 160px;height: 20px;">Status</th>
+            <td style="width: 220px;">{{ all[0].getStatusFMTD }}</td>
+            <th style="width: 140px;">Document ID</th>
+            <td style="width: 180px;">{{ all[0].getID }}</td>
+        </tr>
+        <tr>
+            <th style="width: 160px;height: 20px;">Inventory Site From</th>
+            <td style="width: 220px;">{{ all[0].getSource.getName }}</td>
+            <th style="width: 140px;">Date Created</th>
+            <td style="width: 180px;">{{ all[0].getDateCreate|date('M d, Y h:i a') }}</td>
+        </tr>
+        <tr>
+            <th style="width: 160px;height: 20px;">Inventory Site To</th>
+            <td style="width: 220px;">{{ all[0].getDestination.getName }}</td>
+            <th style="width: 140px;">Delivery Personnel</th>
+            <td style="width: 180px;">{{ all[0].getDeliverUser.getDisplayName|default('-') }}</td>
+        </tr>
+        <tr>
+            <th style="width: 160px; height: 50px;">Remarks</th>
+            <td colspan="1" style="width: 220px;">{{ all[0].getDescription }}</td>
+        </tr>
+    </table>
+    <br>
+    <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
+        <tr>
+            <th width="180px" style="height: 20px;" align="center">Item Code</th>
+            <th width="350px" align="center">Item Name</th>
+            <th width="120px" align="center">Quantity</th>
+        </tr>
+        {% for a in all[0].getEntries %}
+            <tr>
+                <td style="width: 220px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getItemCode|default('-')}}</td>
+                <td style="width: 340px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getName|default('-')}}</td>
+                <td style="width: 140px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{a.getQuantity|default('-')}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <page_footer>
+        <br>
+        <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="left" border="1">
+            <tr>
+                <th style="width: 100px;height: 20px;">Prepared by</th>
+                <td style="width: 260px;">{% if all[0].getRequestingUser.getDisplayName|default('-') != '-' %}{{ all[0].getRequestingUser.getDisplayName|default('-') }} ({{ all[0].getDateCreate|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
+                <th style="width: 100px;height: 20px;">Processed by</th>
+                <td style="width: 260px;">{% if all[0].getProcessedUser.getDisplayName|default('-') != '-' %}{{ all[0].getProcessedUser.getDisplayName|default('-') }} ({{ all[0].getDateProcessed|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
+            </tr>
+            <tr>
+                <th style="width: 100px;">Delivered by</th>
+                <td style="width: 260px;">{% if all[0].getDeliverUser.getDisplayName|default('-') != '-' %}{{ all[0].getDeliverUser.getDisplayName|default('-') }} ({{ all[0].getDateDelivered|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
+                <th style="width: 100px;">Received by</th>
+                <td style="width: 260px;">{% if all[0].getReceivingUser.getDisplayName|default('-') != '-' %}{{ all[0].getReceivingUser.getDisplayName|default('-') }} ({{ all[0].getDateReceived|date('y-m-d H:i:s')|default('') }}){% endif %}</td>
+            </tr>
+        </table>
+    </page_footer>
+</page>
