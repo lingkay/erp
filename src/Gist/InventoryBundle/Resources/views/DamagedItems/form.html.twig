@@ -97,7 +97,7 @@
                         <div class="row form-horizontal form">
                             <div class="form-body">
                                 {{ form.group_select_legacy("Product Category", "product_category", cat_opts, 0, 3, 5, readonly) }}
-                                <br>
+                                <hr>
                                 <table class="table table-striped table-bordered table-hover" id="search_table">
                                     <thead>
                                     <tr>
@@ -113,8 +113,6 @@
                             </div>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer">
                     <button id="add_entry_submit" type="button" class="btn green">Add Entry</button>
                     <button type="button" data-dismiss="modal" class="btn default">Close</button>
                 </div>
@@ -128,34 +126,17 @@
 
         function generatePath() {
 
-            var gender = [];
             var product_category = $('#cform-product_category').val();
 
-            var path = "{{ path('hris_report_attendance_ajax_grid', {
-                'id' : 'ID',
-                'department' : 'DEPARTMENT',
-                'date_from' : 'DFROM',
-                'date_to' : 'DTO',
-                'position' : 'POSITION',
-                'rank' : 'RANK',
-                'gender' : 'GENDER',
-                'days' : 'DAYS',
-                'late' : 'LATE',
-                'late_to' : 'LATE_TO',
-                'undertime' : 'UNDERTIME',
-                'undertime_to' : 'UNDERTIME_TO',
-                'status' : 'STATUS',
-                'location' : 'LOCATION'}
+            var path = "{{ path('gist_inv_damaged_items_search_ajax_grid', {
+                'category' : 'CATEGORY'}
             ) }}";
 
-            path = path.replace('DAYS', null);
 
-
-
-            if (date_to == null || date_to == '') {
-                path = path.replace('DTO', null);
+            if (product_category == null || product_category == '') {
+                path = path.replace('CATEGORY', null);
             } else {
-                path = path.replace('DTO', date_to);
+                path = path.replace('CATEGORY', product_category);
             }
             console.log(path);
             return path;
@@ -171,7 +152,8 @@
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": path,
-                "iDisplayLength": 10,
+                "iDisplayLength": 5,
+                "bLengthChange": false,
                 "sPaginationType": "bootstrap",
                 "oLanguage": {
                     "sLengthMenu": "_MENU_ records",
@@ -230,8 +212,24 @@
 
             $('.add_transfer_item').on('click', function () {
 
-                var selected_item = $('#cform-item').val();
-                var selected_item_name = $('#select2-cform-item-container').prop('title');
+
+            });
+
+        //    FOR MODAL SEARCH PRODUCT
+            $('#filter_button').click(function (){
+                path = generatePath();
+                dTable.fnReloadAjax(path);
+            });
+        //    END FOR MODAL SEARCH PRODUCT
+
+        //    ADD SELECTED ITEM TO TABLE
+            $(document).on("click",".add_to_table", function(e){
+                var row = $(this).closest('tr');
+                var item_code = row.find('.itemCode').val();
+                var item_name = row.find('.itemName').val();
+
+                var selected_item = item_code;
+                var selected_item_name = item_name;
                 var duplicates = false;
                 $(".product_item_code").each(function() {
                     if (selected_item == $(this).val()) {
@@ -247,22 +245,17 @@
                 if (selected_item == '000') {
                     toastr['error']('Invalid selection!', 'Error');
                 } else {
-                    var tr = "<tr><input type='hidden' name='product_item_code[]' class='product_item_code' value='"+selected_item+"'>" +
-                        "<td><input type='text'  class='form-control' value='"+selected_item+"' readonly></td>" +
-                        "<td><input type='text'  class='form-control' value='"+selected_item_name+"' readonly></td>" +
+                    var tr = "<tr><input type='hidden' name='product_item_code[]' class='product_item_code' value='"+item_code+"'>" +
+                        "<td><input type='text'  class='form-control' value='"+item_code+"' readonly></td>" +
+                        "<td><input type='text'  class='form-control' value='"+item_name+"' readonly></td>" +
                         "<td><input type='number' min='1' step='1' name='quantity[]' class='form-control' required></td>" +
                         "<td><a href='javascript:void(0)' class='btn btn-xs red remove_row'>Remove</a></td></tr>";
 
                     $('#transfer_table_body').append(tr);
+                    $('#add_entry_modal').modal('hide');
                 }
             });
-
-        //    FOR MODAL SEARCH PRODUCT
-            $('#filter_button').click(function (){
-                path = generatePath();
-                dTable.fnReloadAjax(path);
-            });
-        //    END FOR MODAL SEARCH PRODUCT
+        //    END ADD
 
         });
     </script>

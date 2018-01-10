@@ -115,8 +115,9 @@ class DamagedItemsController extends CrudController
             );
 
         $cat_opts = array();
+        $cat_opts[''] = 'All';
         foreach ($categories as $category)
-            $cat_opts[$category->getName()] = $category->getName();
+            $cat_opts[$category->getID()] = $category->getName();
 
         $params['cat_opts'] = $cat_opts;
 
@@ -256,10 +257,21 @@ class DamagedItemsController extends CrudController
     {
         $grid = $this->get('gist_grid');
         return array(
-            $grid->newColumn('Item Code','getItemCode','item_code'),
+            $grid->newColumn('Item Code', 'getItemCode', 'item_code','o', array($this,'formatItemCode')),
             $grid->newColumn('Barcode','getBarcode','barcode'),
-            $grid->newColumn('Name','getName','name'),
+            $grid->newColumn('Name', 'getName', 'name','o', array($this,'formatItemName')),
+//            $grid->newColumn('Item Code', 'getItemCode', 'item_code','o', array($this,'formatDetails')),
         );
+    }
+
+    public function formatItemCode($val)
+    {
+        return '<input type="hidden" class="itemCode" value="'.$val.'">'.$val;
+    }
+
+    public function formatItemName($val)
+    {
+        return '<input type="hidden" class="itemName" value="'.$val.'">'.$val;
     }
 
     public function callbackGridAjax($id)
