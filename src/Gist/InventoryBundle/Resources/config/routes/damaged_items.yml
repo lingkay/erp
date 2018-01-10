@@ -78,3 +78,13 @@ gist_inv_damaged_items_add_new:
     path:     /add_new/{src}/{dest}/{user}/{description}/{entries}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:addPOSDamagedItems }
+
+gist_inv_damaged_items_ajax_grid:
+    path:    /search_product/ajax
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:gridSearchProduct }
+
+gist_inv_damaged_items_search_ajax_grid:
+    path:    /search_product/ajax/{category}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:gridSearchProduct, category: null }

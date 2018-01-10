@@ -9,6 +9,16 @@
 {% endfor %}
 {% endmacro %}
 
+{% macro options_legacy(fields, selected) %}
+    {% for value,display in fields %}
+        {% if (value == selected) %}
+            <option value="{{ value }}" selected="selected">{{ display }}</option>
+        {% else %}
+            <option value="{{ value }}">{{ display }}</option>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
 {% macro multi_options(fields, selected) %}
     <option></option>
 {% for value,display in fields %}
@@ -266,6 +276,18 @@
         </select>
     </div>
 </div>
+{% endmacro %}
+
+{% macro group_select_legacy(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
+    {% import _self as self %}
+    <div id="{{ prefix }}group-{{ name }}" class="form-group">
+        <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+        <div class="col-md-{{ body_size }}">
+            <select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --">
+                {{ self.options_legacy(options, value) }}
+            </select>
+        </div>
+    </div>
 {% endmacro %}
 
 {% macro group_select(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}

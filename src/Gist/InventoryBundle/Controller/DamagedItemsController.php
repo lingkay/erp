@@ -4,6 +4,7 @@ namespace Gist\InventoryBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\InventoryBundle\Entity\DamagedItems;
+use Gist\InventoryBundle\Entity\Product;
 use Gist\InventoryBundle\Entity\DamagedItemsEntry;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,8 +84,8 @@ class DamagedItemsController extends CrudController
     {
         $grid = $this->get('gist_grid');
         return array(
-            $grid->newJoin('d_inv','destination_inv_account','getDestination'),
-            $grid->newJoin('s_inv','source_inv_account','getSource'),
+//            $grid->newJoin('d_inv','destination_inv_account','getDestination'),
+//            $grid->newJoin('s_inv','source_inv_account','getSource'),
         );
     }
 
@@ -94,9 +95,6 @@ class DamagedItemsController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('ID','getID','id'),
-            $grid->newColumn('Status','getStatusFMTD','status'),
-            $grid->newColumn('Source','getName','name','s_inv'),
-            $grid->newColumn('Destination','getName','name','d_inv'),
         );
     }
 
@@ -106,6 +104,22 @@ class DamagedItemsController extends CrudController
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
+
+        //CATEGORY
+        $filter = array();
+        $categories = $em
+            ->getRepository('GistInventoryBundle:ProductCategory')
+            ->findBy(
+                $filter,
+                array('name' => 'ASC')
+            );
+
+        $cat_opts = array();
+        foreach ($categories as $category)
+            $cat_opts[$category->getName()] = $category->getName();
+
+        $params['cat_opts'] = $cat_opts;
+
         return $params;
     }
 
@@ -142,23 +156,6 @@ class DamagedItemsController extends CrudController
             // initialize entries
             $entries = array();
 
-            // warehouse
-            if ($data['source'] == 0) {
-                $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
-            } else {
-                $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($data['source']);
-            }
-
-            if ($data['destination'] == 0) {
-                $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
-            } else {
-                $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
-            }
-
-            $o->setDescription($data['description']);
-            $o->setSource($wh_src->getInventoryAccount());
-            $o->setDestination($wh_destination->getInventoryAccount());
-
             $em->persist($o);
             $em->flush();
 
@@ -179,6 +176,22 @@ class DamagedItemsController extends CrudController
                     ->setProduct($prod)
                     ->setQuantity($qty);
 
+                if ($data['source'] == 0) {
+                    $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+                } else {
+                    $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($data['source']);
+                }
+
+                if ($data['destination'] == 0) {
+                    $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+                } else {
+                    $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
+                }
+
+                $entry->setDescription($data['description']);
+                $entry->setSource($wh_src->getInventoryAccount());
+                $entry->setDestination($wh_destination->getInventoryAccount());
+
                 $em->persist($entry);
                 $em->flush();
 
@@ -191,21 +204,120 @@ class DamagedItemsController extends CrudController
 
             return $entries;
         } else {
-            $o->setStatus($data['status']);
 
-            if($data['status'] == 'processed') {
-                $o->setProcessedUser($this->getUser());
-                $o->setDateProcessed(new DateTime());
-
-            } elseif ($data['status'] == 'delivered') {
-                $o->setDeliverUser($this->getUser());
-                $o->setDateDelivered(new DateTime());
-            } elseif ($data['status'] == 'arrived') {
-                $o->setReceivingUser($this->getUser());
-                $o->setDateReceived(new DateTime());
-            }
+            //this should be per product/damaged items entry
+//            $o->setStatus($data['status']);
+//
+//            if($data['status'] == 'processed') {
+//                $o->setProcessedUser($this->getUser());
+//                $o->setDateProcessed(new DateTime());
+//
+//            } elseif ($data['status'] == 'delivered') {
+//                $o->setDeliverUser($this->getUser());
+//                $o->setDateDelivered(new DateTime());
+//            } elseif ($data['status'] == 'arrived') {
+//                $o->setReceivingUser($this->getUser());
+//                $o->setDateReceived(new DateTime());
+//            }
         }
     }
+
+    //    FOR PROD SEARCH MODAL AJAX
+    protected function setupGridLoaderAjax()
+    {
+        $data = $this->getRequest()->query->all();
+        $grid = $this->get('gist_grid');
+
+        // loader
+        $gloader = $grid->newLoader();
+        $gloader->processParams($data)
+            ->setRepository($this->repo);
+
+        // grid joins
+        $gjoins = $this->getGridJoins();
+        foreach ($gjoins as $gj)
+            $gloader->addJoin($gj);
+
+        // grid columns
+        $gcols = $this->getGridColumnsAjax();
+
+        // add action column if it's dynamic
+        if ($this->list_type == 'dynamic')
+            $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGridAjax'), false, false);
+
+        // add columns
+        foreach ($gcols as $gc)
+            $gloader->addColumn($gc);
+
+        return $gloader;
+    }
+
+    protected function getGridColumnsAjax()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newColumn('Item Code','getItemCode','item_code'),
+            $grid->newColumn('Barcode','getBarcode','barcode'),
+            $grid->newColumn('Name','getName','name'),
+        );
+    }
+
+    public function callbackGridAjax($id)
+    {
+        $params = array(
+            'id' => $id,
+            'route_edit' => $this->getRouteGen()->getEdit(),
+            'route_delete' => $this->getRouteGen()->getDelete(),
+            'prefix' => $this->route_prefix,
+        );
+
+        $this->padGridParams($params, $id);
+
+        $engine = $this->get('templating');
+        return $engine->render(
+            'GistInventoryBundle:DamagedItems:action_search.html.twig',
+            $params
+        );
+    }
+
+    public function gridSearchProductAction($category = null)
+    {
+        $this->hookPreAction();
+        $this->repo = 'GistInventoryBundle:Product';
+        $gloader = $this->setupGridLoaderAjax();
+        $gloader->setRepository('GistInventoryBundle:Product');
+        $gloader->setQBFilterGroup($this->filterProductSearch($category));
+        $gres = $gloader->load();
+        $resp = new Response($gres->getJSON());
+        $resp->headers->set('Content-Type', 'application/json');
+
+        return $resp;
+    }
+
+    protected function filterProductSearch($category = null)
+    {
+        $grid = $this->get('gist_grid');
+        $fg = $grid->newFilterGroup();
+        $date = new DateTime();
+
+
+//        $grid->setRepository('GistInventoryBundle:Product');
+
+        if($category != null and $category != 'null') {
+            $qry[] = "(o.category = '".$category."')";
+        }
+        else {
+            $qry[] = "(o.id > 0)";
+        }
+
+        if (!empty($qry))
+        {
+            $filter = implode(' AND ', $qry);
+        }
+
+        return $fg->where($filter);
+    }
+    //    END PROD SEARCH MODAL
 
     public function printPDFAction($id)
     {
