@@ -232,7 +232,18 @@
                 }
 
                 if (rowCount > 1) {
-                    $('#transfer_form').submit();
+                    var qty_passed = true;
+                    $('.quantity_row').each(function() {
+                        if ($(this).val() == '' || $(this).val() < 1) {
+                            qty_passed = false;
+                        }
+                    });
+
+                    if (qty_passed) {
+                        $('#transfer_form').submit();
+                    } else {
+                        toastr['error']('Please check quantities.', 'Form validation');
+                    }
                 } else {
                     toastr['error']('No item/s to transfer', 'Form validation');
                 }
@@ -274,8 +285,8 @@
                 });
 
                 if (duplicates) {
-                    toastr['error']('Selected item already added!', 'Error');
-                    return false;
+                    // toastr['error']('Selected item already added!', 'Error');
+                    // return false;
                 }
 
                 if (selected_item == '000') {
@@ -285,7 +296,7 @@
                         "<td><input type='text'  class='form-control' value='"+item_code+"' readonly></td>" +
                         "<td><input type='text'  class='form-control' value='"+item_name+"' readonly></td>" +
                         "<td>{{ form.group_select_only_legacy('Destination', 'destination[]', wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly)|escape('js') }}</td>" +
-                        "<td><input type='number' min='1' step='1' name='quantity[]' class='form-control' required></td>" +
+                        "<td><input type='number' min='1' step='1' name='quantity[]' class='form-control quantity_row' required></td>" +
                         "<td><a href='javascript:void(0)' class='btn btn-xs red remove_row'>Remove</a></td></tr>";
 
                     $('#transfer_table_body').append(tr);
