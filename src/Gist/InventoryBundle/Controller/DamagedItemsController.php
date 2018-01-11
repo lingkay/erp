@@ -214,7 +214,7 @@ class DamagedItemsController extends CrudController
                 $entries[] = $entry;
             }
 
-            die();
+//            die();
 
             return $entries;
         } else {
@@ -226,10 +226,15 @@ class DamagedItemsController extends CrudController
 
     }
 
-    public function statusUpdateAction($id, $status)
+    public function statusUpdateAction($id, $status, $user = null)
     {
         $em = $this->getDoctrine()->getManager();
         $conf = $this->get('gist_configuration');
+        if ($user != null) {
+            $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user));
+        } else {
+            $user = $this->getUser();
+        }
         //$data = $this->getRequest()->request->all();
         // override for AJAX to ERP
         try
@@ -239,18 +244,28 @@ class DamagedItemsController extends CrudController
             $damaged_item_entry->setStatus($status);
 
             if($status == 'requested') {
-                $damaged_item_entry->setProcessedUser($this->getUser());
+                $damaged_item_entry->setProcessedUser($user);
                 $damaged_item_entry->setDateProcessed(new DateTime());
             } elseif ($status == 'delivered') {
-                $damaged_item_entry->setDeliverUser($this->getUser());
+                $damaged_item_entry->setDeliverUser($user);
                 $damaged_item_entry->setDateDelivered(new DateTime());
             } elseif ($status == 'arrived') {
-                $damaged_item_entry->setReceivingUser($this->getUser());
+                $damaged_item_entry->setReceivingUser($user);
                 $damaged_item_entry->setDateReceived(new DateTime());
             }
 
             $em->persist($damaged_item_entry);
             $em->flush();
+
+            if ($user != null) {
+
+                $list_opts[] = array(
+                    'status'=>'success',
+                    'parentID'=>$damaged_item_entry->getDamagedItems()->getID()
+                );
+
+                return new JsonResponse($list_opts);
+            }
 
             $this->addFlash('success', 'Damaged items entry status updated successfully.');
             if($this->submit_redirect){
@@ -439,20 +454,18 @@ class DamagedItemsController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-        $stock_transfers = $em->getRepository('GistInventoryBundle:DamagedItems')->findBy(array('source_inv_account'=>$pos_location->getInventoryAccount()->getID()));
+        $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('source_inv_account'=>$pos_location->getInventoryAccount()->getID()));
+
 
         $list_opts = [];
-        foreach ($stock_transfers as $p) {
+        foreach ($stock_transfer_entries as $p) {
             $list_opts[] = array(
-                'id'=>$p->getID(),
-                'source'=> $p->getSource()->getName(),
-                'destination'=> $p->getDestination()->getName(),
-                'date_create'=> $p->getDateCreateFormatted(),
-                'status'=> ucfirst($p->getStatus()),
+                'id'=>$p->getDamagedItems()->getID(),
             );
 
         }
 
+        $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
         return new JsonResponse($list_opts);
     }
 
@@ -468,20 +481,17 @@ class DamagedItemsController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-        $stock_transfers = $em->getRepository('GistInventoryBundle:DamagedItems')->findBy(array('destination_inv_account'=>$pos_location->getInventoryAccount()->getID()));
+        $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('destination_inv_account'=>$pos_location->getInventoryAccount()->getID()));
 
         $list_opts = [];
-        foreach ($stock_transfers as $p) {
+        foreach ($stock_transfer_entries as $p) {
             $list_opts[] = array(
-                'id'=>$p->getID(),
-                'source'=> $p->getSource()->getName(),
-                'destination'=> $p->getDestination()->getName(),
-                'date_create'=> $p->getDateCreateFormatted(),
-                'status'=> ucfirst($p->getStatus()),
+                'id'=>$p->getDamagedItems()->getID(),
             );
 
         }
 
+        $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
         return new JsonResponse($list_opts);
     }
 
@@ -548,41 +558,19 @@ class DamagedItemsController extends CrudController
         $pos_iacc_id = $pos_location->getInventoryAccount()->getID();
         $list_opts = [];
 
-        if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
-            $list_opts[] = array(
-                'id'=>$st->getID(),
-                'source'=> $st->getSource()->getName(),
-                'destination'=> $st->getDestination()->getName(),
-                'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
-                'status'=> $st->getStatus(),
-                'description'=> $st->getDescription(),
-                'user_create' => $st->getRequestingUser()->getDisplayName(),
-                'user_processed' => ($st->getProcessedUser() == null ? '-' : $st->getProcessedUser()->getDisplayName()),
-                'user_delivered' => ($st->getDeliverUser() == null ? '-' : $st->getDeliverUser()->getDisplayName()),
-                'user_received' => ($st->getReceivingUser() == null ? '-' : $st->getReceivingUser()->getDisplayName()),
-                'date_processed' => ($st->getDateProcessed() == null ? '' : $st->getDateProcessed()->format('y-m-d H:i:s')),
-                'date_delivered' => ($st->getDateDelivered() == null ? '' : $st->getDateDelivered()->format('y-m-d H:i:s')),
-                'date_received' => ($st->getDateReceived() == null ? '' : $st->getDateReceived()->format('y-m-d H:i:s')),
-                'invalid'=>'false',
-            );
-        } else {
-            $list_opts[] = array(
-                'id'=>0,
-                'source'=> 0,
-                'destination'=> 0,
-                'date_create'=> 0,
-                'status'=> 0,
-                'description'=> 0,
-                'user_create' => 0,
-                'user_processed' => 0,
-                'user_delivered' => 0,
-                'user_received' => 0,
-                'date_processed' => 0,
-                'date_delivered' => 0,
-                'date_received' => 0,
-                'invalid'=>'true',
-            );
-        }
+//        if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
+        $list_opts[] = array(
+            'id'=>$st->getID(),
+            'description'=> $st->getDescription(),
+            'pos_iacc_id' => $pos_iacc_id,
+            'invalid'=>'false',
+        );
+//        } else {
+//            $list_opts[] = array(
+//                'id'=>0,
+//                'invalid'=>'true',
+//            );
+//        }
 
 
 
@@ -601,7 +589,7 @@ class DamagedItemsController extends CrudController
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
-        $st = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('stock_transfer'=>$id));
+        $st = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('damaged_items'=>$id));
 
 
         $list_opts = [];
@@ -611,6 +599,20 @@ class DamagedItemsController extends CrudController
                 'item_code'=>$p->getProduct()->getItemCode(),
                 'product_name'=> $p->getProduct()->getName(),
                 'quantity'=> $p->getQuantity(),
+                'source'=> $p->getSource()->getName(),
+                'destination'=> $p->getDestination()->getName(),
+                'source_id'=> $p->getSource()->getID(),
+                'destination_id'=> $p->getDestination()->getID(),
+//                'date_create'=> $p->getDateCreate()->format('y-m-d H:i:s'),
+                'status'=> $p->getStatus(),
+                'statusFMTD'=> $p->getStatusFMTD(),
+                'user_create' => $p->getRequestingUser()->getDisplayName(),
+                'user_processed' => ($p->getProcessedUser() == null ? '-' : $p->getProcessedUser()->getDisplayName()),
+                'user_delivered' => ($p->getDeliverUser() == null ? '-' : $p->getDeliverUser()->getDisplayName()),
+                'user_received' => ($p->getReceivingUser() == null ? '-' : $p->getReceivingUser()->getDisplayName()),
+                'date_processed' => ($p->getDateProcessed() == null ? '' : $p->getDateProcessed()->format('y-m-d H:i:s')),
+                'date_delivered' => ($p->getDateDelivered() == null ? '' : $p->getDateDelivered()->format('y-m-d H:i:s')),
+                'date_received' => ($p->getDateReceived() == null ? '' : $p->getDateReceived()->format('y-m-d H:i:s')),
             );
 
         }
@@ -681,6 +683,7 @@ class DamagedItemsController extends CrudController
     public function addPOSDamagedItemsAction($src, $user, $description, $entries)
     {
         header("Access-Control-Allow-Origin: *");
+
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');

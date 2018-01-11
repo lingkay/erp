@@ -65,6 +65,11 @@ security:
         - { path: ^/inventory/damaged_items/search_product/ajax, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/damaged_items/search_product/ajax2, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/damaged_items/entry/status, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/get/from, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/get/to, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/get/data, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/get/data_entries, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/add_new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
