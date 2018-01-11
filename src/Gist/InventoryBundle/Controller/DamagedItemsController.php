@@ -102,7 +102,7 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
 
         $inv = $this->get('gist_inventory');
-        $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
+        $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + array('00'=>'Damaged Items Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
 
         //CATEGORY
@@ -120,6 +120,14 @@ class DamagedItemsController extends CrudController
             $cat_opts[$category->getID()] = $category->getName();
 
         $params['cat_opts'] = $cat_opts;
+
+        $status_opts = array();
+        $status_opts['requested'] = 'Requested';
+        $status_opts['processed'] = 'Processed';
+        $status_opts['delivered'] = 'Delivered';
+        $status_opts['arrived'] = 'Arrived';
+
+        $params['status_opts'] = $status_opts;
 
         return $params;
     }
@@ -151,9 +159,8 @@ class DamagedItemsController extends CrudController
         $config = $this->get('gist_configuration');
 
         if ($is_new) {
-            $o->setStatus('requested');
-            $o->setRequestingUser($this->getUser());
 
+            $o->setDescription($data['description']);
             // initialize entries
             $entries = array();
 
@@ -177,25 +184,26 @@ class DamagedItemsController extends CrudController
                     ->setProduct($prod)
                     ->setQuantity($qty);
 
-                if ($data['source'] == 0) {
-                    $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
-                } else {
-                    $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($data['source']);
-                }
 
-                if ($data['destination'] == 0) {
+                $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+
+                echo $data['destination'][$index]."<br>";
+
+
+                if ($data['destination'][$index] == 0) {
                     $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+                } elseif ($data['destination'][$index] == '00') {
+                    $wh_destination = $inv->findWarehouse($config->get('gist_damaged_items_warehouse'));
                 } else {
-                    $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
+                    $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination'][$index]);
                 }
 
-                $entry->setDescription($data['description']);
+
                 $entry->setSource($wh_src->getInventoryAccount());
                 $entry->setDestination($wh_destination->getInventoryAccount());
 
-                $em->persist($entry);
-                $em->flush();
-
+                $entry->setStatus('requested');
+                $entry->setRequestingUser($this->getUser());
 
                 $em->persist($entry);
                 $em->flush();
@@ -203,23 +211,61 @@ class DamagedItemsController extends CrudController
                 $entries[] = $entry;
             }
 
+            //die();
+
             return $entries;
         } else {
 
-            //this should be per product/damaged items entry
-//            $o->setStatus($data['status']);
-//
-//            if($data['status'] == 'processed') {
-//                $o->setProcessedUser($this->getUser());
-//                $o->setDateProcessed(new DateTime());
-//
-//            } elseif ($data['status'] == 'delivered') {
-//                $o->setDeliverUser($this->getUser());
-//                $o->setDateDelivered(new DateTime());
-//            } elseif ($data['status'] == 'arrived') {
-//                $o->setReceivingUser($this->getUser());
-//                $o->setDateReceived(new DateTime());
-//            }
+
+        }
+
+
+
+    }
+
+    public function statusUpdateAction($id, $status)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $conf = $this->get('gist_configuration');
+        //$data = $this->getRequest()->request->all();
+        // override for AJAX to ERP
+        try
+        {
+            $damaged_item_entry = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findOneBy(array('id'=>$id));
+
+            $damaged_item_entry->setStatus($status);
+
+            if($status == 'requested') {
+                $damaged_item_entry->setProcessedUser($this->getUser());
+                $damaged_item_entry->setDateProcessed(new DateTime());
+            } elseif ($status == 'delivered') {
+                $damaged_item_entry->setDeliverUser($this->getUser());
+                $damaged_item_entry->setDateDelivered(new DateTime());
+            } elseif ($status == 'arrived') {
+                $damaged_item_entry->setReceivingUser($this->getUser());
+                $damaged_item_entry->setDateReceived(new DateTime());
+            }
+
+            $em->persist($damaged_item_entry);
+            $em->flush();
+
+            $this->addFlash('success', 'Damaged items entry status updated successfully.');
+            if($this->submit_redirect){
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(), array('id' => $damaged_item_entry->getDamagedItems()->getID())).$this->url_append);
+            }else{
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+            }
+        }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.');
+            //return $this->addError($obj);
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.');
+            error_log($e->getMessage());
+            //return $this->addError($obj);
         }
     }
 

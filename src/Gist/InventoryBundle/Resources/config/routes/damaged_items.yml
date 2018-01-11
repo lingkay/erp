@@ -88,3 +88,8 @@ gist_inv_damaged_items_search_ajax_grid:
     path:    /search_product/ajax2/{category}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:gridSearchProduct, category: null }
+
+gist_inv_damaged_items_entry_status_change:
+    path:    /entry/status/{id}/{status}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:statusUpdate, id: null, status: null }

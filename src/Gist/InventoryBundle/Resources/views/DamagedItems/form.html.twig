@@ -28,7 +28,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h4 class="form-section">Items to transfer</h4>
+                                    <h4 class="form-section">List of damaged items</h4>
                                     {% if object.getID|default('') == '' %}
                                         {#{{ form.group_select_transfer("Item", "item", item_opts, '000', 3, 5, readonly) }}#}
                                         <a href="#add_entry_modal" class="btn green" data-toggle="modal" style="margin-bottom: 15px;">
@@ -38,21 +38,32 @@
                                     <table class="table table-striped table-bordered table-hover" id="list_table">
                                         <thead>
                                             <tr>
-                                                <td width="20%">Item Code</td>
-                                                <td width="50%">Item Name</td>
-                                                <td width="20%">Quantity</td>
+                                                <th width="20%">Item Code</th>
+                                                <th width="30%">Item Name</th>
+                                                <th width="20%">Destination</th>
+                                                <th width="15%">Quantity</th>
                                                 {% if object.getID|default('') == '' %}
-                                                    <td width="10%"></td>
+                                                    <th width="15%"></th>
+                                                {% else %}
+                                                    <th width="15%">Status</th>
                                                 {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody id="transfer_table_body">
                                             {% for e in object.getEntries|default('') %}
                                                 <tr>
-                                                    <input type="hidden" class="product_item_code" value="{{ e.getProduct.getItemCode }}">
+                                                    <input type="hidden" class="product_item_code" value="{{ e.getProduct.getItemCode|default('') }}">
+                                                    <input type="hidden" class="entry_id" value="{{ e.getID }}">
+                                                    <input type="hidden" class="current_status" value="{{ e.getStatus }}">
                                                     <td><input type="text"  class='form-control' value="{{ e.getProduct.getItemCode|default('N/A') }}" readonly></td>
                                                     <td><input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly></td>
+                                                    <td><input type="text"  class='form-control' value="{{ e.getDestination.getName|default(0) }}" readonly></td>
                                                     <td><input type="text"  class='form-control' value="{{ e.getQuantity|default(0) }}" readonly></td>
+                                                    {% if e.getStatus|default('') != 'arrived' %}
+                                                        <td>{{ form.group_select_only_legacy('', 'status_row', status_opts, e.getStatus|default(-1), 3, 5, readonly) }}</td>
+                                                    {% else %}
+                                                        <td><input type="text"  class='form-control' value="{{ e.getStatusFMTD|default('N/A') }}" readonly></td>
+                                                    {% endif %}
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -148,6 +159,34 @@
             path = "{{ path('gist_inv_damaged_items_ajax_grid') }}";
             // path = path.replace('CATEGORY', '');
 
+            // ROW STATUS CHANGE
+            $('.status_row').on('change', function() {
+                var path_status_update = "{{ path('gist_inv_damaged_items_entry_status_change', {
+                    'id' : 'ID', 'status' : 'STATUS'}
+                ) }}";
+
+                var row = $(this).closest('tr');
+                var id = row.find('.entry_id').val();
+                var status = $(this).val();
+                var current_status = row.find('.current_status').val();
+
+                if (current_status == 'processed' && (status == 'requested')) {
+                    toastr['error']('Entry already processed. Cannot apply status change.', 'Error');
+                    $(this).val(current_status);
+                    return false;
+                } else if (current_status == 'delivered' && (status == 'requested' || status == 'processed')) {
+                    toastr['error']('Entry already delivered. Cannot apply status change.', 'Error');
+                    $(this).val(current_status);
+                    return false;
+                }
+
+                path_status_update = path_status_update.replace('ID', id);
+                path_status_update = path_status_update.replace('STATUS', status);
+
+                location.replace(path_status_update);
+            });
+            // END ROW STATUS CHANGE
+
             dTable = $('#search_table').dataTable({
                 "bProcessing": true,
                 "bServerSide": true,
@@ -183,22 +222,18 @@
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 var rowCount = $('#list_table tr').length;
-                var source = $('#cform-source').val();
-                var destination = $('#cform-destination').val();
+                //var source = $('#cform-source').val();
+                //var destination = $('#cform-destination').val();
 
                 if ($('#cform-description').val() == '') {
                     toastr['error']('Description is required', 'Form validation');
                     return false;
                 }
 
-                if (rowCount > 1 && source != '-1' && destination != '-1' && source != destination) {
+                if (rowCount > 1) {
                     $('#transfer_form').submit();
                 } else {
-                    if (source == destination) {
-                        toastr['error']('Source and destination location should be distinct', 'Form validation');
-                    } else {
-                        toastr['error']('No item/s to transfer', 'Form validation');
-                    }
+                    toastr['error']('No item/s to transfer', 'Form validation');
                 }
             });
 
@@ -248,6 +283,7 @@
                     var tr = "<tr><input type='hidden' name='product_item_code[]' class='product_item_code' value='"+item_code+"'>" +
                         "<td><input type='text'  class='form-control' value='"+item_code+"' readonly></td>" +
                         "<td><input type='text'  class='form-control' value='"+item_name+"' readonly></td>" +
+                        "<td>{{ form.group_select_only_legacy('Destination', 'destination[]', wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly)|escape('js') }}</td>" +
                         "<td><input type='number' min='1' step='1' name='quantity[]' class='form-control' required></td>" +
                         "<td><a href='javascript:void(0)' class='btn btn-xs red remove_row'>Remove</a></td></tr>";
 

@@ -24,12 +24,6 @@ class DamagedItems
     protected $description;
 
     /**
-     * @ORM\Column(type="string")
-     */
-    protected $status;
-
-
-    /**
      * @ORM\OneToMany(targetEntity="DamagedItemsEntry", mappedBy="damaged_items", cascade={"persist"})
      */
     protected $entries;
@@ -47,12 +41,6 @@ class DamagedItems
         return $this;
     }
 
-    public function setStatus($status)
-    {
-        $this->status = $status;
-        return $this;
-    }
-
     public function addEntry(Entry $entry)
     {
         $entry->setTransaction($this);
@@ -60,20 +48,9 @@ class DamagedItems
         return $this;
     }
 
-
     public function getDescription()
     {
         return $this->description;
-    }
-
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    public function getStatusFMTD()
-    {
-        return ucfirst($this->status);
     }
 
     public function getEntries()

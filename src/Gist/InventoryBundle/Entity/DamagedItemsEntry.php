@@ -74,6 +74,11 @@ class DamagedItemsEntry
     /** @ORM\Column(type="datetime", nullable=true) */
     protected $date_received;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $status;
+
 
     public function __construct()
     {
@@ -123,6 +128,22 @@ class DamagedItemsEntry
     public function getDamagedItems()
     {
         return $this->damaged_items;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function getStatusFMTD()
+    {
+        return ucfirst($this->status);
     }
 
     /**

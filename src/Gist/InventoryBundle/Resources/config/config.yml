@@ -1,18 +1,23 @@
 config:
     - category: "Inventory Settings"
       entries:
-#        - id: gist_main_warehouse
-#          label: "Main Warehouse"
-#          type: select
-#          options_service: gist_inventory
-#          options_method: getWarehouseOptions
+        - id: gist_main_warehouse
+          label: "Main Warehouse"
+          type: select
+          options_service: gist_inventory
+          options_method: getWarehouseOptions
 #        - id: gist_adjustment_warehouse
 #          label: "Adjustment Warehouse"
 #          type: select
 #          options_service: gist_inventory
 #          options_method: getWarehouseOptions
-         - id: gist_stock_threshold_formula_span
-           label: "Stock Formula Span"
-           type: select
-           options_service: gist_inventory
-           options_method: getFormulaSpanOptions
+        - id: gist_damaged_items_warehouse
+          label: "Damaged Items Warehouse"
+          type: select
+          options_service: gist_inventory
+          options_method: getWarehouseOptions
+        - id: gist_stock_threshold_formula_span
+          label: "Stock Formula Span"
+          type: select
+          options_service: gist_inventory
+          options_method: getFormulaSpanOptions
