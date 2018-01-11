@@ -190,13 +190,16 @@ class DamagedItemsController extends CrudController
                 echo $data['destination'][$index]."<br>";
 
 
-                if ($data['destination'][$index] == 0) {
+                if ($data['destination'][$index] === '0') {
                     $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
-                } elseif ($data['destination'][$index] == '00') {
+                } elseif ($data['destination'][$index] === '00') {
+                    echo 'here';
                     $wh_destination = $inv->findWarehouse($config->get('gist_damaged_items_warehouse'));
                 } else {
                     $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination'][$index]);
                 }
+
+                echo $wh_destination->getName();
 
 
                 $entry->setSource($wh_src->getInventoryAccount());
@@ -211,7 +214,7 @@ class DamagedItemsController extends CrudController
                 $entries[] = $entry;
             }
 
-            //die();
+            die();
 
             return $entries;
         } else {
@@ -675,7 +678,7 @@ class DamagedItemsController extends CrudController
      * @return JsonResponse
      * @internal param $pos_loc_id
      */
-    public function addPOSStockTransferAction($src, $dest, $user, $description, $entries)
+    public function addPOSDamagedItemsAction($src, $user, $description, $entries)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -683,31 +686,12 @@ class DamagedItemsController extends CrudController
         $config = $this->get('gist_configuration');
         //$st = $em->getRepository('GistInventoryBundle:DamagedItems')->findOneBy(array('id'=>$id));
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user));
-
         parse_str($entries, $entriesParsed);
 
-        //$pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$src));
-
         $st = new DamagedItems();
-        $st->setStatus('requested');
-        $st->setRequestingUser($user);
-
-        // warehouse
-        if ($src == '0') {
-            $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
-        } else {
-            $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($src);
-        }
-
-        if ($dest == '0') {
-            $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
-        } else {
-            $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($dest);
-        }
-
         $st->setDescription($description);
-        $st->setSource($wh_src->getInventoryAccount());
-        $st->setDestination($wh_destination->getInventoryAccount());
+        // initialize entries
+        $entries = array();
 
         $em->persist($st);
         $em->flush();
@@ -725,20 +709,39 @@ class DamagedItemsController extends CrudController
                 ->setProduct($prod)
                 ->setQuantity($qty);
 
+            // warehouse - source
+            if ($src == '0') {
+                $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            } elseif ($src == '00') {
+                $wh_src = $inv->findWarehouse($config->get('gist_damaged_items_warehouse'));
+            } else {
+                $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($src);
+            }
+
+            // warehouse - destination
+            if ($e['destination'] === '0') {
+                $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            } elseif ($e['destination'] === '00') {
+                $wh_destination = $inv->findWarehouse($config->get('gist_damaged_items_warehouse'));
+            } else {
+                $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($e['destination']);
+            }
+
+            $entry->setSource($wh_src->getInventoryAccount());
+            $entry->setDestination($wh_destination->getInventoryAccount());
+
+            $entry->setStatus('requested');
+            $entry->setRequestingUser($user);
+
             $em->persist($entry);
             $em->flush();
 
-
-            $em->persist($entry);
-            $em->flush();
-
-            //$entries[] = $entry;
+            $entries[] = $entry;
         }
 
+        //die();
 
-
-        $em->persist($st);
-        $em->flush();
+        //return $entries;
 
         $list_opts[] = array(
             'status'=>'success',

@@ -75,7 +75,7 @@ gist_inv_damaged_items_update_status:
     defaults: { _controller: GistInventoryBundle:DamagedItems:updatePOSDamagedItems }
 
 gist_inv_damaged_items_add_new:
-    path:     /add_new/{src}/{dest}/{user}/{description}/{entries}
+    path:     /add_new/{src}/{user}/{description}/{entries}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:addPOSDamagedItems }
 
