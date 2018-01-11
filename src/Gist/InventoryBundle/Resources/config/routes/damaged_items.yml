@@ -93,3 +93,8 @@ gist_inv_damaged_items_entry_status_change:
     path:    /entry/status/{id}/{status}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:statusUpdate, id: null, status: null }
+
+gist_inv_damaged_items_get_prod_cat_options:
+    path:     /get/prod_cats
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getProductCategoryOptions }

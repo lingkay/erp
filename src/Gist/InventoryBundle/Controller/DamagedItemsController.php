@@ -502,6 +502,34 @@ class DamagedItemsController extends CrudController
 
     /**
      *
+     * Function for POS to fetch prod cat options
+     *
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getProductCategoryOptionsAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        //CATEGORY
+        $filter = array();
+        $categories = $em
+            ->getRepository('GistInventoryBundle:ProductCategory')
+            ->findBy(
+                $filter,
+                array('name' => 'ASC')
+            );
+
+        $cat_opts = array();
+        $cat_opts[''] = 'All';
+        foreach ($categories as $category)
+            $cat_opts[$category->getID()] = $category->getName();
+
+        return new JsonResponse($cat_opts);
+    }
+
+    /**
+     *
      * Function for POS to fetch stock transfer form data
      *
      * @param $id

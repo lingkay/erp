@@ -60,6 +60,13 @@ security:
         - { path: ^/inventory/stock_transfer/get/loc_options, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/update_status, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/add_new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/inventory/damaged_items/search_product/ajax, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/search_product/ajax2, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/entry/status, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/customer/fields/get_visible, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
