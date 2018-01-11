@@ -220,12 +220,6 @@
             });
 
             $('#transfer_form_btn').on('click', function(e){
-                $('input[class^=destination]').each(function(i, el) {
-                    // var row = $(this).closest('tr');
-                    // var dest_id = row.find('.destination').val();
-                    alert($(this).val());
-                    return false;
-                });
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 var rowCount = $('#list_table tr').length;
@@ -237,10 +231,8 @@
                     return false;
                 }
 
-
-
                 if (rowCount > 1) {
-                    //$('#transfer_form').submit();
+                    $('#transfer_form').submit();
                 } else {
                     toastr['error']('No item/s to transfer', 'Form validation');
                 }
