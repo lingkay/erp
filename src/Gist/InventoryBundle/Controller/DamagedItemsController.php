@@ -102,7 +102,7 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
 
         $inv = $this->get('gist_inventory');
-        $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + array('00'=>'Damaged Items Warehouse') + $inv->getPOSLocationOptions();
+        $params['wh_opts'] = array('00'=>'Damaged Items Warehouse') + $inv->getPOSLocationTransferOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
 
         //CATEGORY
@@ -508,7 +508,7 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
 
         $inv = $this->get('gist_inventory');
-        $list_opts = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
+        $list_opts = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptions();
 
         return new JsonResponse($list_opts);
     }

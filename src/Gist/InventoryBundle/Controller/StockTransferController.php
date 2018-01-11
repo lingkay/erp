@@ -355,7 +355,7 @@ class StockTransferController extends CrudController
         $em = $this->getDoctrine()->getManager();
 
         $inv = $this->get('gist_inventory');
-        $list_opts = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
+        $list_opts = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptions();
         unset($list_opts[$pos_loc_id]);
         return new JsonResponse($list_opts);
     }
