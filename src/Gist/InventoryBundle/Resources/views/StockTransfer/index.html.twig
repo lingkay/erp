@@ -39,13 +39,9 @@
 
 {% block js %}
     <script>
-
         $(document).ready(function() {
 
-
             var dTable;
-
-
             dTable = $('#list_table').dataTable({
                 "bProcessing": true,
                 "bServerSide": true,
@@ -68,10 +64,9 @@
                 ]
             });
 
-            $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
-            $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-            $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
-
+            $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline");
+            $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline");
+            $('#list_table_wrapper .dataTables_length select').select2();
 
         });
     </script>

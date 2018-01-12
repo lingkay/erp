@@ -9,7 +9,6 @@
                     <div class="caption">{% block form_header %}{% endblock %}</div>
                 </div>
                 <div class="portlet-body form">
-                    <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal" id="transfer_form">
                         <div class="form-body">
                             <div class="row">
@@ -31,19 +30,19 @@
                                         <ol class="ProgressBar">
                                             <li class="ProgressBar-step is-current">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Pending<br>{#{{ object.getDateCreate|date('M d, Y h:i a')|default('') }}#}</span>
+                                                <span class="ProgressBar-stepLabel">Pending<br></span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Processed<br>{#{{ object.getDateProcessed|date('M d, Y h:i a')|default('') }}#}</span>
+                                                <span class="ProgressBar-stepLabel">Processed<br></span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">In-transit<br>{#{{ object.getDateDelivered|date('M d, Y h:i a')|default('') }}#}</span>
+                                                <span class="ProgressBar-stepLabel">In-transit<br></span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Arrived<br>{#{{ object.getDateReceived|date('M d, Y h:i a')|default('') }}#}</span>
+                                                <span class="ProgressBar-stepLabel">Arrived<br></span>
                                             </li>
                                         </ol>
                                     </div>
@@ -106,7 +105,6 @@
                             </div>
                         </div>
                     </form>
-                    <!-- END FORM-->
                 </div>
             </div>
         </div>
@@ -114,9 +112,7 @@
 {% endblock %}
 
 {% block js %}
-
     <script>
-
         $(document).ready(function() {
 
             $(".form-horizontal").validate({
@@ -155,7 +151,6 @@
                 }
             }
 
-
             $('#transfer_form_btn').on('click', function(e){
                 e.preventDefault();
                 e.stopImmediatePropagation();
@@ -167,8 +162,6 @@
                     toastr['error']('Description is required', 'Form validation');
                     return false;
                 }
-
-
 
                 if (rowCount > 1 && source != '-1' && destination != '-1' && source != destination) {
                     var qty_passed = true;
@@ -209,27 +202,21 @@
                 return false;
             });
 
-
             $('.add_transfer_item').on('click', function () {
 
                 var selected_item = $('#cform-item').val();
                 var selected_item_name = $('#select2-cform-item-container').prop('title');
-
-
                 var duplicates = false;
                 $(".product_item_code").each(function() {
                     if (selected_item == $(this).val()) {
                         duplicates = true;
                     }
-
-
                 });
 
                 if (duplicates) {
                     toastr['error']('Selected item already added!', 'Error');
                     return false;
                 }
-
 
                 if (selected_item == '000') {
                     toastr['error']('Invalid selection!', 'Error');
@@ -243,7 +230,6 @@
                     $('#transfer_table_body').append(tr);
                 }
             });
-
         });
     </script>
 {% endblock %}

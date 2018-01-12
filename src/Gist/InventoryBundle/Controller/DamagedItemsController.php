@@ -84,11 +84,8 @@ class DamagedItemsController extends CrudController
     {
         $grid = $this->get('gist_grid');
         return array(
-//            $grid->newJoin('d_inv','destination_inv_account','getDestination'),
-//            $grid->newJoin('s_inv','source_inv_account','getSource'),
         );
     }
-
 
     protected function getGridColumns()
     {
@@ -105,7 +102,6 @@ class DamagedItemsController extends CrudController
         $params['wh_opts'] = array('00'=>'Damaged Items Warehouse') + $inv->getPOSLocationTransferOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
 
-        //CATEGORY
         $filter = array();
         $categories = $em
             ->getRepository('GistInventoryBundle:ProductCategory')
@@ -137,17 +133,14 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
 
-        // validate
         $this->validate($data, 'add');
 
-        // update db
         $this->update($obj, $data, true);
 
         $em->persist($obj);
         $em->flush();
         $this->hookPostSave($obj,true);
 
-        // log
         $odata = $obj->toData();
         $this->logAdd($odata);
     }
@@ -166,7 +159,6 @@ class DamagedItemsController extends CrudController
 
             $em->persist($o);
             $em->flush();
-
 
             foreach ($data['product_item_code'] as $index => $value)
             {
@@ -214,16 +206,8 @@ class DamagedItemsController extends CrudController
                 $entries[] = $entry;
             }
 
-//            die();
-
             return $entries;
-        } else {
-
-
         }
-
-
-
     }
 
     public function statusUpdateAction($id, $status, $user = null)
@@ -235,8 +219,7 @@ class DamagedItemsController extends CrudController
         } else {
             $user = $this->getUser();
         }
-        //$data = $this->getRequest()->request->all();
-        // override for AJAX to ERP
+
         try
         {
             $damaged_item_entry = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findOneBy(array('id'=>$id));
@@ -277,40 +260,32 @@ class DamagedItemsController extends CrudController
         catch (ValidationException $e)
         {
             $this->addFlash('error', 'Database error occured. Possible duplicate.');
-            //return $this->addError($obj);
         }
         catch (DBALException $e)
         {
             $this->addFlash('error', 'Database error occured. Possible duplicate.');
             error_log($e->getMessage());
-            //return $this->addError($obj);
         }
     }
 
-    //    FOR PROD SEARCH MODAL AJAX
     protected function setupGridLoaderAjax()
     {
         $data = $this->getRequest()->query->all();
         $grid = $this->get('gist_grid');
 
-        // loader
         $gloader = $grid->newLoader();
         $gloader->processParams($data)
             ->setRepository($this->repo);
 
-        // grid joins
         $gjoins = $this->getGridJoins();
         foreach ($gjoins as $gj)
             $gloader->addJoin($gj);
 
-        // grid columns
         $gcols = $this->getGridColumnsAjax();
 
-        // add action column if it's dynamic
         if ($this->list_type == 'dynamic')
             $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGridAjax'), false, false);
 
-        // add columns
         foreach ($gcols as $gc)
             $gloader->addColumn($gc);
 
@@ -324,7 +299,6 @@ class DamagedItemsController extends CrudController
             $grid->newColumn('Item Code', 'getItemCode', 'item_code','o', array($this,'formatItemCode')),
             $grid->newColumn('Barcode','getBarcode','barcode'),
             $grid->newColumn('Name', 'getName', 'name','o', array($this,'formatItemName')),
-//            $grid->newColumn('Item Code', 'getItemCode', 'item_code','o', array($this,'formatDetails')),
         );
     }
 
@@ -374,10 +348,6 @@ class DamagedItemsController extends CrudController
     {
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
-        $date = new DateTime();
-
-
-//        $grid->setRepository('GistInventoryBundle:Product');
 
         if($category != null and $category != 'null') {
             $qry[] = "(o.category = '".$category."')";
@@ -393,7 +363,6 @@ class DamagedItemsController extends CrudController
 
         return $fg->where($filter);
     }
-    //    END PROD SEARCH MODAL
 
     public function printPDFAction($id)
     {
@@ -558,21 +527,12 @@ class DamagedItemsController extends CrudController
         $pos_iacc_id = $pos_location->getInventoryAccount()->getID();
         $list_opts = [];
 
-//        if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
         $list_opts[] = array(
             'id'=>$st->getID(),
             'description'=> $st->getDescription(),
             'pos_iacc_id' => $pos_iacc_id,
             'invalid'=>'false',
         );
-//        } else {
-//            $list_opts[] = array(
-//                'id'=>0,
-//                'invalid'=>'true',
-//            );
-//        }
-
-
 
         return new JsonResponse($list_opts);
     }

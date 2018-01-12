@@ -65,23 +65,6 @@ class StockTransferController extends CrudController
         );
     }
 
-//    public function viewAction()
-//    {
-//        $this->hookPreAction();
-//        $gl = $this->setupGridLoader();
-//        $params = $this->getViewParams('List', 'hris_report_attendance_view');
-//        $twig_file = 'HrisReportBundle:Attendance:view.html.twig';
-//        $date_from = new DateTime();
-//        $date_to = new DateTime();
-//        $date_from->format("Y-m-d");
-//        $date_to->format("Y-m-d");
-//        $this->padFormParams($params, $date_from, $date_to);
-//        $params['date_from'] = $date_from;
-//        $params['date_to'] = $date_to;
-//        $params['list_title'] = $this->list_title;
-//        return $this->render($twig_file, $params);
-//    }
-
     protected function getObjectLabel($obj)
     {
         if ($obj == null)
@@ -117,9 +100,8 @@ class StockTransferController extends CrudController
         );
     }
 
-    protected function padFormParams(&$params, $object = NULL){
-        $em = $this->getDoctrine()->getManager();
-
+    protected function padFormParams(&$params, $object = NULL)
+    {
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
@@ -131,17 +113,14 @@ class StockTransferController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
 
-        // validate
         $this->validate($data, 'add');
 
-        // update db
         $this->update($obj, $data, true);
 
         $em->persist($obj);
         $em->flush();
         $this->hookPostSave($obj,true);
 
-        // log
         $odata = $obj->toData();
         $this->logAdd($odata);
     }
@@ -151,12 +130,6 @@ class StockTransferController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
-
-//        echo "<pre>";
-//        var_dump($data);
-//        echo "</pre>";
-//
-//        die();
 
         if ($is_new) {
             $o->setStatus('requested');
@@ -185,13 +158,10 @@ class StockTransferController extends CrudController
             $em->persist($o);
             $em->flush();
 
-
             foreach ($data['product_item_code'] as $index => $value)
             {
                 $prod_item_code = $value;
                 $qty = $data['quantity'][$index];
-
-
 
                 // product
                 $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
@@ -207,13 +177,11 @@ class StockTransferController extends CrudController
                 $em->persist($entry);
                 $em->flush();
 
-
                 $em->persist($entry);
                 $em->flush();
 
                 $entries[] = $entry;
             }
-
 
             return $entries;
         } else {
@@ -235,20 +203,11 @@ class StockTransferController extends CrudController
 
     public function printPDFAction($id)
     {
-        $settings = $this->get('hris_settings');
-        $wf = $this->get('hris_workforce');
-        $em = $this->getDoctrine()->getManager();
         $twig = "GistInventoryBundle:StockTransfer:print.html.twig";
 
-        $conf = $this->get('gist_configuration');
-
-        //getOutputData
         $data = $this->getOutputData($id);
-
         $params['emp'] = null;
         $params['dept'] = null;
-
-
         $params['all'] = $data;
         $pdf = $this->get('gist_pdf');
         $pdf->newPdf('A4');
@@ -259,30 +218,22 @@ class StockTransferController extends CrudController
     private function getOutputData($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $date = new DateTime();
 
+        $query = $em->createQueryBuilder();
+        $query->from('GistInventoryBundle:StockTransfer', 'o');
+        $query->andwhere("o.id = '".$id."'");
 
-        $query = $em    ->createQueryBuilder();
-        $query          ->from('GistInventoryBundle:StockTransfer', 'o');
-//        $query          ->join('HrisWorkforceBundle:Employee','e','WITH','o.employee=e.id');
-
-
-        $query      ->andwhere("o.id = '".$id."'");
-
-
-        $data = $query          ->select('o')
+        $data = $query->select('o')
             ->getQuery()
             ->getResult();
 
         return $data;
     }
 
-
     protected function hookPostSave($obj, $is_new = false)
     {
 
     }
-
 
     /**
      *
@@ -307,7 +258,6 @@ class StockTransferController extends CrudController
                 'date_create'=> $p->getDateCreateFormatted(),
                 'status'=> ucfirst($p->getStatus()),
             );
-
         }
 
         return new JsonResponse($list_opts);
@@ -336,7 +286,6 @@ class StockTransferController extends CrudController
                 'date_create'=> $p->getDateCreateFormatted(),
                 'status'=> ucfirst($p->getStatus()),
             );
-
         }
 
         return new JsonResponse($list_opts);
@@ -413,8 +362,6 @@ class StockTransferController extends CrudController
             );
         }
 
-
-
         return new JsonResponse($list_opts);
     }
 
@@ -431,7 +378,6 @@ class StockTransferController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $st = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findBy(array('stock_transfer'=>$id));
-
 
         $list_opts = [];
         foreach ($st as $p) {
@@ -493,8 +439,6 @@ class StockTransferController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    //{src}/{dest}/{user}/{description}/{entries}
-
     /**
      *
      * Function for POS to add stock transfer
@@ -513,12 +457,9 @@ class StockTransferController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
-        //$st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user));
 
         parse_str($entries, $entriesParsed);
-
-        //$pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$src));
 
         $st = new StockTransfer();
         $st->setStatus('requested');
@@ -566,8 +507,6 @@ class StockTransferController extends CrudController
 
             //$entries[] = $entry;
         }
-
-
 
         $em->persist($st);
         $em->flush();
