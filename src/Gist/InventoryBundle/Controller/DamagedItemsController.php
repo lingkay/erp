@@ -95,7 +95,8 @@ class DamagedItemsController extends CrudController
         );
     }
 
-    protected function padFormParams(&$params, $object = NULL){
+    protected function padFormParams(&$params, $object = NULL)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $inv = $this->get('gist_inventory');

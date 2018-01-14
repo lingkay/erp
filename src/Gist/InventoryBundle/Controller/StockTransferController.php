@@ -102,9 +102,26 @@ class StockTransferController extends CrudController
 
     protected function padFormParams(&$params, $object = NULL)
     {
+        $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
+
+        $filter = array();
+        $categories = $em
+            ->getRepository('GistInventoryBundle:ProductCategory')
+            ->findBy(
+                $filter,
+                array('name' => 'ASC')
+            );
+
+        $cat_opts = array();
+        $cat_opts[''] = 'All';
+        foreach ($categories as $category)
+            $cat_opts[$category->getID()] = $category->getName();
+
+        $params['cat_opts'] = $cat_opts;
+
         return $params;
     }
 
