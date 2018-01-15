@@ -148,9 +148,7 @@ class StockTransferController extends CrudController
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
 
-        if ($is_new) {
-            $o->setStatus('requested');
-            $o->setRequestingUser($this->getUser());
+        if ($is_new || !isset($data['status'])) {
 
             // initialize entries
             $entries = array();
@@ -168,11 +166,27 @@ class StockTransferController extends CrudController
                 $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
             }
 
-            $o->setDescription($data['description']);
-            $o->setSource($wh_src->getInventoryAccount());
-            $o->setDestination($wh_destination->getInventoryAccount());
+            if ($is_new) {
+                $o->setStatus('requested');
+                $o->setRequestingUser($this->getUser());
 
-            $em->persist($o);
+                $o->setDescription($data['description']);
+                $o->setSource($wh_src->getInventoryAccount());
+                $o->setDestination($wh_destination->getInventoryAccount());
+
+                $em->persist($o);
+                $em->flush();
+            }
+
+
+
+            if (!$is_new) {
+                $existingEntries = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findBy(array('stock_transfer'=>$o->getID()));
+                foreach ($existingEntries as $ee) {
+                    $em->remove($ee);
+                }
+            }
+
             $em->flush();
 
             foreach ($data['product_item_code'] as $index => $value)
@@ -465,10 +479,12 @@ class StockTransferController extends CrudController
      * @param $user
      * @param $description
      * @param $entries
+     * @param $status
+     * @param $id
      * @return JsonResponse
      * @internal param $pos_loc_id
      */
-    public function addPOSStockTransferAction($src, $dest, $user, $description, $entries)
+    public function addPOSStockTransferAction($src, $dest, $user, $description, $entries, $status, $id)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -478,59 +494,96 @@ class StockTransferController extends CrudController
 
         parse_str($entries, $entriesParsed);
 
-        $st = new StockTransfer();
-        $st->setStatus('requested');
-        $st->setRequestingUser($user);
+        if ($status == 'none') {
+            $st = new StockTransfer();
+            $st->setStatus('requested');
+            $st->setRequestingUser($user);
 
-        // warehouse
-        if ($src == '0') {
-            $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
-        } else {
-            $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($src);
-        }
+            // warehouse
+            if ($src == '0') {
+                $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            } else {
+                $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($src);
+            }
 
-        if ($dest == '0') {
-            $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
-        } else {
-            $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($dest);
-        }
+            if ($dest == '0') {
+                $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            } else {
+                $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($dest);
+            }
 
-        $st->setDescription($description);
-        $st->setSource($wh_src->getInventoryAccount());
-        $st->setDestination($wh_destination->getInventoryAccount());
+            $st->setDescription($description);
+            $st->setSource($wh_src->getInventoryAccount());
+            $st->setDestination($wh_destination->getInventoryAccount());
 
-        $em->persist($st);
-        $em->flush();
-
-        foreach ($entriesParsed as $e) {
-            $prod_item_code = $e['code'];
-            $qty = $e['quantity'];
-            $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
-            if ($prod == null)
-                throw new ValidationException('Could not find product.');
-
-            //from src
-            $entry = new StockTransferEntry();
-            $entry->setStockTransfer($st)
-                ->setProduct($prod)
-                ->setQuantity($qty);
-
-            $em->persist($entry);
+            $em->persist($st);
             $em->flush();
 
+            foreach ($entriesParsed as $e) {
+                $prod_item_code = $e['code'];
+                $qty = $e['quantity'];
+                $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code' => $prod_item_code));
+                if ($prod == null)
+                    throw new ValidationException('Could not find product.');
 
-            $em->persist($entry);
+                //from src
+                $entry = new StockTransferEntry();
+                $entry->setStockTransfer($st)
+                    ->setProduct($prod)
+                    ->setQuantity($qty);
+
+                $em->persist($entry);
+                $em->flush();
+
+
+                $em->persist($entry);
+                $em->flush();
+
+                //$entries[] = $entry;
+            }
+
+            $em->persist($st);
+            $em->flush();
+        } else {
+            $transferStock = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
+            $existingEntries = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findBy(array('stock_transfer'=>$transferStock->getID()));
+
+            foreach ($existingEntries as $ee) {
+                $em->remove($ee);
+            }
+
             $em->flush();
 
-            //$entries[] = $entry;
-        }
+//            var_dump($entriesParsed);
+//            die();
 
-        $em->persist($st);
-        $em->flush();
+            foreach ($entriesParsed as $e) {
+                $prod_item_code = $e['code'];
+                $qty = $e['quantity'];
+                $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code' => $prod_item_code));
+                if ($prod == null)
+                    throw new ValidationException('Could not find product.');
+
+                //from src
+                $entry = new StockTransferEntry();
+                $entry->setStockTransfer($transferStock)
+                    ->setProduct($prod)
+                    ->setQuantity($qty);
+
+                $em->persist($entry);
+                $em->flush();
+
+
+                $em->persist($entry);
+                $em->flush();
+
+            }
+
+        }
 
         $list_opts[] = array(
             'status'=>'success',
-            'id'=>$st->getID()
+            'id'=>$transferStock->getID()
         );
 
         return new JsonResponse($list_opts);
