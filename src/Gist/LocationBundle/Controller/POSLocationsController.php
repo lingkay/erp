@@ -303,7 +303,7 @@ class POSLocationsController extends CrudController
         $allow = false;
 
         $account = new Account();
-        $account->setName('POS: '.$data['name'])
+        $account->setName($data['name'])
             ->setUserCreate($this->getUser())
             ->setAllowNegative($allow);
 

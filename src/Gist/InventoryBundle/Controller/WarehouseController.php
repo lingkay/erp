@@ -69,7 +69,7 @@ class WarehouseController extends CrudController
         $allow = false;
 
         $account = new Account();
-        $account->setName('Warehouse: '.$data['name'])
+        $account->setName($data['name'])
             ->setUserCreate($this->getUser())
             ->setAllowNegative($allow);
 
