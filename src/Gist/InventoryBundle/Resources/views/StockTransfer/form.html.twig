@@ -125,6 +125,7 @@
                                     <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
                                 {% else %}
                                     {% if object.getStatus|default('') == 'requested' %}
+                                        <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
                                         <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Process</button>
                                     {% elseif object.getStatus|default('') == 'processed' %}
                                         <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
@@ -132,6 +133,8 @@
                                     {% elseif object.getStatus|default('') == 'delivered' %}
                                         <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
                                         <button name="status" type="submit" value="arrived" class="btn blue"><i class="fa fa-check"></i> Arrived</button>
+                                    {% elseif object.getStatus|default('') == 'arrived' %}
+                                        <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
                                     {% endif %}
                                     <a href="{{ path(route_list) }}" class="btn default">Go back</a>
                                 {% endif %}
