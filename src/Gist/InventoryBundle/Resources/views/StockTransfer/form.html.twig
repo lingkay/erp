@@ -30,19 +30,51 @@
                                         <ol class="ProgressBar">
                                             <li class="ProgressBar-step is-current">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Pending<br></span>
+                                                <span class="ProgressBar-stepLabel">
+                                                    Pending
+                                                    <br>
+                                                    <span id="step1-stamp" style="font-size: 14px; color: black;">
+                                                        {{ object.getDateCreate|date('M d, Y h:i a')|default('') }}
+                                                        <br>
+                                                        {{ object.getRequestingUser.getDisplayName|default('') }}
+                                                    </span>
+                                                </span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Processed<br></span>
+                                                <span class="ProgressBar-stepLabel">
+                                                    Processed
+                                                    <br>
+                                                    <span id="step2-stamp" style="font-size: 14px; color: black;">
+                                                        {{ object.getDateProcessed|date('M d, Y h:i a')|default('') }}
+                                                        <br>
+                                                        {{ object.getProcessedUser.getDisplayName|default('') }}
+                                                    </span>
+                                                </span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">In-transit<br></span>
+                                                <span class="ProgressBar-stepLabel">
+                                                    In-transit
+                                                    <br>
+                                                    <span id="step3-stamp" style="font-size: 14px; color: black;">
+                                                        {{ object.getDateDelivered|date('M d, Y h:i a')|default('') }}
+                                                        <br>
+                                                        {{ object.getDeliverUser.getDisplayName|default('') }}
+                                                    </span>
+                                                </span>
                                             </li>
                                             <li class="ProgressBar-step">
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-                                                <span class="ProgressBar-stepLabel">Arrived<br></span>
+                                                <span class="ProgressBar-stepLabel">
+                                                    Arrived
+                                                    <br>
+                                                    <span id="step4-stamp" style="font-size: 14px; color: black;">
+                                                        {{ object.getDateReceived|date('M d, Y h:i a')|default('') }}
+                                                        <br>
+                                                        {{ object.getReceivingUser.getDisplayName|default('') }}
+                                                    </span>
+                                                </span>
                                             </li>
                                         </ol>
                                     </div>
@@ -199,6 +231,11 @@
                 statusCount = 4;
             }
 
+            $('#step1-stamp').hide();
+            $('#step2-stamp').hide();
+            $('#step3-stamp').hide();
+            $('#step4-stamp').hide();
+
             for (var i = 0; i < statusCount; i++) {
                 var $bar = $(".ProgressBar");
                 if ($bar.children(".is-current").length > 0) {
@@ -206,6 +243,8 @@
                 } else {
                     $bar.children().first().addClass("is-current");
                 }
+                var ident = i+1;
+                $('#step'+ident+'-stamp').show();
             }
 
             $('#transfer_form_btn').on('click', function(e){
