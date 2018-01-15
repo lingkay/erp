@@ -494,7 +494,7 @@ class StockTransferController extends CrudController
 
         parse_str($entries, $entriesParsed);
 
-        if ($status == 'none') {
+        if ($status != 'to_update') {
             $st = new StockTransfer();
             $st->setStatus('requested');
             $st->setRequestingUser($user);
@@ -544,6 +544,11 @@ class StockTransferController extends CrudController
 
             $em->persist($st);
             $em->flush();
+
+            $list_opts[] = array(
+                'status'=>'success',
+                'id'=>$st->getID()
+            );
         } else {
             $transferStock = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
             $existingEntries = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findBy(array('stock_transfer'=>$transferStock->getID()));
@@ -579,12 +584,14 @@ class StockTransferController extends CrudController
 
             }
 
+            $list_opts[] = array(
+                'status'=>'success',
+                'id'=>$transferStock->getID()
+            );
+
         }
 
-        $list_opts[] = array(
-            'status'=>'success',
-            'id'=>$transferStock->getID()
-        );
+
 
         return new JsonResponse($list_opts);
     }

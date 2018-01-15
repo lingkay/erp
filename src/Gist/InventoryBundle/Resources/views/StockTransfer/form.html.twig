@@ -99,14 +99,14 @@
                                                 <td width="20%">Item Code</td>
                                                 <td width="50%">Item Name</td>
                                                 <td width="20%">Quantity</td>
-                                                {% if object.getID|default('') == '' or object.getStatus|default('') != 'arrived' %}
+                                                {% if object.getID|default('') == '' or object.getStatus|default('') != 'arrived' or object.getStatus|default('') != 'delivered' %}
                                                     <td width="10%"></td>
                                                 {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody id="transfer_table_body">
                                             {% for e in object.getEntries|default('') %}
-                                                {% if object.getStatus|default('') == 'arrived' %}
+                                                {% if object.getStatus|default('') == 'arrived' or object.getStatus|default('') != 'delivered' %}
                                                     <tr>
                                                         <input type="hidden" class="product_item_code" name="product_item_code[]" value="{{ e.getProduct.getItemCode }}">
                                                         <td><input type="text"  class='form-control' value="{{ e.getProduct.getItemCode|default('N/A') }}" readonly></td>
@@ -141,7 +141,7 @@
                                     {% elseif object.getStatus|default('') == 'processed' %}
                                         <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
                                         <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue"><i class="fa fa-save"></i> Update</a>
-                                        <button name="status" type="submit" value="delivered" class="btn blue"><i class="fa fa-truck"></i> In-transit</button>
+                                        <button name="status" type="submit" value="delivered" class="btn blue"><i class="fa fa-truck"></i> Deliver</button>
                                     {% elseif object.getStatus|default('') == 'delivered' %}
                                         <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
                                         <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue"><i class="fa fa-save"></i> Update</a>
