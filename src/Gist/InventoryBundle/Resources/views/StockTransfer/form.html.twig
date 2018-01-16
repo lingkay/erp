@@ -22,6 +22,11 @@
                                         {{ form.group_text('Source', 'source', object.getSource.getName, 3, 4, true) }}
                                         {{ form.group_text('Destination', 'destination', object.getDestination.getName, 3, 4, true) }}
                                         {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5, true)}}
+                                        {% if object.getStatus|default('') == 'requested' %}
+                                            {{ form.group_select("Processing User", "selected_user", user_opts, '', 3, 5, readonly) }}
+                                        {% elseif object.getStatus|default('') == 'processed' %}
+                                            {{ form.group_select("Delivery Personnel", "selected_user", user_opts, '', 3, 5, readonly) }}
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="col-md-6">
@@ -99,14 +104,14 @@
                                                 <td width="20%">Item Code</td>
                                                 <td width="50%">Item Name</td>
                                                 <td width="20%">Quantity</td>
-                                                {% if object.getID|default('') == '' or object.getStatus|default('') != 'arrived' or object.getStatus|default('') != 'delivered' %}
+                                                {% if object.getID|default('') == '' or (object.getStatus|default('') != 'arrived' and object.getStatus|default('') != 'delivered') %}
                                                     <td width="10%"></td>
                                                 {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody id="transfer_table_body">
                                             {% for e in object.getEntries|default('') %}
-                                                {% if object.getStatus|default('') == 'arrived' or object.getStatus|default('') != 'delivered' %}
+                                                {% if object.getStatus|default('') == 'arrived' or object.getStatus|default('') == 'delivered' %}
                                                     <tr>
                                                         <input type="hidden" class="product_item_code" name="product_item_code[]" value="{{ e.getProduct.getItemCode }}">
                                                         <td><input type="text"  class='form-control' value="{{ e.getProduct.getItemCode|default('N/A') }}" readonly></td>

@@ -103,6 +103,8 @@ class StockTransferController extends CrudController
     protected function padFormParams(&$params, $object = NULL)
     {
         $em = $this->getDoctrine()->getManager();
+        $um = $this->get('gist_user');
+        $params['user_opts'] = $um->getUserFullNameOptions();
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
@@ -219,11 +221,13 @@ class StockTransferController extends CrudController
             $o->setStatus($data['status']);
 
             if($data['status'] == 'processed') {
-                $o->setProcessedUser($this->getUser());
+                $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
+                $o->setProcessedUser($user);
                 $o->setDateProcessed(new DateTime());
 
             } elseif ($data['status'] == 'delivered') {
-                $o->setDeliverUser($this->getUser());
+                $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
+                $o->setDeliverUser($user);
                 $o->setDateDelivered(new DateTime());
             } elseif ($data['status'] == 'arrived') {
                 $o->setReceivingUser($this->getUser());
