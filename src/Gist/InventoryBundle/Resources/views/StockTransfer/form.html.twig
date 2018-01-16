@@ -23,9 +23,9 @@
                                         {{ form.group_text('Destination', 'destination', object.getDestination.getName, 3, 4, true) }}
                                         {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5, true)}}
                                         {% if object.getStatus|default('') == 'requested' %}
-                                            {{ form.group_select("Processing User", "selected_user", user_opts, '', 3, 5, readonly) }}
+                                            {{ form.group_select("Processing User", "selected_user", user_opts, '', 3, 5, false) }}
                                         {% elseif object.getStatus|default('') == 'processed' %}
-                                            {{ form.group_select("Delivery Personnel", "selected_user", user_opts, '', 3, 5, readonly) }}
+                                            {{ form.group_select("Delivery Personnel", "selected_user", user_opts, '', 3, 5, false) }}
                                         {% endif %}
                                     {% endif %}
                                 </div>
