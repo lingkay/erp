@@ -307,6 +307,11 @@ class POSLocationsController extends CrudController
             ->setUserCreate($this->getUser())
             ->setAllowNegative($allow);
 
+        $dmg_account = new Account();
+        $dmg_account->setName('MISSING: '.$data['name'])
+            ->setUserCreate($this->getUser())
+            ->setAllowNegative($allow);
+
         $account = new Account();
         $account->setName($data['name'])
             ->setUserCreate($this->getUser())

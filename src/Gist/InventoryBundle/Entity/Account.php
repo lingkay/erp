@@ -28,6 +28,12 @@ class Account
      */
     protected $damaged_items_container;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
+     * @ORM\JoinColumn(name="missing_items_container_id", referencedColumnName="id")
+     */
+    protected $missing_items_container;
+
     public function __construct()
     {
         $this->initHasGeneratedID();
@@ -60,6 +66,17 @@ class Account
     public function getDamagedContainer()
     {
         return $this->damaged_items_container;
+    }
+
+    public function setMissingContainer($missing_items_container)
+    {
+        $this->missing_items_container = $missing_items_container;
+        return $this;
+    }
+
+    public function getMissingContainer()
+    {
+        return $this->missing_items_container;
     }
 
     public function toData()
