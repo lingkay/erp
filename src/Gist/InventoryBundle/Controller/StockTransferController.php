@@ -232,6 +232,25 @@ class StockTransferController extends CrudController
             } elseif ($data['status'] == 'arrived') {
                 $o->setReceivingUser($this->getUser());
                 $o->setDateReceived(new DateTime());
+
+                $entries = array();
+
+                foreach ($data['st_entry'] as $index => $value)
+                {
+                    $entry_id = $value;
+                    $qty = $data['received_quantity'][$index];
+
+                    // entry
+                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
+                    $entry->setReceivedQuantity($qty);
+
+                    $em->persist($entry);
+                    $em->flush();
+
+                    $entries[] = $entry;
+                }
+
+                return $entries;
             }
         }
     }
@@ -421,6 +440,7 @@ class StockTransferController extends CrudController
                 'item_code'=>$p->getProduct()->getItemCode(),
                 'product_name'=> $p->getProduct()->getName(),
                 'quantity'=> $p->getQuantity(),
+                'received_quantity'=> $p->getReceivedQuantity(),
             );
 
         }
@@ -436,7 +456,7 @@ class StockTransferController extends CrudController
      * @return JsonResponse
      * @internal param $pos_loc_id
      */
-    public function updatePOSStockTransferAction($id, $userId, $status)
+    public function updatePOSStockTransferAction($id, $userId, $status, $entries)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -455,6 +475,25 @@ class StockTransferController extends CrudController
         } elseif ($status == 'arrived') {
             $st->setReceivingUser($user);
             $st->setDateReceived(new DateTime());
+            parse_str($entries, $entriesParsed);
+
+
+            foreach ($entriesParsed as $e) {
+                if (isset($e['st_entry'])) {
+                    $entry_id = $e['st_entry'];
+                    $qty = $e['received_quantity'];
+
+                    // entry
+                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
+                    $entry->setReceivedQuantity($qty);
+
+                    $em->persist($entry);
+                    $em->flush();
+
+                    //$entries[] = $entry;
+                }
+            }
+
         } else {
             // for overwrite scenario
             $list_opts[] = array(

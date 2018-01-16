@@ -24,6 +24,11 @@ class StockTransferEntry
     protected $quantity;
 
     /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    protected $received_quantity;
+
+    /**
      * @ORM\ManyToOne(targetEntity="StockTransfer")
      * @ORM\JoinColumn(name="stock_transfer_id", referencedColumnName="id")
      */
@@ -53,6 +58,16 @@ class StockTransferEntry
         return $this->quantity;
     }
 
+    public function setReceivedQuantity($received_quantity)
+    {
+        $this->received_quantity = $received_quantity;
+        return $this;
+    }
+
+    public function getReceivedQuantity()
+    {
+        return $this->received_quantity;
+    }
 
     public function getStockTransfer()
     {

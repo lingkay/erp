@@ -23,9 +23,9 @@
                                         {{ form.group_text('Destination', 'destination', object.getDestination.getName, 3, 4, true) }}
                                         {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5, true)}}
                                         {% if object.getStatus|default('') == 'requested' %}
-                                            {{ form.group_select("Processing User", "selected_user", user_opts, '', 3, 5, false) }}
+                                            {{ form.group_select_no_default("Processing User", "selected_user", user_opts, 0, 3, 5, false) }}
                                         {% elseif object.getStatus|default('') == 'processed' %}
-                                            {{ form.group_select("Delivery Personnel", "selected_user", user_opts, '', 3, 5, false) }}
+                                            {{ form.group_select_no_default("Delivery Personnel", "selected_user", user_opts, 0, 3, 5, false) }}
                                         {% endif %}
                                     {% endif %}
                                 </div>
@@ -104,9 +104,7 @@
                                                 <td width="20%">Item Code</td>
                                                 <td width="50%">Item Name</td>
                                                 <td width="20%">Quantity</td>
-                                                {% if object.getID|default('') == '' or (object.getStatus|default('') != 'arrived' and object.getStatus|default('') != 'delivered') %}
-                                                    <td width="10%"></td>
-                                                {% endif %}
+                                                <td width="10%">{% if object.getStatus|default('') == 'arrived' or object.getStatus|default('') == 'delivered' %}Received Quantity{% endif %}</td>
                                             </tr>
                                         </thead>
                                         <tbody id="transfer_table_body">
@@ -114,9 +112,15 @@
                                                 {% if object.getStatus|default('') == 'arrived' or object.getStatus|default('') == 'delivered' %}
                                                     <tr>
                                                         <input type="hidden" class="product_item_code" name="product_item_code[]" value="{{ e.getProduct.getItemCode }}">
+                                                        <input type="hidden" class="product_item_code" name="st_entry[]" value="{{ e.getID }}">
                                                         <td><input type="text"  class='form-control' value="{{ e.getProduct.getItemCode|default('N/A') }}" readonly></td>
                                                         <td><input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly></td>
                                                         <td><input type="text"  class='form-control' name="quantity[]" value="{{ e.getQuantity|default(0) }}" readonly></td>
+                                                        {% if object.getStatus|default('') == 'delivered' %}
+                                                            <td><input type="text"  class='form-control' name="received_quantity[]" value="{{ e.getReceivedQuantity|default(e.getQuantity) }}"></td>
+                                                        {% else %}
+                                                            <td><input type="text"  class='form-control' name="received_quantity[]" value="{{ e.getReceivedQuantity|default() }}" readonly></td>
+                                                        {% endif %}
                                                     </tr>
                                                 {% else %}
                                                     <tr>
@@ -149,7 +153,6 @@
                                         <button name="status" type="submit" value="delivered" class="btn blue"><i class="fa fa-truck"></i> Deliver</button>
                                     {% elseif object.getStatus|default('') == 'delivered' %}
                                         <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
-                                        <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue"><i class="fa fa-save"></i> Update</a>
                                         <button name="status" type="submit" value="arrived" class="btn blue"><i class="fa fa-check"></i> Arrived</button>
                                     {% elseif object.getStatus|default('') == 'arrived' %}
                                         <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
@@ -268,6 +271,8 @@
                 $('#step'+ident+'-stamp').show();
             }
 
+            $("#cform-selected_user").val($("#cform-selected_user option:first").val());
+
             $('#transfer_form_btn').on('click', function(e){
                 e.preventDefault();
                 e.stopImmediatePropagation();
@@ -279,6 +284,11 @@
                     toastr['error']('Description is required', 'Form validation');
                     return false;
                 }
+
+//                if ($('#cform-selected_user').val() == '') {
+//                    toastr['error']('Please select a user!', 'Form validation');
+//                    return false;
+//                }
 
                 if (rowCount > 1 && source != '-1' && destination != '-1' && source != destination) {
                     var qty_passed = true;
