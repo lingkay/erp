@@ -302,9 +302,15 @@ class POSLocationsController extends CrudController
     {
         $allow = false;
 
+        $dmg_account = new Account();
+        $dmg_account->setName('DMG: '.$data['name'])
+            ->setUserCreate($this->getUser())
+            ->setAllowNegative($allow);
+
         $account = new Account();
         $account->setName($data['name'])
             ->setUserCreate($this->getUser())
+            ->setDamagedContainer($dmg_account)
             ->setAllowNegative($allow);
 
         return $account;

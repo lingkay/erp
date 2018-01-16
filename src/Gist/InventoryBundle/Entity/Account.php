@@ -22,6 +22,12 @@ class Account
     /** @ORM\Column(type="boolean") */
     protected $allow_negative;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
+     * @ORM\JoinColumn(name="damaged_items_container_id", referencedColumnName="id")
+     */
+    protected $damaged_items_container;
+
     public function __construct()
     {
         $this->initHasGeneratedID();
@@ -43,6 +49,17 @@ class Account
             return true;
 
         return false;
+    }
+
+    public function setDamagedContainer($damaged_items_container)
+    {
+        $this->damaged_items_container = $damaged_items_container;
+        return $this;
+    }
+
+    public function getDamagedContainer()
+    {
+        return $this->damaged_items_container;
     }
 
     public function toData()
