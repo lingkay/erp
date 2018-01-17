@@ -385,6 +385,8 @@ class StockTransferController extends CrudController
                 'id'=>$st->getID(),
                 'source'=> $st->getSource()->getName(),
                 'destination'=> $st->getDestination()->getName(),
+                'destination_id'=> $st->getDestination()->getID(),
+                'pos_iacc_id' => $pos_iacc_id,
                 'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
                 'status'=> $st->getStatus(),
                 'description'=> $st->getDescription(),
