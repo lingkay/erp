@@ -384,6 +384,7 @@ class StockTransferController extends CrudController
             $list_opts[] = array(
                 'id'=>$st->getID(),
                 'source'=> $st->getSource()->getName(),
+                'source_id'=> $st->getSource()->getID(),
                 'destination'=> $st->getDestination()->getName(),
                 'destination_id'=> $st->getDestination()->getID(),
                 'pos_iacc_id' => $pos_iacc_id,
