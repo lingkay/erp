@@ -93,7 +93,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h4 class="form-section">Items to transfer</h4>
-                                    {% if object.getID|default('') == '' or object.getStatus|default('') != 'arrived' %}
+                                    {% if object.getID|default('') == '' or (object.getStatus|default('') != 'arrived' and object.getStatus|default('') != 'delivered') %}
                                         <a href="#add_entry_modal" class="btn green" data-toggle="modal" style="margin-bottom: 15px;">
                                             Search Product
                                         </a>
