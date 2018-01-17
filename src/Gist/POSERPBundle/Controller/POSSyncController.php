@@ -140,15 +140,15 @@ class POSSyncController extends CrudController
         $em = $this->getDoctrine()->getManager();
 
         $users = $em->getRepository("GistUserBundle:User")->createQueryBuilder('o');
-        foreach ($search_array as $key => $value) {
-            if (trim($value) != '') {
-                if ($key == 'area') {
-                    $users->andWhere('IDENTITY(o.'.$key .') = :o_'.$key)
-                      ->setParameter('o_'.$key,''.$value.'');
-                }
-            }
-            
-        }
+//        foreach ($search_array as $key => $value) {
+//            if (trim($value) != '') {
+//                if ($key == 'area') {
+//                    $users->andWhere('IDENTITY(o.'.$key .') = :o_'.$key)
+//                      ->setParameter('o_'.$key,''.$value.'');
+//                }
+//            }
+//
+//        }
         $results = $users->getQuery()->getResult();
 
         $list_opts = [];
