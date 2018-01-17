@@ -35,7 +35,6 @@ class UserManager
             );
 
         $opts = array();
-        $opts[-1] = 'None';
         foreach ($objects as $o)
             $opts[$o->$id_method()] = $o->$value_method();
 
