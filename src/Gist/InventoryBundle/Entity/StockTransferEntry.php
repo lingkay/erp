@@ -29,6 +29,11 @@ class StockTransferEntry
     protected $received_quantity;
 
     /**
+     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     */
+    protected $processed_quantity;
+
+    /**
      * @ORM\ManyToOne(targetEntity="StockTransfer")
      * @ORM\JoinColumn(name="stock_transfer_id", referencedColumnName="id")
      */
@@ -67,6 +72,17 @@ class StockTransferEntry
     public function getReceivedQuantity()
     {
         return $this->received_quantity;
+    }
+
+    public function setProcessedQuantity($processed_quantity)
+    {
+        $this->processed_quantity = $processed_quantity;
+        return $this;
+    }
+
+    public function getProcessedQuantity()
+    {
+        return $this->processed_quantity;
     }
 
     public function getStockTransfer()

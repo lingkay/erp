@@ -215,6 +215,25 @@ class StockTransferController extends CrudController
                 $o->setProcessedUser($user);
                 $o->setDateProcessed(new DateTime());
 
+                $entries = array();
+
+                foreach ($data['st_entry'] as $index => $value)
+                {
+                    $entry_id = $value;
+                    $qty = $data['processed_quantity'][$index];
+
+                    // entry
+                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
+                    $entry->setProcessedQuantity($qty);
+
+                    $em->persist($entry);
+                    $em->flush();
+
+                    $entries[] = $entry;
+                }
+
+                return $entries;
+
             } elseif ($data['status'] == 'delivered') {
                 $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
                 $o->setDeliverUser($user);
