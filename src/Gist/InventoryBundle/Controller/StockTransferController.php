@@ -183,91 +183,28 @@ class StockTransferController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
-        $inv = $this->get('gist_inventory');
         $inv_stock_transfer = $this->get('gist_inventory_stock_transfer');
-        $config = $this->get('gist_configuration');
+        if (isset($data['selected_user'])) {
+            $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
+        } else {
+            $user = $this->getUser();
+        }
 
         if ($is_new || !isset($data['status'])) {
 
-            //ADD NEW
-            if ($data['source'] == 0) {
-                $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
-            } else {
-                $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->find($data['source']);
-            }
-
-            if ($data['destination'] == 0) {
-                $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
-            } else {
-                $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
-            }
-
-            $entries = $inv_stock_transfer->saveNewForm($o, $data, $this->getUser(), $wh_src, $wh_destination);
+            $entries = $inv_stock_transfer->saveNewForm($o, $data, $user);
             return $entries;
 
         } else {
 
-            //UPDATE
-            $o->setStatus($data['status']);
+            $inv_stock_transfer->updateForm($o, $data, $user);
 
-            if($data['status'] == 'processed') {
-                $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
-                $o->setProcessedUser($user);
-                $o->setDateProcessed(new DateTime());
-
-                $entries = array();
-
-                foreach ($data['st_entry'] as $index => $value)
-                {
-                    $entry_id = $value;
-                    $qty = $data['processed_quantity'][$index];
-
-                    // entry
-                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
-                    $entry->setProcessedQuantity($qty);
-
-                    $em->persist($entry);
-                    $em->flush();
-
-                    $entries[] = $entry;
-                }
-
-                return $entries;
-
-            } elseif ($data['status'] == 'delivered') {
-                $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
-                $o->setDeliverUser($user);
-                $o->setDateDelivered(new DateTime());
-            } elseif ($data['status'] == 'arrived') {
-                $o->setReceivingUser($this->getUser());
-                $o->setDateReceived(new DateTime());
-
-                $entries = array();
-
-                foreach ($data['st_entry'] as $index => $value)
-                {
-                    $entry_id = $value;
-                    $qty = $data['received_quantity'][$index];
-
-                    // entry
-                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
-                    $entry->setReceivedQuantity($qty);
-
-                    $em->persist($entry);
-                    $em->flush();
-
-                    $entries[] = $entry;
-                }
-
-                return $entries;
-            }
         }
     }
 
     public function printPDFAction($id)
     {
         $twig = "GistInventoryBundle:StockTransfer:print.html.twig";
-
         $data = $this->getOutputData($id);
         $params['emp'] = null;
         $params['dept'] = null;

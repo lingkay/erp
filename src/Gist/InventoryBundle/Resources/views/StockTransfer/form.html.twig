@@ -39,7 +39,7 @@
                                                 <span class="ProgressBar-stepLabel">
                                                     Requested
                                                     <br>
-                                                    <span id="step1-stamp" style="font-size: 14px; color: black;">
+                                                    <span id="step1-stamp" style="font-size: 12px; color: black;">
                                                         {{ object.getDateCreate|date('M d, Y H:i')|default('') }}
                                                         <br>
                                                         {{ object.getRequestingUser.getDisplayName|default('') }}
@@ -51,7 +51,7 @@
                                                 <span class="ProgressBar-stepLabel">
                                                     Processed
                                                     <br>
-                                                    <span id="step2-stamp" style="font-size: 14px; color: black;">
+                                                    <span id="step2-stamp" style="font-size: 12px; color: black;">
                                                         {{ object.getDateProcessed|date('M d, Y H:i')|default('') }}
                                                         <br>
                                                         {{ object.getProcessedUser.getDisplayName|default('') }}
@@ -63,7 +63,7 @@
                                                 <span class="ProgressBar-stepLabel">
                                                     Delivered
                                                     <br>
-                                                    <span id="step3-stamp" style="font-size: 14px; color: black;">
+                                                    <span id="step3-stamp" style="font-size: 12px; color: black;">
                                                         {{ object.getDateDelivered|date('M d, Y H:i')|default('') }}
                                                         <br>
                                                         {{ object.getDeliverUser.getDisplayName|default('') }}
@@ -75,7 +75,7 @@
                                                 <span class="ProgressBar-stepLabel">
                                                     Arrived
                                                     <br>
-                                                    <span id="step4-stamp" style="font-size: 14px; color: black;">
+                                                    <span id="step4-stamp" style="font-size: 12px; color: black;">
                                                         {{ object.getDateReceived|date('M d, Y H:i')|default('') }}
                                                         <br>
                                                         {{ object.getReceivingUser.getDisplayName|default('') }}
@@ -159,7 +159,7 @@
                                                         {% endif %}
                                                         {% if object.getStatus|default('') == 'delivered' %}
                                                             <td>
-                                                                <input type="number"  class='form-control' name="received_quantity[]" value="{{ e.getReceivedQuantity|default(e.getQuantity) }}">
+                                                                <input type="number"  class='form-control' name="received_quantity[]" value="{{ e.getReceivedQuantity|default(e.getProcessedQuantity) }}">
                                                             </td>
                                                         {% elseif object.getStatus|default('') == 'arrived' %}
                                                             <td>
