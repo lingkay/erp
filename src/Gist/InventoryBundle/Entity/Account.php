@@ -22,17 +22,17 @@ class Account
     /** @ORM\Column(type="boolean") */
     protected $allow_negative;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
-     * @ORM\JoinColumn(name="damaged_items_container_id", referencedColumnName="id")
-     */
-    protected $damaged_items_container;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
-     * @ORM\JoinColumn(name="missing_items_container_id", referencedColumnName="id")
-     */
-    protected $missing_items_container;
+//    /**
+//     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
+//     * @ORM\JoinColumn(name="damaged_items_container_id", referencedColumnName="id")
+//     */
+//    protected $damaged_items_container;
+//
+//    /**
+//     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
+//     * @ORM\JoinColumn(name="missing_items_container_id", referencedColumnName="id")
+//     */
+//    protected $missing_items_container;
 
     public function __construct()
     {

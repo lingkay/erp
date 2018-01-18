@@ -283,12 +283,7 @@ class StockTransferController extends CrudController
 
         return $data;
     }
-
-    protected function hookPostSave($obj, $is_new = false)
-    {
-
-    }
-
+    
     /**
      *
      * Function for POS to fetch stock transfer records
@@ -374,52 +369,10 @@ class StockTransferController extends CrudController
     public function getPOSFormDataAction($id, $pos_loc_id)
     {
         header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
-        $st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
-        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-        $pos_iacc_id = $pos_location->getInventoryAccount()->getID();
-        $list_opts = [];
+        $invStock = $this->get('gist_inventory_stock');
+        $params = $invStock->getPOSFormData(null, $id, $pos_loc_id);
 
-        if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
-            $list_opts[] = array(
-                'id'=>$st->getID(),
-                'source'=> $st->getSource()->getName(),
-                'source_id'=> $st->getSource()->getID(),
-                'destination'=> $st->getDestination()->getName(),
-                'destination_id'=> $st->getDestination()->getID(),
-                'pos_iacc_id' => $pos_iacc_id,
-                'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
-                'status'=> $st->getStatus(),
-                'description'=> $st->getDescription(),
-                'user_create' => $st->getRequestingUser()->getDisplayName(),
-                'user_processed' => ($st->getProcessedUser() == null ? '-' : $st->getProcessedUser()->getDisplayName()),
-                'user_delivered' => ($st->getDeliverUser() == null ? '-' : $st->getDeliverUser()->getDisplayName()),
-                'user_received' => ($st->getReceivingUser() == null ? '-' : $st->getReceivingUser()->getDisplayName()),
-                'date_processed' => ($st->getDateProcessed() == null ? '' : $st->getDateProcessed()->format('y-m-d H:i:s')),
-                'date_delivered' => ($st->getDateDelivered() == null ? '' : $st->getDateDelivered()->format('y-m-d H:i:s')),
-                'date_received' => ($st->getDateReceived() == null ? '' : $st->getDateReceived()->format('y-m-d H:i:s')),
-                'invalid'=>'false',
-            );
-        } else {
-            $list_opts[] = array(
-                'id'=>0,
-                'source'=> 0,
-                'destination'=> 0,
-                'date_create'=> 0,
-                'status'=> 0,
-                'description'=> 0,
-                'user_create' => 0,
-                'user_processed' => 0,
-                'user_delivered' => 0,
-                'user_received' => 0,
-                'date_processed' => 0,
-                'date_delivered' => 0,
-                'date_received' => 0,
-                'invalid'=>'true',
-            );
-        }
-
-        return new JsonResponse($list_opts);
+        return new JsonResponse($params);
     }
 
     /**
@@ -433,22 +386,10 @@ class StockTransferController extends CrudController
     public function getPOSFormDataEntriesAction($id)
     {
         header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
-        $st = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findBy(array('stock_transfer'=>$id));
+        $invStock = $this->get('gist_inventory_stock');
+        $params = $invStock->getPOSFormDataEntries(null, $id);
 
-        $list_opts = [];
-        foreach ($st as $p) {
-            $list_opts[] = array(
-                'id'=>$p->getID(),
-                'item_code'=>$p->getProduct()->getItemCode(),
-                'product_name'=> $p->getProduct()->getName(),
-                'quantity'=> $p->getQuantity(),
-                'received_quantity'=> $p->getReceivedQuantity(),
-            );
-
-        }
-
-        return new JsonResponse($list_opts);
+        return new JsonResponse($params);
     }
 
     /**
@@ -480,14 +421,13 @@ class StockTransferController extends CrudController
             $st->setDateReceived(new DateTime());
             parse_str($entries, $entriesParsed);
 
-
             foreach ($entriesParsed as $e) {
                 if (isset($e['st_entry'])) {
                     $entry_id = $e['st_entry'];
                     $qty = $e['received_quantity'];
 
                     // entry
-                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
+                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
                     $entry->setReceivedQuantity($qty);
 
                     $em->persist($entry);
@@ -580,12 +520,6 @@ class StockTransferController extends CrudController
 
                 $em->persist($entry);
                 $em->flush();
-
-
-                $em->persist($entry);
-                $em->flush();
-
-                //$entries[] = $entry;
             }
 
             $em->persist($st);
@@ -604,9 +538,6 @@ class StockTransferController extends CrudController
             }
 
             $em->flush();
-
-//            var_dump($entriesParsed);
-//            die();
 
             foreach ($entriesParsed as $e) {
                 $prod_item_code = $e['code'];
@@ -636,8 +567,6 @@ class StockTransferController extends CrudController
             );
 
         }
-
-
 
         return new JsonResponse($list_opts);
     }

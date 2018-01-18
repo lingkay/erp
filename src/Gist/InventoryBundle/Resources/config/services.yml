@@ -8,8 +8,8 @@ services:
             em: "@doctrine.orm.entity_manager"
             container: "@service_container"
             security: "@security.context"
-    gist_inventory:
-            class: Gist\InventoryBundle\Model\InventoryManager
+    gist_inventory_stock:
+            class: Gist\InventoryBundle\Model\InventoryStockManager
             arguments:
                 em: "@doctrine.orm.entity_manager"
                 container: "@service_container"
