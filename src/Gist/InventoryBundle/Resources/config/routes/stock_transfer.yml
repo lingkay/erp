@@ -18,6 +18,11 @@ gist_inv_stock_transfer_edit_form:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:StockTransfer:editForm }
 
+gist_inv_stock_transfer_edit_rollback_form:
+    pattern: /edit_rollback/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:editRollbackForm }
+
 gist_inv_stock_transfer_edit_submit:
     pattern: /edit/{id}
     methods: [POST]

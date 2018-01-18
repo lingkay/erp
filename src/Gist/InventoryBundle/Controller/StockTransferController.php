@@ -47,6 +47,34 @@ class StockTransferController extends CrudController
         return $this->render($twig_file, $params);
     }
 
+    public function editRollbackFormAction($id)
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository($this->repo)->find($id);
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['o_label'] = $this->getObjectLabel($obj);
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
+
+        $this->padFormParams($params, $obj);
+
+        if ($obj->getStatus() == 'processed') {
+
+        }
+        $params['main_status'] =
+
+        return $this->render('GistTemplateBundle:Object:edit.html.twig', $params);
+    }
+
     public function callbackGrid($id)
     {
         $params = array(
@@ -108,7 +136,7 @@ class StockTransferController extends CrudController
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
-
+        $params['main_status'] = $object->getStatus();
         $filter = array();
         $categories = $em
             ->getRepository('GistInventoryBundle:ProductCategory')
