@@ -127,13 +127,48 @@ class StockTransferController extends CrudController
         return $params;
     }
 
+    public function addSubmitAction()
+    {
+        $this->checkAccess($this->route_prefix . '.add');
+        $data = $this->getRequest()->request->all();
+
+        $this->hookPreAction();
+        try
+        {
+            $obj = $this->newBaseClass();
+            $this->add($obj);
+
+            $this->addFlash('success', $this->title . ' added successfully.');
+
+            if ($data['sp_flag'] == 'true') {
+                return $this->redirect($this->generateUrl('gist_inv_stock_transfer_print',array('id'=>$obj->getID())));
+            } else {
+                if($this->submit_redirect){
+                    return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+                }else{
+                    return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(),array('id'=>$obj->getID())).$this->url_append);
+                }
+            }
+        }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            return $this->addError($obj);
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            error_log($e->getMessage());
+            return $this->addError($obj);
+        }
+    }
+
     protected function add($obj)
     {
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
 
         $this->validate($data, 'add');
-
         $this->update($obj, $data, true);
 
         $em->persist($obj);
@@ -142,20 +177,19 @@ class StockTransferController extends CrudController
 
         $odata = $obj->toData();
         $this->logAdd($odata);
+
     }
 
     protected function update($o, $data, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
+        $inv_stock_transfer = $this->get('gist_inventory_stock_transfer');
         $config = $this->get('gist_configuration');
 
         if ($is_new || !isset($data['status'])) {
 
-            // initialize entries
-            $entries = array();
-
-            // warehouse
+            //ADD NEW
             if ($data['source'] == 0) {
                 $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
             } else {
@@ -168,56 +202,12 @@ class StockTransferController extends CrudController
                 $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
             }
 
-            if ($is_new) {
-                $o->setStatus('requested');
-                $o->setRequestingUser($this->getUser());
-
-                $o->setDescription($data['description']);
-                $o->setSource($wh_src->getInventoryAccount());
-                $o->setDestination($wh_destination->getInventoryAccount());
-
-                $em->persist($o);
-                $em->flush();
-            }
-
-
-
-            if (!$is_new) {
-                $existingEntries = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findBy(array('stock_transfer'=>$o->getID()));
-                foreach ($existingEntries as $ee) {
-                    $em->remove($ee);
-                }
-            }
-
-            $em->flush();
-
-            foreach ($data['product_item_code'] as $index => $value)
-            {
-                $prod_item_code = $value;
-                $qty = $data['quantity'][$index];
-
-                // product
-                $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
-                if ($prod == null)
-                    throw new ValidationException('Could not find product.');
-
-                //from src
-                $entry = new StockTransferEntry();
-                $entry->setStockTransfer($o)
-                    ->setProduct($prod)
-                    ->setQuantity($qty);
-
-                $em->persist($entry);
-                $em->flush();
-
-                $em->persist($entry);
-                $em->flush();
-
-                $entries[] = $entry;
-            }
-
+            $entries = $inv_stock_transfer->saveNewForm($o, $data, $this->getUser(), $wh_src, $wh_destination);
             return $entries;
+
         } else {
+
+            //UPDATE
             $o->setStatus($data['status']);
 
             if($data['status'] == 'processed') {
@@ -283,7 +273,7 @@ class StockTransferController extends CrudController
 
         return $data;
     }
-    
+
     /**
      *
      * Function for POS to fetch stock transfer records
@@ -369,7 +359,7 @@ class StockTransferController extends CrudController
     public function getPOSFormDataAction($id, $pos_loc_id)
     {
         header("Access-Control-Allow-Origin: *");
-        $invStock = $this->get('gist_inventory_stock');
+        $invStock = $this->get('gist_inventory_stock_transfer');
         $params = $invStock->getPOSFormData(null, $id, $pos_loc_id);
 
         return new JsonResponse($params);
@@ -386,7 +376,7 @@ class StockTransferController extends CrudController
     public function getPOSFormDataEntriesAction($id)
     {
         header("Access-Control-Allow-Origin: *");
-        $invStock = $this->get('gist_inventory_stock');
+        $invStock = $this->get('gist_inventory_stock_transfer');
         $params = $invStock->getPOSFormDataEntries(null, $id);
 
         return new JsonResponse($params);

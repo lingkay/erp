@@ -8,11 +8,13 @@ use Gist\InventoryBundle\Entity\Entry;
 use Gist\InventoryBundle\Entity\Transaction;
 use Gist\InventoryBundle\Entity\Stock;
 use Gist\InventoryBundle\Entity\Account;
+use Gist\InventoryBundle\Entity\StockTransfer;
+use Gist\InventoryBundle\Entity\StockTransferEntry;
 use Gist\ValidationException;
 use Gist\ConfigurationBundle\Model\ConfigurationManager;
 use Doctrine\ORM\EntityManager;
 
-class InventoryStockManager
+class InventoryStockTransferManager
 {
     protected $em;
     protected $container;
@@ -23,6 +25,59 @@ class InventoryStockManager
         $this->em = $em;
         $this->container = $container;
         $this->user = $security->getToken()->getUser();
+    }
+
+    public function saveNewForm($o, $data, $user, $wh_src, $wh_destination)
+    {
+        $o->setStatus('requested');
+        $o->setRequestingUser($user);
+
+        $o->setDescription($data['description']);
+        $o->setSource($wh_src->getInventoryAccount());
+        $o->setDestination($wh_destination->getInventoryAccount());
+
+        $this->em->persist($o);
+        $this->em->flush();
+
+        $entries = $this->saveEntries($data, $o);
+
+        $this->em->flush();
+        return $entries;
+    }
+
+    private function removeEntries($object)
+    {
+        foreach ($object->getEntries() as $entry) {
+            $this->em->remove($entry);
+        }
+
+        $this->em->flush();
+    }
+
+    private function saveEntries($data, $object)
+    {
+        $entries = array();
+
+        foreach ($data['product_item_code'] as $index => $value)
+        {
+            $prod_item_code = $value;
+            $qty = $data['quantity'][$index];
+
+            $prod = $this->em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
+            if ($prod == null)
+                throw new ValidationException('Could not find product.');
+
+
+            $entry = new StockTransferEntry();
+            $entry->setStockTransfer($object)
+                ->setProduct($prod)
+                ->setQuantity($qty);
+
+            $this->em->persist($entry);
+            $entries[] = $entry;
+        }
+
+        return $entries;
     }
 
 
