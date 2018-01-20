@@ -47,6 +47,34 @@ class StockTransferController extends CrudController
         return $this->render($twig_file, $params);
     }
 
+    public function editFormAction($id)
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository($this->repo)->find($id);
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['o_label'] = $this->getObjectLabel($obj);
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
+
+        $params['main_status'] = '';
+        if ($obj->getID() != '') {
+            $params['main_status'] = $obj->getStatus();
+        }
+
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistTemplateBundle:Object:edit.html.twig', $params);
+    }
+
     public function editRollbackFormAction($id)
     {
         $this->checkAccess($this->route_prefix . '.view');
@@ -66,11 +94,16 @@ class StockTransferController extends CrudController
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
 
         $this->padFormParams($params, $obj);
+        $params['is_rolled_back'] = 'true';
 
-        if ($obj->getStatus() == 'processed') {
-
+        if ($obj->getStatus() == 'requested') {
+            $params['main_status'] = '';
+        } elseif ($obj->getStatus() == 'processed') {
+            $params['main_status'] = 'requested';
+        } elseif ($obj->getStatus() == 'delivered') {
+            $params['main_status'] = 'processed';
         }
-        $params['main_status'] = '';
+
 
         return $this->render('GistTemplateBundle:Object:edit.html.twig', $params);
     }
@@ -136,10 +169,6 @@ class StockTransferController extends CrudController
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
-        $params['main_status'] = '';
-//        if (count($object) > 12) {
-//            $params['main_status'] = $object->getStatus();
-//        }
 
         $filter = array();
         $categories = $em

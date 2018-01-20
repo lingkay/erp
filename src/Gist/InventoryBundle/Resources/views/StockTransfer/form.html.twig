@@ -15,7 +15,7 @@
                                 <div class="col-md-6">
                                     <h4 class="form-section">Information</h4>
                                     <input type="hidden" id="sp_flag" name="sp_flag" value="false">
-                                    {% if object.getID|default('') == '' %}
+                                    {% if main_status|default('') == '' %}
                                         {{ form.group_select("Source", "source", wh_opts, object.getSource.getID|default(-1), 3, 5, readonly) }}
                                         {{ form.group_select("Destination", "destination", wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly) }}
                                         {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5)}}
@@ -23,9 +23,9 @@
                                         {{ form.group_text('Source', 'source', object.getSource.getName, 3, 5, true) }}
                                         {{ form.group_text('Destination', 'destination', object.getDestination.getName, 3, 5, true) }}
                                         {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5, true)}}
-                                        {% if object.getStatus|default('') == 'requested' %}
+                                        {% if main_status|default('') == 'requested' %}
                                             {{ form.group_select_no_default("Processing User", "selected_user", user_opts, 0, 3, 5, false) }}
-                                        {% elseif object.getStatus|default('') == 'processed' %}
+                                        {% elseif main_status|default('') == 'processed' %}
                                             {{ form.group_select_no_default("Delivery Personnel", "selected_user", user_opts, 0, 3, 5, false) }}
                                         {% endif %}
                                     {% endif %}
@@ -38,6 +38,9 @@
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
                                                 <span class="ProgressBar-stepLabel">
                                                     Requested
+                                                    {% if main_status == 'requested' and is_rolled_back|default('') != 'true' %}
+                                                        <a href="{{ path('gist_inv_stock_transfer_edit_rollback_form', { 'id': object.getID}) }}"><i class="fa fa-edit"></i></a>
+                                                    {% endif %}
                                                     <br>
                                                     <span id="step1-stamp" style="font-size: 12px; color: black;">
                                                         {{ object.getDateCreate|date('M d, Y H:i')|default('') }}
@@ -50,6 +53,9 @@
                                                 <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
                                                 <span class="ProgressBar-stepLabel">
                                                     Processed
+                                                    {% if main_status == 'processed' and is_rolled_back|default('') != 'true' %}
+                                                        <a href="{{ path('gist_inv_stock_transfer_edit_rollback_form', { 'id': object.getID}) }}"><i class="fa fa-edit"></i></a>
+                                                    {% endif %}
                                                     <br>
                                                     <span id="step2-stamp" style="font-size: 12px; color: black;">
                                                         {{ object.getDateProcessed|date('M d, Y H:i')|default('') }}
@@ -94,7 +100,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h4 class="form-section">Items to transfer</h4>
-                                    {% if object.getID|default('') == '' or (object.getStatus|default('') == 'new') %}
+                                    {% if main_status|default('') == '' or (main_status|default('') == 'new') %}
                                         <a href="#add_entry_modal" class="btn green" data-toggle="modal" style="margin-bottom: 15px;">
                                             Search Product
                                         </a>
@@ -104,7 +110,7 @@
                                             <tr>
                                                 <td width="20%">Item Code</td>
                                                 <td width="40%">Item Name</td>
-                                                {% if object.getStatus|default('') == '' or object.getStatus|default('') == 'requested' or object.getStatus|default('') == 'processed' %}
+                                                {% if main_status|default('') == '' or main_status|default('') == 'requested' or main_status|default('') == 'processed' %}
                                                     <td width="20%">
                                                         Requested Quantity
                                                     </td>
@@ -113,15 +119,15 @@
                                                         Processed Quantity
                                                     </td>
                                                 {% endif %}
-                                                {% if object.getStatus|default('') == 'arrived' or object.getStatus|default('') == 'delivered' %}
+                                                {% if main_status|default('') == 'arrived' or main_status|default('') == 'delivered' %}
                                                     <td width="20%">
                                                         Received Quantity
                                                     </td>
-                                                {% elseif object.getStatus|default('') == 'requested' or object.getStatus|default('') == 'processed' %}
+                                                {% elseif main_status|default('') == 'requested' or main_status|default('') == 'processed' %}
                                                     <td width="20%">
                                                         Processed Quantity
                                                     </td>
-                                                {% elseif object.getStatus|default('') == '' %}
+                                                {% elseif main_status|default('') == '' %}
                                                     <td width="20%">
 
                                                     </td>
@@ -139,28 +145,28 @@
                                                         <td>
                                                             <input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly>
                                                         </td>
-                                                        {% if object.getStatus|default('') == 'requested' or object.getStatus|default('') == 'processed' %}
+                                                        {% if main_status|default('') == 'requested' or main_status|default('') == 'processed' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="quantity[]" value="{{ e.getQuantity|default(0) }}" readonly>
                                                             </td>
                                                         {% endif %}
-                                                        {% if object.getStatus|default('') == 'requested' or object.getStatus|default('') == '' %}
+                                                        {% if main_status|default('') == 'requested' or main_status|default('') == '' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="processed_quantity[]" value="{{ e.getProcessedQuantity|default(e.getQuantity) }}">
                                                             </td>
-                                                        {% elseif object.getStatus|default('') == 'processed' or object.getStatus|default('') == 'delivered' or object.getStatus|default('') == 'arrived' %}
+                                                        {% elseif main_status|default('') == 'processed' or main_status|default('') == 'delivered' or main_status|default('') == 'arrived' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="processed_quantity[]" value="{{ e.getProcessedQuantity|default() }}" readonly>
                                                             </td>
                                                         {% endif %}
-                                                        {% if object.getStatus|default('') == '' %}
+                                                        {% if main_status|default('') == '' %}
                                                             <td><a href='javascript:void(0)' class='btn btn-xs red remove_row'>Remove</a></td></tr>
                                                         {% endif %}
-                                                        {% if object.getStatus|default('') == 'delivered' %}
+                                                        {% if main_status|default('') == 'delivered' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="received_quantity[]" value="{{ e.getReceivedQuantity|default(e.getProcessedQuantity) }}">
                                                             </td>
-                                                        {% elseif object.getStatus|default('') == 'arrived' %}
+                                                        {% elseif main_status|default('') == 'arrived' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="received_quantity[]" value="{{ e.getReceivedQuantity|default() }}" readonly>
                                                             </td>
@@ -174,19 +180,19 @@
                         </div>
                         <div class="form-actions fluid">
                             <div class="col-md-9">
-                                {% if object.getID|default('') == '' %}
+                                {% if main_status|default('') == '' %}
                                     <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue"><i class="fa fa-save"></i> Save</a>
                                     <a href="javascript:void(0)" id="transfer_form_btn_sp" class="btn blue"><i class="fa fa-print"></i> Save & Print</a>
                                     <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
                                 {% else %}
-                                    {% if object.getStatus|default('') == 'requested' %}
+                                    {% if main_status|default('') == 'requested' %}
                                         <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Process</button>
-                                    {% elseif object.getStatus|default('') == 'processed' %}
+                                    {% elseif main_status|default('') == 'processed' %}
                                         <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
                                         <button name="status" type="submit" value="delivered" class="btn blue"><i class="fa fa-truck"></i> Deliver</button>
-                                    {% elseif object.getStatus|default('') == 'delivered' %}
+                                    {% elseif main_status|default('') == 'delivered' %}
                                         <button name="status" type="submit" value="arrived" class="btn blue"><i class="fa fa-check"></i> Arrived</button>
-                                    {% elseif object.getStatus|default('') == 'arrived' %}
+                                    {% elseif main_status|default('') == 'arrived' %}
 
                                     {% endif %}
                                     <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
@@ -315,9 +321,10 @@
             });
 
             var statusCount = 0;
-            var currentStatus = "{{ object.getStatus|default('new') }}";
+            var currentStatus = "{{ main_status|default('new') }}";
 
-            if (currentStatus == 'new') {
+
+            if (currentStatus == 'new' || currentStatus == '') {
                 statusCount = 0;
             } else if (currentStatus == 'requested') {
                 statusCount = 1;

@@ -434,7 +434,7 @@ width: 100% !important;
   display: none;
 }
 .ProgressBar-step:after {
-  background-color: #00637c;
+  background-color: #009e5d;
   width: 0%;
 }
 .ProgressBar-step.is-complete + .ProgressBar-step.is-current:after, .ProgressBar-step.is-complete + .ProgressBar-step.is-complete:after {
@@ -455,12 +455,12 @@ width: 100% !important;
   transition: all 0.25s ease-out;
 }
 .is-current .ProgressBar-icon {
-  fill: #00637c;
-  background-color: #00637c;
+  fill: #009e5d;
+  background-color: #009e5d;
 }
 .is-complete .ProgressBar-icon {
   fill: #dbf1ff;
-  background-color: #00637c;
+  background-color: #009e5d;
 }
 
 .ProgressBar-stepLabel {
@@ -474,7 +474,7 @@ width: 100% !important;
   transition: all 0.25s ease-out;
 }
 .is-current > .ProgressBar-stepLabel, .is-complete > .ProgressBar-stepLabel {
-  color: #00637c;
+  color: #009e5d;
 }
 
 .wrapper {
