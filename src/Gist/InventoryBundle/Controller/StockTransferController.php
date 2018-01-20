@@ -70,7 +70,7 @@ class StockTransferController extends CrudController
         if ($obj->getStatus() == 'processed') {
 
         }
-        $params['main_status'] =
+        $params['main_status'] = '';
 
         return $this->render('GistTemplateBundle:Object:edit.html.twig', $params);
     }
@@ -136,7 +136,11 @@ class StockTransferController extends CrudController
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
-        $params['main_status'] = $object->getStatus();
+        $params['main_status'] = '';
+//        if (count($object) > 12) {
+//            $params['main_status'] = $object->getStatus();
+//        }
+
         $filter = array();
         $categories = $em
             ->getRepository('GistInventoryBundle:ProductCategory')
