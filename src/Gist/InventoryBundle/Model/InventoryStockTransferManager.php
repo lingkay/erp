@@ -273,6 +273,7 @@ class InventoryStockTransferManager
                 'pos_iacc_id' => $pos_iacc_id,
                 'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
                 'status'=> $st->getStatus(),
+                'main_status'=> $st->getStatus(),
                 'description'=> $st->getDescription(),
                 'user_create' => $st->getRequestingUser()->getDisplayName(),
                 'user_processed' => ($st->getProcessedUser() == null ? '-' : $st->getProcessedUser()->getDisplayName()),
