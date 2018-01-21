@@ -452,12 +452,32 @@ class StockTransferController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$userId));
+        $inv_stock_transfer = $this->get('gist_inventory_stock_transfer');
 
         $st->setStatus($status);
 
         if($status == 'processed') {
             $st->setProcessedUser($user);
             $st->setDateProcessed(new DateTime());
+
+            parse_str($entries, $entriesParsed);
+
+
+            foreach ($entriesParsed as $e) {
+                if (isset($e['st_entry'])) {
+                    $entry_id = $e['st_entry'];
+                    $qty = $e['processed_quantity'];
+
+                    // entry
+                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
+                    $entry->setProcessedQuantity($qty);
+
+                    $em->persist($entry);
+                    $em->flush();
+
+                    //$entries[] = $entry;
+                }
+            }
 
         } elseif ($status == 'delivered') {
             $st->setDeliverUser($user);
@@ -483,6 +503,31 @@ class StockTransferController extends CrudController
                 }
             }
 
+        } elseif ($status == 'requested') {
+            //remove entries
+            $inv_stock_transfer->removeEntries($st);
+
+            //add new entries
+            parse_str($entries, $entriesParsed);
+
+//            echo "<pre>";
+//            var_dump($entriesParsed);
+//            echo "</pre>";
+//            die();
+
+            foreach ($entriesParsed as $e) {
+                $qty = $e['quantity'];
+                $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$e['code']));
+                if ($prod == null)
+                    throw new ValidationException('Could not find product.');
+
+                $entry = new StockTransferEntry();
+                $entry->setStockTransfer($st)
+                    ->setProduct($prod)
+                    ->setQuantity($qty);
+
+                $em->persist($entry);
+            }
         } else {
             // for overwrite scenario
             $list_opts[] = array(
@@ -500,6 +545,12 @@ class StockTransferController extends CrudController
         );
 
         return new JsonResponse($list_opts);
+    }
+
+    public function updatePOSStockTransferFormAction($user, $entries, $id)
+    {
+        $inv_stock_transfer = $this->get('gist_inventory_stock_transfer');
+        $inv_stock_transfer->updatePOSForm($user, $entries, $id);
     }
 
     /**

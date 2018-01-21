@@ -146,11 +146,11 @@
                                                         <td>
                                                             <input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly>
                                                         </td>
-                                                        {% if main_status|default('') == 'requested' or main_status|default('') == '' %}
+                                                        {% if main_status|default('') == '' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="quantity[]" value="{{ e.getQuantity|default(0) }}">
                                                             </td>
-                                                        {% elseif main_status|default('') == 'processed' %}
+                                                        {% elseif main_status|default('') == 'requested' or main_status|default('') == 'processed' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="quantity[]" value="{{ e.getQuantity|default(0) }}" readonly>
                                                             </td>
@@ -220,7 +220,7 @@
                     <form id="entry-form">
                         <div class="row form-horizontal form">
                             <div class="form-body">
-                                {{ form.group_select_legacy("Product Category", "product_category", cat_opts, 0, 3, 5, readonly) }}
+                                {{ form.group_select_legacy("Product Category", "product_category", cat_opts, 0, 3, 5, false) }}
                                 <hr>
                                 <table class="table table-striped table-bordered table-hover" id="search_table">
                                     <thead>

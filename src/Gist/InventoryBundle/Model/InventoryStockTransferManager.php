@@ -100,13 +100,82 @@ class InventoryStockTransferManager
         }
     }
 
+    public function updatePOSForm($user, $entries, $id)
+    {
+        $o = $this->em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
+        //$o->setStatus($data['status']);
+
+        if ($o->getStatus() == 'requested') {
+            $status = '';
+        } elseif ($o->getStatus() == 'processed') {
+            $status = 'requested';
+        } elseif ($o->getStatus() == 'delivered') {
+            $status = 'processed';
+        } else {
+            $status = '';
+        }
+
+        if($status == '') {
+
+            $o->setProcessedUser($user);
+            $o->setDateProcessed(new DateTime());
+
+            $entries = $this->updatePOSEntries($o, $entries, '');
+            return $entries;
+
+        } elseif ($status == 'requested') {
+
+//            $user = $this->em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
+//            $o->setDeliverUser($user);
+//            $o->setDateDelivered(new DateTime());
+
+        } elseif ($status == 'arrived') {
+
+            $o->setReceivingUser($user);
+            $o->setDateReceived(new DateTime());
+
+            $entries = $this->updatePOSEntries($o, $entries);
+            return $entries;
+        }
+    }
+
+    public function updatePOSEntries($st, $entries, $status)
+    {
+        parse_str($entries, $entriesParsed);
+        foreach ($entriesParsed as $e) {
+            $prod_item_code = $e['code'];
+            $qty = $e['quantity'];
+            $prod = $this->em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code' => $prod_item_code));
+            if ($prod == null)
+                throw new ValidationException('Could not find product.');
+
+            //from src
+            $entry = new StockTransferEntry();
+            $entry->setStockTransfer($st);
+            $entry->setProduct($prod);
+
+            if ($status == '') {
+                $entry->setQuantity($qty);
+            } elseif ($status == 'requested') {
+                $entry->setProcessedQuantity($e['processed_quantity']);
+            } elseif ($status == 'arrived') {
+                $entry->setReceivedQuantity($e['received_quantity']);
+            }
+
+            $this->em->persist($entry);
+            $this->em->flush();
+        }
+
+        return 0;
+    }
+
     /**
      *
      * Remove stock transfer form entries
      *
      * @param $object
      */
-    private function removeEntries($object)
+    public function removeEntries($object)
     {
         foreach ($object->getEntries() as $entry) {
             $this->em->remove($entry);
@@ -197,6 +266,7 @@ class InventoryStockTransferManager
                 'item_code'=>$p->getProduct()->getItemCode(),
                 'product_name'=> $p->getProduct()->getName(),
                 'quantity'=> $p->getQuantity(),
+                'processed_quantity'=> $p->getProcessedQuantity(),
                 'received_quantity'=> $p->getReceivedQuantity(),
             );
 
