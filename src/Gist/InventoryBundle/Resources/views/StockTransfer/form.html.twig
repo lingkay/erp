@@ -15,7 +15,8 @@
                                 <div class="col-md-6">
                                     <h4 class="form-section">Information</h4>
                                     <input type="hidden" id="sp_flag" name="sp_flag" value="false">
-                                    {% if main_status|default('') == '' %}
+                                    <input type="hidden" id="rollback_flag" name="rollback_flag" value="{{ is_rolled_back|default('false') }}">
+                                    {% if main_status|default('') == '' and is_rolled_back|default('') == '' %}
                                         {{ form.group_select("Source", "source", wh_opts, object.getSource.getID|default(-1), 3, 5, readonly) }}
                                         {{ form.group_select("Destination", "destination", wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly) }}
                                         {{ form.group_textarea('Description', 'description',object.getDescription|default(''),3,3,5)}}
@@ -145,12 +146,16 @@
                                                         <td>
                                                             <input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly>
                                                         </td>
-                                                        {% if main_status|default('') == 'requested' or main_status|default('') == 'processed' %}
+                                                        {% if main_status|default('') == 'requested' or main_status|default('') == '' %}
+                                                            <td>
+                                                                <input type="number"  class='form-control' name="quantity[]" value="{{ e.getQuantity|default(0) }}">
+                                                            </td>
+                                                        {% elseif main_status|default('') == 'processed' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="quantity[]" value="{{ e.getQuantity|default(0) }}" readonly>
                                                             </td>
                                                         {% endif %}
-                                                        {% if main_status|default('') == 'requested' or main_status|default('') == '' %}
+                                                        {% if main_status|default('') == 'requested' %}
                                                             <td>
                                                                 <input type="number"  class='form-control' name="processed_quantity[]" value="{{ e.getProcessedQuantity|default(e.getQuantity) }}">
                                                             </td>
@@ -242,6 +247,22 @@
 
 {% block js %}
     <script>
+        function generatePath() {
+
+            var product_category = $('#cform-product_category').val();
+
+            var path = "{{ path('gist_inv_damaged_items_search_ajax_grid', {
+                'category' : 'CATEGORY'}
+            ) }}";
+
+            if (product_category == null || product_category == '') {
+                path = path.replace('CATEGORY', null);
+            } else {
+                path = path.replace('CATEGORY', product_category);
+            }
+            console.log(path);
+            return path;
+        }
 
         function validateTransfers() {
             var rowCount = $('#list_table tr').length;

@@ -52,6 +52,10 @@ class InventoryStockTransferManager
         $this->em->persist($o);
         $this->em->flush();
 
+        if ($data['rollback_flag'] == 'true') {
+            $this->removeEntries($o);
+        }
+
         $entries = $this->saveEntries($data, $o);
 
         $this->em->flush();
@@ -75,6 +79,7 @@ class InventoryStockTransferManager
 
             $o->setProcessedUser($user);
             $o->setDateProcessed(new DateTime());
+
 
             $entries = $this->updateEntries($data, $o, 'setProcessedQuantity');
             return $entries;
@@ -162,7 +167,11 @@ class InventoryStockTransferManager
         {
 
             $entry_id = $value;
+
             $qty = $data['processed_quantity'][$index];
+            if ($data['status'] == 'arrived') {
+                $qty = $data['received_quantity'][$index];
+            }
 
             $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
             $entry->$setter($qty);
@@ -255,12 +264,23 @@ class InventoryStockTransferManager
      * @param $pos_loc_id
      * @return array
      */
-    public function getPOSFormData($repo, $id, $pos_loc_id)
+    public function getPOSFormData($repo, $id, $pos_loc_id, $rollback = false)
     {
         $st = $this->em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
         $pos_location = $this->em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
         $pos_iacc_id = $pos_location->getInventoryAccount()->getID();
         $list_opts = [];
+        $main_status = $st->getStatus();
+
+        if ($rollback) {
+            if ($st->getStatus() == 'requested') {
+                $main_status = '';
+            } elseif ($st->getStatus() == 'processed') {
+                $main_status = 'requested';
+            } elseif ($st->getStatus() == 'delivered') {
+                $main_status = 'processed';
+            }
+        }
 
         if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
 
@@ -273,7 +293,7 @@ class InventoryStockTransferManager
                 'pos_iacc_id' => $pos_iacc_id,
                 'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
                 'status'=> $st->getStatus(),
-                'main_status'=> $st->getStatus(),
+                'main_status'=> $main_status,
                 'description'=> $st->getDescription(),
                 'user_create' => $st->getRequestingUser()->getDisplayName(),
                 'user_processed' => ($st->getProcessedUser() == null ? '-' : $st->getProcessedUser()->getDisplayName()),

@@ -74,6 +74,11 @@ gist_inv_stock_transfer_get_data:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:StockTransfer:getPOSFormData }
 
+gist_inv_stock_transfer_get_data_rollback:
+    path:     /get/data_rollback/{id}/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockTransfer:getPOSFormRollbackData }
+
 gist_inv_stock_transfer_get_data_entries:
     path:     /get/data_entries/{id}
     methods: [GET]

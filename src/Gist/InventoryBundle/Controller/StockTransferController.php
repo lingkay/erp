@@ -75,6 +75,28 @@ class StockTransferController extends CrudController
         return $this->render('GistTemplateBundle:Object:edit.html.twig', $params);
     }
 
+    public function addFormAction()
+    {
+        $this->checkAccess($this->route_prefix . '.add');
+
+        $this->hookPreAction();
+        $obj = $this->newBaseClass();
+
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Add');
+        $params['object'] = $obj;
+        $params['main_status'] = '';
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistTemplateBundle:Object:add.html.twig', $params);
+    }
+
     public function editRollbackFormAction($id)
     {
         $this->checkAccess($this->route_prefix . '.view');
@@ -378,6 +400,23 @@ class StockTransferController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $invStock = $this->get('gist_inventory_stock_transfer');
         $params = $invStock->getPOSFormData(null, $id, $pos_loc_id);
+
+        return new JsonResponse($params);
+    }
+
+    /**
+     *
+     * Function for POS to fetch stock transfer form data
+     *
+     * @param $id
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getPOSFormRollbackDataAction($id, $pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $invStock = $this->get('gist_inventory_stock_transfer');
+        $params = $invStock->getPOSFormData(null, $id, $pos_loc_id, true);
 
         return new JsonResponse($params);
     }
