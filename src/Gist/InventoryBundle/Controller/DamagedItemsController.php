@@ -48,6 +48,78 @@ class DamagedItemsController extends CrudController
         return $this->render($twig_file, $params);
     }
 
+    /** BEGIN ADD ENTRIES METHODS */
+
+    /**
+     *
+     * This will show the form for user to add damaged products to damaged items container.
+     * All submissions from this page will be displayed on the index/grid page.
+     * NOTE: Will NOT SUM quantities of same product.
+     *
+     * @return mixed
+     */
+    public function addFormEntriesAction()
+    {
+        $this->checkAccess($this->route_prefix . '.add');
+
+        $this->hookPreAction();
+        $obj = $this->newBaseClass();
+
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Add');
+        $params['object'] = $obj;
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistInventoryBundle:DamagedItems:add_entries.html.twig', $params);
+    }
+
+    /**
+     *
+     * This will save new damaged items to damaged items container.
+     * Initial status: damaged
+     *
+     * @return mixed
+     */
+    public function addSubmitEntriesAction()
+    {
+        $this->checkAccess($this->route_prefix . '.add');
+
+        $this->hookPreAction();
+        try
+        {
+            $obj = $this->newBaseClass();
+            $this->add($obj);
+
+            $this->addFlash('success', $this->title . ' added successfully.');
+            if($this->submit_redirect){
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+            }else{
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(),array('id'=>$obj->getID())).$this->url_append);
+            }
+        }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            return $this->addError($obj);
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            error_log($e->getMessage());
+            return $this->addError($obj);
+        }
+    }
+
+    /** END ADD ENTRIES METHODS */
+
+    /** --------------- */
+    /** OLD CODES BELOW */
     public function callbackGrid($id)
     {
         $params = array(

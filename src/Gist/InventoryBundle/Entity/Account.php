@@ -34,6 +34,15 @@ class Account
 //     */
 //    protected $missing_items_container;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Account", inversedBy="variants")
+     * @ORM\JoinColumn(name="damaged_items_container_id", referencedColumnName="id")
+     **/
+    protected $damaged_items_container;
+
+    /** @ORM\OneToOne(targetEntity="Account", mappedBy="damaged_items_container_id") */
+    protected $dmg_container;
+
     public function __construct()
     {
         $this->initHasGeneratedID();

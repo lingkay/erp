@@ -3,6 +3,16 @@ gist_inv_damaged_items_index:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:index }
 
+gist_inv_damaged_items_add_entries_form:
+    pattern: /add_entries
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:addFormEntries }
+
+gist_inv_damaged_items_add_entries_submit:
+    pattern: /add_entries
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:addSubmitEntries }
+
 gist_inv_damaged_items_add_form:
     pattern: /add
     methods: [GET]
