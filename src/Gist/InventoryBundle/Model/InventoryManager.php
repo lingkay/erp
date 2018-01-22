@@ -25,6 +25,23 @@ class InventoryManager
         $this->user = $security->getToken()->getUser();
     }
 
+    public function getDamagedContainerInventoryAccount($id, $type)
+    {
+        $inv_account = 0;
+
+        if ($type == 'warehouse') {
+            $warehouse = $this->em->getRepository('GistInventoryBundle:Warehouse')->find($id);
+            $warehouse_iacc = $warehouse->getInventoryAccount();
+            $inv_account = $warehouse_iacc->getDamagedContainer();
+        } elseif ($type == 'pos') {
+            $pos = $this->em->getRepository('GistLocationBundle:POSLocations')->find($id);
+            $pos_iacc = $pos->getInventoryAccount();
+            $inv_account = $pos_iacc->getDamagedContainer();
+        }
+
+        return $inv_account;
+    }
+
     public function getSupplierTypeOptions()
     {
         return array(

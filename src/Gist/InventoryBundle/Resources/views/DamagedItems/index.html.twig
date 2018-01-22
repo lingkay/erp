@@ -13,7 +13,7 @@
             <div class="portlet-body">
                 <div class="table-toolbar">
                     {% if app.user.hasAccess(prefix ~ '.add') %}
-                        <a href="{{ path(route_add) }}" class="btn green">Add New</a>
+                        <a href="{{ path('gist_inv_damaged_items_add_entries_form') }}" class="btn green">Add New</a>
                     {% endif %}
                 </div>
                 <table class="table table-striped table-bordered table-hover" id="list_table">

@@ -6,21 +6,11 @@
         <div class="col-md-12">
             <div class="portlet box blue-hoki">
                 <div class="portlet-title">
-                    <div class="caption">{% block form_header %}{% endblock %}</div>
+                    <div class="caption">Add Damaged Items</div>
                 </div>
                 <div class="portlet-body form">
                     <form method="post" class="form-horizontal" id="transfer_form">
                         <div class="form-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h4 class="form-section">Information</h4>
-                                    {% if object.getID|default('') == '' %}
-                                        {{ form.group_textarea('Remarks', 'description',object.getDescription|default(''),3,3,5)}}
-                                    {% else %}
-                                        {{ form.group_textarea('Remarks', 'description',object.getDescription|default(''),3,3,5, true)}}
-                                    {% endif %}
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <h4 class="form-section">List of damaged items</h4>
@@ -34,13 +24,9 @@
                                         <tr>
                                             <th width="20%">Item Code</th>
                                             <th width="30%">Item Name</th>
-                                            <th width="20%">Destination</th>
-                                            <th width="15%">Quantity</th>
-                                            {% if object.getID|default('') == '' %}
-                                                <th width="15%"></th>
-                                            {% else %}
-                                                <th width="15%">Status</th>
-                                            {% endif %}
+                                            <th width="10%">Quantity</th>
+                                            <th width="25%">Remarks</th>
+                                            <th width="15%"></th>
                                         </tr>
                                         </thead>
                                         <tbody id="transfer_table_body">
@@ -182,11 +168,6 @@
                 e.stopImmediatePropagation();
                 var rowCount = $('#list_table tr').length;
 
-                // if ($('#cform-description').val() == '') {
-                //     toastr['error']('Description is required', 'Form validation');
-                //     return false;
-                // }
-
                 if (rowCount > 1) {
                     var qty_passed = true;
                     $('.quantity_row').each(function() {
@@ -242,8 +223,8 @@
                     var tr = "<tr><input type='hidden' name='product_item_code[]' class='product_item_code' value='"+item_code+"'>" +
                         "<td><input type='text'  class='form-control' value='"+item_code+"' readonly></td>" +
                         "<td><input type='text'  class='form-control' value='"+item_name+"' readonly></td>" +
-                        "<td>{{ form.group_select_only_legacy('Destination', 'destination[]', wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly)|escape('js') }}</td>" +
                         "<td><input type='number' min='1' step='1' name='quantity[]' class='form-control quantity_row' required></td>" +
+                        "<td><textarea rows='2' class='form-control' style='resize: none;' name='remarks[]'></textarea></td>" +
                         "<td><a href='javascript:void(0)' class='btn btn-xs red remove_row'>Remove</a></td></tr>";
 
                     $('#transfer_table_body').append(tr);

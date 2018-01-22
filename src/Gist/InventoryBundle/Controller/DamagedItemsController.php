@@ -9,6 +9,8 @@ use Gist\InventoryBundle\Entity\DamagedItemsEntry;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Gist\InventoryBundle\Entity\Transaction;
+use Gist\InventoryBundle\Entity\Entry;
 use DateTime;
 
 
@@ -76,7 +78,7 @@ class DamagedItemsController extends CrudController
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
         $this->padFormParams($params, $obj);
 
-        return $this->render('GistInventoryBundle:DamagedItems:add_entries.html.twig', $params);
+        return $this->render('GistInventoryBundle:DamagedItems:add_entries.form.html.twig', $params);
     }
 
     /**
@@ -91,10 +93,11 @@ class DamagedItemsController extends CrudController
         $this->checkAccess($this->route_prefix . '.add');
 
         $this->hookPreAction();
+        $data = $this->getRequest()->request->all();
         try
         {
             $obj = $this->newBaseClass();
-            $this->add($obj);
+            $this->saveDamages($data);
 
             $this->addFlash('success', $this->title . ' added successfully.');
             if($this->submit_redirect){
@@ -114,6 +117,83 @@ class DamagedItemsController extends CrudController
             error_log($e->getMessage());
             return $this->addError($obj);
         }
+    }
+
+    protected function saveDamages($data)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $entries = array();
+        
+        foreach ($data['product_item_code'] as $index => $value)
+        {
+            $prod_item_code = $value;
+
+            // product
+            $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
+            if ($prod == null)
+                throw new ValidationException('Could not find product.');
+
+            //this is where the damaged items will be transferred virtually
+            //if for pos = get pos_loc_id then find from pos_location
+            $source = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'warehouse');
+
+            //this is where the damaged items will come from
+            //this should get from pos location's stock. adjustment warehouse for now
+            $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+            $adj_acc = $adj_warehouse->getInventoryAccount();
+
+            $new_qty = $data['quantity'][$index];
+            $old_qty = 0;
+
+            $remarks = 'Transfer to damaged container';
+            if ($data['quantity'][$index] != '') {
+                $remarks = $data['quantity'][$index];
+            }
+
+            // setup transaction
+            $trans = new Transaction();
+            $trans->setUserCreate($this->getUser())
+                ->setDescription($remarks);
+
+            // add entries
+            // entry for destination
+            $wh_entry = new Entry();
+            $wh_entry->setInventoryAccount($dmg_acc)
+                ->setProduct($prod);
+
+            // entry for source
+            $adj_entry = new Entry();
+            $adj_entry->setInventoryAccount($adj_acc)
+                ->setProduct($prod);
+
+            // check if debit or credit
+            if ($new_qty > $old_qty)
+            {
+                $qty = $new_qty - $old_qty;
+                $wh_entry->setDebit($qty);
+                $adj_entry->setCredit($qty);
+            }
+            else
+            {
+                $qty = $old_qty - $new_qty;
+                $wh_entry->setCredit($qty);
+                $adj_entry->setDebit($qty);
+            }
+            $entries[] = $wh_entry;
+            $entries[] = $adj_entry;
+
+            foreach ($entries as $ent)
+                $trans->addEntry($ent);
+
+            $inv->persistTransaction($trans);
+            $em->flush();
+        }
+
+        return $entries;
+        
     }
 
     /** END ADD ENTRIES METHODS */
