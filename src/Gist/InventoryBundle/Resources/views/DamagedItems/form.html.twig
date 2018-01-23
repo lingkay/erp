@@ -72,33 +72,6 @@
 {% block js %}
     <script>
         $(document).ready(function() {
-            $('.status_row').on('change', function() {
-                var path_status_update = "{{ path('gist_inv_damaged_items_entry_status_change', {
-                    'id' : 'ID', 'status' : 'STATUS', 'user' : 'USER'}
-                ) }}";
-
-                var row = $(this).closest('tr');
-                var id = row.find('.entry_id').val();
-                var status = $(this).val();
-                var current_status = row.find('.current_status').val();
-
-                if (current_status == 'processed' && (status == 'requested')) {
-                    toastr['error']('Entry already processed. Cannot apply status change.', 'Error');
-                    $(this).val(current_status);
-                    return false;
-                } else if (current_status == 'delivered' && (status == 'requested' || status == 'processed')) {
-                    toastr['error']('Entry already delivered. Cannot apply status change.', 'Error');
-                    $(this).val(current_status);
-                    return false;
-                }
-
-                path_status_update = path_status_update.replace('ID', id);
-                path_status_update = path_status_update.replace('STATUS', status);
-                path_status_update = path_status_update.replace('USER', '%20');
-
-                location.replace(path_status_update);
-            });
-
             $(".form-horizontal").validate({
                 onfocusout: function(element) {
                     this.element(element);
