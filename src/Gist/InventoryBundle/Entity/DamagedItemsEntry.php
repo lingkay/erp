@@ -8,6 +8,7 @@ use Gist\CoreBundle\Template\Entity\HasGeneratedID;
 use Gist\InventoryBundle\Template\Entity\HasProduct;
 use Gist\InventoryBundle\Template\Entity\HasInventoryAccount;
 use Doctrine\Common\Collections\ArrayCollection;
+use Gist\CoreBundle\Template\Entity\TrackCreate;
 
 /**
  * @ORM\Entity
@@ -17,17 +18,12 @@ class DamagedItemsEntry
 {
     use HasGeneratedID;
     use HasProduct;
+    use TrackCreate;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     protected $quantity;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="DamagedItems")
-     * @ORM\JoinColumn(name="damaged_items_id", referencedColumnName="id")
-     */
-    protected $damaged_items;
 
     /**
      * @ORM\ManyToOne(targetEntity="\Gist\InventoryBundle\Entity\Account")
@@ -49,24 +45,6 @@ class DamagedItemsEntry
 
     /**
      * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="processed_user", referencedColumnName="id")
-     */
-    protected $processed_user;
-
-    /** @ORM\Column(type="datetime", nullable=true) */
-    protected $date_processed;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="deliver_user", referencedColumnName="id")
-     */
-    protected $deliver_user;
-
-    /** @ORM\Column(type="datetime", nullable=true) */
-    protected $date_delivered;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="receiving_user", referencedColumnName="id")
      */
     protected $receiving_user;
@@ -77,13 +55,20 @@ class DamagedItemsEntry
     /**
      * @ORM\Column(type="string")
      */
+    protected $remarks;
+
+    /**
+     * @ORM\Column(type="string")
+     */
     protected $status;
 
 
     public function __construct()
     {
+        $this->initHasGeneratedID();
         $this->debit = 0;
         $this->credit = 0;
+        $this->initTrackCreate();
     }
 
     public function getSource()
@@ -139,6 +124,17 @@ class DamagedItemsEntry
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+        return $this;
+    }
+
+    public function getRemarks()
+    {
+        return $this->remarks;
     }
 
     public function getStatusFMTD()
@@ -370,6 +366,7 @@ class DamagedItemsEntry
         $data = new \stdClass();
 
         $this->dataHasGeneratedID($data);
+        $this->dataTrackCreate($data);
         $this->dataHasProduct($data);
         $data->stock_transfer_id = $this->getStockTransfer()->getID();
 

@@ -3,7 +3,6 @@
 namespace Gist\InventoryBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
-use Gist\InventoryBundle\Entity\DamagedItems;
 use Gist\InventoryBundle\Entity\Product;
 use Gist\InventoryBundle\Entity\DamagedItemsEntry;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
@@ -76,7 +75,7 @@ class DamagedItemsController extends CrudController
         // loader
         $gloader = $grid->newLoader();
         $gloader->processParams($data)
-            ->setRepository('GistInventoryBundle:Stock');
+            ->setRepository('GistInventoryBundle:DamagedItemsEntry');
 
 
 
@@ -84,7 +83,7 @@ class DamagedItemsController extends CrudController
         $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
 
         $fg = $grid->newFilterGroup();
-        $fg->where('o.inv_account = :inv_account')
+        $fg->where('o.source_inv_account = :inv_account')
             ->setParameter('inv_account', $dmg_acc->getID());
 
         $gloader->setQBFilterGroup($fg);
@@ -114,7 +113,8 @@ class DamagedItemsController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('product','product','getProduct'),
-            $grid->newJoin('account','inv_account','getInventoryAccount'),
+            $grid->newJoin('user','user_create','getUserCreate'),
+            //$grid->newJoin('account','inv_account','getInventoryAccount'),
         );
     }
 
@@ -125,6 +125,9 @@ class DamagedItemsController extends CrudController
             $grid->newColumn('Item','getName','name', 'product'),
 //            $grid->newColumn('Account','getName','name', 'account'),
             $grid->newColumn('Quantity','getQuantity','quantity'),
+            $grid->newColumn('Date create','getDateCreateFormatted','o'),
+            $grid->newColumn('Created by','getDisplayName','last_name','user'),
+            $grid->newColumn('Status','getStatusFMTD','o'),
         );
     }
 
@@ -249,8 +252,8 @@ class DamagedItemsController extends CrudController
             $old_qty = 0;
 
             $remarks = 'Transfer to damaged container';
-            if ($data['quantity'][$index] != '') {
-                $remarks = $data['quantity'][$index];
+            if ($data['remarks'][$index] != '') {
+                $remarks = $data['remarks'][$index];
             }
 
             // setup transaction
@@ -290,6 +293,22 @@ class DamagedItemsController extends CrudController
 
             $inv->persistTransaction($trans);
             $em->flush();
+
+            $entry = new DamagedItemsEntry();
+            $entry->setProduct($prod)
+                ->setQuantity($new_qty);
+
+            $entry->setSource($dmg_acc);
+            $entry->setRemarks($remarks);
+            $entry->setUserCreate($this->getUser());
+            //this will be set when for return
+            //$entry->setDestination($dmg_acc);
+
+            $entry->setStatus('damaged');
+            $entry->setRequestingUser($this->getUser());
+
+            $em->persist($entry);
+            $em->flush();
         }
 
         return $entries;
@@ -297,6 +316,126 @@ class DamagedItemsController extends CrudController
     }
 
     /** END ADD ENTRIES METHODS */
+
+//    public function viewEntriesAction($id)
+//    {
+//        $em = $this->getDoctrine()->getManager();
+//        $inv = $this->get('gist_inventory');
+//        $config = $this->get('gist_configuration');
+//        $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$id));
+//        if ($prod == null)
+//            throw new ValidationException('Could not find product.');
+//
+//        $source = $inv->findWarehouse($config->get('gist_main_warehouse'));
+//        $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'warehouse');
+//
+//        $this->hookPreAction();
+//        $obj = $this->newBaseClass();
+//
+//
+//        $session = $this->getRequest()->getSession();
+//        $session->set('csrf_token', md5(uniqid()));
+//
+//        $params = $this->getViewParams('Add');
+//        $params['object'] = $obj;
+//
+//        // check if we have access to form
+//        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
+//        $this->padFormParams($params, $obj);
+//        $this->padFormItemDetailsParams($params, $prod);
+//
+//        $params['entries'] = $this->getInventoryDamagedEntries($prod, $dmg_acc);
+//
+//        return $this->render('GistInventoryBundle:DamagedItems:transactions.html.twig', $params);
+//    }
+//
+//    // for transaction information
+//    protected function padFormItemDetailsParams(&$params, $prod)
+//    {
+//        $params['item'] = $prod->getName();
+//        $params['code'] = $prod->getItemCode();
+//        $params['barcode'] = $prod->getBarcode();
+//    }
+//
+//    // for transaction entries
+//    public function getInventoryDamagedEntries($prod, $iacc)
+//    {
+//        $em = $this->getDoctrine()->getManager();
+//        $entries = $em->getRepository('GistInventoryBundle:Entry')->findBy(array('product'=>$prod->getID(), 'inv_account'=>$iacc->getID()));
+//        return $entries;
+//    }
+
+    public function getSelectedProducts($ids, $iacc)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+
+
+
+        if (strpos($ids, ',') !== false) {
+            $product_ids = explode(',', $ids);
+        } else {
+            $product_ids = array($ids);
+        }
+
+        $list_opts = [];
+
+        foreach ($product_ids as $pid) {
+            $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$pid));
+//            $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('product_id'=>$pid, ));
+            if ($prod == null)
+                throw new ValidationException('Could not find product.');
+
+            $list_opts[] = array(
+                'id'=>$prod->getID(),
+                'item_code'=> $prod->getItemCode(),
+                'item_name'=> $prod->getName()
+            );
+
+
+        }
+
+        return $list_opts;
+    }
+
+    public function addFormReturnAction($ids)
+    {
+        $this->checkAccess($this->route_prefix . '.add');
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+
+
+        $this->hookPreAction();
+        $obj = $this->newBaseClass();
+
+        if (strpos($ids, ',') !== false) {
+            $product_ids = explode(',', $ids);
+        } else {
+            $product_ids = array($ids);
+        }
+
+        //change if for POS
+        //this is used to get the available stock qty for return (for setting as max allowed)
+        $source = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'warehouse');
+
+        $params['selected_products'] = $this->getSelectedProducts($ids, $dmg_acc);
+
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Add');
+        $params['object'] = $obj;
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistTemplateBundle:Object:add.html.twig', $params);
+    }
 
     /** --------------- */
     /** OLD CODES BELOW */
@@ -313,7 +452,7 @@ class DamagedItemsController extends CrudController
 
     protected function newBaseClass()
     {
-        return new DamagedItems();
+        return new DamagedItemsEntry();
     }
 
     protected function padFormParams(&$params, $object = NULL)
@@ -499,9 +638,9 @@ class DamagedItemsController extends CrudController
         $gloader->processParams($data)
             ->setRepository($this->repo);
 
-        $gjoins = $this->getGridJoins();
-        foreach ($gjoins as $gj)
-            $gloader->addJoin($gj);
+//        $gjoins = $this->getGridJoins();
+//        foreach ($gjoins as $gj)
+//            $gloader->addJoin($gj);
 
         $gcols = $this->getGridColumnsAjax();
 

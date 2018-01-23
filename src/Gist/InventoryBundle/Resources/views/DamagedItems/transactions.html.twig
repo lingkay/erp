@@ -1,0 +1,66 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">View Inventory Damaged Entries</div>
+                </div>
+                <div class="portlet-body form">
+                    <form method="post" class="form-horizontal" id="transfer_form">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="form-section">Information</h4>
+                                    {{ form.group_text('Item', 'item', item|default(''),3,3, true)}}
+                                    {{ form.group_text('Code', 'code', code|default(''),3,3, true)}}
+                                    {{ form.group_text('Barcode', 'barcode', barcode|default(''),3,3, true)}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="form-section">List of entries</h4>
+                                    <table class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                        <tr>
+                                            <th width="15%">Date Created</th>
+                                            <th width="15%">Created By</th>
+                                            <th width="20%">Quantity</th>
+                                            <th width="20%">Remarks</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="transfer_table_body">
+                                        {% for e in entries|default('') %}
+                                            <tr>
+                                                <td><input type="text"  class='form-control' value="{{ e.getTransaction.getDateCreate|date('F d, Y')|default('N/A') }}" readonly></td>
+                                                <td><input type="text"  class='form-control' value="{{ e.getTransaction.getUserCreate.getDisplayName|default('N/A') }}" readonly></td>
+                                                <td><input type="text"  class='form-control' value="{{ e.getDebit|default(0) }}" readonly></td>
+                                                <td><textarea rows="2"  class='form-control' readonly>{{ e.getTransaction.getDescription|default(0) }}</textarea></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                <a href="{{ path(route_list) }}" class="btn default">Damaged Items</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+
+        });
+    </script>
+{% endblock %}

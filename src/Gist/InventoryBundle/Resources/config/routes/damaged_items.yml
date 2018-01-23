@@ -13,10 +13,15 @@ gist_inv_damaged_items_add_entries_submit:
     methods: [POST]
     defaults: { _controller: GistInventoryBundle:DamagedItems:addSubmitEntries }
 
+#gist_inv_damaged_items_view_inventory_entries:
+#    pattern: /view_entries/{id}
+#    methods: [GET]
+#    defaults: { _controller: GistInventoryBundle:DamagedItems:viewEntries }
+
 gist_inv_damaged_items_add_return_form:
     pattern: /add_return/{id}
     methods: [GET]
-    defaults: { _controller: GistInventoryBundle:DamagedItems:addForm }
+    defaults: { _controller: GistInventoryBundle:DamagedItems:addFormReturn }
 
 gist_inv_damaged_items_add_return_submit:
     pattern: /add_return/{id}
