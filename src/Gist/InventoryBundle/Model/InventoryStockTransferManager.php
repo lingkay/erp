@@ -1,5 +1,12 @@
 <?php
 
+/**
+ *
+ * NOTE FOR DEFAULTS
+ * 0 - MAIN WAREHOUSE
+ * 00 - MAIN DAMAGE WAREHOUSE
+ *
+ */
 namespace Gist\InventoryBundle\Model;
 
 use Gist\InventoryBundle\Entity\StockTransferEntry;
@@ -24,7 +31,52 @@ class InventoryStockTransferManager
     {
         $this->em = $em;
         $this->container = $container;
-        $this->user = $security->getToken()->getUser();
+        //$this->user = $security->getToken()->getUser();
+    }
+
+    public function getDamagedContainerInventoryAccount($id, $type)
+    {
+        $inv_account = 0;
+
+        if ($type == 'warehouse') {
+            $warehouse = $this->em->getRepository('GistInventoryBundle:Warehouse')->find($id);
+            $warehouse_iacc = $warehouse->getInventoryAccount();
+            $inv_account = $warehouse_iacc->getDamagedContainer();
+        } elseif ($type == 'pos') {
+            $pos = $this->em->getRepository('GistLocationBundle:POSLocations')->find($id);
+            $pos_iacc = $pos->getInventoryAccount();
+            $inv_account = $pos_iacc->getDamagedContainer();
+        }
+
+        return $inv_account;
+    }
+
+    public function persistTransaction(Transaction $trans)
+    {
+        // check balance
+        if (!$trans->checkBalance())
+            throw new InventoryException('Inventory transaction unbalanced. Incoming entries must be equivalent to outgoing entries.');
+
+        // TODO: lock table
+
+        // TODO: check product stock / availability in source warehouse
+
+        // TODO: start doctrine transaction
+
+        // persist transaction
+        $this->em->persist($trans);
+
+        // update inventory stock
+        $entries = $trans->getEntries();
+
+        foreach ($entries as $entry)
+        {
+            $this->updateStock($entry);
+        }
+
+        // TODO: end doctrine transaction
+
+        // TODO: unlock table
     }
 
     /**

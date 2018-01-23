@@ -125,6 +125,9 @@ class DamagedItemsController extends CrudController
         $fg->where('o.source_inv_account = :inv_account')
             ->setParameter('inv_account', $dmg_acc->getID());
 
+        $fg->andwhere('o.status != :status')
+            ->setParameter('status', 'returned');
+
         $gloader->setQBFilterGroup($fg);
 
         $gjoins = $this->getGridJoins();
@@ -535,6 +538,7 @@ class DamagedItemsController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
+        $dmgManager = $this->get('gist_inventory_damaged_items_managed');
         $config = $this->get('gist_configuration');
         $this->checkAccess($this->route_prefix . '.edit');
         $data = $this->getRequest()->request->all();
@@ -543,7 +547,9 @@ class DamagedItemsController extends CrudController
         try
         {
             //create transfer from current loc/pos/wh damaged container to DESTINATION DAMAGED CONTAINER
-            //set DAMAGEDITEMS object status to returned
+            //set DAMAGEDITEMSENTRY objects status to returned
+            $dmgManager->updateDamagedEntriesStatus($id, 'returned');
+            $dmgManager->transferDamagedItemsToDestination($id);
 
             $this->addFlash('success', 'Items returned successfully.');
             if($this->submit_redirect){
