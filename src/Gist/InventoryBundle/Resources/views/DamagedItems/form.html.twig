@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="portlet box blue-hoki">
                 <div class="portlet-title">
-                    <div class="caption">{% block form_header %}{% endblock %}</div>
+                    <div class="caption">Add Damaged Items for Return</div>
                 </div>
                 <div class="portlet-body form">
                     <form method="post" class="form-horizontal" id="transfer_form">
@@ -24,11 +24,6 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h4 class="form-section">List of damaged items</h4>
-                                    {% if object.getID|default('') == '' %}
-                                        <a href="#add_entry_modal" class="btn green" data-toggle="modal" style="margin-bottom: 15px;">
-                                            Search Product
-                                        </a>
-                                    {% endif %}
                                     <table class="table table-striped table-bordered table-hover" id="list_table">
                                         <thead>
                                             <tr>
@@ -36,15 +31,10 @@
                                                 <th width="30%">Item Name</th>
                                                 <th width="20%">Destination</th>
                                                 <th width="15%">Quantity</th>
-                                                {% if object.getID|default('') == '' %}
-                                                    <th width="15%"></th>
-                                                {% else %}
-                                                    <th width="15%">Status</th>
-                                                {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody id="transfer_table_body">
-                                            {% for e in object.getEntries|default('') %}
+                                            {% for e in selected_products|default('') %}
                                                 <tr>
                                                     <input type="hidden" class="product_item_code" value="{{ e.getProduct.getItemCode|default('') }}">
                                                     <input type="hidden" class="entry_id" value="{{ e.getID }}">
@@ -53,11 +43,6 @@
                                                     <td><input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly></td>
                                                     <td><input type="text"  class='form-control' value="{{ e.getDestination.getName|default(0) }}" readonly></td>
                                                     <td><input type="text"  class='form-control' value="{{ e.getQuantity|default(0) }}" readonly></td>
-                                                    {% if e.getStatus|default('') != 'arrived' %}
-                                                        <td>{{ form.group_select_only_legacy('', 'status_row', status_opts, e.getStatus|default(-1), 3, 5, readonly) }}</td>
-                                                    {% else %}
-                                                        <td><input type="text"  class='form-control' value="{{ e.getStatusFMTD|default('N/A') }}" readonly></td>
-                                                    {% endif %}
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -71,16 +56,10 @@
                                     <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue">Submit</a>
                                     <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
                                 {% else %}
-                                    {% if object.getStatus|default('') == 'requested' %}
-                                        <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Process</button>
-                                    {% elseif object.getStatus|default('') == 'processed' %}
-                                        <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
-                                        <button name="status" type="submit" value="delivered" class="btn blue"><i class="fa fa-truck"></i> Deliver</button>
-                                    {% elseif object.getStatus|default('') == 'delivered' %}
-                                        <a href="{{ path('gist_inv_stock_transfer_print', { 'id': object.getID}) }}" id="print_btn" class="btn green"><i class="fa fa-print"></i> Print</a>
-                                        <button name="status" type="submit" value="arrived" class="btn blue"><i class="fa fa-check"></i> Receive</button>
+                                    {% if object.getStatus|default('') == 'for_return' %}
+                                        <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Returned</button>
                                     {% endif %}
-                                    <a href="{{ path(route_list) }}" class="btn default">Go back</a>
+                                    <a href="{{ path(route_list) }}" class="btn default">Damaged Items</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -89,65 +68,11 @@
             </div>
         </div>
     </div>
-    <div id="add_entry_modal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Search Product</h4>
-                </div>
-                <div class="modal-body" style="">
-                    <form id="entry-form">
-                        <div class="row form-horizontal form">
-                            <div class="form-body">
-                                {{ form.group_select_legacy("Product Category", "product_category", cat_opts, 0, 3, 5, readonly) }}
-                                <hr>
-                                <table class="table table-striped table-bordered table-hover" id="search_table">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 140px">Item Code</th>
-                                        <th style="width: 140px">Barcode</th>
-                                        <th style="width: 180px">Name</th>
-                                        <th style="width: 80px"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </form>
-                    <button id="add_entry_submit" type="button" class="btn green">Add Entry</button>
-                    <button type="button" data-dismiss="modal" class="btn default">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 
 {% block js %}
     <script>
-        function generatePath() {
-
-            var product_category = $('#cform-product_category').val();
-
-            var path = "{{ path('gist_inv_damaged_items_search_ajax_grid', {
-                'category' : 'CATEGORY'}
-            ) }}";
-
-            if (product_category == null || product_category == '') {
-                path = path.replace('CATEGORY', null);
-            } else {
-                path = path.replace('CATEGORY', product_category);
-            }
-            console.log(path);
-            return path;
-        }
-
         $(document).ready(function() {
-
-            path = "{{ path('gist_inv_damaged_items_ajax_grid') }}";
-
             $('.status_row').on('change', function() {
                 var path_status_update = "{{ path('gist_inv_damaged_items_entry_status_change', {
                     'id' : 'ID', 'status' : 'STATUS', 'user' : 'USER'}
@@ -175,25 +100,6 @@
                 location.replace(path_status_update);
             });
 
-            dTable = $('#search_table').dataTable({
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": path,
-                "iDisplayLength": 5,
-                "bLengthChange": false,
-                "sPaginationType": "bootstrap",
-                "oLanguage": {
-                    "sLengthMenu": "_MENU_ records",
-                    "oPaginate": {
-                        "sPrevious": "Prev",
-                        "sNext": "Next"
-                    }
-                },
-                "aoColumnDefs": [
-                    { "bSortable": false, "aTargets": [3] },
-                ]
-            });
-
             $(".form-horizontal").validate({
                 onfocusout: function(element) {
                     this.element(element);
@@ -212,7 +118,7 @@
                 var rowCount = $('#list_table tr').length;
 
                 if ($('#cform-description').val() == '') {
-                    toastr['error']('Description is required', 'Form validation');
+                    toastr['error']('Remarks is required', 'Form validation');
                     return false;
                 }
 
@@ -230,7 +136,7 @@
                         toastr['error']('Please check quantities.', 'Form validation');
                     }
                 } else {
-                    toastr['error']('No item/s to transfer', 'Form validation');
+                    toastr['error']('No item/s to return', 'Form validation');
                 }
             });
 
@@ -239,45 +145,6 @@
                 var tr = $(this).closest('tr');
                 tr.remove();
                 return false;
-            });
-
-
-            $('#filter_button').click(function (){
-                path = generatePath();
-                dTable.fnReloadAjax(path);
-            });
-
-            $(document).on("click",".add_to_table", function(e){
-                var row = $(this).closest('tr');
-                var item_code = row.find('.itemCode').val();
-                var item_name = row.find('.itemName').val();
-
-                var selected_item = item_code;
-                var selected_item_name = item_name;
-                var duplicates = false;
-                $(".product_item_code").each(function() {
-                    if (selected_item == $(this).val()) {
-                        duplicates = true;
-                    }
-                });
-
-                if (duplicates) {
-
-                }
-
-                if (selected_item == '000') {
-                    toastr['error']('Invalid selection!', 'Error');
-                } else {
-                    var tr = "<tr><input type='hidden' name='product_item_code[]' class='product_item_code' value='"+item_code+"'>" +
-                        "<td><input type='text'  class='form-control' value='"+item_code+"' readonly></td>" +
-                        "<td><input type='text'  class='form-control' value='"+item_name+"' readonly></td>" +
-                        "<td>{{ form.group_select_only_legacy('Destination', 'destination[]', wh_opts, object.getDestination.getID|default(-1), 3, 5, readonly)|escape('js') }}</td>" +
-                        "<td><input type='number' min='1' step='1' name='quantity[]' class='form-control quantity_row' required></td>" +
-                        "<td><a href='javascript:void(0)' class='btn btn-xs red remove_row'>Remove</a></td></tr>";
-
-                    $('#transfer_table_body').append(tr);
-                    $('#add_entry_modal').modal('hide');
-                }
             });
         });
     </script>

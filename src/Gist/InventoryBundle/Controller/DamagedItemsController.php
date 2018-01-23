@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Gist\InventoryBundle\Entity\Transaction;
 use Gist\InventoryBundle\Entity\Entry;
+use Gist\InventoryBundle\Entity\Stock;
 use DateTime;
 
 
@@ -48,6 +49,101 @@ class DamagedItemsController extends CrudController
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
         return $this->render($twig_file, $params);
+    }
+
+    public function gridAction()
+    {
+        $this->hookPreAction();
+
+        $gloader = $this->setupGridLoader();
+
+        //$gloader->setQBFilterGroup($this->filterGrid());
+        $gres = $gloader->load();
+        $resp = new Response($gres->getJSON());
+        $resp->headers->set('Content-Type', 'application/json');
+
+        return $resp;
+    }
+
+    protected function setupGridLoader()
+    {
+        $data = $this->getRequest()->query->all();
+        $grid = $this->get('gist_grid');
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+
+
+        // loader
+        $gloader = $grid->newLoader();
+        $gloader->processParams($data)
+            ->setRepository('GistInventoryBundle:Stock');
+
+
+
+        $dmg_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
+
+        $fg = $grid->newFilterGroup();
+        $fg->where('o.inv_account = :inv_account')
+            ->setParameter('inv_account', $dmg_acc->getID());
+
+        $gloader->setQBFilterGroup($fg);
+
+
+        // grid joins
+        $gjoins = $this->getGridJoins();
+        foreach ($gjoins as $gj)
+            $gloader->addJoin($gj);
+
+        // grid columns
+        $gcols = $this->getGridColumns();
+
+        // add action column if it's dynamic
+        if ($this->list_type == 'dynamic')
+            $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGrid'), false, false);
+
+        // add columns
+        foreach ($gcols as $gc)
+            $gloader->addColumn($gc);
+
+        return $gloader;
+    }
+
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('product','product','getProduct'),
+            $grid->newJoin('account','inv_account','getInventoryAccount'),
+        );
+    }
+
+    protected function getGridColumns()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newColumn('Item','getName','name', 'product'),
+//            $grid->newColumn('Account','getName','name', 'account'),
+            $grid->newColumn('Quantity','getQuantity','quantity'),
+        );
+    }
+
+    public function callbackGrid($id)
+    {
+        $params = array(
+            'id' => $id,
+            'route_edit' => $this->getRouteGen()->getEdit(),
+            'route_delete' => $this->getRouteGen()->getDelete(),
+            'prefix' => $this->route_prefix,
+        );
+
+        $this->padGridParams($params, $id);
+
+        $engine = $this->get('templating');
+        return $engine->render(
+            'GistInventoryBundle:DamagedItems:action.html.twig',
+            $params
+        );
     }
 
     /** BEGIN ADD ENTRIES METHODS */
@@ -119,6 +215,10 @@ class DamagedItemsController extends CrudController
         }
     }
 
+    /**
+     * @param $data
+     * @return array
+     */
     protected function saveDamages($data)
     {
         $em = $this->getDoctrine()->getManager();
@@ -200,23 +300,7 @@ class DamagedItemsController extends CrudController
 
     /** --------------- */
     /** OLD CODES BELOW */
-    public function callbackGrid($id)
-    {
-        $params = array(
-            'id' => $id,
-            'route_edit' => $this->getRouteGen()->getEdit(),
-            'route_delete' => $this->getRouteGen()->getDelete(),
-            'prefix' => $this->route_prefix,
-        );
 
-        $this->padGridParams($params, $id);
-
-        $engine = $this->get('templating');
-        return $engine->render(
-            'GistInventoryBundle:DamagedItems:action.html.twig',
-            $params
-        );
-    }
 
     protected function getObjectLabel($obj)
     {
@@ -230,21 +314,6 @@ class DamagedItemsController extends CrudController
     protected function newBaseClass()
     {
         return new DamagedItems();
-    }
-
-    protected function getGridJoins()
-    {
-        $grid = $this->get('gist_grid');
-        return array(
-        );
-    }
-
-    protected function getGridColumns()
-    {
-        $grid = $this->get('gist_grid');
-        return array(
-            $grid->newColumn('ID','getID','id'),
-        );
     }
 
     protected function padFormParams(&$params, $object = NULL)

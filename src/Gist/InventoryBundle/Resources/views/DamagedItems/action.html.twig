@@ -1,5 +1,2 @@
-{% if type is defined %}
-    <a href="{{ path(route_edit, { 'id': id, 'type':type }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View</a>
-{% else %}
-    <a href="{{ path(route_edit, { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View</a>
-{% endif %}
+<a href="{{ path('gist_inv_damaged_items_add_return_form', { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> Return</a>
+
