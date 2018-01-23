@@ -94,6 +94,11 @@ gist_inv_damaged_items_add_new:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:addPOSDamagedItems }
 
+gist_inv_damaged_items_summary_ajax_grid:
+    path:    /summary_table/ajax
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:gridSearchSummary }
+
 gist_inv_damaged_items_ajax_grid:
     path:    /search_product/ajax
     methods: [GET]

@@ -17,6 +17,10 @@ use DateTime;
 class DamagedItemsController extends CrudController
 {
     use TrackCreate;
+
+    /**
+     * DamagedItemsController constructor.
+     */
     public function __construct()
     {
         $this->route_prefix = 'gist_inv_damaged_items';
@@ -27,6 +31,32 @@ class DamagedItemsController extends CrudController
         $this->repo = "GistInventoryBundle:DamagedItems";
     }
 
+    /**
+     * @param $obj
+     * @return string
+     */
+    protected function getObjectLabel($obj)
+    {
+        if ($obj == null)
+        {
+            return '';
+        }
+        return $obj->getID();
+    }
+
+    /**
+     * @return DamagedItemsEntry
+     */
+    protected function newBaseClass()
+    {
+        return new DamagedItemsEntry();
+    }
+
+    /**
+     * Show the index/grid page of damaged items
+     *
+     * @return mixed
+     */
     public function indexAction()
     {
         $this->checkAccess($this->route_prefix . '.view');
@@ -50,6 +80,12 @@ class DamagedItemsController extends CrudController
         return $this->render($twig_file, $params);
     }
 
+    /**
+     *
+     * Generate index/grid table data
+     *
+     * @return Response
+     */
     public function gridAction()
     {
         $this->hookPreAction();
@@ -64,6 +100,12 @@ class DamagedItemsController extends CrudController
         return $resp;
     }
 
+    /**
+     *
+     * Setup table data
+     *
+     * @return mixed
+     */
     protected function setupGridLoader()
     {
         $data = $this->getRequest()->query->all();
@@ -71,13 +113,9 @@ class DamagedItemsController extends CrudController
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
 
-
-        // loader
         $gloader = $grid->newLoader();
         $gloader->processParams($data)
             ->setRepository('GistInventoryBundle:DamagedItemsEntry');
-
-
 
         $dmg_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
         $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
@@ -88,42 +126,47 @@ class DamagedItemsController extends CrudController
 
         $gloader->setQBFilterGroup($fg);
 
-
-        // grid joins
         $gjoins = $this->getGridJoins();
         foreach ($gjoins as $gj)
             $gloader->addJoin($gj);
 
-        // grid columns
         $gcols = $this->getGridColumns();
 
-        // add action column if it's dynamic
         if ($this->list_type == 'dynamic')
             $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGrid'), false, false);
 
-        // add columns
         foreach ($gcols as $gc)
             $gloader->addColumn($gc);
 
         return $gloader;
     }
 
+    /**
+     *
+     * Get index/grid table data joins
+     *
+     * @return array
+     */
     protected function getGridJoins()
     {
         $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('product','product','getProduct'),
             $grid->newJoin('user','user_create','getUserCreate'),
-            //$grid->newJoin('account','inv_account','getInventoryAccount'),
         );
     }
 
+    /**
+     *
+     * Setup index/grid table columns and getters
+     *
+     * @return array
+     */
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Item','getName','name', 'product'),
-//            $grid->newColumn('Account','getName','name', 'account'),
             $grid->newColumn('Quantity','getQuantity','quantity'),
             $grid->newColumn('Date create','getDateCreateFormatted','o'),
             $grid->newColumn('Created by','getDisplayName','last_name','user'),
@@ -131,6 +174,13 @@ class DamagedItemsController extends CrudController
         );
     }
 
+    /**
+     *
+     * Custom index/grid table action buttons
+     *
+     * @param $id
+     * @return mixed
+     */
     public function callbackGrid($id)
     {
         $params = array(
@@ -438,22 +488,86 @@ class DamagedItemsController extends CrudController
     }
 
     /** --------------- */
-    /** OLD CODES BELOW */
 
-
-    protected function getObjectLabel($obj)
+    /** FOR INDEX/GRID SUMMARY */
+    public function gridSearchSummaryAction()
     {
-        if ($obj == null)
+        $this->hookPreAction();
+        $this->repo = 'GistInventoryBundle:Product';
+        $gloader = $this->setupSummaryGridLoaderAjax();
+        $gloader->setQBFilterGroup($this->filterSummary());
+        $gres = $gloader->load();
+        $resp = new Response($gres->getJSON());
+        $resp->headers->set('Content-Type', 'application/json');
+
+        return $resp;
+    }
+
+    protected function setupSummaryGridLoaderAjax()
+    {
+        $data = $this->getRequest()->query->all();
+        $grid = $this->get('gist_grid');
+
+        $gloader = $grid->newLoader();
+        $gloader->processParams($data)
+            ->setRepository('GistInventoryBundle:Stock');
+
+        // grid joins
+        $gjoins = $this->getSummaryGridJoins();
+        foreach ($gjoins as $gj)
+            $gloader->addJoin($gj);
+
+        $gcols = $this->getSummaryGridColumnsAjax();
+
+        if ($this->list_type == 'dynamic')
+            $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGridAjax'), false, false);
+
+        foreach ($gcols as $gc)
+            $gloader->addColumn($gc);
+
+        return $gloader;
+    }
+
+    protected function getSummaryGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('product','product','getProduct'),
+        );
+    }
+
+    protected function getSummaryGridColumnsAjax()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newColumn('Item Code', 'getItemCode', 'item_code','product'),
+            $grid->newColumn('Barcode','getBarcode','barcode','product'),
+            $grid->newColumn('Name', 'getName', 'name','product'),
+            $grid->newColumn('Quantity', 'getQuantity', 'quantity','o'),
+        );
+    }
+
+    protected function filterSummary()
+    {
+        $grid = $this->get('gist_grid');
+        $fg = $grid->newFilterGroup();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+
+        $dmg_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
+
+        $qry[] = "(o.inv_account = '".$dmg_acc->getID()."')";
+
+        if (!empty($qry))
         {
-            return '';
+            $filter = implode(' AND ', $qry);
         }
-        return $obj->getID();
+
+        return $fg->where($filter);
     }
 
-    protected function newBaseClass()
-    {
-        return new DamagedItemsEntry();
-    }
+    /** END FOR INDEX/GRID SUMMARY */
 
     protected function padFormParams(&$params, $object = NULL)
     {
@@ -638,10 +752,6 @@ class DamagedItemsController extends CrudController
         $gloader->processParams($data)
             ->setRepository($this->repo);
 
-//        $gjoins = $this->getGridJoins();
-//        foreach ($gjoins as $gj)
-//            $gloader->addJoin($gj);
-
         $gcols = $this->getGridColumnsAjax();
 
         if ($this->list_type == 'dynamic')
@@ -690,6 +800,8 @@ class DamagedItemsController extends CrudController
             $params
         );
     }
+
+
 
     public function gridSearchProductAction($category = null)
     {
