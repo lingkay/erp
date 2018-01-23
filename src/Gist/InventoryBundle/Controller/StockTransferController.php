@@ -274,6 +274,10 @@ class StockTransferController extends CrudController
             $data = $this->getRequest()->request->all();
 
             $object = $em->getRepository($this->repo)->find($id);
+            if ($object->getStatus() == 'arrived') {
+                $this->addFlash('error', 'Stock transfer already arrived to destination!');
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(), array('id' => $id)) . $this->url_append);
+            }
             // validate
             $this->validate($data, 'edit');
             // update db
@@ -552,11 +556,6 @@ class StockTransferController extends CrudController
 
             //add new entries
             parse_str($entries, $entriesParsed);
-
-//            echo "<pre>";
-//            var_dump($entriesParsed);
-//            echo "</pre>";
-//            die();
 
             foreach ($entriesParsed as $e) {
                 $qty = $e['quantity'];

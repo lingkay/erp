@@ -151,6 +151,13 @@ class InventoryStockTransferManager
 
             $entries = $this->updateEntries($data, $o, 'setReceivedQuantity');
             return $entries;
+        } elseif ($data['status'] == 'requested') {
+
+            $o->setRequestingUser($user);
+            $o->setDateCreate(new DateTime());
+
+            $entries = $this->updateEntries($data, $o, 'setQuantity');
+            return $entries;
         }
     }
 
@@ -291,9 +298,13 @@ class InventoryStockTransferManager
 
             $entry_id = $value;
 
-            $qty = $data['processed_quantity'][$index];
+
             if ($data['status'] == 'arrived') {
                 $qty = $data['received_quantity'][$index];
+            } elseif ($data['status'] == 'requested') {
+                $qty = $data['quantity'][$index];
+            } else {
+                $qty = $data['processed_quantity'][$index];
             }
 
             $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
@@ -417,6 +428,7 @@ class InventoryStockTransferManager
                 'pos_iacc_id' => $pos_iacc_id,
                 'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
                 'status'=> $st->getStatus(),
+                'statusFMTD'=> $st->getStatusFMTD(),
                 'main_status'=> $main_status,
                 'description'=> $st->getDescription(),
                 'user_create' => $st->getRequestingUser()->getDisplayName(),
