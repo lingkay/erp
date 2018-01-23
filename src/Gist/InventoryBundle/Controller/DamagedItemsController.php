@@ -148,6 +148,7 @@ class DamagedItemsController extends CrudController
         foreach ($gjoins as $gj)
             $gloader->addJoin($gj);
 
+//        $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGrid'), false, false);
         $gcols = $this->getGridColumns();
 
         if ($this->list_type == 'dynamic')
@@ -184,12 +185,18 @@ class DamagedItemsController extends CrudController
     {
         $grid = $this->get('gist_grid');
         return array(
+            //$grid->newColumn('', 'getID', 'id','o', array($this,'drawCheckbox')),
             $grid->newColumn('Item','getName','name', 'product'),
             $grid->newColumn('Quantity','getQuantity','quantity'),
             $grid->newColumn('Date create','getDateCreateFormatted','date_create'),
             $grid->newColumn('Created by','getDisplayName','last_name','user'),
             $grid->newColumn('Status','getStatusFMTD','status'),
         );
+    }
+
+    public function drawCheckbox($id)
+    {
+        return '';
     }
 
     /**
@@ -608,6 +615,7 @@ class DamagedItemsController extends CrudController
         $gjoins = $this->getSummaryGridJoins();
         foreach ($gjoins as $gj)
             $gloader->addJoin($gj);
+
 
         $gcols = $this->getSummaryGridColumnsAjax();
 
