@@ -70,6 +70,11 @@ gist_inv_damaged_items_print:
 
 #    FOR POS
 gist_inv_damaged_items_get_from_pos:
+    path:     /pos/grid_loader/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:posGridLoader, pos_loc_id: null }
+#     OLD
+gist_inv_damaged_items_get_from_pos:
     path:     /get/from/{pos_loc_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:getSentFromPOS }

@@ -98,13 +98,25 @@ class DamagedItemsController extends CrudController
         return $resp;
     }
 
+    public function posGridLoaderAction($pos_loc_id = NULL)
+    {
+        //this could be for gridAction of POS
+        $gloader = $this->setupGridLoader();
+        $gres = $gloader->load();
+        $resp = new Response($gres->getJSON());
+        $resp->headers->set('Content-Type', 'application/json');
+
+        return $resp;
+    }
+
     /**
      *
      * Setup table data
      *
+     * @param null $pos_loc_id
      * @return mixed
      */
-    protected function setupGridLoader()
+    protected function setupGridLoader($pos_loc_id = NULL)
     {
         $data = $this->getRequest()->query->all();
         $grid = $this->get('gist_grid');
@@ -117,6 +129,11 @@ class DamagedItemsController extends CrudController
 
         $dmg_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
         $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
+
+        if ($pos_loc_id != NULL) {
+            $dmg_src = $inv->findPOSLocation($pos_loc_id);
+            $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
+        }
 
         $fg = $grid->newFilterGroup();
         $fg->where('o.source_inv_account = :inv_account')
