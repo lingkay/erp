@@ -90,10 +90,7 @@ class DamagedItemsController extends CrudController
     public function gridAction()
     {
         $this->hookPreAction();
-
         $gloader = $this->setupGridLoader();
-
-        //$gloader->setQBFilterGroup($this->filterGrid());
         $gres = $gloader->load();
         $resp = new Response($gres->getJSON());
         $resp->headers->set('Content-Type', 'application/json');
@@ -536,36 +533,30 @@ class DamagedItemsController extends CrudController
 
     public function submitFormReceiveAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $inv = $this->get('gist_inventory');
         $dmgManager = $this->get('gist_inventory_damaged_items_managed');
-        $config = $this->get('gist_configuration');
         $this->checkAccess($this->route_prefix . '.edit');
-        $data = $this->getRequest()->request->all();
-
         $this->hookPreAction();
+
         try
         {
-            //create transfer from current loc/pos/wh damaged container to DESTINATION DAMAGED CONTAINER
-            //set DAMAGEDITEMSENTRY objects status to returned
             $dmgManager->updateDamagedEntriesStatus($id, 'returned');
             $dmgManager->transferDamagedItemsToDestination($id);
 
             $this->addFlash('success', 'Items returned successfully.');
-            if($this->submit_redirect){
+            if ($this->submit_redirect) {
                 return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
-            }else{
+            } else {
                 return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
             }
         }
         catch (ValidationException $e)
         {
-            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.'.$e);
             return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
         }
         catch (DBALException $e)
         {
-            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.'.$e);
             error_log($e->getMessage());
             return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
         }
@@ -656,7 +647,6 @@ class DamagedItemsController extends CrudController
     protected function padFormParams(&$params, $object = NULL)
     {
         $em = $this->getDoctrine()->getManager();
-
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = $inv->getPOSLocationTransferOptionsOnly();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
@@ -673,17 +663,7 @@ class DamagedItemsController extends CrudController
         $cat_opts[''] = 'All';
         foreach ($categories as $category)
             $cat_opts[$category->getID()] = $category->getName();
-
         $params['cat_opts'] = $cat_opts;
-
-        $status_opts = array();
-        $status_opts['requested'] = 'Requested';
-        $status_opts['processed'] = 'Processed';
-        $status_opts['delivered'] = 'Delivered';
-        $status_opts['arrived'] = 'Arrived';
-
-        $params['status_opts'] = $status_opts;
-
         return $params;
     }
 
@@ -691,9 +671,7 @@ class DamagedItemsController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();
-
         $this->validate($data, 'add');
-
         $this->update($obj, $data, true);
 
         $em->persist($obj);
@@ -713,7 +691,6 @@ class DamagedItemsController extends CrudController
         if ($is_new) {
 
             $o->setDescription($data['description']);
-            // initialize entries
             $entries = array();
 
             $em->persist($o);
@@ -724,22 +701,16 @@ class DamagedItemsController extends CrudController
                 $prod_item_code = $value;
                 $qty = $data['quantity'][$index];
 
-                // product
                 $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
                 if ($prod == null)
                     throw new ValidationException('Could not find product.');
 
-                //from src
                 $entry = new DamagedItemsEntry();
                 $entry->setDamagedItems($o)
                     ->setProduct($prod)
                     ->setQuantity($qty);
 
-
                 $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
-
-                echo $data['destination'][$index]."<br>";
-
 
                 if ($data['destination'][$index] === '0') {
                     $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
@@ -750,80 +721,16 @@ class DamagedItemsController extends CrudController
                     $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination'][$index]);
                 }
 
-                echo $wh_destination->getName();
-
-
                 $entry->setSource($wh_src->getInventoryAccount());
                 $entry->setDestination($wh_destination->getInventoryAccount());
-
                 $entry->setStatus('requested');
                 $entry->setRequestingUser($this->getUser());
-
                 $em->persist($entry);
                 $em->flush();
 
                 $entries[] = $entry;
             }
-
             return $entries;
-        }
-    }
-
-    public function statusUpdateAction($id, $status, $user = null)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $conf = $this->get('gist_configuration');
-        if ($user != null) {
-            $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user));
-        } else {
-            $user = $this->getUser();
-        }
-
-        try
-        {
-            $damaged_item_entry = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findOneBy(array('id'=>$id));
-
-            $damaged_item_entry->setStatus($status);
-
-            if($status == 'requested') {
-                $damaged_item_entry->setProcessedUser($user);
-                $damaged_item_entry->setDateProcessed(new DateTime());
-            } elseif ($status == 'delivered') {
-                $damaged_item_entry->setDeliverUser($user);
-                $damaged_item_entry->setDateDelivered(new DateTime());
-            } elseif ($status == 'arrived') {
-                $damaged_item_entry->setReceivingUser($user);
-                $damaged_item_entry->setDateReceived(new DateTime());
-            }
-
-            $em->persist($damaged_item_entry);
-            $em->flush();
-
-            if ($user != null) {
-
-                $list_opts[] = array(
-                    'status'=>'success',
-                    'parentID'=>$damaged_item_entry->getDamagedItems()->getID()
-                );
-
-                return new JsonResponse($list_opts);
-            }
-
-            $this->addFlash('success', 'Damaged items entry status updated successfully.');
-            if($this->submit_redirect){
-                return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(), array('id' => $damaged_item_entry->getDamagedItems()->getID())).$this->url_append);
-            }else{
-                return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
-            }
-        }
-        catch (ValidationException $e)
-        {
-            $this->addFlash('error', 'Database error occured. Possible duplicate.');
-        }
-        catch (DBALException $e)
-        {
-            $this->addFlash('error', 'Database error occured. Possible duplicate.');
-            error_log($e->getMessage());
         }
     }
 
@@ -885,8 +792,6 @@ class DamagedItemsController extends CrudController
         );
     }
 
-
-
     public function gridSearchProductAction($category = null)
     {
         $this->hookPreAction();
@@ -921,52 +826,10 @@ class DamagedItemsController extends CrudController
         return $fg->where($filter);
     }
 
-    public function printPDFAction($id)
-    {
-        $settings = $this->get('hris_settings');
-        $wf = $this->get('hris_workforce');
-        $em = $this->getDoctrine()->getManager();
-        $twig = "GistInventoryBundle:DamagedItems:print.html.twig";
-
-        $conf = $this->get('gist_configuration');
-
-        //getOutputData
-        $data = $this->getOutputData($id);
-
-        $params['emp'] = null;
-        $params['dept'] = null;
-
-
-        $params['all'] = $data;
-        $pdf = $this->get('gist_pdf');
-        $pdf->newPdf('A4');
-        $html = $this->render($twig, $params);
-        return $pdf->printPdf($html->getContent());
-    }
-
-    private function getOutputData($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $date = new DateTime();
-
-        $query = $em    ->createQueryBuilder();
-        $query          ->from('GistInventoryBundle:DamagedItems', 'o');
-
-        $query      ->andwhere("o.id = '".$id."'");
-
-
-        $data = $query          ->select('o')
-            ->getQuery()
-            ->getResult();
-
-        return $data;
-    }
-
     protected function hookPostSave($obj, $is_new = false)
     {
 
     }
-
 
     /**
      *
