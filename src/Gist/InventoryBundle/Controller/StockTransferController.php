@@ -315,8 +315,8 @@ class StockTransferController extends CrudController
             $user = $this->getUser();
         }
 
-        var_dump($data);
-        die();
+//        var_dump($data);
+//        die();
 
         if ($is_new) {
             $entries = $inv_stock_transfer->saveNewForm($o, $data, $user);
