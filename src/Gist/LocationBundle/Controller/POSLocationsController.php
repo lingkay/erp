@@ -268,7 +268,7 @@ class POSLocationsController extends CrudController
                         if (count($existing_stocks) > 0) {
                             foreach ($existing_stocks as $es) {
                                 foreach ($products as $product_object) {
-                                    if ($es->getProduct()->getID() == $product_object->getID() && $es->getInventoryAccount()->getID() == $wh_acc->getID()) {
+                                    if (!$es->getProduct()->getID() == $product_object->getID() || !$es->getInventoryAccount()->getID() == $wh_acc->getID()) {
                                         //create ZERO entry
                                         $stock_entry = new Stock($wh_acc, $product_object);
                                         $stock_entry->setInventoryAccount($wh_acc);
@@ -296,29 +296,48 @@ class POSLocationsController extends CrudController
                 }
             }
         }
+
+        if ($obj->getInventoryAccount()) {
+            if (!$obj->getInventoryAccount()->getDamagedContainer()) {
+                $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
+                $obj->getInventoryAccount()->setDamagedContainer($newDmgCnt);
+                $em->persist($obj);
+                $em->flush();
+            }
+        } else {
+            $newIacc = $this->createInventoryAccount($obj->getName());
+            $em->persist($newIacc);
+            $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
+
+            $newIacc->setDamagedContainer($newDmgCnt);
+            $em->persist($newIacc);
+            $em->flush();
+        }
     }
 
-    protected function createInventoryAccount($o, $data)
+    protected function createInventoryAccount($name)
     {
         $allow = false;
-
-        $dmg_account = new Account();
-        $dmg_account->setName('DMG: '.$data['name'])
-            ->setUserCreate($this->getUser())
-            ->setAllowNegative($allow);
-
-        $dmg_account = new Account();
-        $dmg_account->setName('MISSING: '.$data['name'])
-            ->setUserCreate($this->getUser())
-            ->setAllowNegative($allow);
-
         $account = new Account();
-        $account->setName($data['name'])
+        $account->setName($name)
             ->setUserCreate($this->getUser())
-            ->setDamagedContainer($dmg_account)
             ->setAllowNegative($allow);
 
         return $account;
+    }
+
+    public function createDamagedItemsInventoryAccount($name)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $dmg_account = new Account();
+        $dmg_account->setName('DMG: '.$name)
+            ->setUserCreate($this->getUser())
+            ->setAllowNegative(false);
+
+        $em->persist($dmg_account);
+        $em->flush();
+
+        return $dmg_account;
     }
 
     protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
