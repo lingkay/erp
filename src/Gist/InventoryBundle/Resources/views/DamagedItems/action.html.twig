@@ -1,3 +1,6 @@
 {#<a href="{{ path('gist_inv_damaged_items_view_inventory_entries', { 'id': id }) }}" class="btn default btn-xs green-meadow"><i class="fa fa-eye"></i> Entries</a>#}
-<a href="{{ path('gist_inv_damaged_items_add_return_form', { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> Return</a>
-
+{% if status == 'damaged' %}
+    <a href="{{ path('gist_inv_damaged_items_add_return_form', { 'ids': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> Return</a>
+{% elseif status == 'for return' %}
+    <a href="{{ path('gist_inv_damaged_items_receive_return_form', { 'id': parent_id }) }}" class="btn default btn-xs green"><i class="fa fa-eye"></i> View</a>
+{% endif %}

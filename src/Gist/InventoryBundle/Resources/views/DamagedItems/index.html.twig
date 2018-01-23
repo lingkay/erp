@@ -22,7 +22,7 @@
                     <tr>
                         {% for col in grid_cols %}
                             {% if (loop.last) %}
-                                <th style="width: 165px">{{ col.getLabel }}</th>
+                                <th style="width: 105px">{{ col.getLabel }}</th>
                             {% else %}
                                 <th>{{ col.getLabel }}</th>
                             {% endif %}
@@ -111,7 +111,7 @@
                         "sNext": "Next"
                     }
                 },
-                "aaSorting": [[ 0, "desc" ]],
+                "aaSorting": [[ 2, "desc" ]],
                 "aoColumnDefs": [
                     { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
                 ]

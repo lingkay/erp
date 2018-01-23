@@ -19,14 +19,24 @@ gist_inv_damaged_items_add_entries_submit:
 #    defaults: { _controller: GistInventoryBundle:DamagedItems:viewEntries }
 
 gist_inv_damaged_items_add_return_form:
-    pattern: /add_return/{id}
+    pattern: /add_return/{ids}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:addFormReturn }
 
 gist_inv_damaged_items_add_return_submit:
-    pattern: /add_return/{id}
+    pattern: /add_return/{ids}
     methods: [POST]
-    defaults: { _controller: GistInventoryBundle:DamagedItems:addSubmit }
+    defaults: { _controller: GistInventoryBundle:DamagedItems:addReturnSubmit }
+
+gist_inv_damaged_items_receive_return_form:
+    pattern: /receive/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:viewFormReceive }
+
+gist_inv_damaged_items_submit_return_form:
+    pattern: /receive/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:submitFormReceive }
 
 gist_inv_damaged_items_edit_form:
     pattern: /edit/{id}

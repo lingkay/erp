@@ -4,6 +4,7 @@ namespace Gist\InventoryBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\InventoryBundle\Entity\Product;
+use Gist\InventoryBundle\Entity\DamagedItems;
 use Gist\InventoryBundle\Entity\DamagedItemsEntry;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Symfony\Component\HttpFoundation\Response;
@@ -168,9 +169,9 @@ class DamagedItemsController extends CrudController
         return array(
             $grid->newColumn('Item','getName','name', 'product'),
             $grid->newColumn('Quantity','getQuantity','quantity'),
-            $grid->newColumn('Date create','getDateCreateFormatted','o'),
+            $grid->newColumn('Date create','getDateCreateFormatted','date_create'),
             $grid->newColumn('Created by','getDisplayName','last_name','user'),
-            $grid->newColumn('Status','getStatusFMTD','o'),
+            $grid->newColumn('Status','getStatusFMTD','status'),
         );
     }
 
@@ -183,11 +184,20 @@ class DamagedItemsController extends CrudController
      */
     public function callbackGrid($id)
     {
+        $em = $this->getDoctrine()->getManager();
+        $dmgEntry = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findOneBy(array('id'=>$id));
+
+        $parentID = 0;
+        if ($dmgEntry->getDamagedItems()) {
+            $parentID = $dmgEntry->getDamagedItems()->getID();
+        }
         $params = array(
             'id' => $id,
             'route_edit' => $this->getRouteGen()->getEdit(),
             'route_delete' => $this->getRouteGen()->getDelete(),
             'prefix' => $this->route_prefix,
+            'status' => $dmgEntry->getStatus(),
+            'parent_id' => $parentID,
         );
 
         $this->padGridParams($params, $id);
@@ -366,62 +376,11 @@ class DamagedItemsController extends CrudController
     }
 
     /** END ADD ENTRIES METHODS */
-
-//    public function viewEntriesAction($id)
-//    {
-//        $em = $this->getDoctrine()->getManager();
-//        $inv = $this->get('gist_inventory');
-//        $config = $this->get('gist_configuration');
-//        $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$id));
-//        if ($prod == null)
-//            throw new ValidationException('Could not find product.');
-//
-//        $source = $inv->findWarehouse($config->get('gist_main_warehouse'));
-//        $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'warehouse');
-//
-//        $this->hookPreAction();
-//        $obj = $this->newBaseClass();
-//
-//
-//        $session = $this->getRequest()->getSession();
-//        $session->set('csrf_token', md5(uniqid()));
-//
-//        $params = $this->getViewParams('Add');
-//        $params['object'] = $obj;
-//
-//        // check if we have access to form
-//        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
-//        $this->padFormParams($params, $obj);
-//        $this->padFormItemDetailsParams($params, $prod);
-//
-//        $params['entries'] = $this->getInventoryDamagedEntries($prod, $dmg_acc);
-//
-//        return $this->render('GistInventoryBundle:DamagedItems:transactions.html.twig', $params);
-//    }
-//
-//    // for transaction information
-//    protected function padFormItemDetailsParams(&$params, $prod)
-//    {
-//        $params['item'] = $prod->getName();
-//        $params['code'] = $prod->getItemCode();
-//        $params['barcode'] = $prod->getBarcode();
-//    }
-//
-//    // for transaction entries
-//    public function getInventoryDamagedEntries($prod, $iacc)
-//    {
-//        $em = $this->getDoctrine()->getManager();
-//        $entries = $em->getRepository('GistInventoryBundle:Entry')->findBy(array('product'=>$prod->getID(), 'inv_account'=>$iacc->getID()));
-//        return $entries;
-//    }
-
-    public function getSelectedProducts($ids, $iacc)
+        public function getSelectedEntries($ids, $iacc)
     {
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
-
-
 
         if (strpos($ids, ',') !== false) {
             $product_ids = explode(',', $ids);
@@ -432,18 +391,18 @@ class DamagedItemsController extends CrudController
         $list_opts = [];
 
         foreach ($product_ids as $pid) {
-            $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$pid));
-//            $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('product_id'=>$pid, ));
-            if ($prod == null)
-                throw new ValidationException('Could not find product.');
-
-            $list_opts[] = array(
-                'id'=>$prod->getID(),
-                'item_code'=> $prod->getItemCode(),
-                'item_name'=> $prod->getName()
-            );
+            $dmgEntry = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findOneBy(array('id'=>$pid));
+            $dmg_stock_qty = $dmgEntry->getQuantity();
 
 
+            if ($dmg_stock_qty > 0 && $dmgEntry->getStatus() == 'damaged') {
+                $list_opts[] = array(
+                    'id'=>$dmgEntry->getID(),
+                    'item_code'=> $dmgEntry->getProduct()->getItemCode(),
+                    'item_name'=> $dmgEntry->getProduct()->getName(),
+                    'dmg_stock'=> $dmg_stock_qty,
+                );
+            }
         }
 
         return $list_opts;
@@ -471,9 +430,6 @@ class DamagedItemsController extends CrudController
         $source = $inv->findWarehouse($config->get('gist_main_warehouse'));
         $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'warehouse');
 
-        $params['selected_products'] = $this->getSelectedProducts($ids, $dmg_acc);
-
-
         $session = $this->getRequest()->getSession();
         $session->set('csrf_token', md5(uniqid()));
 
@@ -483,8 +439,130 @@ class DamagedItemsController extends CrudController
         // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
         $this->padFormParams($params, $obj);
+        $params['selected_products'] = $this->getSelectedEntries($ids, $dmg_acc);
 
         return $this->render('GistTemplateBundle:Object:add.html.twig', $params);
+    }
+
+    public function addReturnSubmitAction($ids)
+    {
+        // ASSIGN DMG ENTRIES TO NEW CREATED DAMAGE_ITEMS
+        //EDIT SUBMIT - RETURNED - WILL TRIGGER TRANSFER
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $this->checkAccess($this->route_prefix . '.add');
+        $data = $this->getRequest()->request->all();
+
+        $this->hookPreAction();
+        try
+        {
+            $obj = new DamagedItems();
+
+            //change if from POS
+            $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+
+            if ($data['destination'] === '0') {
+                $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            } elseif ($data['destination'] === '00') {
+                echo 'here';
+                $wh_destination = $inv->findWarehouse($config->get('gist_damaged_items_warehouse'));
+            } else {
+                $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
+            }
+
+            $obj->setSource($wh_src->getInventoryAccount());
+            $obj->setDestination($wh_destination->getInventoryAccount());
+            $obj->setDescription($data['description']);
+            $em->persist($obj);
+            $em->flush();
+
+            foreach ($data['prod_item_code'] as $index => $value)
+            {
+                $dmgEntryID = $data['entry_id'][$index];
+                $dmgEntry = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findOneBy(array('id'=>$dmgEntryID));
+                $dmgEntry->setDamagedItems($obj);
+                $dmgEntry->setStatus('for return');
+                $dmgEntry->setRequestingUser($this->getUser());
+                $em->persist($dmgEntry);
+                $em->flush();
+            }
+
+            $this->addFlash('success', 'Items set for return successfully.');
+            if($this->submit_redirect){
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+            }else{
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(),array('id'=>$obj->getID())).$this->url_append);
+            }
+        }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            return $this->addError($obj);
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            error_log($e->getMessage());
+            return $this->addError($obj);
+        }
+    }
+
+    public function viewFormReceiveAction($id)
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository('GistInventoryBundle:DamagedItems')->find($id);
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['o_label'] = $this->getObjectLabel($obj);
+
+        // check if we have access to form
+        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
+
+        $this->padFormParams($params, $obj);
+
+        return $this->render('GistInventoryBundle:DamagedItems:receive_form.html.twig', $params);
+    }
+
+    public function submitFormReceiveAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $this->checkAccess($this->route_prefix . '.edit');
+        $data = $this->getRequest()->request->all();
+
+        $this->hookPreAction();
+        try
+        {
+            //create transfer from current loc/pos/wh damaged container to DESTINATION DAMAGED CONTAINER
+            //set DAMAGEDITEMS object status to returned
+
+            $this->addFlash('success', 'Items returned successfully.');
+            if($this->submit_redirect){
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+            }else{
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+            }
+        }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            error_log($e->getMessage());
+            return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+        }
     }
 
     /** --------------- */
@@ -574,7 +652,7 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
 
         $inv = $this->get('gist_inventory');
-        $params['wh_opts'] = array('00'=>'Damaged Items Warehouse') + $inv->getPOSLocationTransferOptions();
+        $params['wh_opts'] = $inv->getPOSLocationTransferOptionsOnly();
         $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
 
         $filter = array();

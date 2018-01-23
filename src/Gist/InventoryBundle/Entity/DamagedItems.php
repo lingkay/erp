@@ -28,6 +28,18 @@ class DamagedItems
      */
     protected $entries;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="\Gist\InventoryBundle\Entity\Account")
+     * @ORM\JoinColumn(name="destination_inv_account_id", referencedColumnName="id")
+     */
+    protected $destination_inv_account;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="\Gist\InventoryBundle\Entity\Account")
+     * @ORM\JoinColumn(name="source_inv_account_id", referencedColumnName="id")
+     */
+    protected $source_inv_account;
+
     public function __construct()
     {
         $this->initHasGeneratedID();
@@ -58,31 +70,26 @@ class DamagedItems
         return $this->entries;
     }
 
-    public function checkBalance()
+    public function getSource()
     {
-        // check entries if all credits = debits per product
-        $index_check = array();
+        return $this->source_inv_account;
+    }
 
-        // go through entries
-        foreach ($this->entries as $entry)
-        {
-            $id = $entry->getProduct()->getID();
+    public function setDestination($inv_acct)
+    {
+        $this->destination_inv_account = $inv_acct;
+        return $this;
+    }
 
-            // build the index checker
-            if (!isset($index_check[$id]))
-                $index_check[$id] = array('debit' => '0.00', 'credit' => '0.00');
+    public function setSource($inv_acct)
+    {
+        $this->source_inv_account = $inv_acct;
+        return $this;
+    }
 
-            $index_check[$id]['debit'] = bcadd($index_check[$id]['debit'], $entry->getDebit(), 2);
-            $index_check[$id]['credit'] = bcadd($index_check[$id]['credit'], $entry->getCredit(), 2);
-        }
-
-        foreach ($index_check as $ic)
-        {
-            if ($ic['debit'] != $ic['credit'])
-                return false;
-        }
-
-        return true;
+    public function getDestination()
+    {
+        return $this->destination_inv_account;
     }
 
     /**

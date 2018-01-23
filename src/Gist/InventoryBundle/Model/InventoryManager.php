@@ -200,6 +200,25 @@ class InventoryManager
         return $wh_opts;
     }
 
+    public function getPOSLocationTransferOptionsOnly($filter = array())
+    {
+        $config = new ConfigurationManager($this->container);
+        //$main_warehouse = $this->findWarehouse($config->get('gist_main_warehouse'));
+        $whs = $this->em
+            ->getRepository('GistLocationBundle:POSLocations')
+            ->findBy(
+                $filter,
+                array('name' => 'ASC')
+            );
+
+        $wh_opts = array();
+        //$wh_opts[0] = $main_warehouse->getName();
+        foreach ($whs as $wh)
+            $wh_opts[$wh->getID()] = $wh->getName();
+
+        return $wh_opts;
+    }
+
     public function getPOSLocationTransferOptions($filter = array())
     {
         $config = new ConfigurationManager($this->container);

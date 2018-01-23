@@ -26,6 +26,12 @@ class DamagedItemsEntry
     protected $quantity;
 
     /**
+     * @ORM\ManyToOne(targetEntity="DamagedItems")
+     * @ORM\JoinColumn(name="damaged_items_id", referencedColumnName="id")
+     */
+    protected $damaged_items;
+
+    /**
      * @ORM\ManyToOne(targetEntity="\Gist\InventoryBundle\Entity\Account")
      * @ORM\JoinColumn(name="destination_inv_account_id", referencedColumnName="id")
      */

@@ -1,0 +1,64 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">Receive Damaged Items</div>
+                </div>
+                <div class="portlet-body form">
+                    <form method="post" class="form-horizontal" id="transfer_form">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="form-section">Information</h4>
+                                    {{ form.group_text('Destination', 'destination', object.getDestination.getName, 3, 5, true) }}
+                                    {{ form.group_textarea('Remarks', 'description',object.getDescription|default(''),3,3,5, true)}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="form-section">List of damaged items</h4>
+                                    <table class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                        <tr>
+                                            <th width="20%">Item Code</th>
+                                            <th width="30%">Item Name</th>
+                                            <th width="15%">Quantity</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="transfer_table_body">
+                                        {% for e in object.getEntries|default('') %}
+                                            <tr>
+                                                <td><input type="text"  class='form-control' value="{{ e.getProduct.getItemCode|default('N/A') }}" readonly></td>
+                                                <td><input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly></td>
+                                                <td><input type="number"  class='form-control quantity_row' name="quantity[]" value="{{ e.getQuantity }}" readonly></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Returned</button>
+                                <a href="{{ path(route_list) }}" class="btn default">Damaged Items</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+
+        });
+    </script>
+{% endblock %}
