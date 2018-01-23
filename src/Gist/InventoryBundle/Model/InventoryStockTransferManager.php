@@ -91,18 +91,20 @@ class InventoryStockTransferManager
      */
     public function saveNewForm($o, $data, $user)
     {
-        $wh_src = $this->identifyLocationInventoryAccount($data['source']);
-        $wh_destination = $this->identifyLocationInventoryAccount($data['destination']);
+        if ($data['rollback_flag'] == 'false') {
+            $wh_src = $this->identifyLocationInventoryAccount($data['source']);
+            $wh_destination = $this->identifyLocationInventoryAccount($data['destination']);
 
-        $o->setStatus('requested');
-        $o->setRequestingUser($user);
+            $o->setStatus('requested');
+            $o->setRequestingUser($user);
 
-        $o->setDescription($data['description']);
-        $o->setSource($wh_src->getInventoryAccount());
-        $o->setDestination($wh_destination->getInventoryAccount());
+            $o->setDescription($data['description']);
+            $o->setSource($wh_src->getInventoryAccount());
+            $o->setDestination($wh_destination->getInventoryAccount());
 
-        $this->em->persist($o);
-        $this->em->flush();
+            $this->em->persist($o);
+            $this->em->flush();
+        }
 
         if ($data['rollback_flag'] == 'true') {
             $this->removeEntries($o);

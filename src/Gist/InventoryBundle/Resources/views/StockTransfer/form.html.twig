@@ -148,7 +148,7 @@
                                                         </td>
                                                         {% if main_status|default('') == '' %}
                                                             <td>
-                                                                <input type="number"  class='form-control' name="quantity[]" value="{{ e.getQuantity|default(0) }}">
+                                                                <input type="number"  class='form-control quantity_row' name="quantity[]" value="{{ e.getQuantity|default(0) }}">
                                                             </td>
                                                         {% elseif main_status|default('') == 'requested' or main_status|default('') == 'processed' %}
                                                             <td>
@@ -157,7 +157,7 @@
                                                         {% endif %}
                                                         {% if main_status|default('') == 'requested' %}
                                                             <td>
-                                                                <input type="number"  class='form-control' name="processed_quantity[]" value="{{ e.getProcessedQuantity|default(e.getQuantity) }}">
+                                                                <input type="number"  class='form-control quantity_row' name="processed_quantity[]" value="{{ e.getProcessedQuantity|default(e.getQuantity) }}">
                                                             </td>
                                                         {% elseif main_status|default('') == 'processed' or main_status|default('') == 'delivered' or main_status|default('') == 'arrived' %}
                                                             <td>
@@ -169,7 +169,7 @@
                                                         {% endif %}
                                                         {% if main_status|default('') == 'delivered' %}
                                                             <td>
-                                                                <input type="number"  class='form-control' name="received_quantity[]" value="{{ e.getReceivedQuantity|default(e.getProcessedQuantity) }}">
+                                                                <input type="number"  class='form-control quantity_row' name="received_quantity[]" value="{{ e.getReceivedQuantity|default(e.getProcessedQuantity) }}">
                                                             </td>
                                                         {% elseif main_status|default('') == 'arrived' %}
                                                             <td>
@@ -380,6 +380,14 @@
                 e.stopImmediatePropagation();
                 validateTransfers();
             });
+
+
+            $('.quantity_row').on('keyup', function(e){
+                if ($(this).val() == '' || $(this).val() < 1) {
+                    $(this).val(1);
+                }
+            });
+
 
             $('#transfer_form_btn_sp').on('click', function(e){
                 e.preventDefault();

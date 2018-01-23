@@ -64,14 +64,26 @@
     <table style="border: 1px solid black; border-collapse: collapse; font-size: 14px;" align="center" border="1">
         <tr>
             <th width="180px" style="height: 20px;" align="center">Item Code</th>
-            <th width="350px" align="center">Item Name</th>
-            <th width="120px" align="center">Quantity</th>
+            <th width="250px" align="center">Item Name</th>
+            {% if all[0].getStatus == 'requested' %}
+                <th width="100px" align="center">Requested QTY</th>
+                <th width="100px" align="center">Processed QTY</th>
+            {% elseif all[0].getStatus == 'processed' %}
+                <th width="100px" align="center">Processed QTY</th>
+                <th width="100px" align="center">Requested QTY</th>
+            {% endif %}
         </tr>
         {% for a in all[0].getEntries %}
             <tr>
-                <td style="width: 220px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getItemCode|default('-')}}</td>
-                <td style="width: 340px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getName|default('-')}}</td>
-                <td style="width: 140px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{a.getQuantity|default('-')}}</td>
+                <td style="width: 180px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getItemCode|default('-')}}</td>
+                <td style="width: 270px; padding-top: 1px; padding-bottom: 1px; text-align: left;">{{a.getProduct.getName|default('-')}}</td>
+                {% if all[0].getStatus == 'requested' %}
+                    <td style="width: 120px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{a.getQuantity|default('-')}}</td>
+                    <td style="width: 120px; padding-top: 1px; padding-bottom: 1px; text-align: right;">0</td>
+                {% elseif all[0].getStatus == 'processed' %}
+                    <td style="width: 120px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{a.getQuantity|default('-')}}</td>
+                    <td style="width: 120px; padding-top: 1px; padding-bottom: 1px; text-align: right;">{{a.getProcessedQuantity|default('-')}}</td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>

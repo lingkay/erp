@@ -263,6 +263,48 @@ class StockTransferController extends CrudController
 
     }
 
+    public function editSubmitAction($id)
+    {
+        $this->checkAccess($this->route_prefix . '.edit');
+
+        $this->hookPreAction();
+        try
+        {
+            $em = $this->getDoctrine()->getManager();
+            $data = $this->getRequest()->request->all();
+
+            $object = $em->getRepository($this->repo)->find($id);
+            // validate
+            $this->validate($data, 'edit');
+            // update db
+            $this->update($object, $data, false);
+            $em->flush();
+            $this->hookPostSave($object);
+            // log
+            $odata = $object->toData();
+            $this->logUpdate($odata);
+
+            if ($data['sp_flag'] == 'true') {
+                return $this->redirect($this->generateUrl('gist_inv_stock_transfer_print',array('id'=>$object->getID())));
+            } else {
+                $this->addFlash('success', $this->title . ' ' . $this->getObjectLabel($object) . ' edited successfully.');
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(), array('id' => $id)) . $this->url_append);
+            }
+        }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('Database error occured. Possible duplicate.');
+            return $this->editError($object, $id);
+        }
+        catch (DBALException $e)
+        {
+            $this->addFlash('Database error occured. Possible duplicate.');
+            error_log($e->getMessage());
+
+            return $this->editError($object, $id);
+        }
+    }
+
     protected function update($o, $data, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
@@ -273,13 +315,14 @@ class StockTransferController extends CrudController
             $user = $this->getUser();
         }
 
-        if ($is_new || !isset($data['status'])) {
+        var_dump($data);
+        die();
 
+        if ($is_new) {
             $entries = $inv_stock_transfer->saveNewForm($o, $data, $user);
             return $entries;
 
         } else {
-
             $inv_stock_transfer->updateForm($o, $data, $user);
 
         }
