@@ -189,7 +189,7 @@ class StockTransferController extends CrudController
         $um = $this->get('gist_user');
         $params['user_opts'] = $um->getUserFullNameOptions();
         $inv = $this->get('gist_inventory');
-        $params['wh_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
+        $params['wh_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
         $params['item_opts'] = $inv->getProductOptionsTransfer();
 
         $filter = array();
