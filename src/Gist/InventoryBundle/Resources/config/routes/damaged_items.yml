@@ -157,6 +157,16 @@ gist_inv_damaged_items_summary_ajax_grid:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:gridSearchSummary }
 
+gist_inv_damaged_items_summary_ajax_grid_to_send:
+    path:    /summary_table_to_send/ajax
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:gridSearchToSend }
+
+gist_inv_damaged_items_summary_ajax_grid_to_receive:
+    path:    /summary_table_to_receive/ajax
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:gridSearchToReceive }
+
 gist_inv_damaged_items_ajax_grid:
     path:    /search_product/ajax
     methods: [GET]

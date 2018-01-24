@@ -759,6 +759,174 @@ class DamagedItemsController extends CrudController
 
     /** --------------- */
 
+    public function gridSearchToSendAction()
+    {
+        $this->hookPreAction();
+        $this->repo = 'GistInventoryBundle:Product';
+        $gloader = $this->setupSummaryGridLoaderToSend();
+        $gloader->setQBFilterGroup($this->filterToSend());
+        $gres = $gloader->load();
+        $resp = new Response($gres->getJSON());
+        $resp->headers->set('Content-Type', 'application/json');
+
+        return $resp;
+    }
+
+    public function gridSearchToReceiveAction()
+    {
+        $this->hookPreAction();
+        $this->repo = 'GistInventoryBundle:Product';
+        $gloader = $this->setupSummaryGridLoaderToReceive();
+        $gloader->setQBFilterGroup($this->filterToRecieve());
+        $gres = $gloader->load();
+        $resp = new Response($gres->getJSON());
+        $resp->headers->set('Content-Type', 'application/json');
+
+        return $resp;
+    }
+
+    public function callbackGridTransmit($id)
+    {
+        $params = array(
+            'id' => $id,
+            'route_edit' => $this->getRouteGen()->getEdit(),
+            'route_delete' => $this->getRouteGen()->getDelete(),
+            'prefix' => $this->route_prefix,
+        );
+
+        $this->padGridParams($params, $id);
+
+        $engine = $this->get('templating');
+        return $engine->render(
+            'GistInventoryBundle:DamagedItems:action_transmit.html.twig',
+            $params
+        );
+    }
+
+    protected function setupSummaryGridLoaderToReceive()
+    {
+        $data = $this->getRequest()->query->all();
+        $grid = $this->get('gist_grid');
+
+        $gloader = $grid->newLoader();
+        $gloader->processParams($data)
+            ->setRepository('GistInventoryBundle:DamagedItems');
+
+        // grid joins
+        $gjoins = $this->getTransmitGridJoins();
+        foreach ($gjoins as $gj)
+            $gloader->addJoin($gj);
+
+
+        $gcols = $this->getToReceiveGridColumnsAjax();
+
+        if ($this->list_type == 'dynamic')
+            $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGridTransmit'), false, false);
+
+        foreach ($gcols as $gc)
+            $gloader->addColumn($gc);
+
+        return $gloader;
+    }
+
+    protected function setupSummaryGridLoaderToSend()
+    {
+        $data = $this->getRequest()->query->all();
+        $grid = $this->get('gist_grid');
+
+        $gloader = $grid->newLoader();
+        $gloader->processParams($data)
+            ->setRepository('GistInventoryBundle:DamagedItems');
+
+        // grid joins
+        $gjoins = $this->getTransmitGridJoins();
+        foreach ($gjoins as $gj)
+            $gloader->addJoin($gj);
+
+
+        $gcols = $this->getToSendGridColumnsAjax();
+
+        if ($this->list_type == 'dynamic')
+            $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGridTransmit'), false, false);
+
+        foreach ($gcols as $gc)
+            $gloader->addColumn($gc);
+
+        return $gloader;
+    }
+
+    protected function getTransmitGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+//            $grid->newJoin('product','product','getProduct'),
+            $grid->newJoin('iaccs','source_inv_account','getSource'),
+            $grid->newJoin('iaccd','destination_inv_account','getDestination'),
+        );
+    }
+
+    protected function getToSendGridColumnsAjax()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newColumn('Date Create', 'getDateCreateFormatted', 'date_create','o'),
+            $grid->newColumn('Destination','getName','name','iaccd'),
+            $grid->newColumn('Status', 'getStatus', 'status','o'),
+//            $grid->newColumn('Quantity', 'getQuantity', 'quantity','o'),
+        );
+    }
+
+    protected function getToReceiveGridColumnsAjax()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newColumn('Date Create', 'getDateCreateFormatted', 'date_create','o'),
+            $grid->newColumn('Destination','getName','name','iaccs'),
+            $grid->newColumn('Status', 'getStatus', 'status','o'),
+//            $grid->newColumn('Quantity', 'getQuantity', 'quantity','o'),
+        );
+    }
+
+    protected function filterToSend()
+    {
+        $grid = $this->get('gist_grid');
+        $fg = $grid->newFilterGroup();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+
+        $dmg_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
+
+        $qry[] = "(o.source_inv_account = '".$dmg_acc->getID()."')";
+
+        if (!empty($qry))
+        {
+            $filter = implode(' AND ', $qry);
+        }
+
+        return $fg->where($filter);
+    }
+
+    protected function filterToRecieve()
+    {
+        $grid = $this->get('gist_grid');
+        $fg = $grid->newFilterGroup();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+
+        $dmg_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $dmg_acc = $inv->getDamagedContainerInventoryAccount($dmg_src->getID(), 'warehouse');
+
+        $qry[] = "(o.destination_inv_account = '".$dmg_acc->getID()."')";
+
+        if (!empty($qry))
+        {
+            $filter = implode(' AND ', $qry);
+        }
+
+        return $fg->where($filter);
+    }
+
     /** FOR INDEX/GRID SUMMARY */
     public function gridSearchSummaryAction()
     {
