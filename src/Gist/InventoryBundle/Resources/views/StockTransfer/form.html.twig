@@ -290,10 +290,13 @@
                     $('#transfer_form').submit();
                 } else {
                     toastr['error']('Please check quantities.', 'Form validation');
+                    $('#sp_flag').val('false');
                 }
             } else {
+                $('#sp_flag').val('false');
                 if (source == destination) {
                     toastr['error']('Source and destination location should be distinct!', 'Form validation');
+
                 } else {
                     if (source == '-1') {
                         toastr['error']('Please select source!', 'Form validation');
