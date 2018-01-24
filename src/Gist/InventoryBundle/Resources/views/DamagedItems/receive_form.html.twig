@@ -45,7 +45,9 @@
                         </div>
                         <div class="form-actions fluid">
                             <div class="col-md-9">
-                                <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Returned</button>
+                                {% if object.getStatus != 'Returned' %}
+                                    <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Returned</button>
+                                {% endif %}
                                 <a href="{{ path(route_list) }}" class="btn default">Damaged Items</a>
                             </div>
                         </div>

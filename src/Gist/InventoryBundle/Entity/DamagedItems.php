@@ -47,6 +47,18 @@ class DamagedItems
         $this->entries = new ArrayCollection();
     }
 
+    public function getStatus()
+    {
+        $status = 'For return';
+        foreach ($this->entries as $e) {
+            if ($e->getStatus() == 'returned') {
+                $status = 'Returned';
+            }
+        }
+
+        return $status;
+    }
+
     public function setDescription($desc)
     {
         $this->description = $desc;

@@ -704,6 +704,7 @@ class DamagedItemsController extends CrudController
                 'pos_iacc_id' => $pos_iacc_id,
                 'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
                 'description'=> $st->getDescription(),
+                'status'=>$st->getStatus(),
                 //'user_create' => $st->getUserCreate()->getDisplayName(),
             );
 
@@ -1083,6 +1084,8 @@ class DamagedItemsController extends CrudController
         foreach ($stock_transfer_entries as $p) {
             $list_opts[] = array(
                 'id' =>$p->getID(),
+                'destination' => $p->getDestination()->getName(),
+                'status' => $p->getStatus(),
                 'date_create' => $p->getDateCreate()->format('y-m-d H:i:s'),
                 //'user_create' => $p->getUserCreate()->getDisplayName(),
             );
@@ -1111,6 +1114,8 @@ class DamagedItemsController extends CrudController
         foreach ($stock_transfer_entries as $p) {
             $list_opts[] = array(
                 'id' =>$p->getID(),
+                'source' => $p->getSource()->getName(),
+                'status' => $p->getStatus(),
                 'date_create' => $p->getDateCreate()->format('y-m-d H:i:s'),
                 //'user_create' => $p->getUserCreate()->getDisplayName(),
             );
