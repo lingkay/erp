@@ -112,6 +112,24 @@ gist_inv_damaged_items_pos_add_return:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:posAddReturn }
 
+#POS GET RECV FORM DATA
+gist_inv_damaged_items_pos_get_recv_form_data:
+    path:     /pos/get_receive_form_data/{id}/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getPOSFormData }
+
+#POS GET RECV FORM DATA ENTRIES
+gist_inv_damaged_items_pos_get_recv_form_data_entries:
+    path:     /pos/get_receive_form_data_entries/{id}/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getPOSFormDataEntries }
+
+#POS GET RECV FORM DATA ENTRIES
+gist_inv_damaged_items_pos_receive_items:
+    path:     /pos/receive_items/{pos_loc_id}/{uid}/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:posReceiveItems }
+
 #----------------------------OLD-------------------------------------
 gist_inv_damaged_items_get_data_entries:
     path:     /get/data_entries/{id}

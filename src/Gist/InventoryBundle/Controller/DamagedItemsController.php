@@ -142,8 +142,9 @@ class DamagedItemsController extends CrudController
 //        $fg->andwhere('o.destination_inv_account = :inv_account')
 //            ->setParameter('inv_account', $dmg_acc->getID());
 
-        $fg->andwhere('o.status != :status')
-            ->setParameter('status', 'returned');
+        //no need to hide returned. backend will change the entry's source to the destination iacc
+//        $fg->andwhere('o.status != :status')
+//            ->setParameter('status', 'returned');
 
         $gloader->setQBFilterGroup($fg);
 
@@ -551,8 +552,8 @@ class DamagedItemsController extends CrudController
                 $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($data['destination']);
             }
 
-            $obj->setSource($wh_src->getInventoryAccount());
-            $obj->setDestination($wh_destination->getInventoryAccount());
+            $obj->setSource($wh_src->getInventoryAccount()->getDamagedContainer());
+            $obj->setDestination($wh_destination->getInventoryAccount()->getDamagedContainer());
             $obj->setDescription($data['description']);
             $em->persist($obj);
             $em->flush();
@@ -611,6 +612,42 @@ class DamagedItemsController extends CrudController
         return $this->render('GistInventoryBundle:DamagedItems:receive_form.html.twig', $params);
     }
 
+    public function posReceiveItemsAction($pos_loc_id, $uid, $id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $dmgManager = $this->get('gist_inventory_damaged_items_managed');
+        //$this->checkAccess($this->route_prefix . '.edit');
+        //$this->hookPreAction();
+
+        try
+        {
+            $dmgManager->updateDamagedEntriesStatus($id, 'returned');
+            $dmgManager->transferDamagedItemsToDestination($id, NULL, $uid);
+
+            $list_opts[] = array(
+                'status'=>'success'
+            );
+
+            return new JsonResponse($list_opts);
+        }
+        catch (ValidationException $e)
+        {
+            $list_opts[] = array(
+                'status'=>'failed'
+            );
+
+            return new JsonResponse($list_opts);
+        }
+        catch (DBALException $e)
+        {
+            $list_opts[] = array(
+                'status'=>'failed'
+            );
+
+            return new JsonResponse($list_opts);
+        }
+    }
+
     public function submitFormReceiveAction($id)
     {
         $dmgManager = $this->get('gist_inventory_damaged_items_managed');
@@ -640,6 +677,83 @@ class DamagedItemsController extends CrudController
             error_log($e->getMessage());
             return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
         }
+    }
+
+    //view pos recv
+    public function getPOSFormDataAction($id, $pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $st = $em->getRepository('GistInventoryBundle:DamagedItems')->findOneBy(array('id'=>$id));
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $pos_iacc_id = $pos_location->getInventoryAccount()->getDamagedContainer()->getID();
+        $list_opts = [];
+        //$main_status = $st->getStatus();
+
+
+
+        if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
+
+            $list_opts[] = array(
+                'id'=>$st->getID(),
+                'source'=> $st->getSource()->getName(),
+                'source_id'=> $st->getSource()->getID(),
+                'destination'=> $st->getDestination()->getName(),
+                'destination_id'=> $st->getDestination()->getID(),
+                'pos_iacc_id' => $pos_iacc_id,
+                'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
+                'description'=> $st->getDescription(),
+                //'user_create' => $st->getUserCreate()->getDisplayName(),
+            );
+
+        } else {
+
+            $list_opts[] = array(
+                'id'=>0,
+                'source'=> 0,
+                'destination'=> 0,
+                'destination_id'=> 0,
+                'date_create'=> 0,
+                'status'=> 0,
+                'description'=> 0,
+                'user_create' => 0,
+                'user_processed' => 0,
+                'user_delivered' => 0,
+                'user_received' => 0,
+                'date_processed' => 0,
+                'date_delivered' => 0,
+                'date_received' => 0,
+                'invalid'=>'true',
+            );
+
+        }
+
+        return new JsonResponse($list_opts);
+    }
+
+    public function getPOSFormDataEntriesAction($id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $st = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('damaged_items'=>$id));
+
+        $list_opts = [];
+        foreach ($st as $p) {
+
+            $list_opts[] = array(
+                'entry_id'=>$p->getID(),
+                'item_code'=>$p->getProduct()->getItemCode(),
+                'product_name'=> $p->getProduct()->getName(),
+                'quantity'=> $p->getQuantity(),
+            );
+
+        }
+
+        //return $list_opts;
+
+        return new JsonResponse($list_opts);
     }
 
     /** --------------- */
@@ -930,7 +1044,7 @@ class DamagedItemsController extends CrudController
         $list_opts = [];
         foreach ($stock_transfer_entries as $p) {
             $parent_id = '0';
-            if ($p->getDamagedItems()) {
+            if ($p->getDamagedItems() != null) {
                 $parent_id = $p->getDamagedItems()->getID();
             }
             $list_opts[] = array(
@@ -962,25 +1076,18 @@ class DamagedItemsController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-        $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('source_inv_account'=>$pos_location->getInventoryAccount()->getID()));
+        $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItems')->findBy(array('source_inv_account'=>$pos_location->getInventoryAccount()->getDamagedContainer()->getID()));
 
 
         $list_opts = [];
-//        foreach ($stock_transfer_entries as $p) {
-//            $parent_id = '0';
-//            if ($p->getDamagedItems()) {
-//                $parent_id = $p->getDamagedItems()->getID();
-//            }
-//            $list_opts[] = array(
-//                'parent_id' =>$parent_id,
-//                'id' =>$p->getID(),
-//                'status' =>$p->getStatus(),
-//                'statusFMTD' =>$p->getStatusFMTD(),
-//                'date_create' => $p->getDateCreate()->format('y-m-d H:i:s'),
-//                'user_create' => $p->getUserCreate()->getDisplayName(),
-//            );
-//
-//        }
+        foreach ($stock_transfer_entries as $p) {
+            $list_opts[] = array(
+                'id' =>$p->getID(),
+                'date_create' => $p->getDateCreate()->format('y-m-d H:i:s'),
+                //'user_create' => $p->getUserCreate()->getDisplayName(),
+            );
+
+        }
 
         $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
         return new JsonResponse($list_opts);
@@ -998,15 +1105,17 @@ class DamagedItemsController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-        $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('destination_inv_account'=>$pos_location->getInventoryAccount()->getID()));
+        $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItems')->findBy(array('destination_inv_account'=>$pos_location->getInventoryAccount()->getDamagedContainer()->getID()));
 
         $list_opts = [];
-//        foreach ($stock_transfer_entries as $p) {
-//            $list_opts[] = array(
-//                'id'=>$p->getDamagedItems()->getID(),
-//            );
-//
-//        }
+        foreach ($stock_transfer_entries as $p) {
+            $list_opts[] = array(
+                'id' =>$p->getID(),
+                'date_create' => $p->getDateCreate()->format('y-m-d H:i:s'),
+                //'user_create' => $p->getUserCreate()->getDisplayName(),
+            );
+
+        }
 
         $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
         return new JsonResponse($list_opts);
@@ -1042,76 +1151,6 @@ class DamagedItemsController extends CrudController
         $prodManager = $this->get('gist_inventory_product_manager');
         $cat_opts = $prodManager->getPOSProductCategoryOptions();
         return new JsonResponse($cat_opts);
-    }
-
-    /**
-     *
-     * Function for POS to fetch stock transfer form data
-     *
-     * @param $id
-     * @param $pos_loc_id
-     * @return JsonResponse
-     */
-    public function getPOSFormDataAction($id, $pos_loc_id)
-    {
-        header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
-        $st = $em->getRepository('GistInventoryBundle:DamagedItems')->findOneBy(array('id'=>$id));
-        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-        $pos_iacc_id = $pos_location->getInventoryAccount()->getID();
-        $list_opts = [];
-
-        $list_opts[] = array(
-            'id'=>$st->getID(),
-            'description'=> $st->getDescription(),
-            'pos_iacc_id' => $pos_iacc_id,
-            'invalid'=>'false',
-        );
-
-        return new JsonResponse($list_opts);
-    }
-
-    /**
-     *
-     * Function for POS to fetch stock transfer form data
-     *
-     * @param $id
-     * @return JsonResponse
-     * @internal param $pos_loc_id
-     */
-    public function getPOSFormDataEntriesAction($id)
-    {
-        header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
-        $st = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('damaged_items'=>$id));
-
-
-        $list_opts = [];
-        foreach ($st as $p) {
-            $list_opts[] = array(
-                'id'=>$p->getID(),
-                'item_code'=>$p->getProduct()->getItemCode(),
-                'product_name'=> $p->getProduct()->getName(),
-                'quantity'=> $p->getQuantity(),
-                'source'=> $p->getSource()->getName(),
-                'destination'=> $p->getDestination()->getName(),
-                'source_id'=> $p->getSource()->getID(),
-                'destination_id'=> $p->getDestination()->getID(),
-//                'date_create'=> $p->getDateCreate()->format('y-m-d H:i:s'),
-                'status'=> $p->getStatus(),
-                'statusFMTD'=> $p->getStatusFMTD(),
-                'user_create' => $p->getRequestingUser()->getDisplayName(),
-                'user_processed' => ($p->getProcessedUser() == null ? '-' : $p->getProcessedUser()->getDisplayName()),
-                'user_delivered' => ($p->getDeliverUser() == null ? '-' : $p->getDeliverUser()->getDisplayName()),
-                'user_received' => ($p->getReceivingUser() == null ? '-' : $p->getReceivingUser()->getDisplayName()),
-                'date_processed' => ($p->getDateProcessed() == null ? '' : $p->getDateProcessed()->format('y-m-d H:i:s')),
-                'date_delivered' => ($p->getDateDelivered() == null ? '' : $p->getDateDelivered()->format('y-m-d H:i:s')),
-                'date_received' => ($p->getDateReceived() == null ? '' : $p->getDateReceived()->format('y-m-d H:i:s')),
-            );
-
-        }
-
-        return new JsonResponse($list_opts);
     }
 
     /**

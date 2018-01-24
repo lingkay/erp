@@ -15,6 +15,7 @@ use Gist\ConfigurationBundle\Model\ConfigurationManager;
 use Gist\InventoryBundle\Model\InventoryStockTransferManager;
 use Gist\InventoryBundle\Entity\Transaction;
 use Gist\InventoryBundle\Entity\Entry;
+use Gist\InventoryBundle\Entity\Stock;
 use Doctrine\ORM\EntityManager;
 use DateTime;
 
@@ -37,14 +38,15 @@ class InventoryDamagedItemsManager
         $this->user = $security->getToken()->getUser();
     }
 
-    public function transferDamagedItemsToDestination($id, $type = NULL)
+    public function transferDamagedItemsToDestination($id, $type = NULL, $uid = NULL)
     {
         $config = new ConfigurationManager($this->container);
         $stManager = new InventoryStockTransferManager($this->em);
         $dmg = $this->em->getRepository('GistInventoryBundle:DamagedItems')->findOneBy(array('id'=>$id));
 
-        $dmg_acc = $dmg->getDestination()->getDamagedContainer();
-        $adj_acc = $dmg->getSource()->getDamagedContainer();
+
+        $dmg_acc = $dmg->getDestination();
+        $adj_acc = $dmg->getSource();
 
         $remarks = $dmg->getDescription();
 
@@ -55,8 +57,14 @@ class InventoryDamagedItemsManager
 
             // setup transaction
             $trans = new Transaction();
-            $trans->setUserCreate($this->user)
-                ->setDescription($remarks);
+            if ($uid != NULL) {
+                $user_acct = $this->em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$uid));
+                $trans->setUserCreate($user_acct);
+            } else {
+                $trans->setUserCreate($this->user);
+            }
+
+            $trans->setDescription($remarks);
 
             // add entries
             // entry for destination
@@ -89,6 +97,10 @@ class InventoryDamagedItemsManager
                 $trans->addEntry($ent);
 
             $this->persistTransaction($trans);
+            $this->em->flush();
+
+            $entry->setSource($dmg_acc);
+            $this->em->persist($entry);
             $this->em->flush();
         }
     }
