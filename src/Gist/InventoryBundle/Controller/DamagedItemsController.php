@@ -139,6 +139,9 @@ class DamagedItemsController extends CrudController
         $fg->where('o.source_inv_account = :inv_account')
             ->setParameter('inv_account', $dmg_acc->getID());
 
+//        $fg->andwhere('o.destination_inv_account = :inv_account')
+//            ->setParameter('inv_account', $dmg_acc->getID());
+
         $fg->andwhere('o.status != :status')
             ->setParameter('status', 'returned');
 
@@ -400,7 +403,7 @@ class DamagedItemsController extends CrudController
     }
 
     /** END ADD ENTRIES METHODS */
-        public function getSelectedEntries($ids, $iacc)
+    public function getSelectedEntriesAction($ids, $iacc)
     {
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
@@ -427,6 +430,10 @@ class DamagedItemsController extends CrudController
                     'dmg_stock'=> $dmg_stock_qty,
                 );
             }
+        }
+
+        if ($iacc == 'posx') {
+            return new JsonResponse($list_opts);
         }
 
         return $list_opts;
@@ -463,9 +470,58 @@ class DamagedItemsController extends CrudController
         // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
         $this->padFormParams($params, $obj);
-        $params['selected_products'] = $this->getSelectedEntries($ids, $dmg_acc);
+        $params['selected_products'] = $this->getSelectedEntriesAction($ids, $dmg_acc);
 
         return $this->render('GistTemplateBundle:Object:add.html.twig', $params);
+    }
+
+    public function posAddReturnAction($description, $user, $source, $destination, $entries)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user));
+
+        $obj = new DamagedItems();
+        $wh_src = $inv->findPOSLocation($source);
+        $src_dmg_acc = $inv->getDamagedContainerInventoryAccount($wh_src->getID(), 'pos');
+
+
+        if ($destination === '0') {
+            $wh_destination = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            $dmg_acc = $inv->getDamagedContainerInventoryAccount($wh_destination->getID(), 'warehouse');
+        } elseif ($destination === '00') {
+            $wh_destination = $inv->findWarehouse($config->get('gist_damaged_items_warehouse'));
+        } else {
+            $wh_destination = $em->getRepository('GistLocationBundle:POSLocations')->find($destination);
+            $dmg_acc = $inv->getDamagedContainerInventoryAccount($wh_destination->getID(), 'pos');
+        }
+
+        $obj->setSource($src_dmg_acc);
+        $obj->setDestination($dmg_acc);
+        $obj->setDescription($description);
+        $em->persist($obj);
+        $em->flush();
+
+        parse_str(html_entity_decode($entries), $entriesParsed);
+
+        foreach ($entriesParsed as $e)
+        {
+            $dmgEntryID = $e['entry_id'];
+            $dmgEntry = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findOneBy(array('id'=>$dmgEntryID));
+            $dmgEntry->setDamagedItems($obj);
+            $dmgEntry->setStatus('for return');
+            $dmgEntry->setRequestingUser($user);
+            $em->persist($dmgEntry);
+            $em->flush();
+        }
+
+        $list_opts[] = array(
+            'status'=>'success'
+        );
+
+        return new JsonResponse($list_opts);
+
     }
 
     public function addReturnSubmitAction($ids)
@@ -674,7 +730,7 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = $inv->getPOSLocationTransferOptionsOnly();
-        $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
+        $params['item_opts'] = $inv->getProductOptionsTransfer();
 
         $filter = array();
         $categories = $em
@@ -863,6 +919,44 @@ class DamagedItemsController extends CrudController
      * @param $pos_loc_id
      * @return JsonResponse
      */
+    public function getDMGStockListPOSAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('source_inv_account'=>$pos_location->getInventoryAccount()->getDamagedContainer()->getID()));
+
+
+        $list_opts = [];
+        foreach ($stock_transfer_entries as $p) {
+            $parent_id = '0';
+            if ($p->getDamagedItems()) {
+                $parent_id = $p->getDamagedItems()->getID();
+            }
+            $list_opts[] = array(
+                'parent_id' =>$parent_id,
+                'id' =>$p->getID(),
+                'status' =>$p->getStatus(),
+                'statusFMTD' =>$p->getStatusFMTD(),
+                'date_create' => $p->getDateCreate()->format('y-m-d H:i:s'),
+                'user_create' => $p->getUserCreate()->getDisplayName(),
+                'product_name' => $p->getProduct()->getName(),
+                'quantity' => $p->getQuantity(),
+            );
+
+        }
+
+        $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
+        return new JsonResponse($list_opts);
+    }
+
+    /**
+     *
+     * Function for POS to fetch stock transfer records
+     *
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
     public function getSentFromPOSAction($pos_loc_id)
     {
         header("Access-Control-Allow-Origin: *");
@@ -872,12 +966,21 @@ class DamagedItemsController extends CrudController
 
 
         $list_opts = [];
-        foreach ($stock_transfer_entries as $p) {
-            $list_opts[] = array(
-                'id'=>$p->getDamagedItems()->getID(),
-            );
-
-        }
+//        foreach ($stock_transfer_entries as $p) {
+//            $parent_id = '0';
+//            if ($p->getDamagedItems()) {
+//                $parent_id = $p->getDamagedItems()->getID();
+//            }
+//            $list_opts[] = array(
+//                'parent_id' =>$parent_id,
+//                'id' =>$p->getID(),
+//                'status' =>$p->getStatus(),
+//                'statusFMTD' =>$p->getStatusFMTD(),
+//                'date_create' => $p->getDateCreate()->format('y-m-d H:i:s'),
+//                'user_create' => $p->getUserCreate()->getDisplayName(),
+//            );
+//
+//        }
 
         $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
         return new JsonResponse($list_opts);
@@ -898,12 +1001,12 @@ class DamagedItemsController extends CrudController
         $stock_transfer_entries = $em->getRepository('GistInventoryBundle:DamagedItemsEntry')->findBy(array('destination_inv_account'=>$pos_location->getInventoryAccount()->getID()));
 
         $list_opts = [];
-        foreach ($stock_transfer_entries as $p) {
-            $list_opts[] = array(
-                'id'=>$p->getDamagedItems()->getID(),
-            );
-
-        }
+//        foreach ($stock_transfer_entries as $p) {
+//            $list_opts[] = array(
+//                'id'=>$p->getDamagedItems()->getID(),
+//            );
+//
+//        }
 
         $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
         return new JsonResponse($list_opts);
@@ -931,27 +1034,13 @@ class DamagedItemsController extends CrudController
      *
      * Function for POS to fetch prod cat options
      *
-     * @param $pos_loc_id
      * @return JsonResponse
      */
     public function getProductCategoryOptionsAction()
     {
         header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
-        //CATEGORY
-        $filter = array();
-        $categories = $em
-            ->getRepository('GistInventoryBundle:ProductCategory')
-            ->findBy(
-                $filter,
-                array('name' => 'ASC')
-            );
-
-        $cat_opts = array();
-        $cat_opts[''] = 'All';
-        foreach ($categories as $category)
-            $cat_opts[$category->getID()] = $category->getName();
-
+        $prodManager = $this->get('gist_inventory_product_manager');
+        $cat_opts = $prodManager->getPOSProductCategoryOptions();
         return new JsonResponse($cat_opts);
     }
 
@@ -1073,12 +1162,125 @@ class DamagedItemsController extends CrudController
 
     //{src}/{dest}/{user}/{description}/{entries}
 
+    public function posAddDamagedEntriesAction($loc_id, $uid, $entries, $posx)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$uid));
+        parse_str(html_entity_decode($entries), $entriesParsed);
+
+
+        foreach ($entriesParsed as $e) {
+            $prod_item_code = $e['item_code'];
+            $qty = $e['quantity'];
+            $remarks = $e['remarks'];
+            $this->savePOSDamages($loc_id, $prod_item_code, $qty, $remarks, $user);
+        }
+
+        $list_opts[] = array(
+            'status'=>'success'
+        );
+
+        return new JsonResponse($list_opts);
+
+
+    }
+
+    protected function savePOSDamages($loc_id, $prod_item_code, $qty, $remarks, $user)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $entries = array();
+
+
+        // product
+        $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$prod_item_code));
+        if ($prod == null)
+            throw new ValidationException('Could not find product.');
+
+        $source = $inv->findPOSLocation($loc_id);
+        $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'pos');
+
+        //change this to come from POS
+        $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+        $adj_acc = $adj_warehouse->getInventoryAccount();
+
+        $new_qty = $qty;
+        $old_qty = 0;
+
+
+        if ($remarks == '') {
+            $remarks = '[POS] Transfer to damaged container';
+        }
+
+        // setup transaction
+        $trans = new Transaction();
+        $trans->setUserCreate($this->getUser())
+            ->setDescription($remarks);
+
+        // add entries
+        // entry for destination
+        $wh_entry = new Entry();
+        $wh_entry->setInventoryAccount($dmg_acc)
+            ->setProduct($prod);
+
+        // entry for source
+        $adj_entry = new Entry();
+        $adj_entry->setInventoryAccount($adj_acc)
+            ->setProduct($prod);
+
+        // check if debit or credit
+        if ($new_qty > $old_qty)
+        {
+            $qty = $new_qty - $old_qty;
+            $wh_entry->setDebit($qty);
+            $adj_entry->setCredit($qty);
+        }
+        else
+        {
+            $qty = $old_qty - $new_qty;
+            $wh_entry->setCredit($qty);
+            $adj_entry->setDebit($qty);
+        }
+        $entries[] = $wh_entry;
+        $entries[] = $adj_entry;
+
+        foreach ($entries as $ent)
+            $trans->addEntry($ent);
+
+        $inv->persistTransaction($trans);
+        $em->flush();
+
+        $entry = new DamagedItemsEntry();
+        $entry->setProduct($prod)
+            ->setQuantity($new_qty);
+
+        $entry->setSource($dmg_acc);
+        $entry->setRemarks($remarks);
+        $entry->setUserCreate($user);
+        //this will be set when for return
+        //$entry->setDestination($dmg_acc);
+
+        $entry->setStatus('damaged');
+        $entry->setRequestingUser($user);
+
+        $em->persist($entry);
+        $em->flush();
+
+
+        return $entries;
+
+    }
+
     /**
      *
      * Function for POS to add stock transfer
      *
      * @param $src
-     * @param $dest
      * @param $user
      * @param $description
      * @param $entries

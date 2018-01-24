@@ -68,12 +68,10 @@ gist_inv_damaged_items_print:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:printPDF }
 
-#    FOR POS
-gist_inv_damaged_items_get_from_pos:
-    path:     /pos/grid_loader/{pos_loc_id}
-    methods: [GET]
-    defaults: { _controller: GistInventoryBundle:DamagedItems:posGridLoader, pos_loc_id: null }
-#     OLD
+#--------------------------------------------------------------------------------------------------------
+#FOR POS
+#--------------------------------------------------------------------------------------------------------
+#FOR GRID
 gist_inv_damaged_items_get_from_pos:
     path:     /get/from/{pos_loc_id}
     methods: [GET]
@@ -84,16 +82,37 @@ gist_inv_damaged_items_get_to_pos:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:getSentToPOS }
 
+gist_inv_damaged_items_pos_dmg_stocks:
+    path:     /get/damaged_stocks/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getDMGStockListPOS }
+#END FOR GRID
+
+#LOCATION OPTIONS
 gist_inv_damaged_items_get_location_options:
     path:     /get/loc_options/{pos_loc_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:getLocationOptions }
 
-gist_inv_damaged_items_get_data:
-    path:     /get/data/{id}/{pos_loc_id}
+#POS GET SELECTED ITEMS
+gist_inv_damaged_items_pos_get_selected_products:
+    path:     /pos/get_selected_for_return/{ids}/{iacc}
     methods: [GET]
-    defaults: { _controller: GistInventoryBundle:DamagedItems:getPOSFormData }
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getSelectedEntries }
 
+#POS SAVE NEW DAMAGE ITEM/S ENTRY
+gist_inv_damaged_items_pos_add_entries:
+    path:     /pos/add_entries2/{loc_id}/{uid}/{entries}/{posx}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:posAddDamagedEntries }
+
+#POS SAVE NEW DAMAGE ITEM OBJECT/ FOR RETURN
+gist_inv_damaged_items_pos_add_return:
+    path:     /pos/save_for_return/{description}/{user}/{source}/{destination}/{entries}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:posAddReturn }
+
+#----------------------------OLD-------------------------------------
 gist_inv_damaged_items_get_data_entries:
     path:     /get/data_entries/{id}
     methods: [GET]
@@ -128,3 +147,8 @@ gist_inv_damaged_items_get_prod_cat_options:
     path:     /get/prod_cats
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:getProductCategoryOptions }
+
+gist_inv_damaged_items_get_data:
+    path:     /get/data/{id}/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getPOSFormData }

@@ -189,8 +189,8 @@ class StockTransferController extends CrudController
         $um = $this->get('gist_user');
         $params['user_opts'] = $um->getUserFullNameOptions();
         $inv = $this->get('gist_inventory');
-        $params['wh_opts'] = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
-        $params['item_opts'] = array('000'=>'-- Select Product --') + $inv->getProductOptionsTransfer();
+        $params['wh_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationOptions();
+        $params['item_opts'] = $inv->getProductOptionsTransfer();
 
         $filter = array();
         $categories = $em
@@ -426,10 +426,9 @@ class StockTransferController extends CrudController
     public function getLocationOptionsAction($pos_loc_id)
     {
         header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
 
         $inv = $this->get('gist_inventory');
-        $list_opts = array('-1'=>'-- Select Location --') + array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptions();
+        $list_opts = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptions();
         unset($list_opts[$pos_loc_id]);
         return new JsonResponse($list_opts);
     }
