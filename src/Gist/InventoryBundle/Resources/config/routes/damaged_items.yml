@@ -130,6 +130,12 @@ gist_inv_damaged_items_pos_receive_items:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:posReceiveItems }
 
+#POS GET DAMAGED STOCK SUMM
+gist_inv_damaged_items_pos_stock_summ:
+    path:    /pos/summary_table/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getPOSDamageStock }
+
 #----------------------------OLD-------------------------------------
 gist_inv_damaged_items_get_data_entries:
     path:     /get/data_entries/{id}

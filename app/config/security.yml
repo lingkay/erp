@@ -77,6 +77,7 @@ security:
         - { path: ^/inventory/damaged_items/pos/get_receive_form_data, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/damaged_items/pos/get_receive_form_data_entries, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/damaged_items/pos/receive_items, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/damaged_items/pos/summary_table, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/inventory/damaged_items/pos/get_selected_for_return, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/damaged_items/pos/save_for_return, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -1128,6 +1128,36 @@ class DamagedItemsController extends CrudController
 
     /**
      *
+     * Function for POS to fetch stock transfer records
+     *
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getPOSDamageStockAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$pos_location->getInventoryAccount()->getDamagedContainer()->getID()));
+
+        $list_opts = [];
+        foreach ($stock as $p) {
+            $list_opts[] = array(
+                'item_code' =>$p->getProduct()->getItemCode(),
+                'barcode' => $p->getProduct()->getBarcode(),
+                'item_name' => $p->getProduct()->getName(),
+                'quantity' => $p->getQuantity(),
+                //'user_create' => $p->getUserCreate()->getDisplayName(),
+            );
+
+        }
+
+        $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
+        return new JsonResponse($list_opts);
+    }
+
+    /**
+     *
      * Function for POS to fetch location options
      *
      * @param $pos_loc_id
