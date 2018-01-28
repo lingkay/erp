@@ -155,3 +155,15 @@ acl:
           label: "Edit"
         - id: gist_inv_pos.delete
           label: "Delete"
+    - category: Stock Adjustment
+      entries:
+        - id: cat_inv_adjust.menu
+          label: "Menu"
+        - id: cat_inv_adjust.view
+          label: "View"
+        - id: cat_inv_adjust.add
+          label: "Add"
+        - id: cat_inv_adjust.edit
+          label: "Edit"
+        - id: cat_inv_adjust.delete
+          label: "Delete"

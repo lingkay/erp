@@ -104,10 +104,7 @@ gist_inv_open_tester:
     resource: "@GistInventoryBundle/Resources/config/routes/open_tester.yml"
     prefix: /open_tester
 
-cat_inv_adjust_wh_products:
-    pattern: /stock_adjustment/products/{wh_id}
-    methods: [GET]
-    defaults: { _controller: GistInventoryBundle:StockAdjustment:getWarehouseProducts, wh_id:null }
+
 
 
 cat_inv_trans_index:

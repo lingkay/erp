@@ -14,6 +14,9 @@ use Gist\ValidationException;
 use Gist\ConfigurationBundle\Model\ConfigurationManager;
 use Doctrine\ORM\EntityManager;
 use DateTime;
+use Gist\InventoryBundle\Entity\Entry;
+use Gist\InventoryBundle\Entity\Transaction;
+use Gist\InventoryBundle\Entity\Stock;
 
 class InventoryStockTransferManager
 {
@@ -31,7 +34,7 @@ class InventoryStockTransferManager
     {
         $this->em = $em;
         $this->container = $container;
-        //$this->user = $security->getToken()->getUser();
+        $this->user = $security->getToken()->getUser();
     }
 
     public function getDamagedContainerInventoryAccount($id, $type)
@@ -143,6 +146,55 @@ class InventoryStockTransferManager
             $user = $this->em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
             $o->setDeliverUser($user);
             $o->setDateDelivered(new DateTime());
+            $entries = array();
+
+            //generate transfer entries
+            foreach ($data['st_entry'] as $index => $value)
+            {
+                $entry_id = $value;
+                $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
+
+                // setup transaction
+                $trans = new Transaction();
+                $trans->setUserCreate($this->user)
+                    ->setDescription('Stock transfer items successfully delivered.');
+
+                // add entries
+                // entry for destination
+                $wh_entry = new Entry();
+                $wh_entry->setInventoryAccount($o->getDestination())
+                    ->setProduct($entry->getProduct());
+
+                // entry for source
+                $adj_entry = new Entry();
+                $adj_entry->setInventoryAccount($o->getSource())
+                    ->setProduct($entry->getProduct());
+
+                $old_qty = 0;
+                $new_qty = $entry->getQuantity();
+
+                // check if debit or credit
+                if ($new_qty > $old_qty)
+                {
+                    $qty = $new_qty - $old_qty;
+                    $wh_entry->setDebit($qty);
+                    $adj_entry->setCredit($qty);
+                }
+                else
+                {
+                    $qty = $old_qty - $new_qty;
+                    $wh_entry->setCredit($qty);
+                    $adj_entry->setDebit($qty);
+                }
+                $entries[] = $wh_entry;
+                $entries[] = $adj_entry;
+
+                foreach ($entries as $ent)
+                    $trans->addEntry($ent);
+
+                $this->persistTransaction($trans);
+                $this->em->flush();
+            }
 
         } elseif ($data['status'] == 'arrived') {
 
@@ -158,6 +210,34 @@ class InventoryStockTransferManager
 
             $entries = $this->updateEntries($data, $o, 'setQuantity');
             return $entries;
+        }
+    }
+
+    public function updateStock(Entry $entry)
+    {
+        // TODO: db row locking
+
+        $account = $entry->getInventoryAccount();
+        $prod = $entry->getProduct();
+
+        $qty = bcsub($entry->getDebit(), $entry->getCredit(), 2);
+
+        // get stock
+        $stock_repo = $this->em->getRepository('GistInventoryBundle:Stock');
+        $stock = $stock_repo->findOneBy(array('inv_account' => $account, 'product' => $prod));
+        if ($stock == null)
+        {
+            $stock = new Stock($account, $prod, $qty);
+
+            // persist the new stock object
+            $this->em->persist($stock);
+        }
+        else
+        {
+            // add quantity
+            $old_qty = $stock->getQuantity();
+            $new_qty = bcadd($qty, $old_qty, 2);
+            $stock->setQuantity($new_qty);
         }
     }
 

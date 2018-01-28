@@ -1,9 +1,14 @@
 cat_inv_adjust_index:
-    path:     /{wh_id}
+    path:     /{wh_id}/{wh_type}
     methods: [GET]
-    defaults: { _controller: GistInventoryBundle:StockAdjustment:index, wh_id:null }
+    defaults: { _controller: GistInventoryBundle:StockAdjustment:index, wh_id:null, wh_type:null }
 
 cat_inv_adjust_add_submit:
-    path:    /{wh_id}
+    path:    /{wh_id}/{wh_type}
     methods: [POST]
-    defaults: { _controller: GistInventoryBundle:StockAdjustment:addSubmit, wh_id:null }
+    defaults: { _controller: GistInventoryBundle:StockAdjustment:addSubmit, wh_id:null, wh_type:null }
+
+cat_inv_adjust_wh_products:
+    pattern: /products/{wh_id}/{wh_type}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:StockAdjustment:getWarehouseProducts, wh_id:null, wh_type:null }

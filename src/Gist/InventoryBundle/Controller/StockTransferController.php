@@ -495,6 +495,7 @@ class StockTransferController extends CrudController
     public function updatePOSStockTransferAction($id, $userId, $status, $entries)
     {
         header("Access-Control-Allow-Origin: *");
+        $inv = $this->get('gist_inventory');
         $em = $this->getDoctrine()->getManager();
         $st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$userId));
@@ -528,6 +529,61 @@ class StockTransferController extends CrudController
         } elseif ($status == 'delivered') {
             $st->setDeliverUser($user);
             $st->setDateDelivered(new DateTime());
+            $entries_stock = array();
+            //generate stock transfers
+            parse_str($entries, $entriesParsed);
+
+            foreach ($entriesParsed as $e) {
+                if (isset($e['st_entry'])) {
+                    $entry_id = $e['st_entry'];
+                    $qty = $e['received_quantity'];
+
+                    // entry
+                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
+                    $prod = $entry->getProduct();
+                    // setup transaction
+                    $trans = new Transaction();
+                    $trans->setUserCreate($this->getUser())
+                        ->setDescription($st->getDescription());
+
+                    // add entries
+                    // entry for destination
+                    $wh_entry = new Entry();
+                    $wh_entry->setInventoryAccount($entry->getDestination())
+                        ->setProduct($prod);
+
+                    // entry for source
+                    $adj_entry = new Entry();
+                    $adj_entry->setInventoryAccount($entry->getSource())
+                        ->setProduct($prod);
+
+                    $old_qty = 0;
+                    $new_qty = $entry->getQuantity();
+
+                    // check if debit or credit
+                    if ($new_qty > $old_qty)
+                    {
+                        $qty = $new_qty - $old_qty;
+                        $wh_entry->setDebit($qty);
+                        $adj_entry->setCredit($qty);
+                    }
+                    else
+                    {
+                        $qty = $old_qty - $new_qty;
+                        $wh_entry->setCredit($qty);
+                        $adj_entry->setDebit($qty);
+                    }
+                    $entries[] = $wh_entry;
+                    $entries[] = $adj_entry;
+
+                    foreach ($entries as $ent)
+                        $trans->addEntry($ent);
+
+                    $inv->persistTransaction($trans);
+                    $em->flush();
+                }
+            }
+
         } elseif ($status == 'arrived') {
             $st->setReceivingUser($user);
             $st->setDateReceived(new DateTime());

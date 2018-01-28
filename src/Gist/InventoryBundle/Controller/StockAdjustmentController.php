@@ -46,7 +46,7 @@ class StockAdjustmentController extends CrudController
         return $acc;
     }
 
-    public function indexAction($wh_id = null)
+    public function indexAction($wh_id = null, $wh_type = null)
     {
         $this->hookPreAction();
 
@@ -60,7 +60,9 @@ class StockAdjustmentController extends CrudController
         $params['wh_id'] = $wh_id;
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
-        $params['wh_opts'] = array('0'=>'Select Warehouse') + $inv->getWarehouseOptionsByType('physical','id') + $inv->getWarehouseOptionsByType('virtual','id');
+        //$params['wh_opts'] = array('0'=>'Select Warehouse') + $inv->getWarehouseOptionsByType('physical','id') + $inv->getWarehouseOptionsByType('virtual','id');
+        $params['wh_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
+        $params['wh_type_opts'] = array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
         $params['prodgroup_opts'] = $inv->getProductGroupOptions();  
 
         return $this->render($twig_file, $params);
@@ -134,7 +136,7 @@ class StockAdjustmentController extends CrudController
         return $entries;
     }
 
-    public function addSubmitAction($wh_id = null)
+    public function addSubmitAction($wh_id = null, $wh_type = null)
     {
 
 
@@ -230,13 +232,28 @@ class StockAdjustmentController extends CrudController
         return $this->redirect($url);
     }
 
-    public function getWarehouseProductsAction($wh_id)
+    public function getWarehouseProductsAction($wh_id, $wh_type = null)
     {
         $em = $this->getDoctrine()->getManager();
+        $config = $this->get('gist_configuration');
         $inv = $this->get('gist_inventory');
-        
-        $wh = $em->getRepository('GistInventoryBundle:Warehouse')->find($wh_id);
-        $inv_account = $wh->getInventoryAccount();
+
+        if ($wh_id == '0') {
+            $wh = $em->getRepository('GistInventoryBundle:Warehouse')->find($config->get('gist_main_warehouse'));
+        } else {
+            $wh = $em->getRepository('GistLocationBundle:POSLocations')->find($wh_id);
+        }
+
+        if ($wh_type == 'sales') {
+            $inv_account = $wh->getInventoryAccount();
+        } elseif ($wh_type == 'damaged') {
+            $inv_account = $wh->getInventoryAccount()->getDamagedContainer();
+        } elseif ($wh_type == 'missing') {
+            $inv_account = $wh->getInventoryAccount()->getMissingContainer();
+        } elseif ($wh_type == 'tester') {
+            $inv_account = $wh->getInventoryAccount()->getTesterCOntainer();
+        }
+
         $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$inv_account->getID()));
 
         $products = array();
@@ -245,7 +262,7 @@ class StockAdjustmentController extends CrudController
             $products[] = [
             'prod_name' => $s->getProduct()->getName(),
             'prod_id' => $s->getProduct()->getID(),
-            'uom' => $s->getProduct()->getUnitOfMeasure(),
+            //'uom' => $s->getProduct()->getUnitOfMeasure(),
             'stock' => $s->getQuantity(),
             ];
             
