@@ -29,6 +29,13 @@ services:
                   container: "@service_container"
                   security: "@security.context"
 
+    gist_options_manager:
+              class: Gist\InventoryBundle\Model\OptionsManager
+              arguments:
+                  em: "@doctrine.orm.entity_manager"
+                  container: "@service_container"
+                  security: "@security.context"
+
 #    gist_inventory.example:
 #        class: %gist_inventory.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]

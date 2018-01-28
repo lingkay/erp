@@ -1310,14 +1310,15 @@ class DamagedItemsController extends CrudController
 
         $list_opts = [];
         foreach ($stock as $p) {
-            $list_opts[] = array(
-                'item_code' =>$p->getProduct()->getItemCode(),
-                'barcode' => $p->getProduct()->getBarcode(),
-                'item_name' => $p->getProduct()->getName(),
-                'quantity' => $p->getQuantity(),
-                //'user_create' => $p->getUserCreate()->getDisplayName(),
-            );
-
+            if ($p->getQuantity() > 0) {
+                $list_opts[] = array(
+                    'item_code' =>$p->getProduct()->getItemCode(),
+                    'barcode' => $p->getProduct()->getBarcode(),
+                    'item_name' => $p->getProduct()->getName(),
+                    'quantity' => $p->getQuantity(),
+                    //'user_create' => $p->getUserCreate()->getDisplayName(),
+                );
+            }
         }
 
         $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));

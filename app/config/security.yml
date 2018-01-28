@@ -82,6 +82,14 @@ security:
         - { path: ^/inventory/damaged_items/pos/get_selected_for_return, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/damaged_items/pos/save_for_return, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/damaged_items/pos/update_rollback, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/inventory/open_tester/pos/grid, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/open_tester/pos/grid_summary, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/open_tester/add_entries, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/open_tester/pos/summary_table, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/open_tester/pos/consume_item, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/open_tester/search_product/ajax2, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 

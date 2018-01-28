@@ -2,3 +2,29 @@ gist_inv_open_tester_get_product_options:
     pattern: /prod_options/{category}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:OpenTester:getItemsForTesterOptions, category: null }
+
+gist_inv_open_tester_save_entries:
+    pattern: /add_entries/{pos_loc_id}/{uid}/{entries}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:OpenTester:saveOpenTesterData }
+
+gist_inv_open_tester_pos_grid_data:
+    pattern: /pos/grid/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:OpenTester:getOpenTesterData }
+
+#POS GET DAMAGED STOCK SUMM
+gist_inv_open_tester_pos_stock_summ:
+    path:    /pos/summary_table/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:OpenTester:getPOSTesterStock }
+
+gist_inv_open_tester_pos_consume_item:
+    path:    /pos/consume_item/{id}/{uid}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:OpenTester:updateOpenTesterStatus }
+
+gist_inv_open_tester_search_ajax_grid:
+    path:    /search_product/ajax2/{pos_loc_id}/{category}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:OpenTester:gridSearchProduct, category: null }
