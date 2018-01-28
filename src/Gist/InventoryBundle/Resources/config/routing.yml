@@ -100,6 +100,10 @@ gist_inv_damaged_items:
     resource: "@GistInventoryBundle/Resources/config/routes/damaged_items.yml"
     prefix: /damaged_items
 
+gist_inv_open_tester:
+    resource: "@GistInventoryBundle/Resources/config/routes/open_tester.yml"
+    prefix: /open_tester
+
 cat_inv_adjust_wh_products:
     pattern: /stock_adjustment/products/{wh_id}
     methods: [GET]

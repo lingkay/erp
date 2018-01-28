@@ -1,0 +1,4 @@
+gist_inv_open_tester_get_product_options:
+    pattern: /prod_options/{category}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:OpenTester:getItemsForTesterOptions, category: null }
