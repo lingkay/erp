@@ -239,7 +239,7 @@ class POSLocationsController extends CrudController
         $o->setInsuranceContactPerson2($data['insurance_contact2_person']);
         $o->setInsuranceContactNumber2($data['insurance_contact2_number']);
 
-        $this->updateHasInventoryAccount($o, $data, $is_new);
+        //$this->updateHasInventoryAccount($o, $data, $is_new);
 
 
 
@@ -248,10 +248,61 @@ class POSLocationsController extends CrudController
     protected function hookPostSave($obj, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
+
+        if ($obj->getInventoryAccount()) {
+
+            $this->setupInitialStocks($obj);
+
+            if (!$obj->getInventoryAccount()->getDamagedContainer()) {
+                $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
+                $obj->getInventoryAccount()->setDamagedContainer($newDmgCnt);
+                $em->persist($obj);
+                $em->flush();
+            }
+
+            if (!$obj->getInventoryAccount()->getMissingContainer()) {
+                $newMisCnt = $this->createMissingItemsInventoryAccount($obj->getName());
+                $obj->getInventoryAccount()->setMissingContainer($newMisCnt);
+                $em->persist($obj);
+                $em->flush();
+            }
+
+            if (!$obj->getInventoryAccount()->getTesterContainer()) {
+                $newTesCnt = $this->createTesterItemsInventoryAccount($obj->getName());
+                $obj->getInventoryAccount()->setTesterContainer($newTesCnt);
+                $em->persist($obj);
+                $em->flush();
+            }
+        } else {
+            $newIacc = $this->createInventoryAccount($obj->getName());
+            $em->persist($newIacc);
+
+            $obj->setInventoryAccount($newIacc);
+            $em->persist($obj);
+            $em->flush();
+
+            $this->setupInitialStocks($obj);
+
+            $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
+            $newMisCnt = $this->createMissingItemsInventoryAccount($obj->getName());
+            $newTesCnt = $this->createTesterItemsInventoryAccount($obj->getName());
+
+            $newIacc->setDamagedContainer($newDmgCnt);
+            $newIacc->setMissingContainer($newMisCnt);
+            $newIacc->setTesterContainer($newTesCnt);
+            $em->persist($newIacc);
+            $em->flush();
+        }
+    }
+
+    protected function setupInitialStocks($obj)
+    {
+
+        $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
-        $main_warehouse = $obj;
-        $wh_acc = $main_warehouse->getInventoryAccount();
+
+        $wh_acc = $obj->getInventoryAccount();
         $existing_stocks = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$wh_acc->getID()));
         //create ZERO stock entries for products
         if ($obj->getBrand() != '') {
@@ -296,23 +347,6 @@ class POSLocationsController extends CrudController
                 }
             }
         }
-
-        if ($obj->getInventoryAccount()) {
-            if (!$obj->getInventoryAccount()->getDamagedContainer()) {
-                $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
-                $obj->getInventoryAccount()->setDamagedContainer($newDmgCnt);
-                $em->persist($obj);
-                $em->flush();
-            }
-        } else {
-            $newIacc = $this->createInventoryAccount($obj->getName());
-            $em->persist($newIacc);
-            $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
-
-            $newIacc->setDamagedContainer($newDmgCnt);
-            $em->persist($newIacc);
-            $em->flush();
-        }
     }
 
     protected function createInventoryAccount($name)
@@ -338,6 +372,34 @@ class POSLocationsController extends CrudController
         $em->flush();
 
         return $dmg_account;
+    }
+
+    public function createMissingItemsInventoryAccount($name)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $account = new Account();
+        $account->setName('LOST: '.$name)
+            ->setUserCreate($this->getUser())
+            ->setAllowNegative(false);
+
+        $em->persist($account);
+        $em->flush();
+
+        return $account;
+    }
+
+    public function createTesterItemsInventoryAccount($name)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $account = new Account();
+        $account->setName('TEST: '.$name)
+            ->setUserCreate($this->getUser())
+            ->setAllowNegative(false);
+
+        $em->persist($account);
+        $em->flush();
+
+        return $account;
     }
 
     protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)

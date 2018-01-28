@@ -22,18 +22,6 @@ class Account
     /** @ORM\Column(type="boolean") */
     protected $allow_negative;
 
-//    /**
-//     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
-//     * @ORM\JoinColumn(name="damaged_items_container_id", referencedColumnName="id")
-//     */
-//    protected $damaged_items_container;
-//
-//    /**
-//     * @ORM\OneToOne(targetEntity="Account", inversedBy="id", cascade={"persist"})
-//     * @ORM\JoinColumn(name="missing_items_container_id", referencedColumnName="id")
-//     */
-//    protected $missing_items_container;
-
     /**
      * @ORM\OneToOne(targetEntity="Account", inversedBy="dmg_container")
      * @ORM\JoinColumn(name="damaged_items_container_id", referencedColumnName="id")
@@ -42,6 +30,24 @@ class Account
 
     /** @ORM\OneToOne(targetEntity="Account", mappedBy="damaged_items_container") */
     protected $dmg_container;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Account", inversedBy="mis_container")
+     * @ORM\JoinColumn(name="missing_items_container_id", referencedColumnName="id")
+     **/
+    protected $missing_items_container;
+
+    /** @ORM\OneToOne(targetEntity="Account", mappedBy="missing_items_container") */
+    protected $mis_container;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Account", inversedBy="tester_container")
+     * @ORM\JoinColumn(name="tester_items_container_id", referencedColumnName="id")
+     **/
+    protected $tester_items_container;
+
+    /** @ORM\OneToOne(targetEntity="Account", mappedBy="tester_items_container") */
+    protected $tester_container;
 
     public function __construct()
     {
@@ -86,6 +92,17 @@ class Account
     public function getMissingContainer()
     {
         return $this->missing_items_container;
+    }
+
+    public function setTesterContainer($tester_items_container)
+    {
+        $this->tester_items_container = $tester_items_container;
+        return $this;
+    }
+
+    public function getTesterContainer()
+    {
+        return $this->tester_items_container;
     }
 
     public function toData()
