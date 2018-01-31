@@ -1,0 +1,39 @@
+gist_inv_damaged_item_reason_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:index }
+
+gist_inv_damaged_item_reason_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:addForm }
+
+gist_inv_damaged_item_reason_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:addSubmit }
+
+gist_inv_damaged_item_reason_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:editForm }
+
+gist_inv_damaged_item_reason_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:editSubmit }
+
+gist_inv_damaged_item_reason_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:delete }
+
+gist_inv_damaged_item_reason_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:grid }
+
+gist_inv_damaged_item_reason_ajax_get:
+    pattern: /ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItemReason:ajaxGet }

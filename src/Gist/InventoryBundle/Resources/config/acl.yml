@@ -179,3 +179,15 @@ acl:
           label: "Edit"
         - id: gist_inv_existing_stock.delete
           label: "Delete"
+    - category: Damaged Item Reasons
+      entries:
+        - id: gist_inv_damaged_item_reason.menu
+          label: "Menu"
+        - id: gist_inv_damaged_item_reason.view
+          label: "View"
+        - id: gist_inv_damaged_item_reason.add
+          label: "Add"
+        - id: gist_inv_damaged_item_reason.edit
+          label: "Edit"
+        - id: gist_inv_damaged_item_reason.delete
+          label: "Delete"
