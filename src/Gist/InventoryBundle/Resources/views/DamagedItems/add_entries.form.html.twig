@@ -191,6 +191,8 @@
 
                 }
 
+
+
                 if (selected_item == '000') {
                     toastr['error']('Invalid selection!', 'Error');
                 } else {
@@ -198,7 +200,7 @@
                         "<td><input type='text'  class='form-control' value='"+item_code+"' readonly></td>" +
                         "<td><input type='text'  class='form-control' value='"+item_name+"' readonly></td>" +
                         "<td><input type='number' min='1' step='1' name='quantity[]' class='form-control quantity_row' required></td>" +
-                        "<td><textarea rows='2' class='form-control' style='resize: none;' name='remarks[]'></textarea></td>" +
+                        "<td>{{ form.group_select_only2('ProductCategory', 'remarks[]', reason_opts, 0, 3, 5, readonly)|e('js') }}</td>" +
                         "<td><a href='javascript:void(0)' class='btn btn-xs red remove_row'>Remove</a></td></tr>";
 
                     $('#transfer_table_body').append(tr);

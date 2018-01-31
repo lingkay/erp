@@ -379,7 +379,7 @@
 {% import _self as self %}
 
 <select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --" style="margin=0;">
-{{ self.options(options, value) }}
+{{ self.options_legacy(options, value) }}
 </select>
 
 {% endmacro %}

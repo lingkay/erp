@@ -429,6 +429,7 @@ class DamagedItemsController extends CrudController
                     'item_code'=> $dmgEntry->getProduct()->getItemCode(),
                     'item_name'=> $dmgEntry->getProduct()->getName(),
                     'dmg_stock'=> $dmg_stock_qty,
+                    'remarks' => $dmgEntry->getRemarks(),
                 );
             }
         }
@@ -1013,6 +1014,7 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $params['wh_opts'] = $inv->getPOSLocationTransferOptionsOnly();
+        $params['reason_opts'] = $inv->getDamagedReasonsOptions();
         $params['item_opts'] = $inv->getProductOptionsTransfer();
 
         $filter = array();
@@ -1355,6 +1357,14 @@ class DamagedItemsController extends CrudController
         $prodManager = $this->get('gist_inventory_product_manager');
         $cat_opts = $prodManager->getPOSProductCategoryOptions();
         return new JsonResponse($cat_opts);
+    }
+
+    public function getReasonOptionsAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $inv = $this->get('gist_inventory');
+        $reason_opts = $inv->getDamagedReasonsOptions();
+        return new JsonResponse($reason_opts);
     }
 
     /**

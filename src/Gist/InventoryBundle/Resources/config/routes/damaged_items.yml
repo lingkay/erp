@@ -186,3 +186,8 @@ gist_inv_damaged_items_get_data:
     path:     /get/data/{id}/{pos_loc_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:DamagedItems:getPOSFormData }
+
+gist_inv_damaged_items_get_reason_options:
+    path:     /get/reasons
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:DamagedItems:getReasonOptions }

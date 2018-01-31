@@ -164,6 +164,22 @@ class InventoryManager
         return null;
     }
 
+    public function getDamagedReasonsOptions($filter = array())
+    {
+        $whs = $this->em
+            ->getRepository('GistInventoryBundle:DamagedItemReason')
+            ->findBy(
+                $filter,
+                array('reason' => 'ASC')
+            );
+
+        $wh_opts = array();
+        foreach ($whs as $wh)
+            $wh_opts[$wh->getReason()] = $wh->getReason();
+
+        return $wh_opts;
+    }
+
     public function getWarehouseOptions($filter = array())
     {
         $whs = $this->em
