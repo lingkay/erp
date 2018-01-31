@@ -166,7 +166,7 @@ class ExistingStockController extends Controller
 
         if ($stock->getQuantity() <= $product->getMinStock() || $stock->getQuantity() >= $product->getMaxStock())
         {
-            return '<div class="numeric" style="color: red;">'.number_format($stock->getQuantity(), 0).'</div>';
+            return '<div class="numeric">'.number_format($stock->getQuantity(), 0).'</div>';
         }
         else
         {
@@ -194,7 +194,8 @@ class ExistingStockController extends Controller
         elseif ($pos_loc_id == -1)
         {
             //ALL
-            $qry[] = "(o.quantity > -1)";
+            $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
         }
         else
         {
@@ -235,17 +236,40 @@ class ExistingStockController extends Controller
         if($pos_loc_id == 0)
         {
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
-            $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
+
+            if ($inv_type == 'sales') {
+                $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
+            } elseif ($inv_type == 'damaged') {
+                $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getDamagedContainer()->getID()."')";
+            } elseif ($inv_type == 'tester') {
+                $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getTesterContainer()->getID()."')";
+            } elseif ($inv_type == 'missing') {
+                $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getMissingContainer()->getID()."')";
+            } else {
+                $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
+            }
+
+
         }
         elseif ($pos_loc_id == -1)
         {
             //ALL
-            $qry[] = "(o.quantity > -1)";
+
         }
         else
         {
             $selected_loc = $inv->findPOSLocation($pos_loc_id);
-            $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+            if ($inv_type == 'sales') {
+                $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+            } elseif ($inv_type == 'damaged') {
+                $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getDamagedContainer()->getID()."')";
+            } elseif ($inv_type == 'tester') {
+                $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getTesterContainer()->getID()."')";
+            } elseif ($inv_type == 'missing') {
+                $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getMissingContainer()->getID()."')";
+            } else {
+                $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+            }
         }
 
 
@@ -254,6 +278,11 @@ class ExistingStockController extends Controller
             $filter = implode(' AND ', $qry);
             $fg->where($filter);
             $gloader->setQBFilterGroup($fg);
+        }
+        else
+        {
+            //$main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            //$qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
         }
 
 
