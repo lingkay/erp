@@ -167,3 +167,15 @@ acl:
           label: "Edit"
         - id: cat_inv_adjust.delete
           label: "Delete"
+    - category: Existing Stock
+      entries:
+        - id: gist_inv_existing_stock.menu
+          label: "Menu"
+        - id: gist_inv_existing_stock.view
+          label: "View"
+        - id: gist_inv_existing_stock.add
+          label: "Add"
+        - id: gist_inv_existing_stock.edit
+          label: "Edit"
+        - id: gist_inv_existing_stock.delete
+          label: "Delete"

@@ -1,0 +1,241 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">Existing Stock</div>
+                </div>
+                <div class="portlet-body">
+                    <!-- BEGIN FORM-->
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-3" style="margin-bottom: 10px;">
+                            {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(-1),3,7) }}
+                            <br>
+                            {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, 'sales', 3, 7, false) }}
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover" id="list_table">
+                        <thead>
+                        <tr>
+                            {% for col in grid_cols %}
+                                {% if (loop.last) %}
+                                    <th style="width: 165px">{{ col.getLabel }}</th>
+                                {% else %}
+                                    <th>{{ col.getLabel }}</th>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="change_stock_threshold" class="modal fade" tabindex="-1" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="">
+                    <div class="modal-header">
+                        <a type="button" class="close" data-dismiss="modal" aria-hidden="true"></a>
+                        <h4 id="form_title" class="modal-title">Change Stock Threshold</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-horizontal form" style="margin-top: 20px;">
+                            <div class="col-md-12">
+                                <input type="hidden" id="product_id_to_edit" value="0">
+                                <input type="hidden" id="inv_id_to_edit" value="0">
+                                <input type="hidden" id="formula_min" value="0">
+                                <input type="hidden" id="formula_max" value="0">
+                                {{ form.group_text('Product', 'product', '', 4, 7, true) }}
+                                {{ form.radio_set_pos_white('Computation', 'computation', computation_opts, 'manual', false, '') }}
+                                {{ form.group_number_no_step('Min. Quantity', 'min_qty', '', 4, 7, false) }}
+                                {{ form.group_number_no_step('Max. Quantity', 'max_qty', '', 4, 7, false) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="javascript:void(0)" class="btn save_threshold_btn" style="background-color: #556E93; color: #ffffff;">Save</a>
+                        <button type="button" data-dismiss="modal" class="btn default" data-toggle="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
+    <script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
+
+
+
+    <script>
+
+        function clearStockModal() {
+            $('#cform-min_qty').val('0');
+            $('#cform-max_qty').val('0');
+            $('#cform-product').val('');
+            $('#product_id_to_edit').val('0');
+            $('#inv_id_to_edit').val('0');
+        }
+
+        function generatePath() {
+            var pos_loc_id = $('#cform-pos_location').val();
+            var inv_type = $('#cform-inv_type').val();
+
+
+            var path = "{{ path('gist_inv_existing_stock_grid_search', {
+                'pos_loc_id' : 'POS_LOC_ID',
+                'inv_type' : 'INV_TYPE',
+            }
+            ) }}";
+
+
+
+            path = path.replace('POS_LOC_ID', pos_loc_id);
+            path = path.replace('INV_TYPE', inv_type);
+
+            return path;
+        }
+
+        $(document).ready(function() {
+            var dTable;
+
+            dTable = $('#list_table').dataTable({
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "{{ path('gist_inv_existing_stock_grid') }}",
+                "iDisplayLength": 10,
+                "sPaginationType": "bootstrap",
+                "bFilter" : false,
+                "bInfo" : false,
+                "bLengthChange": false,
+                "oLanguage": {
+                    "sLengthMenu": "_MENU_ records",
+                    "oPaginate": {
+                        "sPrevious": "Prev",
+                        "sNext": "Next"
+                    }
+                },
+                "aoColumnDefs": [
+                    {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
+                ],
+                "aaSorting": [[4,'desc']]
+            });
+
+            $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+            $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+            $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+            $("#cform-pos_location").live('change', function(){
+                path = generatePath();
+                dTable.fnReloadAjax(path);
+            });
+
+            $("#cform-inv_type").live('change', function(){
+                path = generatePath();
+                dTable.fnReloadAjax(path);
+            });
+
+            $('.radio').on("click",function(){
+                if ($('#uniform-cform-computation input:radio:checked').val() == 'manual') {
+                    $('#cform-min_qty').prop('readonly', false);
+                    $('#cform-max_qty').prop('readonly', false);
+                } else {
+                    var formula_min = $('#formula_min').val();
+                    var formula_max = $('#formula_max').val();
+                    $('#cform-min_qty').val(formula_min);
+                    $('#cform-max_qty').val(formula_max);
+                    $('#cform-min_qty').prop('readonly', true);
+                    $('#cform-max_qty').prop('readonly', true);
+                }
+            });
+
+            $(document).on("click",".change_threshold_btn", function(e){
+                var row = $(this).closest('tr');
+                var prod_id = row.find('.row_prod_id').val();
+                var inv_id = row.find('.row_inv_id').val();
+                $('#product_id_to_edit').val(prod_id);
+                $('#inv_id_to_edit').val(inv_id);
+
+
+                var url = "/inventory/locations/grid/get_prod_info/" + prod_id + "/" + inv_id;
+                $.getJSON(url, function(json){
+                    $.each(json, function(i, item) {
+                        name = item.name;
+                        $('#cform-product').val(name);
+                        $('#formula_min').val(item.f_min);
+                        $('#formula_max').val(item.f_max);
+                        $('#cform-min_qty').val(item.min);
+                        $('#cform-max_qty').val(item.max);
+                    });
+                });
+
+                $('#change_stock_threshold').modal('show');
+            });
+
+            $(document).on("click",".save_threshold_btn", function(e){
+                var min = $('#cform-min_qty').val();
+                var max = $('#cform-max_qty').val();
+                var prod_id = $('#product_id_to_edit').val();
+                var pos_loc_id = $('#cform-pos_location').val();
+                var inv_id = 0;
+
+                if (min < 0 || max < 0) {
+                    toastr['error']('Invalid inputs', 'Error');
+                    return 0;
+                }
+
+                if (pos_loc_id == -1) {
+                    inv_id = $('#inv_id_to_edit').val();
+                }
+
+                if (min == '') {
+                    min = 0;
+                }
+
+                if (max == '') {
+                    max = 0;
+                }
+
+                var url = "/inventory/locations/grid/save_stock_threshold/" + prod_id +"/"+ min +"/"+ max +"/"+ pos_loc_id +"/"+ inv_id;
+                $.getJSON(url, function(json){
+                    $.each(json, function(i, msg) {
+                        if (msg.status == 'success') {
+                            toastr['success']('Stock threshold changed', 'Success');
+                            clearStockModal();
+                            dTable.fnReloadAjax();
+                        } else {
+                            toastr['error']('Stock threshold not changed', 'Error');
+                            clearStockModal();
+                        }
+                    });
+                });
+
+                $('#change_stock_threshold').modal('hide');
+            });
+
+            $('#change_stock_threshold').on('hidden.bs.modal', function () {
+                clearStockModal();
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block css %}
+    <link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

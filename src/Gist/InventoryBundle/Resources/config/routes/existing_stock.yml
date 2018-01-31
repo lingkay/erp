@@ -1,0 +1,26 @@
+
+gist_inv_existing_stock_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStock:index }
+
+gist_inv_existing_stock_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStock:grid }
+
+
+gist_inv_existing_stock_grid_search:
+    pattern: /grid/{pos_loc_id}/{inv_type}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStock:gridSearch }
+
+gist_inv_existing_stock_get_prod_details:
+    path:     /grid/get_prod_info/{id}/{inv_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStock:getProductDetailsStock }
+
+gist_inv_existing_stock_save_stock_threshold:
+    path:     /grid/save_stock_threshold/{id}/{min}/{max}/{pos_loc_id}/{inv_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStock:saveStockThreshold }
