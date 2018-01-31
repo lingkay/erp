@@ -38,6 +38,6 @@ class DamagedItemReasonController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setName($data['name']);
+        $o->setName($data['reason']);
     }
 }
