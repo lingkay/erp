@@ -24,6 +24,11 @@ gist_inv_open_tester_pos_consume_item:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:OpenTester:updateOpenTesterStatus }
 
+gist_inv_open_tester_pos_pickup_item:
+    path:    /pos/pickup_item/{id}/{uid}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:OpenTester:updateOpenTesterPickup }
+
 gist_inv_open_tester_search_ajax_grid:
     path:    /search_product/ajax2/{pos_loc_id}/{category}
     methods: [GET]
