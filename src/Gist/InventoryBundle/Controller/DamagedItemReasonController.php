@@ -10,7 +10,7 @@ class DamagedItemReasonController extends CrudController
 {
     public function __construct()
     {
-        $this->route_prefix = 'cat_inv_brand';
+        $this->route_prefix = 'gist_inv_damaged_item_reason';
         $this->title = 'Damaged Item Reasons';
 
         $this->list_title = 'Damaged Item Reason';
@@ -32,12 +32,12 @@ class DamagedItemReasonController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Name', 'getName', 'name'),
+            $grid->newColumn('Reason', 'getReason', 'reason'),
         );
     }
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setName($data['reason']);
+        $o->setReason($data['reason']);
     }
 }

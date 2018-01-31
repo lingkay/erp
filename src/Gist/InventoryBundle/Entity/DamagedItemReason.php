@@ -28,15 +28,15 @@ class DamagedItemReason
         $this->initHasGeneratedID();
     }
 
-    public function setRemarks($remarks)
+    public function setReason($reason)
     {
-        $this->remarks = $remarks;
+        $this->reason = $reason;
         return $this;
     }
 
-    public function getRemarks()
+    public function getReason()
     {
-        return $this->remarks;
+        return $this->reason;
     }
 
     /**
