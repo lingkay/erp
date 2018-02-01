@@ -8,6 +8,9 @@ use Gist\InventoryBundle\Entity\StockTransferEntry;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Gist\InventoryBundle\Entity\Entry;
+use Gist\InventoryBundle\Entity\Transaction;
+use Gist\InventoryBundle\Entity\Stock;
 use DateTime;
 
 
