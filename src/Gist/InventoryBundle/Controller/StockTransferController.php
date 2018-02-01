@@ -534,9 +534,30 @@ class StockTransferController extends CrudController
         } elseif ($status == 'delivered') {
             $st->setDeliverUser($user);
             $st->setDateDelivered(new DateTime());
-            $entries_stock = array();
-            //generate stock transfers
+        } elseif ($status == 'arrived') {
+            $st->setReceivingUser($user);
+            $st->setDateReceived(new DateTime());
             parse_str($entries, $entriesParsed);
+
+            foreach ($entriesParsed as $e) {
+                if (isset($e['st_entry'])) {
+                    $entry_id = $e['st_entry'];
+                    $qty = $e['received_quantity'];
+
+                    // entry
+                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
+                    $entry->setReceivedQuantity($qty);
+
+                    $em->persist($entry);
+                    $em->flush();
+
+                    //$entries[] = $entry;
+                }
+            }
+
+            $entries_x = array();
+            //generate stock transfers
+            //parse_str($entries, $entriesParsed);
 
             foreach ($entriesParsed as $e) {
                 if (isset($e['st_entry'])) {
@@ -586,27 +607,6 @@ class StockTransferController extends CrudController
 
                     $inv->persistTransaction($trans);
                     $em->flush();
-                }
-            }
-
-        } elseif ($status == 'arrived') {
-            $st->setReceivingUser($user);
-            $st->setDateReceived(new DateTime());
-            parse_str($entries, $entriesParsed);
-
-            foreach ($entriesParsed as $e) {
-                if (isset($e['st_entry'])) {
-                    $entry_id = $e['st_entry'];
-                    $qty = $e['received_quantity'];
-
-                    // entry
-                    $entry = $em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
-                    $entry->setReceivedQuantity($qty);
-
-                    $em->persist($entry);
-                    $em->flush();
-
-                    //$entries[] = $entry;
                 }
             }
 
