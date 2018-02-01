@@ -536,6 +536,8 @@ class StockTransferController extends CrudController
             //generate stock transfers
             parse_str($entries, $entriesParsed);
 
+
+
             foreach ($entriesParsed as $e) {
                 if (isset($e['st_entry'])) {
                     $entry_id = $e['st_entry'];
@@ -552,12 +554,12 @@ class StockTransferController extends CrudController
                     // add entries
                     // entry for destination
                     $wh_entry = new Entry();
-                    $wh_entry->setInventoryAccount($entry->getDestination())
+                    $wh_entry->setInventoryAccount($st->getDestination())
                         ->setProduct($prod);
 
                     // entry for source
                     $adj_entry = new Entry();
-                    $adj_entry->setInventoryAccount($entry->getSource())
+                    $adj_entry->setInventoryAccount($st->getSource())
                         ->setProduct($prod);
 
                     $old_qty = 0;
