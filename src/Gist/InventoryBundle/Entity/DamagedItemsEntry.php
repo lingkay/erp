@@ -113,7 +113,7 @@ class DamagedItemsEntry
 
     public function getQuantity()
     {
-        return number_format($this->quantity);
+        return $this->quantity;
     }
 
     public function getDamagedItems()

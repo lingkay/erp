@@ -60,7 +60,7 @@ class StockTransferEntry
 
     public function getQuantity()
     {
-        return number_format($this->quantity);
+        return $this->quantity;
     }
 
     public function setReceivedQuantity($received_quantity)
@@ -71,7 +71,7 @@ class StockTransferEntry
 
     public function getReceivedQuantity()
     {
-        return number_format($this->received_quantity);
+        return $this->received_quantity;
     }
 
     public function setProcessedQuantity($processed_quantity)
@@ -82,7 +82,7 @@ class StockTransferEntry
 
     public function getProcessedQuantity()
     {
-        return number_format($this->processed_quantity);
+        return $this->processed_quantity;
     }
 
     public function getStockTransfer()
