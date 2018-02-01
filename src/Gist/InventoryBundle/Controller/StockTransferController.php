@@ -300,12 +300,12 @@ class StockTransferController extends CrudController
         }
         catch (ValidationException $e)
         {
-            $this->addFlash('Database error occured. Possible duplicate.');
+            $this->addFlash('Database error occurred. Possible duplicate.');
             return $this->editError($object, $id);
         }
         catch (DBALException $e)
         {
-            $this->addFlash('Database error occured. Possible duplicate.');
+            $this->addFlash('Database error occurred. Possible duplicate.');
             error_log($e->getMessage());
 
             return $this->editError($object, $id);
@@ -645,6 +645,37 @@ class StockTransferController extends CrudController
         $list_opts[] = array(
             'status'=>'success'
         );
+
+        return new JsonResponse($list_opts);
+    }
+
+    public function getCurrentStockAction($item_code, $source_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $inv = $this->get('gist_inventory');
+        $em = $this->getDoctrine()->getManager();
+        $config = $this->get('gist_configuration');
+
+        $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code'=>$item_code));
+
+        if ($source_id == '0') {
+            $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        } else {
+            $wh_src = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(['id'=>$source_id]);
+        }
+
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('inv_account'=>$wh_src->getInventoryAccount()->getID(),'product'=>$prod->getID()));
+
+        if ($stock) {
+            $list_opts = array(
+                'stock_qty'=>$stock->getQuantity()
+            );
+        } else {
+            $list_opts = array(
+                'stock_qty'=>"0.00"
+            );
+        }
+
 
         return new JsonResponse($list_opts);
     }

@@ -299,7 +299,7 @@
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class="col-md-{{ body_size }}">
         <select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control select_2" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --">
-        {{ self.options(options, value) }}
+        {{ self.options_legacy(options, value) }}
         </select>
     </div>
 </div>
