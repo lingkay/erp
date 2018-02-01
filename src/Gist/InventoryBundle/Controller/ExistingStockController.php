@@ -203,7 +203,7 @@ class ExistingStockController extends Controller
             $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
         }
 
-        $qry[] = "(o.quantity > 0)";
+        $qry[] = "(o.quantity > -90000)";
 
         if (!empty($qry))
         {
@@ -272,7 +272,7 @@ class ExistingStockController extends Controller
             }
         }
 
-        $qry[] = "(o.quantity > 0)";
+        $qry[] = "(o.quantity > -90000)";
 
 
         if (!empty($qry))
