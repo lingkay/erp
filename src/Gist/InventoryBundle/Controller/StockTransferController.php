@@ -581,7 +581,7 @@ class StockTransferController extends CrudController
                     $entries_x[] = $wh_entry;
                     $entries_x[] = $adj_entry;
 
-                    foreach ($entries as $ent)
+                    foreach ($entries_x as $ent)
                         $trans->addEntry($ent);
 
                     $inv->persistTransaction($trans);
