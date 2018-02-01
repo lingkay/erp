@@ -503,7 +503,7 @@ class StockTransferController extends CrudController
         $st = $em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$userId));
         $inv_stock_transfer = $this->get('gist_inventory_stock_transfer');
-
+        $entries_x = array();
         $st->setStatus($status);
 
         if($status == 'processed') {
@@ -578,8 +578,8 @@ class StockTransferController extends CrudController
                         $wh_entry->setCredit($qty);
                         $adj_entry->setDebit($qty);
                     }
-                    $entries[] = $wh_entry;
-                    $entries[] = $adj_entry;
+                    $entries_x[] = $wh_entry;
+                    $entries_x[] = $adj_entry;
 
                     foreach ($entries as $ent)
                         $trans->addEntry($ent);
