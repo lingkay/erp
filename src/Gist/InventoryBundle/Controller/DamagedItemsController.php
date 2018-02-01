@@ -333,8 +333,8 @@ class DamagedItemsController extends CrudController
 
             //this is where the damaged items will come from
             //this should get from pos location's stock. adjustment warehouse for now
-            $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
-            $adj_acc = $adj_warehouse->getInventoryAccount();
+            //$adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+            $adj_acc = $source->getInventoryAccount();
 
             $new_qty = $data['quantity'][$index];
             $old_qty = 0;
@@ -1459,9 +1459,8 @@ class DamagedItemsController extends CrudController
         $source = $inv->findPOSLocation($loc_id);
         $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'pos');
 
-        //change this to come from POS
-        $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
-        $adj_acc = $adj_warehouse->getInventoryAccount();
+        //come from POS
+        $adj_acc = $source->getInventoryAccount();
 
         $new_qty = $qty;
         $old_qty = 0;
