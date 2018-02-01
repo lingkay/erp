@@ -34,7 +34,7 @@ class InventoryStockTransferManager
     {
         $this->em = $em;
         $this->container = $container;
-        $this->user = $security->getToken()->getUser();
+        //$this->user = $security->getToken()->getUser();
     }
 
     public function getDamagedContainerInventoryAccount($id, $type)
@@ -156,7 +156,7 @@ class InventoryStockTransferManager
 
                 // setup transaction
                 $trans = new Transaction();
-                $trans->setUserCreate($this->user)
+                $trans->setUserCreate($user)
                     ->setDescription('Stock transfer items successfully delivered.');
 
                 // add entries
