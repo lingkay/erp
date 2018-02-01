@@ -37,7 +37,7 @@
                                                 <td><input type="text"  class='form-control' value="{{ e.getProduct.getItemCode|default('N/A') }}" readonly></td>
                                                 <td><input type="text"  class='form-control' value="{{ e.getProduct.getName|default('N/A') }}" readonly></td>
                                                 <td><input type="number"  class='form-control quantity_row' name="quantity[]" value="{{ e.getQuantity }}" readonly></td>
-                                                <td><input type="number"  class='form-control quantity_row' name="quantity[]" value="{{ e.getRemarks }}" readonly></td>
+                                                <td><input type="text"  class='form-control' name="quantity[]" value="{{ e.getRemarks }}" readonly></td>
                                             </tr>
                                         {% endfor %}
                                         </tbody>
