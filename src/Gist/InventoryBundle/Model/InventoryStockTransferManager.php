@@ -143,9 +143,15 @@ class InventoryStockTransferManager
 
         } elseif ($data['status'] == 'delivered') {
 
-            $user = $this->em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$data['selected_user']));
             $o->setDeliverUser($user);
             $o->setDateDelivered(new DateTime());
+
+        } elseif ($data['status'] == 'arrived') {
+
+            $o->setReceivingUser($user);
+            $o->setDateReceived(new DateTime());
+
+
             $entries = array();
 
             //generate transfer entries
@@ -196,13 +202,9 @@ class InventoryStockTransferManager
                 $this->em->flush();
             }
 
-        } elseif ($data['status'] == 'arrived') {
 
-            $o->setReceivingUser($user);
-            $o->setDateReceived(new DateTime());
-
-            $entries = $this->updateEntries($data, $o, 'setReceivedQuantity');
-            return $entries;
+            $entriesx = $this->updateEntries($data, $o, 'setReceivedQuantity');
+            return $entriesx;
         } elseif ($data['status'] == 'requested') {
 
             $o->setRequestingUser($user);

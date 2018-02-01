@@ -330,6 +330,8 @@ class StockTransferController extends CrudController
             return $entries;
 
         } else {
+//            var_dump($data);
+//            die();
             $inv_stock_transfer->updateForm($o, $data, $user);
 
         }
