@@ -749,6 +749,7 @@ class DamagedItemsController extends CrudController
                 'item_code'=>$p->getProduct()->getItemCode(),
                 'product_name'=> $p->getProduct()->getName(),
                 'quantity'=> $p->getQuantity(),
+                'remarks'=> $p->getRemarks(),
             );
 
         }
