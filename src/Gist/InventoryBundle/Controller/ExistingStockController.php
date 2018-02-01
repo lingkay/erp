@@ -118,7 +118,7 @@ class ExistingStockController extends Controller
             $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
 //            $grid->newColumn('Min. Stock','getMinStock','min_stock', 'o'),
 //            $grid->newColumn('Max. Stock','getMaxStock','max_stock', 'o'),
-            $grid->newColumn('Current Stock','getQuantityColored','quantity', 'o', array($this,'formatNumeric'))
+            $grid->newColumn('Current Stock','getQuantity','quantity', 'o')
         );
     }
 
@@ -203,7 +203,7 @@ class ExistingStockController extends Controller
             $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
         }
 
-
+        $qry[] = "(o.quantity > 0)";
 
         if (!empty($qry))
         {
@@ -272,6 +272,8 @@ class ExistingStockController extends Controller
             }
         }
 
+        $qry[] = "(o.quantity > 0)";
+
 
         if (!empty($qry))
         {
@@ -291,6 +293,50 @@ class ExistingStockController extends Controller
         $resp->headers->set('Content-Type', 'application/json');
 
         return $resp;
+    }
+
+    /**
+     *
+     * For POS Open Tester Grid
+     * (copy damaged items grid implementation)
+     *
+     * @param $pos_loc_id
+     * @return JsonResponse
+     */
+    public function getExistingStockDataAction($pos_loc_id, $inv_type)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+
+        if ($inv_type == 'sales') {
+            $iacc = $pos_location->getInventoryAccount();
+        } elseif ($inv_type == 'damaged') {
+            $iacc = $pos_location->getInventoryAccount()->getDamagedContainer();
+        } elseif ($inv_type == 'tester') {
+            $iacc = $pos_location->getInventoryAccount()->getTesterContainer();
+        } elseif ($inv_type == 'missing') {
+            $iacc = $pos_location->getInventoryAccount()->getMissingContainer();
+        } else {
+            $iacc = $pos_location->getInventoryAccount();
+        }
+
+
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$iacc->getID()));
+        $list_opts = [];
+        foreach ($stock as $p) {
+            if ($p->getQuantity() > 0) {
+                $list_opts[] = array(
+                    'quantity' => $p->getQuantity(),
+                    'item_code' =>$p->getProduct()->getItemCode(),
+                    'barcode' => $p->getProduct()->getBarcode(),
+                    'item_name' => $p->getProduct()->getName(),
+                );
+            }
+        }
+
+        $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
+        return new JsonResponse($list_opts);
     }
 
     protected function getControllerBase()

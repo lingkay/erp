@@ -92,6 +92,8 @@ security:
         - { path: ^/inventory/open_tester/pos/pickup_item, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/open_tester/search_product/ajax2, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
+        - { path: ^/inventory/existing_stock/pos/grid, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 

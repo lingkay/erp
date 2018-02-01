@@ -24,3 +24,9 @@ gist_inv_existing_stock_save_stock_threshold:
     path:     /grid/save_stock_threshold/{id}/{min}/{max}/{pos_loc_id}/{inv_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:ExistingStock:saveStockThreshold }
+
+
+gist_inv_existing_stock_pos_grid_data:
+    pattern: /pos/grid/{pos_loc_id}/{inv_type}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStock:getExistingStockData }
