@@ -536,8 +536,6 @@ class StockTransferController extends CrudController
             //generate stock transfers
             parse_str($entries, $entriesParsed);
 
-
-
             foreach ($entriesParsed as $e) {
                 if (isset($e['st_entry'])) {
                     $entry_id = $e['st_entry'];
@@ -563,7 +561,7 @@ class StockTransferController extends CrudController
                         ->setProduct($prod);
 
                     $old_qty = 0;
-                    $new_qty = $entry->getQuantity();
+                    $new_qty = $qty;
 
                     // check if debit or credit
                     if ($new_qty > $old_qty)
