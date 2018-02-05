@@ -24,12 +24,7 @@ class ExistingStockController extends Controller
     {
         $this->route_prefix = 'gist_inv_existing_stock';
         $this->title = 'Existing Stock';
-        $config = $this->get('gist_configuration');
-        $inv = $this->get('gist_inventory');
         $params = $this->getViewParams('List');
-        $settings = $this->get('hris_settings');
-        $recruitment = $this->get('hris_recruitment');
-        $request = $this->get('hris_request');
         $this->getControllerBase();
         $gl = $this->setupGridLoader();
         $params['main_warehouse'] = 0;
@@ -78,22 +73,16 @@ class ExistingStockController extends Controller
         $data = $this->getRequest()->query->all();
         $grid = $this->get('gist_grid');
 
-        // loader
         $gloader = $grid->newLoader();
         $gloader->processParams($data)
             ->setRepository($this->repo);
 
-        // grid joins
         $gjoins = $this->getGridJoins();
         foreach ($gjoins as $gj)
             $gloader->addJoin($gj);
 
-        // grid columns
         $gcols = $this->getGridColumns($pos_loc_id);
 
-
-
-        // add columns
         foreach ($gcols as $gc)
             $gloader->addColumn($gc);
 
@@ -116,8 +105,6 @@ class ExistingStockController extends Controller
         return array(
             $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
             $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
-//            $grid->newColumn('Min. Stock','getMinStock','min_stock', 'o'),
-//            $grid->newColumn('Max. Stock','getMaxStock','max_stock', 'o'),
             $grid->newColumn('Current Stock','getQuantity','quantity', 'o')
         );
     }
@@ -180,9 +167,6 @@ class ExistingStockController extends Controller
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
         $gloader = $this->setupGridLoader();
-
-//        $gloader->setQBFilterGroup($this->filterGrid());
-
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
 
@@ -193,7 +177,6 @@ class ExistingStockController extends Controller
         }
         elseif ($pos_loc_id == -1)
         {
-            //ALL
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
             $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
         }
@@ -227,11 +210,8 @@ class ExistingStockController extends Controller
         $config = $this->get('gist_configuration');
         $gloader = $this->setupGridLoader();
 
-
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
-
-
 
         if($pos_loc_id == 0)
         {
@@ -253,7 +233,6 @@ class ExistingStockController extends Controller
         }
         elseif ($pos_loc_id == -1)
         {
-            //ALL
 
         }
         else
@@ -283,10 +262,8 @@ class ExistingStockController extends Controller
         }
         else
         {
-            //$main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
-            //$qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
-        }
 
+        }
 
         $gres = $gloader->load();
         $resp = new Response($gres->getJSON());
@@ -321,7 +298,6 @@ class ExistingStockController extends Controller
             $iacc = $pos_location->getInventoryAccount();
         }
 
-
         $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$iacc->getID()));
         $list_opts = [];
         foreach ($stock as $p) {
@@ -342,9 +318,6 @@ class ExistingStockController extends Controller
     protected function getControllerBase()
     {
         $full = $this->getRequest()->get('_controller');
-
-        // parse out the things we need
-        // NOTE: this assumes the format: <namespace>\<bundle_name>\Controller\<controller_name>Controller::<action>
         $x_full = explode('\\', $full);
 
         $bundle = $x_full[0] . $x_full[1];
@@ -353,7 +326,6 @@ class ExistingStockController extends Controller
 
         $base = $bundle . ':' . $name;
 
-        // automatically set repo and base view
         if ($this->repo == null)
             $this->repo = $base;
         $this->base_view = $base;
@@ -426,3 +398,4 @@ class ExistingStockController extends Controller
         return $grid->newFilterGroup();
     }
 }
+

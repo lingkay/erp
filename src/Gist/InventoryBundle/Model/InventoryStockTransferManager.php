@@ -72,8 +72,7 @@ class InventoryStockTransferManager
         // update inventory stock
         $entries = $trans->getEntries();
 
-        foreach ($entries as $entry)
-        {
+        foreach ($entries as $entry) {
             $this->updateStock($entry);
         }
 
@@ -132,7 +131,7 @@ class InventoryStockTransferManager
     {
         $o->setStatus($data['status']);
 
-        if($data['status'] == 'processed') {
+        if ($data['status'] == 'processed') {
 
             $o->setProcessedUser($user);
             $o->setDateProcessed(new DateTime());
@@ -155,10 +154,9 @@ class InventoryStockTransferManager
             $entries = array();
 
             //generate transfer entries
-            foreach ($data['st_entry'] as $index => $value)
-            {
+            foreach ($data['st_entry'] as $index => $value) {
                 $entry_id = $value;
-                $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id'=>$entry_id));
+                $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
 
                 // setup transaction
                 $trans = new Transaction();
@@ -180,14 +178,11 @@ class InventoryStockTransferManager
                 $new_qty = $entry->getQuantity();
 
                 // check if debit or credit
-                if ($new_qty > $old_qty)
-                {
+                if ($new_qty > $old_qty) {
                     $qty = $new_qty - $old_qty;
                     $wh_entry->setDebit($qty);
                     $adj_entry->setCredit($qty);
-                }
-                else
-                {
+                } else {
                     $qty = $old_qty - $new_qty;
                     $wh_entry->setCredit($qty);
                     $adj_entry->setDebit($qty);
@@ -227,15 +222,12 @@ class InventoryStockTransferManager
         // get stock
         $stock_repo = $this->em->getRepository('GistInventoryBundle:Stock');
         $stock = $stock_repo->findOneBy(array('inv_account' => $account, 'product' => $prod));
-        if ($stock == null)
-        {
+        if ($stock == null) {
             $stock = new Stock($account, $prod, $qty);
 
             // persist the new stock object
             $this->em->persist($stock);
-        }
-        else
-        {
+        } else {
             // add quantity
             $old_qty = $stock->getQuantity();
             $new_qty = bcadd($qty, $old_qty, 2);
@@ -245,7 +237,7 @@ class InventoryStockTransferManager
 
     public function updatePOSForm($user, $entries, $id)
     {
-        $o = $this->em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id'=>$id));
+        $o = $this->em->getRepository('GistInventoryBundle:StockTransfer')->findOneBy(array('id' => $id));
         //$o->setStatus($data['status']);
 
         if ($o->getStatus() == 'requested') {
@@ -258,7 +250,7 @@ class InventoryStockTransferManager
             $status = '';
         }
 
-        if($status == '') {
+        if ($status == '') {
 
             $o->setProcessedUser($user);
             $o->setDateProcessed(new DateTime());
@@ -310,6 +302,51 @@ class InventoryStockTransferManager
         }
 
         return 0;
+    }
+
+    public function updateStockTransferEntriesRequested($entries, $st)
+    {
+        foreach ($entries as $e) {
+            $qty = $e['quantity'];
+            $prod = $this->em->getRepository('GistInventoryBundle:Product')->findOneBy(array('item_code' => $e['code']));
+            if ($prod == null)
+                throw new ValidationException('Could not find product.');
+
+            $entry = new StockTransferEntry();
+            $entry->setStockTransfer($st)
+                ->setProduct($prod)
+                ->setQuantity($qty);
+
+            $this->em->persist($entry);
+        }
+    }
+
+    public function updateStockTransferEntriesArrived($entries, $st)
+    {
+        foreach ($entries as $e) {
+            if (isset($e['st_entry'])) {
+                $entry_id = $e['st_entry'];
+                $qty = $e['received_quantity'];
+                $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
+                $entry->setReceivedQuantity($qty);
+                $this->em->persist($entry);
+                $this->em->flush();
+            }
+        }
+    }
+
+    public function updateStockTransferEntriesProcessed($entries, $st)
+    {
+        foreach ($entries as $e) {
+            if (isset($e['st_entry'])) {
+                $entry_id = $e['st_entry'];
+                $qty = $e['processed_quantity'];
+                $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
+                $entry->setProcessedQuantity($qty);
+                $this->em->persist($entry);
+                $this->em->flush();
+            }
+        }
     }
 
     /**

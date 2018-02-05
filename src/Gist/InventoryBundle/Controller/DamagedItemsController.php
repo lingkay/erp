@@ -139,20 +139,12 @@ class DamagedItemsController extends CrudController
         $fg->where('o.source_inv_account = :inv_account')
             ->setParameter('inv_account', $dmg_acc->getID());
 
-//        $fg->andwhere('o.destination_inv_account = :inv_account')
-//            ->setParameter('inv_account', $dmg_acc->getID());
-
-        //no need to hide returned. backend will change the entry's source to the destination iacc
-//        $fg->andwhere('o.status != :status')
-//            ->setParameter('status', 'returned');
-
         $gloader->setQBFilterGroup($fg);
 
         $gjoins = $this->getGridJoins();
         foreach ($gjoins as $gj)
             $gloader->addJoin($gj);
 
-//        $gcols[] = $grid->newColumn('', 'getID', null, 'o', array($this, 'callbackGrid'), false, false);
         $gcols = $this->getGridColumns();
 
         if ($this->list_type == 'dynamic')
@@ -189,7 +181,6 @@ class DamagedItemsController extends CrudController
     {
         $grid = $this->get('gist_grid');
         return array(
-            //$grid->newColumn('', 'getID', 'id','o', array($this,'drawCheckbox')),
             $grid->newColumn('Item','getName','name', 'product'),
             $grid->newColumn('Quantity','getQuantity','quantity'),
             $grid->newColumn('Date create','getDateCreateFormatted','date_create'),
@@ -260,8 +251,6 @@ class DamagedItemsController extends CrudController
 
         $params = $this->getViewParams('Add');
         $params['object'] = $obj;
-
-        // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
         $this->padFormParams($params, $obj);
 
@@ -295,12 +284,12 @@ class DamagedItemsController extends CrudController
         }
         catch (ValidationException $e)
         {
-            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.'.$e);
             return $this->addError($obj);
         }
         catch (DBALException $e)
         {
-            $this->addFlash('error', 'Database error occured. Possible duplicate.'.$e);
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.'.$e);
             error_log($e->getMessage());
             return $this->addError($obj);
         }
@@ -389,8 +378,7 @@ class DamagedItemsController extends CrudController
             $entry->setSource($dmg_acc);
             $entry->setRemarks($remarks);
             $entry->setUserCreate($this->getUser());
-            //this will be set when for return
-            //$entry->setDestination($dmg_acc);
+
 
             $entry->setStatus('damaged');
             $entry->setRequestingUser($this->getUser());
@@ -407,8 +395,6 @@ class DamagedItemsController extends CrudController
     public function getSelectedEntriesAction($ids, $iacc)
     {
         $em = $this->getDoctrine()->getManager();
-        $inv = $this->get('gist_inventory');
-        $config = $this->get('gist_configuration');
 
         if (strpos($ids, ',') !== false) {
             $product_ids = explode(',', $ids);
@@ -444,10 +430,8 @@ class DamagedItemsController extends CrudController
     public function addFormReturnAction($ids)
     {
         $this->checkAccess($this->route_prefix . '.add');
-        $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
-
 
         $this->hookPreAction();
         $obj = $this->newBaseClass();
@@ -458,7 +442,6 @@ class DamagedItemsController extends CrudController
             $product_ids = array($ids);
         }
 
-        //change if for POS
         //this is used to get the available stock qty for return (for setting as max allowed)
         $source = $inv->findWarehouse($config->get('gist_main_warehouse'));
         $dmg_acc = $inv->getDamagedContainerInventoryAccount($source->getID(), 'warehouse');
@@ -468,8 +451,6 @@ class DamagedItemsController extends CrudController
 
         $params = $this->getViewParams('Add');
         $params['object'] = $obj;
-
-        // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
         $this->padFormParams($params, $obj);
         $params['selected_products'] = $this->getSelectedEntriesAction($ids, $dmg_acc);
@@ -528,20 +509,17 @@ class DamagedItemsController extends CrudController
 
     public function addReturnSubmitAction($ids)
     {
-        // ASSIGN DMG ENTRIES TO NEW CREATED DAMAGE_ITEMS
-        //EDIT SUBMIT - RETURNED - WILL TRIGGER TRANSFER
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
         $this->checkAccess($this->route_prefix . '.add');
         $data = $this->getRequest()->request->all();
-
         $this->hookPreAction();
+
         try
         {
             $obj = new DamagedItems();
 
-            //change if from POS
             $wh_src = $inv->findWarehouse($config->get('gist_main_warehouse'));
 
             if ($data['destination'] === '0') {
@@ -593,19 +571,14 @@ class DamagedItemsController extends CrudController
     public function viewFormReceiveAction($id)
     {
         $this->checkAccess($this->route_prefix . '.view');
-
         $this->hookPreAction();
         $em = $this->getDoctrine()->getManager();
         $obj = $em->getRepository('GistInventoryBundle:DamagedItems')->find($id);
-
         $session = $this->getRequest()->getSession();
         $session->set('csrf_token', md5(uniqid()));
-
         $params = $this->getViewParams('Edit');
         $params['object'] = $obj;
         $params['o_label'] = $this->getObjectLabel($obj);
-
-        // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
 
         $this->padFormParams($params, $obj);
@@ -617,8 +590,6 @@ class DamagedItemsController extends CrudController
     {
         header("Access-Control-Allow-Origin: *");
         $dmgManager = $this->get('gist_inventory_damaged_items_managed');
-        //$this->checkAccess($this->route_prefix . '.edit');
-        //$this->hookPreAction();
 
         try
         {
@@ -690,9 +661,6 @@ class DamagedItemsController extends CrudController
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
         $pos_iacc_id = $pos_location->getInventoryAccount()->getDamagedContainer()->getID();
         $list_opts = [];
-        //$main_status = $st->getStatus();
-
-
 
         if ($st->getSource()->getID() == $pos_iacc_id || $st->getDestination()->getID() == $pos_iacc_id) {
 
@@ -706,7 +674,6 @@ class DamagedItemsController extends CrudController
                 'date_create'=> $st->getDateCreate()->format('y-m-d H:i:s'),
                 'description'=> $st->getDescription(),
                 'status'=>$st->getStatus(),
-                //'user_create' => $st->getUserCreate()->getDisplayName(),
             );
 
         } else {
@@ -754,7 +721,6 @@ class DamagedItemsController extends CrudController
 
         }
 
-        //return $list_opts;
 
         return new JsonResponse($list_opts);
     }
@@ -814,7 +780,6 @@ class DamagedItemsController extends CrudController
         $gloader->processParams($data)
             ->setRepository('GistInventoryBundle:DamagedItems');
 
-        // grid joins
         $gjoins = $this->getTransmitGridJoins();
         foreach ($gjoins as $gj)
             $gloader->addJoin($gj);
@@ -861,7 +826,6 @@ class DamagedItemsController extends CrudController
     {
         $grid = $this->get('gist_grid');
         return array(
-//            $grid->newJoin('product','product','getProduct'),
             $grid->newJoin('iaccs','source_inv_account','getSource'),
             $grid->newJoin('iaccd','destination_inv_account','getDestination'),
         );
@@ -874,7 +838,6 @@ class DamagedItemsController extends CrudController
             $grid->newColumn('Date Create', 'getDateCreateFormatted', 'date_create','o'),
             $grid->newColumn('Destination','getName','name','iaccd'),
             $grid->newColumn('Status', 'getStatus', 'status','o'),
-//            $grid->newColumn('Quantity', 'getQuantity', 'quantity','o'),
         );
     }
 
@@ -885,7 +848,6 @@ class DamagedItemsController extends CrudController
             $grid->newColumn('Date Create', 'getDateCreateFormatted', 'date_create','o'),
             $grid->newColumn('Destination','getName','name','iaccs'),
             $grid->newColumn('Status', 'getStatus', 'status','o'),
-//            $grid->newColumn('Quantity', 'getQuantity', 'quantity','o'),
         );
     }
 
