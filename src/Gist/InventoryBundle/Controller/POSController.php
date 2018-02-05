@@ -84,10 +84,17 @@ class POSController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    public function getProductsAction($category_id)
+    public function getProductsAction($pos_loc_id, $category_id)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
+
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $brands = explode(',', $pos_location->getBrand());
+
+        //var_dump($brands);
+        //die();
+
         $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
         $config = $this->get('gist_configuration');
         $vat = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Mode'));
@@ -106,30 +113,31 @@ class POSController extends CrudController
         
         $list_opts = [];
         foreach ($products as $p) {
+            $fixedAssetsBrandID = $config->get('gist_fixed_asset_brand');
+            if ($p->getBrand()->getID() != $fixedAssetsBrandID && $p->getType()->getName() == 'Consumables' && in_array($p->getBrand()->getName(), $brands)) {
+                $srp = 0;
+                $min = 0;
+                $o_srp = 0;
+                if ($vat == 'excl') {
+                    $o_srp = round($p->getSRP(),2);
+                    $srp = round($p->getSRP() + ($p->getSRP()*($vat_rate/100)),2);
+                    $min = round($p->getMinPrice() + ($p->getMinPrice()*($vat_rate/100)),2);
+                } elseif ($vat == 'incl') {
+                    $o_srp = round($p->getSRP(),2);
+                    $srp = round($p->getSRP(),2);
+                    $min = round($p->getMinPrice(),2);
+                } else {
+                    $o_srp = round($p->getSRP(),2);
+                    $srp = round($p->getSRP(),2);
+                    $min = round($p->getMinPrice(),2);
+                }
 
-            $srp = 0;
-            $min = 0;
-            $o_srp = 0;
-            if ($vat == 'excl') {
-                $o_srp = round($p->getSRP(),2);
-                $srp = round($p->getSRP() + ($p->getSRP()*($vat_rate/100)),2);
-                $min = round($p->getMinPrice() + ($p->getMinPrice()*($vat_rate/100)),2);
-            } elseif ($vat == 'incl') {
-                $o_srp = round($p->getSRP(),2);
-                $srp = round($p->getSRP(),2);
-                $min = round($p->getMinPrice(),2);
-            } else {
-                $o_srp = round($p->getSRP(),2);
-                $srp = round($p->getSRP(),2);
-                $min = round($p->getMinPrice(),2);
+                if ($p->getPrimaryPhoto()) {
+                    $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp, 'barcode' => $p->getBarcode(), 'item_code'=>$p->getItemCode());
+                } else {
+                    $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null, 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp, 'barcode' => $p->getBarcode(), 'item_code'=>$p->getItemCode());
+                }
             }
-
-            if ($p->getPrimaryPhoto()) {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>$p->getPrimaryPhoto()->getURL(), 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp, 'barcode' => $p->getBarcode(), 'item_code'=>$p->getItemCode());
-            } else {
-                $list_opts[] = array('id'=>$p->getID(), 'name'=> $p->getName(), 'image_url'=>null, 'srp'=>$srp, 'min_price'=>$min, 'orig_srp'=>$o_srp, 'barcode' => $p->getBarcode(), 'item_code'=>$p->getItemCode());
-            }
-            
         }
         return new JsonResponse($list_opts);
     }

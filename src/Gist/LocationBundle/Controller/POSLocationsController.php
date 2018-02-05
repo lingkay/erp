@@ -15,7 +15,6 @@ use Gist\InventoryBundle\Entity\Stock;
 
 use DateTime;
 
-
 class POSLocationsController extends CrudController
 {
     use HasInventoryAccount;
@@ -66,7 +65,6 @@ class POSLocationsController extends CrudController
         $am = $this->get('gist_accounting');
         $params['bank_opts'] = $am->getBankOptions();
 
-        // enabled options
         $params['type_opts'] = array(
             'Kiosk' => 'Kiosk',
             'Shop' => 'Shop',
@@ -111,19 +109,14 @@ class POSLocationsController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-
         $media = $this->get('gist_media');
-
         $o->setName($data['name']);
         $o->setLeasor($data['leasor']);
         $o->setContactNumber($data['contact_number']);
         $o->setCoordinates($data['coordinates']);
         $o->setLocatorDesc($data['locator_desc']);
         $o->setType($data['type']);
-//        $o->setBrand($data['brand']);
         if (isset($data['brand'])) {
-//            var_dump(implode(",", $data['brand']));
-//            die();
             $o->setBrand(implode(",", $data['brand']));
         }
         $o->setCity($data['city']);
@@ -137,8 +130,6 @@ class POSLocationsController extends CrudController
             $area = $em->getRepository('GistLocationBundle:Areas')->find($data['area']);
             $o->setArea($area);
         }
-
-
 
         // PERMITS
         if($data['upl_barangay_clearance']!=0 && $data['upl_barangay_clearance'] != ""){
@@ -201,8 +192,6 @@ class POSLocationsController extends CrudController
             $o->setSanitaryPermitExpiration(new DateTime($data['exp_sanitary_permit']));
         }
         ///////
-
-
         // RENTAL
         $o->setRentPaymentAmount($data['rental_payment_amount']);
         $o->setRentPaymentDue($data['rental_due_date']);
@@ -222,10 +211,7 @@ class POSLocationsController extends CrudController
         $o->setRentCpPosition($data['contact_position']);
         $o->setRentCpContactNumber($data['rental_contact_number']);
         $o->setRentCpEmail($data['contact_email']);
-
-
         //INSURANCE
-
         $o->setInsuranceCompany($data['insurance_company']);
         $o->setInsuranceExpiration(new DateTime($data['insurance_expiration']));
         $o->setInsurancePolicy($data['insurance_policy']);
@@ -238,10 +224,6 @@ class POSLocationsController extends CrudController
         $o->setInsuranceContactNumber1($data['insurance_contact1_number']);
         $o->setInsuranceContactPerson2($data['insurance_contact2_person']);
         $o->setInsuranceContactNumber2($data['insurance_contact2_number']);
-
-        //$this->updateHasInventoryAccount($o, $data, $is_new);
-
-
 
     }
 
@@ -304,6 +286,10 @@ class POSLocationsController extends CrudController
 
         $wh_acc = $obj->getInventoryAccount();
         $existing_stocks = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$wh_acc->getID()));
+        $existingProductsArray = [];
+        foreach ($existing_stocks as $es) {
+            array_push($existingProductsArray, $es->getProduct()->getID());
+        }
         //create ZERO stock entries for products
         if ($obj->getBrand() != '') {
             $brands = explode(',', $obj->getBrand());
@@ -317,20 +303,21 @@ class POSLocationsController extends CrudController
 
                     if ($products) {
                         if (count($existing_stocks) > 0) {
-                            foreach ($existing_stocks as $es) {
-                                foreach ($products as $product_object) {
-                                    if (!$es->getProduct()->getID() == $product_object->getID() || !$es->getInventoryAccount()->getID() == $wh_acc->getID()) {
-                                        //create ZERO entry
-                                        $stock_entry = new Stock($wh_acc, $product_object);
-                                        $stock_entry->setInventoryAccount($wh_acc);
-                                        $stock_entry->setProduct($product_object);
-                                        $stock_entry->setQuantity(0);
-                                        $em->persist($stock_entry);
-                                        $em->flush();
-                                    }
+                            //IF LOCATIONS IACC HAS AT LEAST ONE STOCK
+                            //CREATE ZERO ENTRY ONLY FOR ITEMS WITHOUT EXISTING RECORDS
+                            foreach ($products as $product_object) {
+                                if (!in_array($product_object->getID(), $existingProductsArray)) {
+                                    //create ZERO entry
+                                    $stock_entry = new Stock($wh_acc, $product_object);
+                                    $stock_entry->setInventoryAccount($wh_acc);
+                                    $stock_entry->setProduct($product_object);
+                                    $stock_entry->setQuantity(0);
+                                    $em->persist($stock_entry);
+                                    $em->flush();
                                 }
                             }
                         } else {
+                            //IF LOCATIONS IACC HAS NO PRODUCTS AT ALL
                             foreach ($products as $product_object) {
                                 //create ZERO entry
                                 $stock_entry = new Stock($wh_acc, $product_object);
@@ -341,8 +328,28 @@ class POSLocationsController extends CrudController
                                 $em->flush();
                             }
                         }
-                    } else {
+                        //IF BRAND PRODUCTS FOUND
+                    }
+                    //END IF VALID BRAND
+                }
+                //END BRANDS LOOP
+            }
+        }
 
+        //CREATE ENTRIES FOR FIXED ASSETS
+        $fixedAssetsBrandID = $config->get('gist_fixed_asset_brand');
+        if ($fixedAssetsBrandID != '') {
+            $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('brand'=>$fixedAssetsBrandID));
+            if ($products) {
+                foreach ($products as $product_object) {
+                    if (!in_array($product_object->getID(), $existingProductsArray)) {
+                        //create ZERO entry
+                        $stock_entry = new Stock($wh_acc, $product_object);
+                        $stock_entry->setInventoryAccount($wh_acc);
+                        $stock_entry->setProduct($product_object);
+                        $stock_entry->setQuantity(0);
+                        $em->persist($stock_entry);
+                        $em->flush();
                     }
                 }
             }
@@ -431,14 +438,8 @@ class POSLocationsController extends CrudController
 
     public function ajaxLedgerAddEntryAction($pos_location_id, $amount, $date, $description)
     {
-        // $list_opts = [];
-        // foreach ($employees as $employee) {
-        //     $list_opts[] = array('id'=>$employee->getID(), 'name'=> $employee->getDisplayName());
-        // }
         $em = $this->getDoctrine()->getManager();
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_location_id));
-
-
         $entry = new LedgerEntry();
         $date_formatted = strtotime($date);
         $entry->setAmount($amount);
@@ -484,5 +485,5 @@ class POSLocationsController extends CrudController
         
         return new JsonResponse($resp);
     }
-
 }
+

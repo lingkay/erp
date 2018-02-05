@@ -39,7 +39,7 @@ gist_inv_pos_get_categories:
     defaults: { _controller: GistInventoryBundle:POS:getProductCategories }
 
 gist_inv_pos_get_products:
-    pattern: /get/products/{category_id}
+    pattern: /get/products/{pos_loc_id}/{category_id}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:POS:getProducts }
 

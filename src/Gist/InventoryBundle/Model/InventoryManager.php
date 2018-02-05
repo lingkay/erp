@@ -84,6 +84,22 @@ class InventoryManager
         );
     }
 
+    public function getBrandsOptions($filter = array())
+    {
+        $whs = $this->em
+            ->getRepository('GistInventoryBundle:Brand')
+            ->findBy(
+                $filter,
+                array('name' => 'ASC')
+            );
+
+        $wh_opts = array();
+        foreach ($whs as $wh)
+            $wh_opts[$wh->getID()] = $wh->getName();
+
+        return $wh_opts;
+    }
+
     public function newEntry()
     {
         $entry = new Entry();
