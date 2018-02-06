@@ -3,18 +3,18 @@ acl:
       entries:
         - id: cat_inv.menu
           label: "Menu"
-#    - category: Warehouse
-#      entries:
-#        - id: cat_inv_wh.menu
-#          label: "Menu"
-#        - id: cat_inv_wh.view
-#          label: "View"
-#        - id: cat_inv_wh.add
-#          label: "Add"
-#        - id: cat_inv_wh.edit
-#          label: "Edit"
-#        - id: cat_inv_wh.delete
-#          label: "Delete"
+    - category: Warehouse
+      entries:
+        - id: cat_inv_wh.menu
+          label: "Menu"
+        - id: cat_inv_wh.view
+          label: "View"
+        - id: cat_inv_wh.add
+          label: "Add"
+        - id: cat_inv_wh.edit
+          label: "Edit"
+        - id: cat_inv_wh.delete
+          label: "Delete"
     - category: Stock Transfer
       entries:
         - id: gist_inv_stock_transfer.menu

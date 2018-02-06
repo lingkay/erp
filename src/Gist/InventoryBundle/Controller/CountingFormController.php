@@ -59,6 +59,16 @@ class CountingFormController extends Controller
         return $this->route_gen;
     }
 
+    public function indexSubmitAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $data = $this->getRequest()->request->all();
+        echo "<pre>";
+        var_dump($data);
+        echo "</pre>";
+        die();
+    }
+
     protected function getViewParams($subtitle = '', $selected = null)
     {
         if ($selected == null && $this->getRouteGen()->getList() != null)

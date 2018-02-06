@@ -9,39 +9,43 @@
                     <div class="caption">Counting Form</div>
                 </div>
                 <div class="portlet-body">
-                    <!-- BEGIN FORM-->
-                    <div class="row">
-                        <div class="col-md-5 col-md-offset-3" style="margin-bottom: 10px;">
+                    <form method="post" class="form-horizontal" id="counting_form">
+                        <!-- BEGIN FORM-->
+                        <div class="row">
+                            <div class="col-md-5 col-md-offset-3" style="margin-bottom: 10px;">
 
+                            </div>
                         </div>
-                    </div>
-                    <table class="table table-bordered table-hover" id="list_table">
-                        <thead>
-                        <tr>
-                            {% for col in grid_cols %}
-                                {% if (loop.last) %}
-                                    <th style="width: 165px">{{ col.getLabel }}</th>
-                                {% else %}
-                                    <th>{{ col.getLabel }}</th>
-                                {% endif %}
-                            {% endfor %}
-                            <th width="15%">Count</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for stock in stocks %}
+                        <table class="table table-bordered" id="list_table">
+                            <thead>
                             <tr>
-                                <td>{{ stock.getProduct.getItemCode|default('') }}</td>
-                                <td>{{ stock.getProduct.getName|default('') }}</td>
-                                <td>{{ stock.getQuantity|default('') }}</td>
-                                <td><input type="number" min="0" class="currentCount form-control" name="currentCount[]" value="{{ stock.getQuantity|default('') }}"></td>
-                                <td class="text-center"><i class="fa fa-check center-block text-center"></i></td>
+                                {% for col in grid_cols %}
+                                    {% if (loop.last) %}
+                                        <th style="width: 165px">{{ col.getLabel }}</th>
+                                    {% else %}
+                                        <th>{{ col.getLabel }}</th>
+                                    {% endif %}
+                                {% endfor %}
+                                <th width="15%">Count</th>
+                                <th></th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                    <!-- END FORM-->
+                            </thead>
+                            <tbody>
+                            {% for stock in stocks %}
+                                <tr>
+                                    <input type="hidden" name="product_id[]" value="{{ stock.getProduct.getID }}">
+                                    <td>{{ stock.getProduct.getItemCode|default('') }}</td>
+                                    <td>{{ stock.getProduct.getName|default('') }}</td>
+                                    <td><input type="number" step="1" class="existingCount form-control" name="existingCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}" readonly></td>
+                                    <td><input type="number" step="1" class="currentCount form-control" name="currentCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}"></td>
+                                    <td class="text-center"><i class="fa fa-check center-block text-center rowMarker"></i></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn blue"><i class="fa fa-save"></i> Submit</button>
+                        <!-- END FORM-->
+                    </form>
                 </div>
             </div>
         </div>
@@ -60,35 +64,11 @@
 
     <script>
 
-        function clearStockModal() {
-            $('#cform-min_qty').val('0');
-            $('#cform-max_qty').val('0');
-            $('#cform-product').val('');
-            $('#product_id_to_edit').val('0');
-            $('#inv_id_to_edit').val('0');
-        }
-
-        function generatePath() {
-            var pos_loc_id = $('#cform-pos_location').val();
-            var inv_type = $('#cform-inv_type').val();
-
-
-            var path = "{{ path('gist_inv_counting_gridform_grid_search', {
-                'pos_loc_id' : 'POS_LOC_ID',
-                'inv_type' : 'INV_TYPE',
-            }
-            ) }}";
-
-
-
-            path = path.replace('POS_LOC_ID', pos_loc_id);
-            path = path.replace('INV_TYPE', inv_type);
-
-            return path;
-        }
 
         $(document).ready(function() {
             var dTable;
+            var flag_discrepancy = false;
+            var flag_form_valid = false;
 
             dTable = $('#list_table').dataTable({
                 "bProcessing": false,
@@ -116,88 +96,102 @@
             $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
 
 
+            $('#counting_form').on('submit', function(e){
+                var $form = $(this);
 
-            $('.radio').on("click",function(){
-                if ($('#uniform-cform-computation input:radio:checked').val() == 'manual') {
-                    $('#cform-min_qty').prop('readonly', false);
-                    $('#cform-max_qty').prop('readonly', false);
+                // Iterate over all checkboxes in the table
+                dTable.$('input[name^="product_id"]').each(function(){
+                    // If checkbox doesn't exist in DOM
+                    if(!$.contains(document, this)){
+                        // If checkbox is checked
+                        //if(this.checked){
+                            // Create a hidden element
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', this.name)
+                                    .val(this.value)
+                            );
+                        //}
+                    }
+                });
+
+                // Iterate over all checkboxes in the table
+                dTable.$('input[name^="currentCount"]').each(function(){
+                    // If checkbox doesn't exist in DOM
+                    if(!$.contains(document, this)){
+                        // If checkbox is checked
+                        //if(this.checked){
+                            // Create a hidden element
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', this.name)
+                                    .val(this.value)
+                            );
+                        //}
+                    }
+                });
+
+                flag_form_valid = true;
+                dTable.$('input[name^="currentCount"]').each(function(){
+                    var tr = $(this).closest('tr');
+                    var existingCount = tr.find('.existingCount').val();
+                    flag_discrepancy = false;
+
+                    if (this.value == '') {
+                        tr.css("background-color","#ff5959");
+                        flag_form_valid = false;
+                    } else if (this.value != existingCount) {
+                        flag_discrepancy = true;
+                        tr.css("background-color","yellow");
+                    }
+
+
+
+                });
+
+                if (!flag_discrepancy && flag_form_valid) {
+                    if (confirm('Discrepancy in counting. Continue?')) {
+
+                    } else {
+                        toastr['warning']('Fix discrepancies. Rows have been marked yellow.');
+                        e.preventDefault();
+                        return false;
+                    }
+
                 } else {
-                    var formula_min = $('#formula_min').val();
-                    var formula_max = $('#formula_max').val();
-                    $('#cform-min_qty').val(formula_min);
-                    $('#cform-max_qty').val(formula_max);
-                    $('#cform-min_qty').prop('readonly', true);
-                    $('#cform-max_qty').prop('readonly', true);
+                    toastr['error']('Please check colored rows!');
+                    e.preventDefault();
+                    return false;
+                }
+
+            });
+
+            $('.currentCount').on('keyup keypress', function(e) {
+                var tr = $(this).closest('tr');
+                var existingCount = tr.find('.existingCount').val();
+                var rowMarker = tr.find('.rowMarker');
+
+                if (this.value != '') {
+                    if (this.value != existingCount) {
+                        flag_discrepancy = true;
+                        tr.css("background-color","yellow");
+                        rowMarker.removeClass('fa-check');
+                        rowMarker.addClass('fa-times');
+                    } else {
+                        tr.css("background-color","");
+                        rowMarker.addClass('fa-check');
+                        rowMarker.removeClass('fa-times');
+                    }
+                } else {
+                    var tr = $(this).closest('tr');
+                    tr.css("background-color","#ff5959");
+                    rowMarker.removeClass('fa-check');
+                    rowMarker.addClass('fa-times');
                 }
             });
 
-            $(document).on("click",".change_threshold_btn", function(e){
-                var row = $(this).closest('tr');
-                var prod_id = row.find('.row_prod_id').val();
-                var inv_id = row.find('.row_inv_id').val();
-                $('#product_id_to_edit').val(prod_id);
-                $('#inv_id_to_edit').val(inv_id);
-
-
-                var url = "/inventory/locations/grid/get_prod_info/" + prod_id + "/" + inv_id;
-                $.getJSON(url, function(json){
-                    $.each(json, function(i, item) {
-                        name = item.name;
-                        $('#cform-product').val(name);
-                        $('#formula_min').val(item.f_min);
-                        $('#formula_max').val(item.f_max);
-                        $('#cform-min_qty').val(item.min);
-                        $('#cform-max_qty').val(item.max);
-                    });
-                });
-
-                $('#change_stock_threshold').modal('show');
-            });
-
-            $(document).on("click",".save_threshold_btn", function(e){
-                var min = $('#cform-min_qty').val();
-                var max = $('#cform-max_qty').val();
-                var prod_id = $('#product_id_to_edit').val();
-                var pos_loc_id = $('#cform-pos_location').val();
-                var inv_id = 0;
-
-                if (min < 0 || max < 0) {
-                    toastr['error']('Invalid inputs', 'Error');
-                    return 0;
-                }
-
-                if (pos_loc_id == -1) {
-                    inv_id = $('#inv_id_to_edit').val();
-                }
-
-                if (min == '') {
-                    min = 0;
-                }
-
-                if (max == '') {
-                    max = 0;
-                }
-
-                var url = "/inventory/locations/grid/save_stock_threshold/" + prod_id +"/"+ min +"/"+ max +"/"+ pos_loc_id +"/"+ inv_id;
-                $.getJSON(url, function(json){
-                    $.each(json, function(i, msg) {
-                        if (msg.status == 'success') {
-                            toastr['success']('Stock threshold changed', 'Success');
-                            clearStockModal();
-                            dTable.fnReloadAjax();
-                        } else {
-                            toastr['error']('Stock threshold not changed', 'Error');
-                            clearStockModal();
-                        }
-                    });
-                });
-
-                $('#change_stock_threshold').modal('hide');
-            });
-
-            $('#change_stock_threshold').on('hidden.bs.modal', function () {
-                clearStockModal();
-            })
         });
     </script>
 {% endblock %}
