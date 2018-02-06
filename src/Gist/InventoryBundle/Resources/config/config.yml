@@ -21,3 +21,8 @@ config:
           type: select
           options_service: gist_inventory
           options_method: getBrandsOptions
+        - id: gist_pos_counting_system_count_visibility
+          label: "POS Counting System Count"
+          type: select
+          options_service: gist_inventory
+          options_method: getBoolOptionsVisibility

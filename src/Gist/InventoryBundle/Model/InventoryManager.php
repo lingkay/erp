@@ -84,6 +84,14 @@ class InventoryManager
         );
     }
 
+    public function getBoolOptionsVisibility()
+    {
+        return array(
+            'shown' => 'Shown',
+            'hidden' => 'Hidden'
+        );
+    }
+
     public function getBrandsOptions($filter = array())
     {
         $whs = $this->em
