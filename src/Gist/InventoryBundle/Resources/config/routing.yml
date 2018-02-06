@@ -116,6 +116,12 @@ gist_inv_counting:
     resource: "@GistInventoryBundle/Resources/config/routes/counting.yml"
     prefix: /counting
 
+gist_inv_counting_gridform:
+    resource: "@GistInventoryBundle/Resources/config/routes/counting_gridform.yml"
+    prefix: /counting_form
+
+
+
 
 cat_inv_trans_index:
     pattern: /transaction

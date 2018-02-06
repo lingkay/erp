@@ -31,6 +31,10 @@ menu_items:
       acl: gist_inv_counting.menu
       label: Counting Submissions
       parent: menu_inventory
+    - id: gist_inv_counting_gridform_index
+      acl: gist_inv_counting_gridform.menu
+      label: Counting Form
+      parent: menu_inventory
     # - id: cat_inv_pg_index
     #   acl: cat_inv_pg.menu
     #   label: Product Group
