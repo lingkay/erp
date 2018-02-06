@@ -208,6 +208,12 @@ class POSLocations
      */
     protected $ledger_entries;
 
+    /** @ORM\Column(type="time") */
+    protected $opening_count;
+
+    /** @ORM\Column(type="time") */
+    protected $closing_count;
+
 
     public function __construct()
     {
@@ -226,6 +232,30 @@ class POSLocations
         
         $sum += $this->rent_security_deposit_amount;
         return $sum;
+    }
+
+    public function setOpeningCount($opening_count)
+    {
+        $this->opening_count = $opening_count;
+
+        return $this;
+    }
+
+    public function getOpeningCount()
+    {
+        return $this->opening_count;
+    }
+
+    public function setClosingCount($closing_count)
+    {
+        $this->closing_count = $closing_count;
+
+        return $this;
+    }
+
+    public function getClosingCount()
+    {
+        return $this->closing_count;
     }
 
 

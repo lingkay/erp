@@ -191,3 +191,15 @@ acl:
           label: "Edit"
         - id: gist_inv_damaged_item_reason.delete
           label: "Delete"
+    - category: Existing Stock
+      entries:
+        - id: gist_inv_counting.menu
+          label: "Menu"
+        - id: gist_inv_counting.view
+          label: "View"
+        - id: gist_inv_counting.add
+          label: "Add"
+        - id: gist_inv_counting.edit
+          label: "Edit"
+        - id: gist_inv_counting.delete
+          label: "Delete"

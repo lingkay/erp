@@ -112,6 +112,10 @@ gist_inv_damaged_item_reason:
     resource: "@GistInventoryBundle/Resources/config/routes/damaged_item_reason.yml"
     prefix: /damaged_reasons
 
+gist_inv_counting:
+    resource: "@GistInventoryBundle/Resources/config/routes/counting.yml"
+    prefix: /counting
+
 
 cat_inv_trans_index:
     pattern: /transaction

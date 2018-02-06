@@ -17,6 +17,10 @@
                             POS </a>
                     </li>
                     <li>
+                        <a href="#tab_inventory" data-toggle="tab">
+                            Inventory </a>
+                    </li>
+                    <li>
                         <a href="#tab_permits" data-toggle="tab">
                             Permits </a>
                     </li>
@@ -38,6 +42,9 @@
                     <!-- POS TAB -->
                     <div class="tab-pane active" id="tab_pos">
                         {% include 'GistLocationBundle:POSLocations:pos.html.twig' %}
+                    </div>
+                    <div class="tab-pane" id="tab_inventory">
+                        {% include 'GistLocationBundle:POSLocations:inventory.html.twig' %}
                     </div>
                     <div class="tab-pane" id="tab_permits">
                         {% include 'GistLocationBundle:POSLocations:permits.html.twig' %}
