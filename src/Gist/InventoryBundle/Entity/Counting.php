@@ -39,11 +39,25 @@ class Counting
      */
     protected $entries;
 
+    /** @ORM\Column(type="date") */
+    protected $date_submitted;
+
     public function __construct()
     {
         $this->initHasGeneratedID();
         $this->initTrackCreate();
         $this->entries = new ArrayCollection();
+    }
+
+    public function setDateSubmitted($date_submitted)
+    {
+        $this->date_submitted = $date_submitted;
+        return $this;
+    }
+
+    public function getDateSubmitted()
+    {
+        return $this->date_submitted;
     }
 
     public function setRemarks($desc)

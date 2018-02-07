@@ -16,6 +16,13 @@
 
                             </div>
                         </div>
+                        {% if form_disabled %}
+                            <div class="note note-warning">
+                                <h4 class="block">Form disabled!</h4>
+                                <p> {{ detected_submission_timeslot }} count already submitted. Please wait for the next time slot. </p>
+                            </div>
+                        {% endif %}
+                        {% if not form_disabled %}
                         <table class="table table-bordered" id="list_table">
                             <thead>
                             <tr>
@@ -37,13 +44,15 @@
                                     <td>{{ stock.getProduct.getItemCode|default('') }}</td>
                                     <td>{{ stock.getProduct.getName|default('') }}</td>
                                     <td><input type="number" step="1" class="existingCount form-control" name="existingCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}" readonly></td>
-                                    <td><input type="number" step="1" class="currentCount form-control" name="currentCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}"></td>
+                                    <td><input type="number" step="1" class="currentCount form-control" name="currentCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}" {{ form_disabled ? 'disabled ' : '' }}></td>
                                     <td class="text-center"><i class="fa fa-check center-block text-center rowMarker"></i></td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
-                        <button type="submit" class="btn blue"><i class="fa fa-save"></i> Submit</button>
+
+                            <button type="submit" class="btn blue"><i class="fa fa-save"></i> Submit</button>
+                        {% endif %}
                         <!-- END FORM-->
                     </form>
                 </div>
@@ -78,6 +87,31 @@
                 "bFilter" : false,
                 "bInfo" : false,
                 "bLengthChange": false,
+                "fnDrawCallback": function( oSettings ) {
+                    $('.currentCount').on('keyup keypress', function(e) {
+                        var tr = $(this).closest('tr');
+                        var existingCount = tr.find('.existingCount').val();
+                        var rowMarker = tr.find('.rowMarker');
+
+                        if (this.value != '') {
+                            if (this.value != existingCount) {
+                                flag_discrepancy = true;
+                                tr.css("background-color","yellow");
+                                rowMarker.removeClass('fa-check');
+                                rowMarker.addClass('fa-times');
+                            } else {
+                                tr.css("background-color","");
+                                rowMarker.addClass('fa-check');
+                                rowMarker.removeClass('fa-times');
+                            }
+                        } else {
+                            var tr = $(this).closest('tr');
+                            tr.css("background-color","#ff5959");
+                            rowMarker.removeClass('fa-check');
+                            rowMarker.addClass('fa-times');
+                        }
+                    });
+                },
                 "oLanguage": {
                     "sLengthMenu": "_MENU_ records",
                     "oPaginate": {
@@ -99,39 +133,7 @@
             $('#counting_form').on('submit', function(e){
                 var $form = $(this);
 
-                // Iterate over all checkboxes in the table
-                dTable.$('input[name^="product_id"]').each(function(){
-                    // If checkbox doesn't exist in DOM
-                    if(!$.contains(document, this)){
-                        // If checkbox is checked
-                        //if(this.checked){
-                            // Create a hidden element
-                            $form.append(
-                                $('<input>')
-                                    .attr('type', 'hidden')
-                                    .attr('name', this.name)
-                                    .val(this.value)
-                            );
-                        //}
-                    }
-                });
 
-                // Iterate over all checkboxes in the table
-                dTable.$('input[name^="currentCount"]').each(function(){
-                    // If checkbox doesn't exist in DOM
-                    if(!$.contains(document, this)){
-                        // If checkbox is checked
-                        //if(this.checked){
-                            // Create a hidden element
-                            $form.append(
-                                $('<input>')
-                                    .attr('type', 'hidden')
-                                    .attr('name', this.name)
-                                    .val(this.value)
-                            );
-                        //}
-                    }
-                });
 
                 flag_form_valid = true;
                 dTable.$('input[name^="currentCount"]').each(function(){
@@ -165,6 +167,57 @@
                     e.preventDefault();
                     return false;
                 }
+
+                // Iterate over all checkboxes in the table
+                dTable.$('input[name^="product_id"]').each(function(){
+                    // If checkbox doesn't exist in DOM
+                    if(!$.contains(document, this)){
+                        // If checkbox is checked
+                        //if(this.checked){
+                        // Create a hidden element
+                        $form.append(
+                            $('<input>')
+                                .attr('type', 'hidden')
+                                .attr('name', this.name)
+                                .val(this.value)
+                        );
+                        //}
+                    }
+                });
+
+                // Iterate over all checkboxes in the table
+                dTable.$('input[name^="currentCount"]').each(function(){
+                    // If checkbox doesn't exist in DOM
+                    if(!$.contains(document, this)){
+                        // If checkbox is checked
+                        //if(this.checked){
+                        // Create a hidden element
+                        $form.append(
+                            $('<input>')
+                                .attr('type', 'hidden')
+                                .attr('name', this.name)
+                                .val(this.value)
+                        );
+                        //}
+                    }
+                });
+
+                // Iterate over all checkboxes in the table
+                dTable.$('input[name^="existingCount"]').each(function(){
+                    // If checkbox doesn't exist in DOM
+                    if(!$.contains(document, this)){
+                        // If checkbox is checked
+                        //if(this.checked){
+                        // Create a hidden element
+                        $form.append(
+                            $('<input>')
+                                .attr('type', 'hidden')
+                                .attr('name', this.name)
+                                .val(this.value)
+                        );
+                        //}
+                    }
+                });
 
             });
 

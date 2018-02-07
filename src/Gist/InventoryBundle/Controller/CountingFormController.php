@@ -6,6 +6,8 @@ use Gist\TemplateBundle\Model\CrudController;
 use Gist\InventoryBundle\Entity\Transaction;
 use Gist\InventoryBundle\Entity\Entry;
 use Gist\InventoryBundle\Entity\StockHistory;
+use Gist\InventoryBundle\Entity\Counting;
+use Gist\InventoryBundle\Entity\CountingEntry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Gist\ValidationException;
@@ -13,7 +15,7 @@ use Gist\InventoryBundle\Model\InventoryException;
 use Gist\TemplateBundle\Model\BaseController as Controller;
 use Gist\TemplateBundle\Model\RouteGenerator as RouteGenerator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
-
+use DateTime;
 class CountingFormController extends Controller
 {
     protected $repo;
@@ -33,6 +35,9 @@ class CountingFormController extends Controller
         $gl = $this->setupGridLoader();
         $params['main_warehouse'] = 0;
         $params['grid_cols'] = $gl->getColumns();
+        $disabled = $this->checkForCountingSubmission();
+        $params['form_disabled'] = $disabled[0];
+        $params['detected_submission_timeslot'] = $disabled[1];
         //$params['wh_type_opts'] = array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
 
         $params['stocks'] = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$main_warehouse->getInventoryAccount()->getID()));
@@ -51,6 +56,35 @@ class CountingFormController extends Controller
         return $this->render('GistInventoryBundle:CountingForm:index.html.twig', $params);
     }
 
+    public function checkForCountingSubmission()
+    {
+        $inv = $this->get('gist_inventory');
+        $em = $this->getDoctrine()->getManager();
+        $config = $this->get('gist_configuration');
+        $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account'=>$main_warehouse->getInventoryAccount()->getID(),'date_submitted'=>new DateTime()));
+
+        if ($countings) {
+            foreach ($countings as $counting) {
+                if (time() >= strtotime('1:00 AM') && time() <= strtotime('11:00 PM')) {
+                    //AM
+                    if (strtotime($counting->getDateCreateTime()) >= strtotime('1:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:00 AM')) {
+                        return [true,'AM'];
+                    }
+                } else {
+                    //PM
+                    if (strtotime($counting->getDateCreateTime()) > strtotime('11:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:50 PM')) {
+                        return [true,'PM'];
+                    }
+                }
+            }
+            //counting/s found but failed in tests. should delete?
+            return [false,''];
+        } else {
+            return [false,''];
+        }
+    }
+
     protected function getRouteGen()
     {
         if ($this->route_gen == null)
@@ -62,11 +96,40 @@ class CountingFormController extends Controller
     public function indexSubmitAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $config = $this->get('gist_configuration');
+        $inv = $this->get('gist_inventory');
         $data = $this->getRequest()->request->all();
-        echo "<pre>";
-        var_dump($data);
-        echo "</pre>";
-        die();
+        $dateNow = new DateTime();
+        $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+//        echo "<pre>";
+//        var_dump($data);
+//        echo "</pre>";
+//        die();
+        $counting = new Counting();
+        $counting->setInventoryAccount($main_warehouse->getInventoryAccount());
+        $counting->setDateSubmitted($dateNow);
+        $counting->setUserCreate($this->getUser());
+        $counting->setStatus('Submitted');
+        $counting->setRemarks('Counting generic remark');
+        $em->persist($counting);
+        $em->flush();
+
+        foreach ($data['product_id'] as $index => $value)
+        {
+            $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($value);
+            $countingEntry = new CountingEntry();
+            $countingEntry->setProduct($product);
+            $countingEntry->setQuantity($data['currentCount'][$index]);
+            $countingEntry->setExistingQuantity($data['existingCount'][$index]);
+            $countingEntry->setCounting($counting);
+            $em->persist($countingEntry);
+            $em->flush();
+        }
+
+        $this->addFlash('success', 'Submitted successfully.');
+
+        return $this->redirect($this->generateUrl('gist_inv_counting_gridform_index'));
+
     }
 
     protected function getViewParams($subtitle = '', $selected = null)

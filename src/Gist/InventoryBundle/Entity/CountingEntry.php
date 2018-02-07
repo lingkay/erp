@@ -24,6 +24,11 @@ class CountingEntry
     protected $quantity;
 
     /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     */
+    protected $existing_quantity;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Counting")
      * @ORM\JoinColumn(name="counting_id", referencedColumnName="id")
      */
@@ -32,6 +37,12 @@ class CountingEntry
     public function __construct()
     {
 
+    }
+
+    public function setExistingQuantity($existing_quantity)
+    {
+        $this->existing_quantity = $existing_quantity;
+        return $this;
     }
 
     public function setQuantity($qty)
@@ -49,6 +60,11 @@ class CountingEntry
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    public function getExistingQuantity()
+    {
+        return $this->existing_quantity;
     }
 
     public function getCounting()
