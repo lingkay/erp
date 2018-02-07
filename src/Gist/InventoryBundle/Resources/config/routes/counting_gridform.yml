@@ -9,3 +9,17 @@ gist_inv_counting_gridform_index_submit:
     methods: [POST]
     defaults: { _controller: GistInventoryBundle:CountingForm:indexSubmit }
 
+gist_inv_counting_gridform_pos_is_form_valid:
+    pattern: /pos/is_form_valid/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:CountingForm:posIsFormValid }
+
+gist_inv_counting_gridform_pos_is_form_fields:
+    pattern: /pos/form_fields/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:CountingForm:posFormFields }
+
+gist_inv_counting_gridform_pos_is_form_submit:
+    pattern: /pos/submit/{pos_loc_id}/{uid}/{entries}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:CountingForm:posFormSubmit }

@@ -56,6 +56,94 @@ class CountingFormController extends Controller
         return $this->render('GistInventoryBundle:CountingForm:index.html.twig', $params);
     }
 
+    public function posFormFieldsAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $inv = $this->get('gist_inventory');
+        $em = $this->getDoctrine()->getManager();
+        $config = $this->get('gist_configuration');
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+
+        $stocks = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$pos_location->getInventoryAccount()->getID()));
+
+        $list_opts = [];
+        foreach ($stocks as $stock) {
+
+            $list_opts[] = array(
+                'product_id'=>$stock->getProduct()->getID(),
+                'item_code'=>$stock->getProduct()->getItemCode(),
+                'item_name'=>$stock->getProduct()->getName(),
+                'current_stock'=> $stock->getQuantity()
+            );
+
+        }
+
+
+        return new JsonResponse($list_opts);
+    }
+
+    public function posIsFormValidAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $inv = $this->get('gist_inventory');
+        $em = $this->getDoctrine()->getManager();
+        $config = $this->get('gist_configuration');
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+
+        $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account'=>$pos_location->getInventoryAccount()->getID(),'date_submitted'=>new DateTime()));
+
+        $openingCountTime = $pos_location->getOpeningCount();
+        $closingCountTime = $pos_location->getClosingCount();
+
+        if ($countings) {
+            if (count($countings) > 1) {
+                $list_opts[] = array(
+                    0=>true,
+                    1=> 'Opening and Closing'
+                );
+                return new JsonResponse($list_opts);
+            }
+            foreach ($countings as $counting) {
+                if (time() > strtotime('00:00 AM') && time() <= strtotime($openingCountTime->format('h:i A'))) {
+                    //AM
+                    if (strtotime($counting->getDateCreateTime()) > strtotime('00:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime($openingCountTime->format('h:i A'))) {
+                        $list_opts[] = array(
+                            0=>true,
+                            1=> 'Opening'
+                        );
+                        return new JsonResponse($list_opts);
+                    }
+                    else {
+
+                    }
+                } else {
+                    //PM
+                    if (strtotime($counting->getDateCreateTime()) > strtotime($openingCountTime->format('h:i A')) && strtotime($counting->getDateCreateTime()) <= strtotime($closingCountTime->format('h:i A'))) {
+                        $list_opts[] = array(
+                            0=>true,
+                            1=> 'Closing'
+                        );
+                        return new JsonResponse($list_opts);
+                    } else {
+
+                    }
+                }
+            }
+            //counting/s found but failed in tests. should delete?
+            $list_opts[] = array(
+                0=>false,
+                1=> ''
+            );
+            return new JsonResponse($list_opts);
+        } else {
+            $list_opts[] = array(
+                0=>false,
+                1=> ''
+            );
+            return new JsonResponse($list_opts);
+        }
+    }
+
     public function checkForCountingSubmission()
     {
         $inv = $this->get('gist_inventory');
@@ -96,6 +184,53 @@ class CountingFormController extends Controller
             $this->route_gen = new RouteGenerator($this->route_prefix);
 
         return $this->route_gen;
+    }
+
+    public function posFormSubmitAction($pos_loc_id, $uid, $entries)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $config = $this->get('gist_configuration');
+        $inv = $this->get('gist_inventory');
+        $dateNow = new DateTime();
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$uid));
+        parse_str(html_entity_decode($entries), $entriesParsed);
+        $posLocation = $inv->findPOSLocation($pos_loc_id);
+
+        $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account'=>$posLocation->getInventoryAccount()->getID(),'date_submitted'=>new DateTime()));
+        if (count($countings) > 1) {
+            $list_opts[] = array(
+                'status'=>'failed'
+            );
+            return new JsonResponse($list_opts);
+        }
+
+        $counting = new Counting();
+        $counting->setInventoryAccount($posLocation->getInventoryAccount());
+        $counting->setDateSubmitted($dateNow);
+        $counting->setUserCreate($user);
+        $counting->setStatus('Submitted');
+        $counting->setRemarks('Counting generic remark [POS]');
+        $em->persist($counting);
+        $em->flush();
+
+        foreach ($entriesParsed as $e)
+        {
+            $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($e['product_id']);
+            $countingEntry = new CountingEntry();
+            $countingEntry->setProduct($product);
+            $countingEntry->setQuantity($e['count']);
+            $countingEntry->setExistingQuantity($e['current']);
+            $countingEntry->setCounting($counting);
+            $em->persist($countingEntry);
+            $em->flush();
+        }
+
+        $list_opts[] = array(
+            'status'=>'success'
+        );
+
+        return new JsonResponse($list_opts);
     }
 
     public function indexSubmitAction()

@@ -99,5 +99,10 @@ security:
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
+        - { path: ^/inventory/counting_form/pos/is_form_valid, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/counting_form/pos/form_fields, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/counting_form/pos/submit, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/counting/pos/grid_data, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
         - { path: ^/customer/fields/get_visible, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }

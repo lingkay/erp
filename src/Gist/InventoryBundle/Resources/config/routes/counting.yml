@@ -41,4 +41,9 @@ gist_inv_counting_ajax_get:
 gist_inv_counting_print:
     pattern: /print/{id}
     methods: [GET]
-    defaults: { _controller: GistInventoryBundle:Counting:printPDF }    
+    defaults: { _controller: GistInventoryBundle:Counting:printPDF }
+
+gist_inv_counting_pos_grid_data:
+    pattern: /pos/grid_data/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:Counting:posGridData }
