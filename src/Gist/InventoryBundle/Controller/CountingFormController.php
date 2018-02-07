@@ -66,15 +66,20 @@ class CountingFormController extends Controller
 
         if ($countings) {
             foreach ($countings as $counting) {
-                if (time() >= strtotime('1:00 AM') && time() <= strtotime('11:00 PM')) {
+                if (time() > strtotime('00:00 AM') && time() <= strtotime('11:00 AM')) {
                     //AM
-                    if (strtotime($counting->getDateCreateTime()) >= strtotime('1:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:00 AM')) {
-                        return [true,'AM'];
+                    if (strtotime($counting->getDateCreateTime()) > strtotime('01:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:00 AM')) {
+                        return [true,'Opening'];
+                    }
+                    else {
+
                     }
                 } else {
                     //PM
-                    if (strtotime($counting->getDateCreateTime()) > strtotime('11:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:50 PM')) {
-                        return [true,'PM'];
+                    if (strtotime($counting->getDateCreateTime()) > strtotime('11:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:59 PM')) {
+                        return [true,'Closing'];
+                    } else {
+
                     }
                 }
             }

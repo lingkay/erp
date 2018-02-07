@@ -172,6 +172,7 @@ class CountingController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('inv','inventory_account','getInventoryAccount'),
+            $grid->newJoin('u','user_create','getUserCreate'),
         );
     }
 
@@ -181,6 +182,9 @@ class CountingController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('ID','getID','id'),
+            $grid->newColumn('Submitted by','getDisplayName','last_name','u'),
+            $grid->newColumn('Date','getDateTimeCreateFormatted','date_create'),
+            $grid->newColumn('Type','getCountTimeSlot','id'),
             $grid->newColumn('Status','getStatusFMTD','status'),
             $grid->newColumn('Source','getName','name','inv')
         );

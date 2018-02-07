@@ -45,7 +45,7 @@ trait TrackCreate
 
     public function getDateTimeCreateFormatted()
     {
-        return $this->date_create->format('m/d/Y h:i a');
+        return $this->date_create->format('m/d/Y h:i A');
     }
 
     public function getDateCreateTime()

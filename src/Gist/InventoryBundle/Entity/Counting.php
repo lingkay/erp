@@ -114,9 +114,9 @@ class Counting
     public function getCountTimeSlot()
     {
         if (strtotime($this->getDateCreateTime()) >= strtotime('1:00 AM') && strtotime($this->getDateCreateTime()) <= strtotime('11:00 AM')) {
-            return 'AM';
+            return 'Opening';
         } else {
-            return 'PM';
+            return 'Closing';
         }
     }
 
