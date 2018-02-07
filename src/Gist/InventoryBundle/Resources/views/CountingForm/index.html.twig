@@ -34,6 +34,7 @@
                                     {% endif %}
                                 {% endfor %}
                                 <th width="15%">Count</th>
+                                <th width="5%">+/-</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -45,6 +46,7 @@
                                     <td>{{ stock.getProduct.getName|default('') }}</td>
                                     <td><input type="number" step="1" class="existingCount form-control" name="existingCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}" readonly></td>
                                     <td><input type="number" step="1" class="currentCount form-control" name="currentCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}" {{ form_disabled ? 'disabled ' : '' }}></td>
+                                    <td><input type="text" class="diffCount form-control" name="diffCount[]" value="+0" readonly></td>
                                     <td class="text-center"><i class="fa fa-check center-block text-center rowMarker"></i></td>
                                 </tr>
                             {% endfor %}
@@ -225,9 +227,13 @@
                 var tr = $(this).closest('tr');
                 var existingCount = tr.find('.existingCount').val();
                 var rowMarker = tr.find('.rowMarker');
+                var diffCount = tr.find('.diffCount');
+
+
+
 
                 if (this.value != '') {
-                    if (this.value != existingCount) {
+                    if (this.value != existingCount && this.value != '-'  && this.value != '+' && this.value != 'e') {
                         flag_discrepancy = true;
                         tr.css("background-color","yellow");
                         rowMarker.removeClass('fa-check');
@@ -237,12 +243,27 @@
                         rowMarker.addClass('fa-check');
                         rowMarker.removeClass('fa-times');
                     }
+
+                    var count = parseInt(tr.find('.currentCount').val());
+                    var sys = parseInt(tr.find('.existingCount').val());
+
+                    var diff = Math.abs(sys - count);
+                    if (sys > count) {
+                        diffCount.val('-'+diff);
+                    } else {
+                        diffCount.val('+'+diff);
+                    }
+
                 } else {
                     var tr = $(this).closest('tr');
                     tr.css("background-color","#ff5959");
                     rowMarker.removeClass('fa-check');
                     rowMarker.addClass('fa-times');
+                    diffCount.val('0');
                 }
+
+
+
             });
 
         });
