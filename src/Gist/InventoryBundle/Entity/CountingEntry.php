@@ -72,6 +72,11 @@ class CountingEntry
         return $this->counting;
     }
 
+    public function hasDiscrepancy()
+    {
+        return $this->quantity != $this->existing_quantity;
+    }
+
     public function toData()
     {
         $data = new \stdClass();

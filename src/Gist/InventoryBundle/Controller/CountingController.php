@@ -68,6 +68,8 @@ class CountingController extends CrudController
         // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
 
+        $params['entries'] = $em->getRepository('GistInventoryBundle:CountingEntry')->findBy(array('counting'=>$id));
+
         $params['main_status'] = '';
         if ($obj->getID() != '') {
             $params['main_status'] = $obj->getStatus();

@@ -35,7 +35,7 @@ class Counting
     protected $inventory_account;
 
     /**
-     * @ORM\OneToMany(targetEntity="CountingEntry", mappedBy="stock_transfer", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="CountingEntry", mappedBy="counting", cascade={"persist"})
      */
     protected $entries;
 
@@ -109,6 +109,29 @@ class Counting
     {
         return $this->entries;
     }
+
+    //MODIFY THIS FOR POS
+    public function getCountTimeSlot()
+    {
+        if (strtotime($this->getDateCreateTime()) >= strtotime('1:00 AM') && strtotime($this->getDateCreateTime()) <= strtotime('11:00 AM')) {
+            return 'AM';
+        } else {
+            return 'PM';
+        }
+    }
+
+    public function hasDiscrepancy()
+    {
+        $flag = false;
+        foreach ($this->entries as $e) {
+            if ($e->getQuantity() != $e->getExistingQuantity()) {
+                $flag = true;
+            }
+        }
+
+        return $flag;
+    }
+
 
     public function toData()
     {
