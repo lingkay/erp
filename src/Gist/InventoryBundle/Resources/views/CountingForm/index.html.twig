@@ -52,7 +52,6 @@
                             {% endfor %}
                             </tbody>
                         </table>
-
                             <button type="submit" class="btn blue"><i class="fa fa-save"></i> Submit</button>
                         {% endif %}
                         <!-- END FORM-->
@@ -70,12 +69,7 @@
     <script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
     <script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
-
-
-
     <script>
-
-
         $(document).ready(function() {
             var dTable;
             var flag_discrepancy = false;
@@ -94,9 +88,10 @@
                         var tr = $(this).closest('tr');
                         var existingCount = tr.find('.existingCount').val();
                         var rowMarker = tr.find('.rowMarker');
+                        var diffCount = tr.find('.diffCount');
 
                         if (this.value != '') {
-                            if (this.value != existingCount) {
+                            if (this.value != existingCount && this.value != '-'  && this.value != '+' && this.value != 'e') {
                                 flag_discrepancy = true;
                                 tr.css("background-color","yellow");
                                 rowMarker.removeClass('fa-check');
@@ -106,11 +101,23 @@
                                 rowMarker.addClass('fa-check');
                                 rowMarker.removeClass('fa-times');
                             }
+
+                            var count = parseInt(tr.find('.currentCount').val());
+                            var sys = parseInt(tr.find('.existingCount').val());
+
+                            var diff = Math.abs(sys - count);
+                            if (sys > count) {
+                                diffCount.val('-'+diff);
+                            } else {
+                                diffCount.val('+'+diff);
+                            }
+
                         } else {
                             var tr = $(this).closest('tr');
                             tr.css("background-color","#ff5959");
                             rowMarker.removeClass('fa-check');
                             rowMarker.addClass('fa-times');
+                            diffCount.val('0');
                         }
                     });
                 },
@@ -134,14 +141,11 @@
 
             $('#counting_form').on('submit', function(e){
                 var $form = $(this);
-
-
-
+                flag_discrepancy = false;
                 flag_form_valid = true;
                 dTable.$('input[name^="currentCount"]').each(function(){
                     var tr = $(this).closest('tr');
                     var existingCount = tr.find('.existingCount').val();
-                    flag_discrepancy = false;
 
                     if (this.value == '') {
                         tr.css("background-color","#ff5959");
@@ -150,74 +154,57 @@
                         flag_discrepancy = true;
                         tr.css("background-color","yellow");
                     }
-
-
-
                 });
 
                 if (!flag_discrepancy && flag_form_valid) {
-                    if (confirm('Discrepancy in counting. Continue?')) {
 
+
+                } else {
+                    if (flag_discrepancy) {
+                        if (confirm('Discrepancy in counting. Continue?')) {
+
+                        } else {
+                            toastr['warning']('Fix discrepancies. Rows have been marked yellow.');
+                            e.preventDefault();
+                            return false;
+                        }
                     } else {
-                        toastr['warning']('Fix discrepancies. Rows have been marked yellow.');
+                        toastr['error']('Please check colored rows!');
                         e.preventDefault();
                         return false;
                     }
-
-                } else {
-                    toastr['error']('Please check colored rows!');
-                    e.preventDefault();
-                    return false;
                 }
 
-                // Iterate over all checkboxes in the table
                 dTable.$('input[name^="product_id"]').each(function(){
-                    // If checkbox doesn't exist in DOM
                     if(!$.contains(document, this)){
-                        // If checkbox is checked
-                        //if(this.checked){
-                        // Create a hidden element
                         $form.append(
                             $('<input>')
                                 .attr('type', 'hidden')
                                 .attr('name', this.name)
                                 .val(this.value)
                         );
-                        //}
                     }
                 });
 
-                // Iterate over all checkboxes in the table
                 dTable.$('input[name^="currentCount"]').each(function(){
-                    // If checkbox doesn't exist in DOM
                     if(!$.contains(document, this)){
-                        // If checkbox is checked
-                        //if(this.checked){
-                        // Create a hidden element
                         $form.append(
                             $('<input>')
                                 .attr('type', 'hidden')
                                 .attr('name', this.name)
                                 .val(this.value)
                         );
-                        //}
                     }
                 });
 
-                // Iterate over all checkboxes in the table
                 dTable.$('input[name^="existingCount"]').each(function(){
-                    // If checkbox doesn't exist in DOM
                     if(!$.contains(document, this)){
-                        // If checkbox is checked
-                        //if(this.checked){
-                        // Create a hidden element
                         $form.append(
                             $('<input>')
                                 .attr('type', 'hidden')
                                 .attr('name', this.name)
                                 .val(this.value)
                         );
-                        //}
                     }
                 });
 
@@ -228,9 +215,6 @@
                 var existingCount = tr.find('.existingCount').val();
                 var rowMarker = tr.find('.rowMarker');
                 var diffCount = tr.find('.diffCount');
-
-
-
 
                 if (this.value != '') {
                     if (this.value != existingCount && this.value != '-'  && this.value != '+' && this.value != 'e') {
@@ -246,14 +230,12 @@
 
                     var count = parseInt(tr.find('.currentCount').val());
                     var sys = parseInt(tr.find('.existingCount').val());
-
                     var diff = Math.abs(sys - count);
                     if (sys > count) {
                         diffCount.val('-'+diff);
                     } else {
                         diffCount.val('+'+diff);
                     }
-
                 } else {
                     var tr = $(this).closest('tr');
                     tr.css("background-color","#ff5959");
@@ -261,9 +243,6 @@
                     rowMarker.addClass('fa-times');
                     diffCount.val('0');
                 }
-
-
-
             });
 
         });
