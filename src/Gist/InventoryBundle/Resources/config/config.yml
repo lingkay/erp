@@ -1,26 +1,26 @@
 config:
     - category: "Inventory Settings"
       entries:
-        - id: gist_main_warehouse
-          label: "Main Warehouse"
-          type: select
-          options_service: gist_inventory
-          options_method: getWarehouseOptions
-        - id: gist_damaged_items_warehouse
-          label: "Damaged Items Warehouse"
-          type: select
-          options_service: gist_inventory
-          options_method: getWarehouseOptions
-        - id: gist_stock_threshold_formula_span
-          label: "Stock Formula Span"
-          type: select
-          options_service: gist_inventory
-          options_method: getFormulaSpanOptions
-        - id: gist_fixed_asset_brand
-          label: "Fixed Assets Brand"
-          type: select
-          options_service: gist_inventory
-          options_method: getBrandsOptions
+#        - id: gist_main_warehouse
+#          label: "Main Warehouse"
+#          type: select
+#          options_service: gist_inventory
+#          options_method: getWarehouseOptions
+#        - id: gist_damaged_items_warehouse
+#          label: "Damaged Items Warehouse"
+#          type: select
+#          options_service: gist_inventory
+#          options_method: getWarehouseOptions
+#        - id: gist_stock_threshold_formula_span
+#          label: "Stock Formula Span"
+#          type: select
+#          options_service: gist_inventory
+#          options_method: getFormulaSpanOptions
+#        - id: gist_fixed_asset_brand
+#          label: "Fixed Assets Brand"
+#          type: select
+#          options_service: gist_inventory
+#          options_method: getBrandsOptions
         - id: gist_pos_counting_system_count_visibility
           label: "POS Counting System Count"
           type: select

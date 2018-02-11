@@ -60,6 +60,11 @@ class Counting
         return $this->date_submitted;
     }
 
+    public function getDateSubmittedFormatted()
+    {
+        return $this->date_submitted->format('m/d/Y');
+    }
+
     public function setRemarks($desc)
     {
         $this->remarks = $desc;

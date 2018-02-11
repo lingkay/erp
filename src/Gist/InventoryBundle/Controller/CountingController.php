@@ -183,8 +183,9 @@ class CountingController extends CrudController
         return array(
             $grid->newColumn('ID','getID','id'),
             $grid->newColumn('Submitted by','getDisplayName','last_name','u'),
-            $grid->newColumn('Date','getDateTimeCreateFormatted','date_create'),
-            $grid->newColumn('Type','getCountTimeSlot','id'),
+            $grid->newColumn('Date Submitted','getDateTimeCreateFormatted','date_create'),
+            $grid->newColumn('For Date','getDateSubmittedFormatted','date_submitted'),
+//            $grid->newColumn('Type','getCountTimeSlot','id'),
             $grid->newColumn('Status','getStatusFMTD','status'),
             $grid->newColumn('Source','getName','name','inv')
         );

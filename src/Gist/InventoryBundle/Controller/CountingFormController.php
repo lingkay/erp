@@ -72,11 +72,17 @@ class CountingFormController extends Controller
         $list_opts = [];
         foreach ($stocks as $stock) {
 
+            $stockQ = $stock->getQuantity();
+            if (!is_float($stockQ)) {
+                $stockQ = round($stockQ);
+            }
+
+
             $list_opts[] = array(
                 'product_id'=>$stock->getProduct()->getID(),
                 'item_code'=>$stock->getProduct()->getItemCode(),
                 'item_name'=>$stock->getProduct()->getName(),
-                'current_stock'=> $stock->getQuantity(),
+                'current_stock'=> $stockQ,
                 'sys_stock_visibility' => $sysCountVisibility
             );
 

@@ -70,43 +70,6 @@
     <script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
     <script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
     <script>
-        function updateColors() {
-            $('.currentCount').each(function(e) {
-                var tr = $(this).closest('tr');
-                var existingCount = tr.find('.existingCount').val();
-                var rowMarker = tr.find('.rowMarker');
-                var diffCount = tr.find('.diffCount');
-
-                if (this.value != '') {
-                    if (this.value != existingCount && this.value != '-'  && this.value != '+' && this.value != 'e') {
-                        flag_discrepancy = true;
-                        tr.css("background-color","yellow");
-                        rowMarker.removeClass('fa-check');
-                        rowMarker.addClass('fa-times');
-                    } else {
-                        tr.css("background-color","");
-                        rowMarker.addClass('fa-check');
-                        rowMarker.removeClass('fa-times');
-                    }
-
-                    var count = parseInt(tr.find('.currentCount').val());
-                    var sys = parseInt(tr.find('.existingCount').val());
-                    var diff = Math.abs(sys - count);
-                    if (sys > count) {
-                        diffCount.val('-'+diff);
-                    } else {
-                        diffCount.val('+'+diff);
-                    }
-                } else {
-                    var tr = $(this).closest('tr');
-                    tr.css("background-color","#ff5959");
-                    rowMarker.removeClass('fa-check');
-                    rowMarker.addClass('fa-times');
-                    diffCount.val('0');
-                }
-            });
-        }
-
         $(document).ready(function() {
             var dTable;
             var flag_discrepancy = false;
@@ -207,14 +170,7 @@
                         if (confirm('Discrepancy in counting. Continue?')) {
 
                         } else {
-
-                            toastr['warning']('Quantities have been reverted. Recount stock.');
-                            $('input[name^="currentCount"]').each(function(){
-                                var tr = $(this).closest('tr');
-                                var existingCount = tr.find('.existingCount').val();
-                                $(this).val(existingCount);
-                            });
-                            updateColors();
+                            toastr['warning']('Fix highlighted rows. Recount stock.');
                             e.preventDefault();
                             return false;
                         }
