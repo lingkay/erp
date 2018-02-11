@@ -156,12 +156,28 @@
                     }
                 });
 
+                var counting_table;
+                counting_table = $('#list_table').dataTable();
+                $(counting_table.fnGetNodes()).each(function() {
+                    var tr = $(this).closest('tr');
+                    var currentCount = tr.find('.currentCount');
+                    var existingCount = tr.find('.existingCount');
+
+                    if (currentCount.val() == '') {
+                        tr.css("background-color","#ff5959");
+                        flag_form_valid = false;
+                    } else if (currentCount.val() != existingCount.val()) {
+                        flag_discrepancy = true;
+                        tr.css("background-color","yellow");
+                    }
+                });
+
                 if (!flag_discrepancy && flag_form_valid) {
 
 
                 } else {
                     if (!flag_form_valid) {
-                        toastr['error']('Please check highlighted rows!');
+                        toastr['error']('Please check highlighted rows on all pages!');
                         e.preventDefault();
                         return false;
                     }
@@ -170,12 +186,12 @@
                         if (confirm('Discrepancy in counting. Continue?')) {
 
                         } else {
-                            toastr['warning']('Fix highlighted rows. Recount stock.');
+                            toastr['warning']('Fix highlighted rows. Check all pages.');
                             e.preventDefault();
                             return false;
                         }
                     } else {
-                        toastr['error']('Please check highlighted rows!');
+                        toastr['error']('Please check highlighted rows on all pages!');
                         e.preventDefault();
                         return false;
                     }
