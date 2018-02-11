@@ -82,7 +82,7 @@ gist_poserp_save_transaction:
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransaction }
 
 gist_poserp_save_item:
-    path:     /save_item/{trans_sys_id}/{prod_id}/{prod_name}/{orig_price}/{min_price}/{adjusted_price}/{discount_type}/{discount_value}
+    path:     /save_item/{trans_sys_id}/{prod_id}/{prod_name}/{orig_price}/{min_price}/{adjusted_price}/{discount_type}/{discount_value}/{isReturned}/{isNew}
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionItems }
 

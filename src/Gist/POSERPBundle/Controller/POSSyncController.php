@@ -93,7 +93,7 @@ class POSSyncController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    public function saveTransactionItemsAction($trans_sys_id, $prod_id, $prod_name, $orig_price, $min_price, $adjusted_price, $discount_type, $discount_value)
+    public function saveTransactionItemsAction($trans_sys_id, $prod_id, $prod_name, $orig_price, $min_price, $adjusted_price, $discount_type, $discount_value, $isReturned, $isNew)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -118,62 +118,74 @@ class POSSyncController extends CrudController
         $em->flush();
 
         //generate stock manipulation
-        $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$prod_id));
-        if ($prod == null)
-            throw new ValidationException('Could not find product.');
+        if (strtolower($transaction->getStatus()) == 'paid' and (strtolower($transaction->getTransactionMode()) != 'quotation')) {
 
-        //this is where the damaged items will be transferred virtually
-        //if for pos = get pos_loc_id then find from pos_location
-        $source = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
-        $dmg_acc = $source->getInventoryAccount();
+            $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id' => $prod_id));
+            if ($prod == null)
+                throw new ValidationException('Could not find product.');
 
-        //this is where the damaged items will come from
-        //this should get from pos location's stock. adjustment warehouse for now
-        //$adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
-        $adj_acc = $pos_location->getInventoryAccount();
+            if (strtolower($transaction->getTransactionMode()) == 'refund' || strtolower($transaction->getTransactionMode()) == 'exchange') {
+                if ($isReturned == 'true') {
+                    //returned item...add to POS
+                    $dmg_acc = $pos_location->getInventoryAccount();
+                    $adj_acc = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+                    $adj_acc = $adj_acc->getInventoryAccount();
+                } else if ($isNew == 'true') {
+                    //refund but new item...deduct from POS
+                    $source = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+                    $dmg_acc = $source->getInventoryAccount();
+                    $adj_acc = $pos_location->getInventoryAccount();
+                } else {
+                    //item no change
+                    $list_opts[] = array('status'=>'ok');
+                    return new JsonResponse($list_opts);
+                }
+            } else {
+                $source = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+                $dmg_acc = $source->getInventoryAccount();
+                $adj_acc = $pos_location->getInventoryAccount();
+            }
 
-        $new_qty = 1;
-        $old_qty = 0;
+            $new_qty = 1;
+            $old_qty = 0;
 
-        $remarks = 'POS Sales. TRANSACTION ID: '.$transaction->getID();
-        // setup transaction
-        $trans = new Transaction();
-        $trans->setUserCreate($user)
-            ->setDescription($remarks);
+            $remarks = 'POS Sales. TRANSACTION ID: ' . $transaction->getID();
+            // setup transaction
+            $trans = new Transaction();
+            $trans->setUserCreate($user)
+                ->setDescription($remarks);
 
-        // add entries
-        // entry for destination
-        $wh_entry = new Entry();
-        $wh_entry->setInventoryAccount($dmg_acc)
-            ->setProduct($prod);
+            // add entries
+            // entry for destination
+            $wh_entry = new Entry();
+            $wh_entry->setInventoryAccount($dmg_acc)
+                ->setProduct($prod);
 
-        // entry for source
-        $adj_entry = new Entry();
-        $adj_entry->setInventoryAccount($adj_acc)
-            ->setProduct($prod);
+            // entry for source
+            $adj_entry = new Entry();
+            $adj_entry->setInventoryAccount($adj_acc)
+                ->setProduct($prod);
 
-        // check if debit or credit
-        if ($new_qty > $old_qty)
-        {
-            $qty = $new_qty - $old_qty;
-            $wh_entry->setDebit($qty);
-            $adj_entry->setCredit($qty);
+            // check if debit or credit
+            if ($new_qty > $old_qty) {
+                $qty = $new_qty - $old_qty;
+                $wh_entry->setDebit($qty);
+                $adj_entry->setCredit($qty);
+            } else {
+                $qty = $old_qty - $new_qty;
+                $wh_entry->setCredit($qty);
+                $adj_entry->setDebit($qty);
+            }
+            $entries[] = $wh_entry;
+            $entries[] = $adj_entry;
+
+            foreach ($entries as $ent)
+                $trans->addEntry($ent);
+
+            $inv->persistTransaction($trans);
+            $em->flush();
+            //end stock manipulation
         }
-        else
-        {
-            $qty = $old_qty - $new_qty;
-            $wh_entry->setCredit($qty);
-            $adj_entry->setDebit($qty);
-        }
-        $entries[] = $wh_entry;
-        $entries[] = $adj_entry;
-
-        foreach ($entries as $ent)
-            $trans->addEntry($ent);
-
-        $inv->persistTransaction($trans);
-        $em->flush();
-        //end stock manipulation
 
         $list_opts[] = array('status'=>'ok');
         return new JsonResponse($list_opts);
