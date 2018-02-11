@@ -26,3 +26,6 @@ config:
           type: select
           options_service: gist_inventory
           options_method: getBoolOptionsVisibility
+        - id: gist_pos_counting_max_submissions
+          label: "Counting Max Submissions"
+          type: number

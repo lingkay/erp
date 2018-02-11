@@ -16,6 +16,8 @@ use Gist\TemplateBundle\Model\BaseController as Controller;
 use Gist\TemplateBundle\Model\RouteGenerator as RouteGenerator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use DateTime;
+use DateInterval;
+
 class CountingFormController extends Controller
 {
     protected $repo;
@@ -62,6 +64,7 @@ class CountingFormController extends Controller
         $inv = $this->get('gist_inventory');
         $em = $this->getDoctrine()->getManager();
         $config = $this->get('gist_configuration');
+        $sysCountVisibility = $config->get('gist_pos_counting_system_count_visibility');
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
 
         $stocks = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$pos_location->getInventoryAccount()->getID()));
@@ -73,7 +76,8 @@ class CountingFormController extends Controller
                 'product_id'=>$stock->getProduct()->getID(),
                 'item_code'=>$stock->getProduct()->getItemCode(),
                 'item_name'=>$stock->getProduct()->getName(),
-                'current_stock'=> $stock->getQuantity()
+                'current_stock'=> $stock->getQuantity(),
+                'sys_stock_visibility' => $sysCountVisibility
             );
 
         }
@@ -88,47 +92,20 @@ class CountingFormController extends Controller
         $inv = $this->get('gist_inventory');
         $em = $this->getDoctrine()->getManager();
         $config = $this->get('gist_configuration');
+        $maxSubmissions = $config->get('gist_pos_counting_max_submissions');
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
 
         $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account'=>$pos_location->getInventoryAccount()->getID(),'date_submitted'=>new DateTime()));
 
-        $openingCountTime = $pos_location->getOpeningCount();
-        $closingCountTime = $pos_location->getClosingCount();
-
         if ($countings) {
-            if (count($countings) > 1) {
+            if (count($countings) >= $maxSubmissions) {
                 $list_opts[] = array(
                     0=>true,
-                    1=> 'Opening and Closing'
+                    1=> 'Maximum number of '.$maxSubmissions.' submissions made. Please wait for the next time slot.'
                 );
                 return new JsonResponse($list_opts);
             }
-            foreach ($countings as $counting) {
-                if (time() > strtotime('00:00 AM') && time() <= strtotime($openingCountTime->format('h:i A'))) {
-                    //AM
-                    if (strtotime($counting->getDateCreateTime()) > strtotime('00:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime($openingCountTime->format('h:i A'))) {
-                        $list_opts[] = array(
-                            0=>true,
-                            1=> 'Opening'
-                        );
-                        return new JsonResponse($list_opts);
-                    }
-                    else {
 
-                    }
-                } else {
-                    //PM
-                    if (strtotime($counting->getDateCreateTime()) > strtotime($openingCountTime->format('h:i A')) && strtotime($counting->getDateCreateTime()) <= strtotime($closingCountTime->format('h:i A'))) {
-                        $list_opts[] = array(
-                            0=>true,
-                            1=> 'Closing'
-                        );
-                        return new JsonResponse($list_opts);
-                    } else {
-
-                    }
-                }
-            }
             //counting/s found but failed in tests. should delete?
             $list_opts[] = array(
                 0=>false,
@@ -149,32 +126,19 @@ class CountingFormController extends Controller
         $inv = $this->get('gist_inventory');
         $em = $this->getDoctrine()->getManager();
         $config = $this->get('gist_configuration');
+        $maxSubmissions = $config->get('gist_pos_counting_max_submissions');
         $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
         $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account'=>$main_warehouse->getInventoryAccount()->getID(),'date_submitted'=>new DateTime()));
 
         if ($countings) {
-            foreach ($countings as $counting) {
-                if (time() > strtotime('00:00 AM') && time() <= strtotime('11:00 AM')) {
-                    //AM
-                    if (strtotime($counting->getDateCreateTime()) > strtotime('01:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:00 AM')) {
-                        return [true,'Opening'];
-                    }
-                    else {
-
-                    }
-                } else {
-                    //PM
-                    if (strtotime($counting->getDateCreateTime()) > strtotime('11:00 AM') && strtotime($counting->getDateCreateTime()) <= strtotime('11:59 PM')) {
-                        return [true,'Closing'];
-                    } else {
-
-                    }
-                }
+            if (count($countings) >= $maxSubmissions) {
+                return array(true, 'Maximum number of '.$maxSubmissions.' submissions made. Please wait for the next time slot.');
             }
+
             //counting/s found but failed in tests. should delete?
-            return [false,''];
+            return array(false,'');
         } else {
-            return [false,''];
+            return array(false,'');
         }
     }
 
@@ -191,14 +155,20 @@ class CountingFormController extends Controller
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $config = $this->get('gist_configuration');
+        $maxSubmissions = $config->get('gist_pos_counting_max_submissions');
         $inv = $this->get('gist_inventory');
         $dateNow = new DateTime();
+
+        if (strtotime($dateNow->format('h:i A')) <= strtotime('03:00 AM')) {
+            $dateNow = $dateNow->sub(new DateInterval('P1D'));
+        }
+
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$uid));
         parse_str(html_entity_decode($entries), $entriesParsed);
         $posLocation = $inv->findPOSLocation($pos_loc_id);
 
         $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account'=>$posLocation->getInventoryAccount()->getID(),'date_submitted'=>new DateTime()));
-        if (count($countings) > 1) {
+        if (count($countings) > $maxSubmissions) {
             $list_opts[] = array(
                 'status'=>'failed'
             );
@@ -240,11 +210,12 @@ class CountingFormController extends Controller
         $inv = $this->get('gist_inventory');
         $data = $this->getRequest()->request->all();
         $dateNow = new DateTime();
+
+        if (strtotime($dateNow->format('h:i A')) <= strtotime('03:00 AM')) {
+            $dateNow = $dateNow->sub(new DateInterval('P1D'));
+        }
+
         $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
-//        echo "<pre>";
-//        var_dump($data);
-//        echo "</pre>";
-//        die();
         $counting = new Counting();
         $counting->setInventoryAccount($main_warehouse->getInventoryAccount());
         $counting->setDateSubmitted($dateNow);
@@ -494,49 +465,6 @@ class CountingFormController extends Controller
         return $resp;
     }
 
-    /**
-     *
-     * For POS Open Tester Grid
-     * (copy damaged items grid implementation)
-     *
-     * @param $pos_loc_id
-     * @return JsonResponse
-     */
-    public function getExistingStockDataAction($pos_loc_id, $inv_type)
-    {
-        header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
-        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-
-        if ($inv_type == 'sales') {
-            $iacc = $pos_location->getInventoryAccount();
-        } elseif ($inv_type == 'damaged') {
-            $iacc = $pos_location->getInventoryAccount()->getDamagedContainer();
-        } elseif ($inv_type == 'tester') {
-            $iacc = $pos_location->getInventoryAccount()->getTesterContainer();
-        } elseif ($inv_type == 'missing') {
-            $iacc = $pos_location->getInventoryAccount()->getMissingContainer();
-        } else {
-            $iacc = $pos_location->getInventoryAccount();
-        }
-
-        $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$iacc->getID()));
-        $list_opts = [];
-        foreach ($stock as $p) {
-            if ($p->getQuantity() > 0) {
-                $list_opts[] = array(
-                    'quantity' => $p->getQuantity(),
-                    'item_code' =>$p->getProduct()->getItemCode(),
-                    'barcode' => $p->getProduct()->getBarcode(),
-                    'item_name' => $p->getProduct()->getName(),
-                );
-            }
-        }
-
-        $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
-        return new JsonResponse($list_opts);
-    }
-
     protected function getControllerBase()
     {
         $full = $this->getRequest()->get('_controller');
@@ -576,48 +504,6 @@ class CountingFormController extends Controller
 
         $list_opts[] = array('name'=>$product->getName(), 'f_min'=>$f_min, 'f_max'=>$f_max, 'min'=>$min, 'max'=>$max);
         return new JsonResponse($list_opts);
-    }
-
-    /**
-     *
-     * (AJAX)
-     * @param $trans_sys_id
-     * @return JsonResponse
-     */
-    public function saveStockThresholdAction($id, $min, $max, $pos_loc_id, $inv_id)
-    {
-        $em = $this->getDoctrine()->getManager();
-        if ($inv_id == 0) {
-            if ($pos_loc_id == 0) {
-                $inv = $this->get('gist_inventory');
-                $config = $this->get('gist_configuration');
-                $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
-                $posLocation = $main_warehouse;
-            } else {
-                $posLocation = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
-            }
-
-            $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$posLocation->getInventoryAccount()->getID()));
-        } else {
-            $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$inv_id));
-        }
-
-        try {
-            $stock->setMaxStock($max);
-            $stock->setMinStock($min);
-            $em->persist($stock);
-            $em->flush();
-            $list_opts[] = array('status'=>'success');
-        } catch (\Exception $e) {
-            $list_opts[] = array('status'=>'error');
-        }
-
-        return new JsonResponse($list_opts);
-    }
-
-    protected function filterGrid(){
-        $grid = $this->get('gist_grid');
-        return $grid->newFilterGroup();
     }
 }
 

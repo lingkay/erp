@@ -125,9 +125,6 @@ class POSLocationsController extends CrudController
         $o->setCountry($data['country']);
         $o->setStatus($data['status']);
 
-        $o->setClosingCount(new DateTime($data['closing_count']));
-        $o->setOpeningCount(new DateTime($data['opening_count']));
-
         $em = $this->getDoctrine()->getManager();
         if (isset($data['area'])) {
             $area = $em->getRepository('GistLocationBundle:Areas')->find($data['area']);
@@ -233,11 +230,6 @@ class POSLocationsController extends CrudController
     protected function hookPostSave($obj, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
-
-        if ($is_new) {
-            $obj->setClosingCount(new DateTime('10:00 PM'));
-            $obj->setOpeningCount(new DateTime('11:00 AM'));
-        }
 
         if ($obj->getInventoryAccount()) {
 
