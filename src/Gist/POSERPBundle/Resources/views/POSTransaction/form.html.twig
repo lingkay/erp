@@ -20,6 +20,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     {{ form.group_text('Receipt Number', 'trans_code', object.getTransDisplayId|default(''), 4, 5, true) }}
+                                    {{ form.group_text('POS', 'pos', object.getPOSLocation.getName|default(''), 4, 5, true) }}
                                     {{ form.group_text('Customer', 'customer', customer.getNameFormatted|default('N/A'), 4, 5, true) }}
                                     {{ form.group_text('Type', 'trans_type', object.getTransactionTypeFormatted|default(''), 4, 5, true) }}
                                     {{ form.group_text('Bulk Discount', 'bulk_discount', object.getBulkDiscountType|default(''), 4, 5, true) }}

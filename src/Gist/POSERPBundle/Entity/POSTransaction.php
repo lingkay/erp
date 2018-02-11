@@ -47,6 +47,12 @@ class POSTransaction
      */
     protected $customer;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\POSLocations")
+     * @ORM\JoinColumn(name="pos_location_id", referencedColumnName="id")
+     */
+    protected $pos_location;
+
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $transaction_type;
 
@@ -230,6 +236,18 @@ class POSTransaction
     public function getTrnasactionBalance()
     {
         return $this->trnasaction_balance;
+    }
+
+    public function setPOSLocation($pos_location)
+    {
+        $this->pos_location = $pos_location;
+
+        return $this;
+    }
+
+    public function getPOSLocation()
+    {
+        return $this->pos_location;
     }
 
     /**

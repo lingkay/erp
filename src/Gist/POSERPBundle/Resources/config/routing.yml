@@ -77,7 +77,7 @@ gist_poserp_chg_rates_get_rates:
 
 
 gist_poserp_save_transaction:
-    path:     /save_transaction/{id}/{display_id}/{total}/{balance}/{type}/{customer_id}/{status}/{tax_rate}/{orig_vat_amt}/{new_vat_amt}/{orig_amt_net_vat}/{new_amt_net_vat}/{tax_coverage}/{cart_min}/{orig_cart_total}/{new_cart_total}/{bulk_type}/{transaction_mode}/{transaction_cc_interest}/{transaction_ea}
+    path:     /save_transaction/{pos_loc_id}/{id}/{display_id}/{total}/{balance}/{type}/{customer_id}/{status}/{tax_rate}/{orig_vat_amt}/{new_vat_amt}/{orig_amt_net_vat}/{new_amt_net_vat}/{tax_coverage}/{cart_min}/{orig_cart_total}/{new_cart_total}/{bulk_type}/{transaction_mode}/{transaction_cc_interest}/{transaction_ea}
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransaction }
 

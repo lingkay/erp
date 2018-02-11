@@ -9,6 +9,9 @@ use Gist\POSERPBundle\Entity\POSTransactionPayment;
 use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Gist\InventoryBundle\Entity\Transaction;
+use Gist\InventoryBundle\Entity\Entry;
+use Gist\InventoryBundle\Entity\Stock;
 
 class POSSyncController extends CrudController
 {
@@ -22,10 +25,14 @@ class POSSyncController extends CrudController
         return $obj->getID();
     }
 
-    public function saveTransactionAction($id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest,$transaction_ea)
+    public function saveTransactionAction($pos_loc_id, $id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest,$transaction_ea)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+
+        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        //$pos_iacc_id = $pos_location->getInventoryAccount()->getDamagedContainer()->getID();
 
 
         // REMOVE EXISTING TRANSACTION
@@ -43,7 +50,7 @@ class POSSyncController extends CrudController
             $em->remove($et);
             $em->flush();
         }
-        
+
 
 
 
@@ -77,7 +84,7 @@ class POSSyncController extends CrudController
         $transaction->setBulkDiscountType($bulk_type);
         $transaction->setTransactionCCInterest($transaction_cc_interest);
         $transaction->setExtraAmount($transaction_ea);
-
+        $transaction->setPOSLocation($pos_location);
 
         $em->persist($transaction);
         $em->flush();
@@ -91,8 +98,12 @@ class POSSyncController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $transaction_item = new POSTransactionItem();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
 
         $transaction = $em->getRepository('GistPOSERPBundle:POSTransaction')->findOneBy(array('trans_display_id'=>$trans_sys_id));
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>'1'));
+        $pos_location = $transaction->getPOSLocation();
         
         $transaction_item->setTransaction($transaction);
         $transaction_item->setProductId($prod_id);
@@ -105,6 +116,64 @@ class POSSyncController extends CrudController
 
         $em->persist($transaction_item);
         $em->flush();
+
+        //generate stock manipulation
+        $prod = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$prod_id));
+        if ($prod == null)
+            throw new ValidationException('Could not find product.');
+
+        //this is where the damaged items will be transferred virtually
+        //if for pos = get pos_loc_id then find from pos_location
+        $source = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+        $dmg_acc = $source->getInventoryAccount();
+
+        //this is where the damaged items will come from
+        //this should get from pos location's stock. adjustment warehouse for now
+        //$adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+        $adj_acc = $pos_location->getInventoryAccount();
+
+        $new_qty = 1;
+        $old_qty = 0;
+
+        $remarks = 'POS Sales. TRANSACTION ID: '.$transaction->getID();
+        // setup transaction
+        $trans = new Transaction();
+        $trans->setUserCreate($user)
+            ->setDescription($remarks);
+
+        // add entries
+        // entry for destination
+        $wh_entry = new Entry();
+        $wh_entry->setInventoryAccount($dmg_acc)
+            ->setProduct($prod);
+
+        // entry for source
+        $adj_entry = new Entry();
+        $adj_entry->setInventoryAccount($adj_acc)
+            ->setProduct($prod);
+
+        // check if debit or credit
+        if ($new_qty > $old_qty)
+        {
+            $qty = $new_qty - $old_qty;
+            $wh_entry->setDebit($qty);
+            $adj_entry->setCredit($qty);
+        }
+        else
+        {
+            $qty = $old_qty - $new_qty;
+            $wh_entry->setCredit($qty);
+            $adj_entry->setDebit($qty);
+        }
+        $entries[] = $wh_entry;
+        $entries[] = $adj_entry;
+
+        foreach ($entries as $ent)
+            $trans->addEntry($ent);
+
+        $inv->persistTransaction($trans);
+        $em->flush();
+        //end stock manipulation
 
         $list_opts[] = array('status'=>'ok');
         return new JsonResponse($list_opts);
