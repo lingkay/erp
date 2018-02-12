@@ -84,11 +84,12 @@ class InventoryManager
         );
     }
 
-    public function getBoolOptionsVisibility()
+    public function getCountingFormControl()
     {
         return array(
-            'shown' => 'Shown',
-            'hidden' => 'Hidden'
+            'l' => 'User can count freely',
+            '2' => 'User can count freely with notification',
+            '3' => 'All notifications and alerts enabled'
         );
     }
 
