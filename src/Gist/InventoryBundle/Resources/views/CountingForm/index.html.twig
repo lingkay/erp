@@ -44,8 +44,8 @@
                                     <input type="hidden" name="product_id[]" value="{{ stock.getProduct.getID }}">
                                     <td>{{ stock.getProduct.getItemCode|default('') }}</td>
                                     <td>{{ stock.getProduct.getName|default('') }}</td>
-                                    <td><input type="number" step="1" class="existingCount form-control" name="existingCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}" readonly></td>
-                                    <td><input type="number" step="1" class="currentCount form-control" name="currentCount[]" value="{{ stock.getQuantity|default('')|number_format(0) }}" {{ form_disabled ? 'disabled ' : '' }}></td>
+                                    <td><input type="number" step="1" class="existingCount form-control" name="existingCount[]" value="{{ stock.getQuantity|default('')|replace({".00" : ""}) }}" readonly></td>
+                                    <td><input type="number" step="1" class="currentCount form-control" name="currentCount[]" value="{{ stock.getQuantity|default('')|replace({".00" : ""}) }}" {{ form_disabled ? 'disabled ' : '' }}></td>
                                     <td><input type="text" class="diffCount form-control" name="diffCount[]" value="+0" readonly></td>
                                     <td class="text-center"><i class="fa fa-check center-block text-center rowMarker"></i></td>
                                 </tr>

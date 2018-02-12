@@ -15,6 +15,7 @@ use Gist\InventoryBundle\Model\InventoryException;
 use Gist\TemplateBundle\Model\BaseController as Controller;
 use Gist\TemplateBundle\Model\RouteGenerator as RouteGenerator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Gist\InventoryBundle\Entity\Stock;
 use DateTime;
 use DateInterval;
 
@@ -169,14 +170,14 @@ class CountingFormController extends Controller
             $dateNow = $dateNow->sub(new DateInterval('P1D'));
         }
 
-        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$uid));
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id' => $uid));
         parse_str(html_entity_decode($entries), $entriesParsed);
         $posLocation = $inv->findPOSLocation($pos_loc_id);
 
-        $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account'=>$posLocation->getInventoryAccount()->getID(),'date_submitted'=>new DateTime()));
+        $countings = $em->getRepository('GistInventoryBundle:Counting')->findBy(array('inventory_account' => $posLocation->getInventoryAccount()->getID(), 'date_submitted' => new DateTime()));
         if (count($countings) > $maxSubmissions) {
             $list_opts[] = array(
-                'status'=>'failed'
+                'status' => 'failed'
             );
             return new JsonResponse($list_opts);
         }
@@ -190,8 +191,8 @@ class CountingFormController extends Controller
         $em->persist($counting);
         $em->flush();
 
-        foreach ($entriesParsed as $e)
-        {
+        foreach ($entriesParsed as $e) {
+            $entries = array();
             $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($e['product_id']);
             $countingEntry = new CountingEntry();
             $countingEntry->setProduct($product);
@@ -200,6 +201,54 @@ class CountingFormController extends Controller
             $countingEntry->setCounting($counting);
             $em->persist($countingEntry);
             $em->flush();
+
+            //override stock
+            $prod = $product;
+            $dmg_acc = $posLocation->getInventoryAccount();
+            $adj_acc = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+            $adj_acc = $adj_acc->getInventoryAccount();
+
+
+            $new_qty = $e['count'];
+            $old_qty = $e['current'];
+
+            $remarks = 'POS Counting';
+            // setup transaction
+            $trans = new Transaction();
+            $trans->setUserCreate($user)
+                ->setDescription($remarks);
+
+            // add entries
+            // entry for destination
+            $wh_entry = new Entry();
+            $wh_entry->setInventoryAccount($dmg_acc)
+                ->setProduct($prod);
+
+            // entry for source
+            $adj_entry = new Entry();
+            $adj_entry->setInventoryAccount($adj_acc)
+                ->setProduct($prod);
+
+            // check if debit or credit
+            if ($new_qty > $old_qty) {
+                $qty = $new_qty - $old_qty;
+                $wh_entry->setDebit($qty);
+                $adj_entry->setCredit($qty);
+            } else {
+                $qty = $old_qty - $new_qty;
+                $wh_entry->setCredit($qty);
+                $adj_entry->setDebit($qty);
+            }
+            $entries[] = $wh_entry;
+            $entries[] = $adj_entry;
+
+            foreach ($entries as $ent)
+                $trans->addEntry($ent);
+
+            $inv->persistTransaction($trans);
+            $em->flush();
+            //end stock manipulation
+            //end override stock
         }
 
         $list_opts[] = array(
@@ -241,6 +290,54 @@ class CountingFormController extends Controller
             $countingEntry->setCounting($counting);
             $em->persist($countingEntry);
             $em->flush();
+
+            //override stock
+            $prod = $product;
+            $dmg_acc = $main_warehouse->getInventoryAccount();
+            $adj_acc = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+            $adj_acc = $adj_acc->getInventoryAccount();
+
+
+            $new_qty = $data['currentCount'][$index];
+            $old_qty = $data['existingCount'][$index];
+
+            $remarks = 'ERP  Counting';
+            // setup transaction
+            $trans = new Transaction();
+            $trans->setUserCreate($this->getUser())
+                ->setDescription($remarks);
+
+            // add entries
+            // entry for destination
+            $wh_entry = new Entry();
+            $wh_entry->setInventoryAccount($dmg_acc)
+                ->setProduct($prod);
+
+            // entry for source
+            $adj_entry = new Entry();
+            $adj_entry->setInventoryAccount($adj_acc)
+                ->setProduct($prod);
+
+            // check if debit or credit
+            if ($new_qty > $old_qty) {
+                $qty = $new_qty - $old_qty;
+                $wh_entry->setDebit($qty);
+                $adj_entry->setCredit($qty);
+            } else {
+                $qty = $old_qty - $new_qty;
+                $wh_entry->setCredit($qty);
+                $adj_entry->setDebit($qty);
+            }
+            $entries[] = $wh_entry;
+            $entries[] = $adj_entry;
+
+            foreach ($entries as $ent)
+                $trans->addEntry($ent);
+
+            $inv->persistTransaction($trans);
+            $em->flush();
+            //end stock manipulation
+            //end override stock
         }
 
         $this->addFlash('success', 'Submitted successfully.');
