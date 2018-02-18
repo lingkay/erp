@@ -51,7 +51,7 @@ class InventoryDamagedItemsManager
         $remarks = $dmg->getDescription();
 
         foreach ($dmg->getEntries() as $entry) {
-
+            $entries = array();
             $new_qty = $entry->getQuantity(); //get from entry
             $old_qty = 0;
 

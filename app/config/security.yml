@@ -59,6 +59,7 @@ security:
         - { path: ^/inventory/stock_transfer/get/data_rollback, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/get/data_entries, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/get/loc_options, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/stock_transfer/get/loc_options2, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/update_status, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/add_new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/stock_transfer/get/current_stock/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -95,6 +96,7 @@ security:
         - { path: ^/inventory/open_tester/search_product/ajax2, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/inventory/existing_stock/pos/grid, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inventory/existing_stock/pos/visibility, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/inventory/damaged_items/get/prod_cats, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -304,10 +304,11 @@ class DamagedItemsController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
-        $entries = array();
+
         
         foreach ($data['product_item_code'] as $index => $value)
         {
+            $entries = array();
             $prod_item_code = $value;
 
             // product
@@ -1144,7 +1145,7 @@ class DamagedItemsController extends CrudController
             $qry[] = "(o.category = '".$category."')";
         }
         else {
-            $qry[] = "(o.id > 0)";
+            $qry[] = "(o.id > -1000)";
         }
 
         if (!empty($qry))

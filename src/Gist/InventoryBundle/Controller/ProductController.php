@@ -208,14 +208,15 @@ class ProductController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $data = $this->getRequest()->request->all();
+
         $config = $this->get('gist_configuration');
-        if (isset($data['qty'][0])) {
-            if ($data['qty'][0] != '') {
+        if (isset($data['qty'])) {
+            if ($data['qty'] != '') {
                 $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
                 $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
                 $wh_acc = $main_warehouse->getInventoryAccount();
                 $adj_acc = $adj_warehouse->getInventoryAccount();
-                $new_qty = $data['qty'][0];
+                $new_qty = $data['qty'];
                 $old_qty = 0;
 
                 // setup transaction

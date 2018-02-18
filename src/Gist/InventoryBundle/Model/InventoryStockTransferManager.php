@@ -149,17 +149,21 @@ class InventoryStockTransferManager
             $o->setDeliverUser($user);
             $o->setDateDelivered(new DateTime());
 
-            $entries = array();
+
+            $rounds = 0;
 
             //generate transfer entries from source to virtual
             foreach ($data['st_entry'] as $index => $value) {
+
+                $entries_x334 = array();
+                $rounds++;
                 $entry_id = $value;
                 $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
 
                 // setup transaction
                 $trans = new Transaction();
                 $trans->setUserCreate($user)
-                    ->setDescription('Stock transfer items successfully delivered.');
+                    ->setDescription('Stock transfer item '.$entry->getProduct()->getID().' with '.$entry->getQuantity().' qty successfully transferred to virtual container.');
 
                 // add entries
                 // entry for destination
@@ -185,10 +189,10 @@ class InventoryStockTransferManager
                     $wh_entry->setCredit($qty);
                     $adj_entry->setDebit($qty);
                 }
-                $entries[] = $wh_entry;
-                $entries[] = $adj_entry;
+                $entries_x334[] = $wh_entry;
+                $entries_x334[] = $adj_entry;
 
-                foreach ($entries as $ent)
+                foreach ($entries_x334 as $ent)
                     $trans->addEntry($ent);
 
                 $this->persistTransaction($trans);
@@ -200,11 +204,9 @@ class InventoryStockTransferManager
             $o->setReceivingUser($user);
             $o->setDateReceived(new DateTime());
 
-
-            $entries = array();
-
             //generate transfer entries from virtual to destination
             foreach ($data['st_entry'] as $index => $value) {
+                $entries = array();
                 $entry_id = $value;
                 $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
 
@@ -283,6 +285,8 @@ class InventoryStockTransferManager
             $new_qty = bcadd($qty, $old_qty, 2);
             $stock->setQuantity($new_qty);
         }
+
+
     }
 
     public function updatePOSForm($user, $entries, $id)

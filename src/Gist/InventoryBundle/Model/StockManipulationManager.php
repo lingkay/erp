@@ -29,8 +29,9 @@ class StockManipulationManager
         $adjustment_container = $this->findWarehouse($config->get('gist_adjustment_warehouse'));
         $adjustment_account = $adjustment_container->getInventoryAccount();
 
-        $entries_x = array();
+
         foreach ($entries as $e) {
+            $entries_x = array();
             if ($type == 'POS') {
                 $entry_id = $e['st_entry'];
                 $qty = $e['received_quantity'];
@@ -45,7 +46,7 @@ class StockManipulationManager
 
             $trans = new Transaction();
             $trans->setUserCreate($user)
-                ->setDescription($st->getDescription());
+                ->setDescription('POS VIRTUAL TO DEST');
 
 
             // entry for destination
@@ -92,11 +93,12 @@ class StockManipulationManager
         $adjustment_container = $this->findWarehouse($config->get('gist_adjustment_warehouse'));
         $adjustment_account = $adjustment_container->getInventoryAccount();
 
-        $entries_x = array();
+
         foreach ($entries as $e) {
+            $entries_x = array();
             if ($type == 'POS') {
                 $entry_id = $e['st_entry'];
-                $qty = $e['received_quantity'];
+                $qty = $e['processed_quantity'];
             } else {
                 $entry_id = $e->getID();
                 $qty = $e->getQuantity();
@@ -108,7 +110,7 @@ class StockManipulationManager
 
             $trans = new Transaction();
             $trans->setUserCreate($user)
-                ->setDescription($st->getDescription());
+                ->setDescription('POS SRC TO VIRTUAL');
 
 
             // entry for destination
