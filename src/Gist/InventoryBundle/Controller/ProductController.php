@@ -169,6 +169,7 @@ class ProductController extends CrudController
 
         //COST
         $o->setCost($data['cost']);
+        $o->setMaxTester($data['max_open_tester']);
 
         if (isset($data['cost_currency'])) {
             $o->setCostCurrency($data['cost_currency']);

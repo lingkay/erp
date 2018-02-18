@@ -101,11 +101,15 @@ class Product
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $directions;
 
-
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $max_open_tester;
 
 
     public function __construct()
     {
+        $this->max_open_tester = 1;
     }
 
     public function getID()
@@ -113,7 +117,16 @@ class Product
         return $this->id;
     }
 
+    public function setMaxTester($max_open_tester)
+    {
+        $this->max_open_tester = $max_open_tester;
+        return $this;
+    }
 
+    public function getMaxTester()
+    {
+        return $this->max_open_tester;
+    }
 
     public function setName($name)
     {
