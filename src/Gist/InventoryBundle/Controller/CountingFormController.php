@@ -193,63 +193,67 @@ class CountingFormController extends Controller
         $em->flush();
 
         foreach ($entriesParsed as $e) {
-            $entries = array();
-            $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($e['product_id']);
-            $countingEntry = new CountingEntry();
-            $countingEntry->setProduct($product);
-            $countingEntry->setQuantity($e['count']);
-            $countingEntry->setExistingQuantity($e['current']);
-            $countingEntry->setCounting($counting);
-            $em->persist($countingEntry);
-            $em->flush();
-
-            //override stock
-            $prod = $product;
-            $dmg_acc = $posLocation->getInventoryAccount();
-            $adj_acc = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
-            $adj_acc = $adj_acc->getInventoryAccount();
-
-
-            $new_qty = $e['count'];
-            $old_qty = $e['current'];
-
-            $remarks = 'POS Counting';
-            // setup transaction
-            $trans = new Transaction();
-            $trans->setUserCreate($user)
-                ->setDescription($remarks);
-
-            // add entries
-            // entry for destination
-            $wh_entry = new Entry();
-            $wh_entry->setInventoryAccount($dmg_acc)
-                ->setProduct($prod);
-
-            // entry for source
-            $adj_entry = new Entry();
-            $adj_entry->setInventoryAccount($adj_acc)
-                ->setProduct($prod);
-
-            // check if debit or credit
-            if ($new_qty > $old_qty) {
-                $qty = $new_qty - $old_qty;
-                $wh_entry->setDebit($qty);
-                $adj_entry->setCredit($qty);
+            if ($e['count'] == '' || $e['count'] == null) {
+                //disregard if no input to avoid zero
             } else {
-                $qty = $old_qty - $new_qty;
-                $wh_entry->setCredit($qty);
-                $adj_entry->setDebit($qty);
+                $entries = array();
+                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($e['product_id']);
+                $countingEntry = new CountingEntry();
+                $countingEntry->setProduct($product);
+                $countingEntry->setQuantity($e['count']);
+                $countingEntry->setExistingQuantity($e['current']);
+                $countingEntry->setCounting($counting);
+                $em->persist($countingEntry);
+                $em->flush();
+
+                //override stock
+                $prod = $product;
+                $dmg_acc = $posLocation->getInventoryAccount();
+                $adj_acc = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));
+                $adj_acc = $adj_acc->getInventoryAccount();
+
+
+                $new_qty = $e['count'];
+                $old_qty = $e['current'];
+
+                $remarks = 'POS Counting';
+                // setup transaction
+                $trans = new Transaction();
+                $trans->setUserCreate($user)
+                    ->setDescription($remarks);
+
+                // add entries
+                // entry for destination
+                $wh_entry = new Entry();
+                $wh_entry->setInventoryAccount($dmg_acc)
+                    ->setProduct($prod);
+
+                // entry for source
+                $adj_entry = new Entry();
+                $adj_entry->setInventoryAccount($adj_acc)
+                    ->setProduct($prod);
+
+                // check if debit or credit
+                if ($new_qty > $old_qty) {
+                    $qty = $new_qty - $old_qty;
+                    $wh_entry->setDebit($qty);
+                    $adj_entry->setCredit($qty);
+                } else {
+                    $qty = $old_qty - $new_qty;
+                    $wh_entry->setCredit($qty);
+                    $adj_entry->setDebit($qty);
+                }
+                $entries[] = $wh_entry;
+                $entries[] = $adj_entry;
+
+                foreach ($entries as $ent)
+                    $trans->addEntry($ent);
+
+                $inv->persistTransaction($trans);
+                $em->flush();
+                //end stock manipulation
+                //end override stock
             }
-            $entries[] = $wh_entry;
-            $entries[] = $adj_entry;
-
-            foreach ($entries as $ent)
-                $trans->addEntry($ent);
-
-            $inv->persistTransaction($trans);
-            $em->flush();
-            //end stock manipulation
-            //end override stock
         }
 
         $list_opts[] = array(
