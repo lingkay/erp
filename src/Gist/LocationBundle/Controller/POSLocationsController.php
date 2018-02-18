@@ -84,6 +84,11 @@ class POSLocationsController extends CrudController
             'ELEVATIONE' => 'ELEVATIONE'
         );
 
+        $params['visibility_rule_opts'] = array(
+            'yes' => 'Yes',
+            'no' => 'No'
+        );
+
         $params['status_opts'] = array(
             'Active' => 'Active',
             'Inactive' => 'Inactive',
@@ -131,6 +136,7 @@ class POSLocationsController extends CrudController
         $o->setStatus($data['status']);
 
         $o->setCountingRule($data['counting_rule']);
+        $o->setOtherLocStockVisible($data['other_stocks_visible']);
 
         $em = $this->getDoctrine()->getManager();
         if (isset($data['area'])) {

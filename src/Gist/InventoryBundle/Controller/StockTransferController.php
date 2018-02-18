@@ -441,6 +441,15 @@ class StockTransferController extends CrudController
         return new JsonResponse($list_opts);
     }
 
+    public function getLocationOptions2Action($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        $inv = $this->get('gist_inventory');
+        $list_opts = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptions();
+        return new JsonResponse($list_opts);
+    }
+
     /**
      *
      * Function for POS to fetch stock transfer form data

@@ -280,11 +280,18 @@ class ExistingStockController extends Controller
      * @param $pos_loc_id
      * @return JsonResponse
      */
-    public function getExistingStockDataAction($pos_loc_id, $inv_type)
+    public function getExistingStockDataAction($origin, $pos_loc_id, $inv_type)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
-        $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $origin_pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id' => $origin));
+        if ($pos_loc_id == '0') {
+            $pos_location = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        } else {
+            $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id' => $pos_loc_id));
+        }
 
         if ($inv_type == 'sales') {
             $iacc = $pos_location->getInventoryAccount();
@@ -300,18 +307,29 @@ class ExistingStockController extends Controller
 
         $stock = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$iacc->getID()));
         $list_opts = [];
+
         foreach ($stock as $p) {
-            if ($p->getQuantity() > 0) {
-                $list_opts[] = array(
-                    'quantity' => $p->getQuantity(),
-                    'item_code' =>$p->getProduct()->getItemCode(),
-                    'barcode' => $p->getProduct()->getBarcode(),
-                    'item_name' => $p->getProduct()->getName(),
-                );
-            }
+            $list_opts[] = array(
+                'quantity' => $p->getQuantity(),
+                'item_code' =>$p->getProduct()->getItemCode(),
+                'barcode' => $p->getProduct()->getBarcode(),
+                'item_name' => $p->getProduct()->getName()
+            );
         }
 
         $list_opts = array_map("unserialize", array_unique(array_map("serialize", $list_opts)));
+        return new JsonResponse($list_opts);
+    }
+
+    public function getPOSVisibilityAction($pos_loc_id)
+    {
+        header("Access-Control-Allow-Origin: *");
+        $em = $this->getDoctrine()->getManager();
+        $inv = $this->get('gist_inventory');
+        $config = $this->get('gist_configuration');
+        $origin_pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id' => $pos_loc_id));
+
+        $list_opts[] = array('other_pos_stock_visible' => $origin_pos_location->getOtherLocStockVisible());
         return new JsonResponse($list_opts);
     }
 

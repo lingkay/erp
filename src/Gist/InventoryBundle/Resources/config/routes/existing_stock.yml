@@ -27,6 +27,11 @@ gist_inv_existing_stock_save_stock_threshold:
 
 
 gist_inv_existing_stock_pos_grid_data:
-    pattern: /pos/grid/{pos_loc_id}/{inv_type}
+    pattern: /pos/grid/{origin}/{pos_loc_id}/{inv_type}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:ExistingStock:getExistingStockData }
+
+gist_inv_existing_stock_pos_other_visibility:
+    pattern: /pos/visibility/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStock:getPOSVisibility }

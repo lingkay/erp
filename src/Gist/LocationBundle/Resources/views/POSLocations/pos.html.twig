@@ -21,6 +21,7 @@
                 {{ form.group_select('Area', 'area', area_opts, object.getArea.getID|default(''), 3, 4, readonly) }}
                 <hr>
                 {{ form.group_select('Counting Rule', 'counting_rule', counting_rule_opts, object.getCountingRule|default(''), 3, 4, readonly) }}
+                {{ form.group_select('Other Location Stock Visible', 'other_stocks_visible', visibility_rule_opts, object.getOtherLocStockVisible|default(''), 3, 4, readonly) }}
                 <br>
             </div>
             <div class="form-actions fluid">

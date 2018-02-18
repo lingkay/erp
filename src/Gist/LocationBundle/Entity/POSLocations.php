@@ -74,6 +74,9 @@ class POSLocations
     /** @ORM\Column(type="string", length=50) */
     protected $counting_rule;
 
+    /** @ORM\Column(type="string", length=50) */
+    protected $other_loc_stock_visibility;
+
     // PERMITS
     /**
      * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
@@ -216,6 +219,7 @@ class POSLocations
         $this->initTrackCreate();
         $this->initHasInventoryAccount();
         $this->counting_rule = 'all';
+        $this->other_loc_stock_visibility = 'yes';
     }
 
     public function getLedgerTotal()
@@ -229,6 +233,18 @@ class POSLocations
         
         $sum += $this->rent_security_deposit_amount;
         return $sum;
+    }
+
+    public function setOtherLocStockVisible($other_loc_stock_visibility)
+    {
+        $this->other_loc_stock_visibility = $other_loc_stock_visibility;
+
+        return $this;
+    }
+
+    public function getOtherLocStockVisible()
+    {
+        return $this->other_loc_stock_visibility;
     }
 
     public function setCountingRule($counting_rule)
