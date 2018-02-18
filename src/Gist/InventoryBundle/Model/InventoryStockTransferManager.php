@@ -129,6 +129,10 @@ class InventoryStockTransferManager
      */
     public function updateForm($o, $data, $user)
     {
+        $config = new ConfigurationManager($this->container);
+        $adjustment_container = $this->findWarehouse($config->get('gist_adjustment_warehouse'));
+        $adjustment_account = $adjustment_container->getInventoryAccount();
+
         $o->setStatus($data['status']);
 
         if ($data['status'] == 'processed') {
@@ -145,6 +149,52 @@ class InventoryStockTransferManager
             $o->setDeliverUser($user);
             $o->setDateDelivered(new DateTime());
 
+            $entries = array();
+
+            //generate transfer entries from source to virtual
+            foreach ($data['st_entry'] as $index => $value) {
+                $entry_id = $value;
+                $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
+
+                // setup transaction
+                $trans = new Transaction();
+                $trans->setUserCreate($user)
+                    ->setDescription('Stock transfer items successfully delivered.');
+
+                // add entries
+                // entry for destination
+                $wh_entry = new Entry();
+                $wh_entry->setInventoryAccount($adjustment_account)
+                    ->setProduct($entry->getProduct());
+
+                // entry for source
+                $adj_entry = new Entry();
+                $adj_entry->setInventoryAccount($o->getSource())
+                    ->setProduct($entry->getProduct());
+
+                $old_qty = 0;
+                $new_qty = $entry->getQuantity();
+
+                // check if debit or credit
+                if ($new_qty > $old_qty) {
+                    $qty = $new_qty - $old_qty;
+                    $wh_entry->setDebit($qty);
+                    $adj_entry->setCredit($qty);
+                } else {
+                    $qty = $old_qty - $new_qty;
+                    $wh_entry->setCredit($qty);
+                    $adj_entry->setDebit($qty);
+                }
+                $entries[] = $wh_entry;
+                $entries[] = $adj_entry;
+
+                foreach ($entries as $ent)
+                    $trans->addEntry($ent);
+
+                $this->persistTransaction($trans);
+                $this->em->flush();
+            }
+
         } elseif ($data['status'] == 'arrived') {
 
             $o->setReceivingUser($user);
@@ -153,7 +203,7 @@ class InventoryStockTransferManager
 
             $entries = array();
 
-            //generate transfer entries
+            //generate transfer entries from virtual to destination
             foreach ($data['st_entry'] as $index => $value) {
                 $entry_id = $value;
                 $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
@@ -171,7 +221,7 @@ class InventoryStockTransferManager
 
                 // entry for source
                 $adj_entry = new Entry();
-                $adj_entry->setInventoryAccount($o->getSource())
+                $adj_entry->setInventoryAccount($adjustment_account)
                     ->setProduct($entry->getProduct());
 
                 $old_qty = 0;

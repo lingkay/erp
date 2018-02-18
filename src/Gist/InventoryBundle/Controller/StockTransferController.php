@@ -527,6 +527,7 @@ class StockTransferController extends CrudController
         } elseif ($status == 'delivered') {
             $st->setDeliverUser($user);
             $st->setDateDelivered(new DateTime());
+            $stockManipulationManager->performTransferToVirtual($entriesParsed, $st, $user, 'POS');
         } elseif ($status == 'arrived') {
             $st->setReceivingUser($user);
             $st->setDateReceived(new DateTime());

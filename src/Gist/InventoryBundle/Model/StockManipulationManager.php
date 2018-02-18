@@ -25,6 +25,10 @@ class StockManipulationManager
 
     public function performTransfer($entries, $st, $user, $type = 'ERP')
     {
+        $config = new ConfigurationManager($this->container);
+        $adjustment_container = $this->findWarehouse($config->get('gist_adjustment_warehouse'));
+        $adjustment_account = $adjustment_container->getInventoryAccount();
+
         $entries_x = array();
         foreach ($entries as $e) {
             if ($type == 'POS') {
@@ -47,6 +51,69 @@ class StockManipulationManager
             // entry for destination
             $destination_entry = new Entry();
             $destination_entry->setInventoryAccount($st->getDestination())
+                ->setProduct($prod);
+
+            // entry for source
+            $source_entry = new Entry();
+            $source_entry->setInventoryAccount($adjustment_account)
+                ->setProduct($prod);
+
+            $old_qty = 0;
+            $new_qty = $qty;
+
+            // check if debit or credit
+            if ($new_qty > $old_qty)
+            {
+                $qty = $new_qty - $old_qty;
+                $destination_entry->setDebit($qty);
+                $source_entry->setCredit($qty);
+            }
+            else
+            {
+                $qty = $old_qty - $new_qty;
+                $destination_entry->setCredit($qty);
+                $source_entry->setDebit($qty);
+            }
+            $entries_x[] = $destination_entry;
+            $entries_x[] = $source_entry;
+
+            foreach ($entries_x as $ent)
+                $trans->addEntry($ent);
+
+            $this->persistTransaction($trans);
+            $this->em->flush();
+
+        }
+    }
+
+    public function performTransferToVirtual($entries, $st, $user, $type = 'ERP')
+    {
+        $config = new ConfigurationManager($this->container);
+        $adjustment_container = $this->findWarehouse($config->get('gist_adjustment_warehouse'));
+        $adjustment_account = $adjustment_container->getInventoryAccount();
+
+        $entries_x = array();
+        foreach ($entries as $e) {
+            if ($type == 'POS') {
+                $entry_id = $e['st_entry'];
+                $qty = $e['received_quantity'];
+            } else {
+                $entry_id = $e->getID();
+                $qty = $e->getQuantity();
+            }
+
+
+            $entry = $this->em->getRepository('GistInventoryBundle:StockTransferEntry')->findOneBy(array('id' => $entry_id));
+            $prod = $entry->getProduct();
+
+            $trans = new Transaction();
+            $trans->setUserCreate($user)
+                ->setDescription($st->getDescription());
+
+
+            // entry for destination
+            $destination_entry = new Entry();
+            $destination_entry->setInventoryAccount($adjustment_account)
                 ->setProduct($prod);
 
             // entry for source
@@ -117,6 +184,11 @@ class StockManipulationManager
             $new_qty = bcadd($qty, $old_qty, 2);
             $stock->setQuantity($new_qty);
         }
+    }
+
+    public function findWarehouse($id)
+    {
+        return $this->em->getRepository('GistInventoryBundle:Warehouse')->find($id);
     }
 }
 
