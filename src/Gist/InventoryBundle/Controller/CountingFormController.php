@@ -84,7 +84,8 @@ class CountingFormController extends Controller
                 'item_code'=>$stock->getProduct()->getItemCode(),
                 'item_name'=>$stock->getProduct()->getName(),
                 'current_stock'=> $stockQ,
-                'sys_stock_visibility' => $sysCountVisibility
+                'sys_stock_visibility' => $sysCountVisibility,
+                'counting_rule'=>$pos_location->getCountingRule(),
             );
 
         }

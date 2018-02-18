@@ -352,7 +352,7 @@
 <div id="{{ prefix }}group-{{ name }}" class="form-group">
     <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
     <div class="col-md-{{ body_size }}">
-        <select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control select_2 select_2-multi" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --" multiple="multiple">
+        <select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control select_2 select_2-multi" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --" multiple="multiple" required>
         {{ self.options_multiple(options, value) }}
         </select>
     </div>

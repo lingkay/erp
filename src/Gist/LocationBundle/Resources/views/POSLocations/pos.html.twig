@@ -19,6 +19,9 @@
                 {{ form.group_text('Country', 'country', object.getCountry|default(''), 3, 4, readonly) }}
                 {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
                 {{ form.group_select('Area', 'area', area_opts, object.getArea.getID|default(''), 3, 4, readonly) }}
+                <hr>
+                {{ form.group_select('Counting Rule', 'counting_rule', counting_rule_opts, object.getCountingRule|default(''), 3, 4, readonly) }}
+                <br>
             </div>
             <div class="form-actions fluid">
                 <div class="col-md-9">

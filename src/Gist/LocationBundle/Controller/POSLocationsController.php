@@ -73,6 +73,11 @@ class POSLocationsController extends CrudController
             'Hybrid' => 'Hybrid'
         );
 
+        $params['counting_rule_opts'] = array(
+            'selective' => 'Selective',
+            'all' => 'All'
+        );
+
         $params['brand_opts'] = array(
             'Aqua Mineral' => 'Aqua Mineral',
             'Botanifique' => 'Botanifique',
@@ -124,6 +129,8 @@ class POSLocationsController extends CrudController
         $o->setRegion($data['region']);
         $o->setCountry($data['country']);
         $o->setStatus($data['status']);
+
+        $o->setCountingRule($data['counting_rule']);
 
         $em = $this->getDoctrine()->getManager();
         if (isset($data['area'])) {
@@ -233,7 +240,7 @@ class POSLocationsController extends CrudController
 
         if ($obj->getInventoryAccount()) {
 
-            $this->setupInitialStocks($obj);
+            $this->setupInitialStocks($obj, $obj->getInventoryAccount());
 
             if (!$obj->getInventoryAccount()->getDamagedContainer()) {
                 $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
@@ -257,13 +264,10 @@ class POSLocationsController extends CrudController
             }
         } else {
             $newIacc = $this->createInventoryAccount($obj->getName());
-            $em->persist($newIacc);
 
             $obj->setInventoryAccount($newIacc);
             $em->persist($obj);
             $em->flush();
-
-            $this->setupInitialStocks($obj);
 
             $newDmgCnt = $this->createDamagedItemsInventoryAccount($obj->getName());
             $newMisCnt = $this->createMissingItemsInventoryAccount($obj->getName());
@@ -274,17 +278,19 @@ class POSLocationsController extends CrudController
             $newIacc->setTesterContainer($newTesCnt);
             $em->persist($newIacc);
             $em->flush();
+
+            $this->setupInitialStocks($obj, $newIacc);
         }
     }
 
-    protected function setupInitialStocks($obj)
+    protected function setupInitialStocks($obj, $wh_acc)
     {
 
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
 
-        $wh_acc = $obj->getInventoryAccount();
+        //$wh_acc = $obj->getInventoryAccount();
         $existing_stocks = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$wh_acc->getID()));
         $existingProductsArray = [];
         foreach ($existing_stocks as $es) {
@@ -320,12 +326,19 @@ class POSLocationsController extends CrudController
                             //IF LOCATIONS IACC HAS NO PRODUCTS AT ALL
                             foreach ($products as $product_object) {
                                 //create ZERO entry
-                                $stock_entry = new Stock($wh_acc, $product_object);
-                                $stock_entry->setInventoryAccount($wh_acc);
-                                $stock_entry->setProduct($product_object);
-                                $stock_entry->setQuantity(0);
-                                $em->persist($stock_entry);
-                                $em->flush();
+                                try {
+                                    $stock_entry = new Stock($wh_acc, $product_object);
+                                    $stock_entry->setInventoryAccount($wh_acc);
+                                    $stock_entry->setProduct($product_object);
+                                    $stock_entry->setQuantity(0);
+                                    $em->persist($stock_entry);
+                                    $em->flush();
+                                } catch (\Exception $e) {
+                                    die();
+                                } catch (\PDOException $e) {
+
+                                }
+
                             }
                         }
                         //IF BRAND PRODUCTS FOUND
@@ -337,32 +350,36 @@ class POSLocationsController extends CrudController
         }
 
         //CREATE ENTRIES FOR FIXED ASSETS
-        $fixedAssetsBrandID = $config->get('gist_fixed_asset_brand');
-        if ($fixedAssetsBrandID != '') {
-            $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('brand'=>$fixedAssetsBrandID));
-            if ($products) {
-                foreach ($products as $product_object) {
-                    if (!in_array($product_object->getID(), $existingProductsArray)) {
-                        //create ZERO entry
-                        $stock_entry = new Stock($wh_acc, $product_object);
-                        $stock_entry->setInventoryAccount($wh_acc);
-                        $stock_entry->setProduct($product_object);
-                        $stock_entry->setQuantity(0);
-                        $em->persist($stock_entry);
-                        $em->flush();
-                    }
+        $productsFA = $em->getRepository('GistInventoryBundle:Product')->findBy(array('type'=>'3'));
+        if ($productsFA) {
+            foreach ($productsFA as $product_objectFA) {
+                $existing_stocks = $em->getRepository('GistInventoryBundle:Stock')->findBy(array('inv_account'=>$wh_acc->getID(), 'product'=>$product_objectFA->getID()));
+                //create ZERO entry
+                if (count($existing_stocks) <= 0) {
+                    $stock_entry = new Stock($wh_acc, $product_objectFA);
+                    $stock_entry->setInventoryAccount($wh_acc);
+                    $stock_entry->setProduct($product_objectFA);
+                    $stock_entry->setQuantity(0);
+                    $em->persist($stock_entry);
+                    $em->flush();
                 }
             }
         }
+
     }
 
     protected function createInventoryAccount($name)
     {
+        $em = $this->getDoctrine()->getManager();
         $allow = false;
         $account = new Account();
         $account->setName($name)
             ->setUserCreate($this->getUser())
             ->setAllowNegative($allow);
+
+        $em->persist($account);
+        $em->flush();
+
 
         return $account;
     }

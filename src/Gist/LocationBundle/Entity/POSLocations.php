@@ -71,6 +71,9 @@ class POSLocations
      */
     protected $area;
 
+    /** @ORM\Column(type="string", length=50) */
+    protected $counting_rule;
+
     // PERMITS
     /**
      * @ORM\ManyToOne(targetEntity="Gist\MediaBundle\Entity\Upload")
@@ -212,6 +215,7 @@ class POSLocations
     {
         $this->initTrackCreate();
         $this->initHasInventoryAccount();
+        $this->counting_rule = 'all';
     }
 
     public function getLedgerTotal()
@@ -225,6 +229,18 @@ class POSLocations
         
         $sum += $this->rent_security_deposit_amount;
         return $sum;
+    }
+
+    public function setCountingRule($counting_rule)
+    {
+        $this->counting_rule = $counting_rule;
+
+        return $this;
+    }
+
+    public function getCountingRule()
+    {
+        return $this->counting_rule;
     }
 
     public function setName($name)
