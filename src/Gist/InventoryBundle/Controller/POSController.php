@@ -176,13 +176,26 @@ class POSController extends CrudController
     public function getUpsellTimeAction()
     {
         header("Access-Control-Allow-Origin: *");
-        $em = $this->getDoctrine()->getManager();
-        $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Upsell Time (seconds)'));
-        if (count($opt) > 0) {
-            return new JsonResponse($opt->getValue());
-        }
-        //default value
-        return new JsonResponse("1800");
+        $config = $this->get('gist_configuration');
+        $var = $config->get('gist_pos_upsell_seconds');
+        return new JsonResponse($var);
+    }
+
+    public function getRefundDaysAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $config = $this->get('gist_configuration');
+        $var = $config->get('gist_pos_max_refund_days');
+        return new JsonResponse($var);
+
+    }
+
+    public function getRefundCodeAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $config = $this->get('gist_configuration');
+        $var = $config->get('gist_pos_refund_code');
+        return new JsonResponse($var);
 
     }
 

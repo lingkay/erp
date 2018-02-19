@@ -20,6 +20,8 @@
                                     {{ form.group_number_no_step(e.getLabel, e.getID,e.getValue ,3,2)}}
                                 {% elseif e.getType == 'color' %}
                                     {{ form.group_color(e.getLabel, e.getID,e.getValue ,3,4)}}
+                                {% elseif e.getType == 'text' %}
+                                    {{ form.group_text(e.getLabel, e.getID, e.getValue, 3, 2) }}
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}

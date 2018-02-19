@@ -73,6 +73,16 @@ gist_inv_pos_get_upsell_time:
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:POS:getUpsellTime }
 
+gist_inv_pos_get_refund_days:
+    pattern: /get/refund_days
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getRefundDays }
+
+gist_inv_pos_get_refund_code:
+    pattern: /get/refund_code
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:POS:getRefundCode }
+
 gist_inv_pos_get_exchange_rule_below:
     pattern: /get/exchange_rule_below
     methods: [GET]

@@ -29,3 +29,12 @@ config:
         - id: gist_pos_counting_max_submissions
           label: "Counting Max Submissions"
           type: number
+        - id: gist_pos_max_refund_days
+          label: "POS Max Refund Day/s"
+          type: number
+        - id: gist_pos_refund_code
+          label: "POS Refund Code"
+          type: text
+        - id: gist_pos_upsell_seconds
+          label: "POS Upsell Time (seconds)"
+          type: number
