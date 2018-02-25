@@ -44,6 +44,7 @@ class AppKernel extends Kernel
             new Gist\FlotBundle\GistFlotBundle(),
             new Gist\ContactBundle\GistContactBundle(),
             new Gist\ReportBundle\GistReportBundle(),
+            new Gist\SalesReportBundle\GistSalesReportBundle(),
 
             //GIST ERP
             new Gist\InventoryBundle\GistInventoryBundle(),

@@ -681,7 +681,7 @@ class EmployeeController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $query = $data['query'];
 
-        $employees = $em->getRepository("HrisWorkforceBundle:Employee")->createQueryBuilder('o')
+        $employees = $em->getRepository("GistUserBundle:User")->createQueryBuilder('o')
            ->where('o.first_name LIKE :first_name')
            ->orWhere('o.last_name LIKE :last_name')
            ->setParameter('first_name', "%".$query."%")

@@ -1,0 +1,35 @@
+
+gist_sales_report_sales_order_summary:
+    path: /sales-orders
+    defaults: { _controller: GistSalesReportBundle:SalesOrderReport:index }
+
+
+gist_sales_report_sales_entries_summary:
+    path: /sales-entries
+    defaults: { _controller: GistSalesReportBundle:SalesEntriesReport:index }
+
+
+gist_sales_report_sales_per_day_summary:
+    path: /sales-daily
+    defaults: { _controller: GistSalesReportBundle:SalesPerDayReport:index }
+
+
+gist_sales_report_sales_by_consultant_summary:
+    path: /sales-consultant
+    defaults: { _controller: GistSalesReportBundle:SalesByConsultantReport:index }
+
+gist_sales_report_sales_by_pos_summary:
+    path: /sales-pos
+    defaults: { _controller: GistSalesReportBundle:SalesByPOSReport:index }
+
+gist_sales_report_sales_by_location_summary:
+    path: /sales-location
+    defaults: { _controller: GistSalesReportBundle:SalesByLocationReport:index }
+
+gist_sales_report_sales_by_product_summary:
+    path: /sales-product
+    defaults: { _controller: GistSalesReportBundle:SalesByProductReport:index }
+
+gist_sales_report_sales_commission_summary:
+    path: /sales-commission
+    defaults: { _controller: GistSalesReportBundle:SalesCommissionReport:index }
