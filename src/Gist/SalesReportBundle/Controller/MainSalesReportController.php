@@ -190,7 +190,7 @@ class MainSalesReportController extends CrudController
 
         if ($id != null and $id != 'null')
         {
-            $qry[] = "(o.trans_display_id = '%".$id."%')";
+            $qry[] = "(o.trans_display_id LIKE '%".$id."%')";
         }
 
         if ($pos_loc != null and $pos_loc != 'null')
