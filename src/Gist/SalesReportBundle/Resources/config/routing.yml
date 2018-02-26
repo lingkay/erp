@@ -1,4 +1,16 @@
 
+gist_sales_report_main_summary:
+    path: /main-report
+    defaults: { _controller: GistSalesReportBundle:MainSalesReport:index }
+
+gist_sales_report_main_ajax_grid:
+    path:    /attendances/ajax/{id}/{department}/{date_from}/{date_to}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
+    defaults: { _controller: GistSalesReportBundle:MainSalesReport:gridReport,id: null,department: null, date_from: null, date_to: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
+
+gist_sales_report_main_ajax:
+    path:    /attendance/{id}/{date_from}/{date_to}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
+    defaults: { _controller: GistSalesReportBundle:MainSalesReport:gridReport,id: null,department: null, date_from: null, date_to: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
+
 gist_sales_report_sales_order_summary:
     path: /sales-orders
     defaults: { _controller: GistSalesReportBundle:SalesOrderReport:index }
