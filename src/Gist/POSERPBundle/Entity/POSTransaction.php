@@ -26,7 +26,7 @@ class POSTransaction
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $trans_display_id;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="float", length=150, nullable=true) */
     protected $transaction_total;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
@@ -211,7 +211,7 @@ class POSTransaction
      */
     public function getTransactionTotal()
     {
-        return $this->transaction_total;
+        return floatval($this->transaction_total);
     }
 
     /**
