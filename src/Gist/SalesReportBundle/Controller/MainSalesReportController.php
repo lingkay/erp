@@ -100,7 +100,7 @@ class MainSalesReportController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Transaction #','getTransDisplayId','trans_display_id'),
+            $grid->newColumn('Transaction #','getTransDisplayId','id'),
             $grid->newColumn('Customer ID','getDisplayID','display_id','c'),
             $grid->newColumn('Customer','getNameFormatted','last_name','c'),
             $grid->newColumn('Contact #','getMobileNumber','mobile_number', 'c'),
