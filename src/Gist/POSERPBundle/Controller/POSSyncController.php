@@ -86,8 +86,12 @@ class POSSyncController extends CrudController
         $transaction->setTransactionCCInterest($transaction_cc_interest);
         $transaction->setExtraAmount($transaction_ea);
         $transaction->setPOSLocation($pos_location);
-        $transaction->setUserCreate($ucreate);
 
+
+        $em->persist($transaction);
+        $em->flush();
+
+        $transaction->setUserCreate($ucreate);
         $em->persist($transaction);
         $em->flush();
 
