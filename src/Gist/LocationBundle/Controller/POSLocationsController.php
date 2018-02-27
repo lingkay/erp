@@ -100,6 +100,26 @@ class POSLocationsController extends CrudController
             'No' => 'No'
         );
 
+        $params['region_opts'] = array(
+            'NATIONAL CAPITAL REGION (NCR)' => 'NATIONAL CAPITAL REGION (NCR)',
+            'REGION I (ILOCOS REGION)' => 'REGION I (ILOCOS REGION)',
+            'REGION II (CAGAYAN VALLEY)' => 'REGION II (CAGAYAN VALLEY)',
+            'REGION III (CENTRAL LUZON)' => 'REGION III (CENTRAL LUZON)',
+            'REGION IV-A (CALABARZON)' => 'REGION IV-A (CALABARZON)',
+            'REGION IV-B (MIMAROPA)' => 'REGION IV-B (MIMAROPA)',
+            'REGION V (BICOL REGION)' => 'REGION V (BICOL REGION)',
+            'REGION VI (WESTERN VISAYAS)' => 'REGION VI (WESTERN VISAYAS)',
+            'REGION VII (CENTRAL VISAYAS)' => 'REGION VII (CENTRAL VISAYAS)',
+            'REGION VIII (EASTERN VISAYAS)' => 'REGION VIII (EASTERN VISAYAS)',
+            'REGION IX (ZAMBOANGA PENINSULA)' => 'REGION IX (ZAMBOANGA PENINSULA)',
+            'REGION X (NORTHERN MINDANAO)' => 'REGION X (NORTHERN MINDANAO)',
+            'REGION XI (DAVAO REGION)' => 'REGION XI (DAVAO REGION)',
+            'REGION XII (SOCCSKSARGEN)' => 'REGION XII (SOCCSKSARGEN)',
+            'CORDILLERA ADMINISTRATIVE REGION (CAR)' => 'CORDILLERA ADMINISTRATIVE REGION (CAR)',
+            'AUTONOMOUS REGION IN MUSLIM MINDANAO (ARMM)' => 'AUTONOMOUS REGION IN MUSLIM MINDANAO (ARMM)',
+            'REGION XIII (Caraga)' => 'REGION XIII (Caraga)'
+        );
+
         $params['terminals'] = $em->getRepository('GistAccountingBundle:Terminal')->findBy(array('actual_location'=>$o->getID()));
         $params['ledger_entries'] = $em->getRepository('GistLocationBundle:LedgerEntry')->findBy(array('pos_location'=>$o->getID()),array('date_create' => 'DESC'));
 
