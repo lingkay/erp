@@ -1,4 +1,16 @@
 
+gist_sales_report_main_summary:
+    path: /main-report
+    defaults: { _controller: GistSalesReportBundle:MainSalesReport:index }
+
+gist_sales_report_main_ajax_grid:
+    path:    /main_report/ajax/{id}/{date_from}/{date_to}/{type}/{mode}/{agent}/{customer}/{area}/{pos_loc}/{customer_id}
+    defaults: { _controller: GistSalesReportBundle:MainSalesReport:gridReport,id: null, date_from: null, date_to: null, type: null, mode: null, agent: null, customer: null, area: null, pos_loc: null, customer_id: null }
+
+gist_sales_report_main_ajax:
+    path:    /main_report/{id}/{date_from}/{date_to}/{type}/{mode}/{agent}/{customer}/{area}/{pos_loc}/{customer_id}
+    defaults: { _controller: GistSalesReportBundle:MainSalesReport:gridReport,id: null, date_from: null, date_to: null, type: null, mode: null, agent: null, customer: null, area: null, pos_loc: null, customer_id: null }
+
 gist_sales_report_sales_order_summary:
     path: /sales-orders
     defaults: { _controller: GistSalesReportBundle:SalesOrderReport:index }

@@ -210,7 +210,7 @@ class ProductController extends CrudController
         $data = $this->getRequest()->request->all();
 
         $config = $this->get('gist_configuration');
-        if (isset($data['qty'])) {
+        if (isset($data['qty']) && $is_new) {
             if ($data['qty'] != '') {
                 $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
                 $adj_warehouse = $inv->findWarehouse($config->get('gist_adjustment_warehouse'));

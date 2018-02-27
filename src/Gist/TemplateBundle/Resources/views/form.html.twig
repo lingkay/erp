@@ -457,6 +457,28 @@
 {% endif %}
 {% endmacro %}
 
+{% macro group_date_range_no_default(id, label, from_name, to_name, value_from, value_to, label_size, body_size, format_display = 'm/d/Y', format_submit = 'Ymd', readonly = false, prefix ='c') %}
+    {% import _self as self %}
+    {% if readonly %}
+        {{ self.group_text(label,from_name, value_from|date(format_display) ~ '   -   ' ~ value_to|date(format_display), label_size, body_size, readonly, prefix) }}
+    {% else %}
+        <input type="hidden" id="{{ prefix }}form-{{ from_name }}" name="{{ from_name }}" value="">
+        <input type="hidden" id="{{ prefix }}form-{{ to_name }}" name="{{ to_name }}" value="">
+        <div class="form-group">
+            <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+            <div class="col-md-{{ body_size }}">
+                <div class="input-group" id="{{ id }}">
+                    <input type="text" name="{{from_name~'_'~to_name}}" class="form-control" id="{{ prefix }}form-label-{{ id }}" placeholder="{{ label }}" value="" readonly>
+                    <span class="input-group-btn">
+            <button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
+            </span>
+                </div>
+                <div class="errorTxt"></div>
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}
+
 {% macro group_datetime(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 <div class="form-group">
     <label class="control-label col-md-{{ label_size }}">{{ label }}</label>

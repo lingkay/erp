@@ -25,12 +25,13 @@ class POSSyncController extends CrudController
         return $obj->getID();
     }
 
-    public function saveTransactionAction($pos_loc_id, $id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest,$transaction_ea)
+    public function saveTransactionAction($pos_loc_id, $id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest,$transaction_ea, $uid)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
 
+        $ucreate = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$uid));
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
         //$pos_iacc_id = $pos_location->getInventoryAccount()->getDamagedContainer()->getID();
 
@@ -86,6 +87,11 @@ class POSSyncController extends CrudController
         $transaction->setExtraAmount($transaction_ea);
         $transaction->setPOSLocation($pos_location);
 
+
+        $em->persist($transaction);
+        $em->flush();
+
+        $transaction->setUserCreate($ucreate);
         $em->persist($transaction);
         $em->flush();
 
@@ -102,7 +108,7 @@ class POSSyncController extends CrudController
         $config = $this->get('gist_configuration');
 
         $transaction = $em->getRepository('GistPOSERPBundle:POSTransaction')->findOneBy(array('trans_display_id'=>$trans_sys_id));
-        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>'1'));
+        $user = $transaction->getUserCreate();
         $pos_location = $transaction->getPOSLocation();
         
         $transaction_item->setTransaction($transaction);
