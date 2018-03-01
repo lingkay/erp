@@ -1,0 +1,196 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    {% if app.user.hasAccess(prefix ~ '.add') %}
+                    {% endif %}
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                    <tr>
+                        {% for col in grid_cols %}
+                            {% if (loop.last) %}
+                                <th style="width: 165px">{{ col.getLabel }}</th>
+                            {% else %}
+                                <th>{{ col.getLabel }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    {% block js %}
+        <script>
+
+            function generatePath() {
+                var date_to = $('#cform-date_to').val();
+                var date_from = $('#cform-date_from').val();
+                var id = $('#cform-transaction_id').val();
+                var type = $('#cform-type').val();
+                var mode = $('#cform-mode').val();
+                var agent = $('#cform-agent').val();
+                var area = $('#cform-area').val();
+                var location = $('#cform-pos_loc').val();
+                var customer = $('#cform-customer').val();
+                var cust_id = $('#cform-cust_id').val();
+
+                var path = "{{ path('gist_sales_report_main_ajax_grid', {
+                    'id' : 'ID',
+                    'date_from' : 'DFROM',
+                    'date_to' : 'DTO',
+                    'type' : 'TYPE',
+                    'mode' : 'MODE',
+                    'agent' : 'AGENT',
+                    'customer' : 'CUSTOMER',
+                    'area' : 'AREA',
+                    'pos_loc': 'POS_LOC',
+                    'customer_id' : 'CUSTOMER_ID'
+                }) }}";
+
+                if (cust_id == 0) {
+                    path = path.replace('CUSTOMER_ID', null);
+                } else {
+                    path = path.replace('CUSTOMER_ID', cust_id);
+                };
+
+                if (type == 0) {
+                    path = path.replace('TYPE', null);
+                } else {
+                    path = path.replace('TYPE', type);
+                };
+
+                if (mode == 0) {
+                    path = path.replace('MODE', null);
+                } else {
+                    path = path.replace('MODE', mode);
+                };
+
+                if (agent == 0) {
+                    path = path.replace('AGENT', null);
+                } else {
+                    path = path.replace('AGENT', agent);
+                };
+
+                if (area == 0) {
+                    path = path.replace('AREA', null);
+                } else {
+                    path = path.replace('AREA', area);
+                };
+
+                if (location == 0) {
+                    path = path.replace('POS_LOC', null);
+                } else {
+                    path = path.replace('POS_LOC', location);
+                };
+
+                if (customer == 0) {
+                    path = path.replace('CUSTOMER', null);
+                } else {
+                    path = path.replace('CUSTOMER', customer);
+                };
+
+                if (id == null || id == '') {
+                    path = path.replace('ID', null);
+                } else {
+                    path = path.replace('ID', id);
+                };
+
+                if (date_from == null || date_from == '' || date_to == null || date_to == '') {
+                    path = path.replace('DFROM', null);
+                    path = path.replace('DTO', null);
+                } else {
+                    path = path.replace('DFROM', date_from);
+                    path = path.replace('DTO', date_to);
+                };
+
+                return path;
+            }
+
+            $(document).ready(function() {
+
+                $("#file_to_upload").change(function(){var l=["csv"];-1==$.inArray($(this).val().split(".").pop().toLowerCase(),l)&&(alert("Only '.csv' formats are allowed."),$("#file_to_upload").replaceWith($("#file_to_upload").clone()))});
+
+                var dTable;
+                var path;
+                var id;
+                var date_from;
+                var date_to;
+
+                date_to = null;
+                date_from = null;
+                id = null;
+                path = "{{ path('gist_sales_report_main_ajax_grid', { 'id' : 'ID', 'date_from' : 'DFROM', 'date_to' : 'DTO'} ) }}";
+                path = path.replace('ID', id);
+                path = path.replace('DFROM', date_from);
+                path = path.replace('DTO', date_to);
+
+                dTable = $('#list_table').dataTable({
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "sAjaxSource": path,
+                    "iDisplayLength": 10,
+                    "sPaginationType": "bootstrap",
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_ records",
+                        "oPaginate": {
+                            "sPrevious": "Prev",
+                            "sNext": "Next"
+                        }
+                    },
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+                    ],
+                    "aaSorting": [[0,'desc']]
+                });
+
+                $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+                $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+                $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+                $('#daterange').daterangepicker(
+                    {
+                        ranges: {
+                            'Today': [new Date(), moment().add(1, 'days')],
+                            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                            'Last 7 Days': [moment().subtract(6, 'days'), new Date()],
+                            'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
+                            'This Month': [moment().startOf('month'), moment().endOf('month')],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                        },
+                        opens: 'left',
+                        format: 'MM/DD/YYYY',
+                    },
+                    function(start, end) {
+                        $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+                        $('#cform-date_from').val(start.format('YYYYMMDD'));
+                        $('#cform-date_to').val(end.format('YYYYMMDD'));
+                    }
+                );
+                $('#clear_filter').click(function (){
+                    location.reload();
+                });
+                $('#filter_button').click(function (){
+                    path = generatePath();
+                    dTable.fnReloadAjax(path);
+                });
+            });
+        </script>
+    {% endblock %}
+
+    {% block css %}
+    {% endblock %}

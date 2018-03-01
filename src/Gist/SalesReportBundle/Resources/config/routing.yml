@@ -45,3 +45,22 @@ gist_sales_report_sales_by_product_summary:
 gist_sales_report_sales_commission_summary:
     path: /sales-commission
     defaults: { _controller: GistSalesReportBundle:SalesCommissionReport:index }
+
+
+#    LAYERED SALES REPORTS
+#==========================================
+
+# PRODUCTS
+gist_layered_sales_report_product_index:
+    path: /layered-sales-report/product
+    defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:index }
+
+# LOCATION
+gist_layered_sales_report_location_index:
+    path: /layered-sales-report/location
+    defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:index }
+
+# EMPLOYEE
+gist_layered_sales_report_employee_index:
+    path: /layered-sales-report/employee
+    defaults: { _controller: GistSalesReportBundle:EmployeeLayeredReport:index }

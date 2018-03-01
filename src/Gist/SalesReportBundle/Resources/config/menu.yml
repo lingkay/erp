@@ -7,6 +7,23 @@ menu_items:
       acl: gist_sales_report_main.menu
       label: Main Report
       parent: menu_sales_report
+
+    - id: menu_layered_sales_report
+      acl: gist_layered_sales_report.menu
+      label: Layered Sales Report
+      icon: fa-archive
+    - id: gist_layered_sales_report_product_index
+      acl: gist_layered_sales_report_product.menu
+      label: Product
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_location_index
+      acl: gist_layered_sales_report_location.menu
+      label: Location
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_employee_index
+      acl: gist_layered_sales_report_employee.menu
+      label: Employee
+      parent: menu_layered_sales_report
 #    - id: gist_sales_report_sales_order_summary
 #      acl: gist_sales_report_sales_order.menu
 #      label: Sales Orders
