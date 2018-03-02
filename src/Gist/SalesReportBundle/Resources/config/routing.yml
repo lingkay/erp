@@ -52,8 +52,8 @@ gist_sales_report_sales_commission_summary:
 
 # PRODUCTS
 gist_layered_sales_report_product_index:
-    path: /layered-sales-report/product
-    defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:index }
+    path: /layered-sales-report/product/{date_from}/{date_to}/{brand}/{category}
+    defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:index, date_from: null, date_to: null, brand: null, category: null }
 
 # LOCATION
 gist_layered_sales_report_location_index:

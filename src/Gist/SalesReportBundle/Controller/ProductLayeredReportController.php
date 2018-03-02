@@ -13,6 +13,7 @@ use Gist\InventoryBundle\Model\InventoryException;
 use Gist\TemplateBundle\Model\BaseController as Controller;
 use Gist\TemplateBundle\Model\RouteGenerator as RouteGenerator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use DateTime;
 
 class ProductLayeredReportController extends Controller
 {
@@ -29,24 +30,31 @@ class ProductLayeredReportController extends Controller
         $this->list_type = 'static';
     }
 
-    public function indexAction()
+    public function indexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
         $this->route_prefix = 'gist_layered_sales_report_product';
-
         $params = $this->getViewParams('List');
         $this->getControllerBase();
         $gl = $this->setupGridLoader();
-        $params['main_warehouse'] = 0;
         $params['grid_cols'] = $gl->getColumns();
-        $params['wh_type_opts'] = array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
 
-        $params['computation_opts'] = array(
-            'manual' => 'Manual',
-            'formula' => 'Formula'
-        );
+        //PARAMS
+        $params['brand'] = $brand;
+        $params['category'] = $category;
 
-        $inv = $this->get('gist_inventory');
-        $params['pos_loc_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
+
+        if ($date_from == null) {
+            $date_from = new DateTime();
+            $date_to = new DateTime();
+            $date_from = $date_from->format("m/01/Y");
+            $date_to = $date_to->format("m/t/Y");
+            $params['date_from'] = $date_from;
+            $params['date_to'] = $date_to;
+        } else {
+            $params['date_from'] = $date_from;
+            $params['date_to'] = $date_to;
+        }
+
 
         return $this->render('GistSalesReportBundle:ProductLayered:index.html.twig', $params);
     }
