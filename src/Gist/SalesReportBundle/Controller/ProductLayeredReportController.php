@@ -32,6 +32,9 @@ class ProductLayeredReportController extends Controller
 
     public function indexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
+        $data = $this->getRequest()->request->all();
+
+
         $this->route_prefix = 'gist_layered_sales_report_product';
         $params = $this->getViewParams('List');
         $this->getControllerBase();
@@ -42,21 +45,80 @@ class ProductLayeredReportController extends Controller
         $params['brand'] = $brand;
         $params['category'] = $category;
 
-
-        if ($date_from == null) {
+        if (isset($data['date_from']) && isset($data['date_to'])) {
+            $date_from = DateTime::createFromFormat('Ymd', $data['date_from']);
+            $date_to = DateTime::createFromFormat('Ymd', $data['date_to']);
+            $params['date_from'] = $date_from->format("m/d/Y");
+            $params['date_to'] = $date_to->format("m/d/Y");
+            $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+            $params['date_from_url'] = $date_from->format("m-d-Y");
+            $params['date_to_url'] = $date_to->format("m-d-Y");
+        } else {
             $date_from = new DateTime();
             $date_to = new DateTime();
-            $date_from = $date_from->format("m/01/Y");
-            $date_to = $date_to->format("m/t/Y");
-            $params['date_from'] = $date_from;
-            $params['date_to'] = $date_to;
-        } else {
-            $params['date_from'] = $date_from;
-            $params['date_to'] = $date_to;
+            $date_from_twig = $date_from->format("m/01/Y");
+            $date_to_twig = $date_to->format("m/t/Y");
+            $params['date_from'] = $date_from_twig;
+            $params['date_to'] = $date_to_twig;
+            $params['date_from_url'] = $date_from->format("m-01-Y");
+            $params['date_to_url'] = $date_to->format("m-t-Y");
+            $params['all_data'] = $this->getAllData($date_from->format('Y-m-01'), $date_to->format('Y-m-t'));
         }
 
 
         return $this->render('GistSalesReportBundle:ProductLayered:index.html.twig', $params);
+    }
+
+    protected function getAllData($date_from, $date_to)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $query = $em->createQueryBuilder();
+        $query->from('GistPOSERPBundle:POSTransaction', 'o')
+            ->where('o.date_create <= :date_to')
+            ->andWhere('o.date_create >= :date_from')
+            ->setParameter('date_from', $date_from)
+            ->setParameter('date_to', $date_to);
+
+        $data = $query->select('o')
+            ->getQuery()
+            ->getResult();
+
+        $total_payments = 0;
+        $total_cost = 0;
+        $total_profit = 0;
+
+        foreach ($data as $d) {
+            $total_payments += $d->getTransactionTotal();
+
+            foreach ($d->getItems() as $item) {
+                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
+                $total_cost += $product->getCost();
+            }
+        }
+
+        $total_profit = $total_payments - $total_cost;
+
+        return [
+            'total_sales' => number_format($total_payments, 2, '.',','),
+            'total_cost' => number_format($total_cost, 2, '.',','),
+            'total_profit' => number_format($total_profit, 2, '.',','),
+        ];
+    }
+
+    protected function getBrandsData($date_from, $date_to)
+    {
+
+    }
+
+    protected function getCategoriesData($date_from, $date_to, $brand)
+    {
+
+    }
+
+    protected function getProductsData($date_from, $date_to, $brand, $category)
+    {
+
     }
 
     protected function getRouteGen()
