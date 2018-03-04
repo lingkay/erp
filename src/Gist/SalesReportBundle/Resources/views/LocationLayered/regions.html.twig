@@ -25,10 +25,8 @@
                     <thead>
                     <tr>
                         <th>Date Range</th>
-                        <th>Product</th>
+                        <th>Location</th>
                         <th>Total Sales</th>
-                        <th>Total Cost</th>
-                        <th>Total Profit</th>
                         <th style="width: 13px;"></th>
                     </tr>
                     </thead>
@@ -36,11 +34,9 @@
                     {% for bd in regions_data %}
                         <tr>
                             <td>{{ date_from }} - {{ date_to }}</td>
-                            <td>{{ bd['brand_name'] }}</td>
+                            <td>{{ bd['region_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td class="text-right">{{ bd['total_cost'] }}</td>
-                            <td class="text-right">{{ bd['total_profit'] }}</td>
-                            <td><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : bd['region_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
+                            <td><a href="{{ path('gist_layered_sales_report_location_index_areas', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : bd['region_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -80,7 +76,7 @@
                         }
                     },
                     "aoColumnDefs": [
-                        { "bSortable": false, "aTargets": [5] },
+                        { "bSortable": false, "aTargets": [3] },
                     ],
                     "aaSorting": [[2,'desc']]
                 });

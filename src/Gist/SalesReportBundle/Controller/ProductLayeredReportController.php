@@ -192,6 +192,7 @@ class ProductLayeredReportController extends Controller
     //FOR BRANDED/L3 / SHOW BRAND CATEGORIES
     public function brandedIndexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
+        $em = $this->getDoctrine()->getManager();
         try {
             $data = $this->getRequest()->request->all();
             $this->route_prefix = 'gist_layered_sales_report_product';
@@ -210,6 +211,11 @@ class ProductLayeredReportController extends Controller
                 $params['categories_data'] = $this->getCategoriesData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'),$brand);
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
+
+                $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
+
+                $params['brand_id'] = $brandObject->getID();
+                $params['brand_name'] = $brandObject->getName();
 
                 return $this->render('GistSalesReportBundle:ProductLayered:categories.html.twig', $params);
 
@@ -273,12 +279,18 @@ class ProductLayeredReportController extends Controller
             );
         }
 
-        return $list_opts;
+        if (count($allCategories) > 0) {
+            return $list_opts;
+        } else {
+            return null;
+        }
     }
     //END BRANDED/L3
     //FOR CATEGORIZED/L4 / SHOW PRODUCTS
     public function categorizedIndexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
+        $em = $this->getDoctrine()->getManager();
+
         try {
             $data = $this->getRequest()->request->all();
             $this->route_prefix = 'gist_layered_sales_report_product';
@@ -297,6 +309,14 @@ class ProductLayeredReportController extends Controller
                 $params['products_data'] = $this->getProductsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'),$brand, $category);
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
+
+                $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
+                $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
+
+                $params['brand_id'] = $brandObject->getID();
+                $params['brand_name'] = $brandObject->getName();
+                $params['category_id'] = $categoryObject->getID();
+                $params['category_name'] = $categoryObject->getName();
 
                 return $this->render('GistSalesReportBundle:ProductLayered:products.html.twig', $params);
 
@@ -367,7 +387,11 @@ class ProductLayeredReportController extends Controller
             );
         }
 
-        return $list_opts;
+        if (count($allProducts) > 0) {
+            return $list_opts;
+        } else {
+            return null;
+        }
     }
 
     protected function getRouteGen()

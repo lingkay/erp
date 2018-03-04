@@ -6,17 +6,16 @@
     <div class="col-md-12">
         <div class="portlet box blue-hoki">
             <div class="portlet-title">
-                <div class="caption">{{ list_title }} - Products</div>
+                <div class="caption">{{ list_title }} - Categories</div>
                 <div class="actions">
                 </div>
             </div>
             <div class="portlet-body">
                 <br>
                 <ul class="breadcrumbs2">
-                    <li><a href="{{ path('gist_layered_sales_report_product_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_brands', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Brands</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id}) }}">{{ brand_name }}</a></li>
-                    <li>{{ category_name }}</li>
+                    <li><a href="{{ path('gist_layered_sales_report_location_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_location_index_regions', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Regions</a></li>
+                    <li>{{ region_name }}</li>
                 </ul>
                 <br>
                 <div class="table-toolbar">
@@ -27,20 +26,18 @@
                     <thead>
                     <tr>
                         <th>Date Range</th>
-                        <th>Product</th>
+                        <th>Location</th>
                         <th>Total Sales</th>
-                        <th>Total Cost</th>
-                        <th>Total Profit</th>
+                        <th style="width: 13px;"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for bd in products_data %}
+                    {% for bd in areas_data %}
                         <tr>
                             <td>{{ date_from }} - {{ date_to }}</td>
-                            <td>{{ bd['product_name'] }}</td>
+                            <td>{{ bd['area_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td class="text-right">{{ bd['total_cost'] }}</td>
-                            <td class="text-right">{{ bd['total_profit'] }}</td>
+                            <td><a href="{{ path('gist_layered_sales_report_location_index_locations', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : bd['region_id'], 'area' : bd['area_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -79,6 +76,9 @@
                             "sNext": "Next"
                         }
                     },
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [3] },
+                    ],
                     "aaSorting": [[2,'desc']]
                 });
 
