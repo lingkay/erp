@@ -30,6 +30,7 @@ class ProductLayeredReportController extends Controller
         $this->list_type = 'static';
     }
 
+    // FOR TOP LAYER
     public function indexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
         $data = $this->getRequest()->request->all();
@@ -106,14 +107,223 @@ class ProductLayeredReportController extends Controller
         ];
     }
 
+    //FOR BRANDS/L2
+    public function brandsIndexAction($date_from = null, $date_to = null, $brand = null, $category = null)
+    {
+        try {
+            $data = $this->getRequest()->request->all();
+
+            $this->route_prefix = 'gist_layered_sales_report_product';
+            $params = $this->getViewParams('List');
+            $this->getControllerBase();
+            $gl = $this->setupGridLoader();
+            $params['grid_cols'] = $gl->getColumns();
+
+            //PARAMS
+            $params['brand'] = $brand;
+            $params['category'] = $category;
+
+            if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+                $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+                $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+                $params['date_from'] = $date_from->format("m/d/Y");
+                $params['date_to'] = $date_to->format("m/d/Y");
+                $params['brands_data'] = $this->getBrandsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+                $params['date_from_url'] = $date_from->format("m-d-Y");
+                $params['date_to_url'] = $date_to->format("m-d-Y");
+
+                return $this->render('GistSalesReportBundle:ProductLayered:brands.html.twig', $params);
+
+            } else {
+                return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+            }
+
+
+        } catch (Exception $e) {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
+    }
+
     protected function getBrandsData($date_from, $date_to)
     {
+        $em = $this->getDoctrine()->getManager();
 
+        //get all brands
+        $allBrands = $em->getRepository('GistInventoryBundle:Brand')->findAll();
+
+        foreach ($allBrands as $brandObject) {
+            //initiate totals
+            $brandId = $brandObject->getID();
+            $brandTotalSales = 0;
+            $brandTotalCost = 0;
+            $brandTransactionIds = array();
+
+            //get all transaction items based on date filter
+            $query = $em->createQueryBuilder();
+            $query->from('GistPOSERPBundle:POSTransactionItem', 'o')
+                ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
+                ->where('o.date_create <= :date_to')
+                ->andWhere('o.date_create >= :date_from')
+                ->setParameter('date_from', $date_from)
+                ->setParameter('date_to', $date_to);
+
+            $transactionItems = $query->select('o')
+                ->getQuery()
+                ->getResult();
+
+            //loop items and check if item's brand is the current loop's brand then add the cost
+            foreach ($transactionItems as $transactionItem) {
+                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
+                if ($product->getBrand()->getID() == $brandId) {
+                    $brandTotalCost += $product->getCost();
+                    //store transaction id of item for use
+                    array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                }
+            }
+
+            //get all transactions based on date filter
+            $queryTrans = $em->createQueryBuilder();
+            $queryTrans->from('GistPOSERPBundle:POSTransaction', 'o')
+                ->where('o.date_create <= :date_to')
+                ->andWhere('o.date_create >= :date_from')
+                ->setParameter('date_from', $date_from)
+                ->setParameter('date_to', $date_to);
+
+            $transactions = $queryTrans->select('o')
+                ->getQuery()
+                ->getResult();
+
+            //check if transaction id is included in array created
+            foreach ($transactions as $transaction) {
+                if (in_array($transaction->getID(), $brandTransactionIds)) {
+                    $brandTotalSales += $transaction->getTransactionTotal();
+                }
+            }
+
+            $brandTotalProfit = $brandTotalSales - $brandTotalCost;
+
+            $list_opts[] = array(
+                'date_from'=>$date_from,
+                'date_to'=> $date_to,
+                'brand_id' => $brandObject->getID(),
+                'brand_name' => $brandObject->getName(),
+                'total_sales' => number_format($brandTotalSales, 2, '.',','),
+                'total_cost' => number_format($brandTotalCost, 2, '.',','),
+                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
+            );
+        }
+
+        return $list_opts;
+    }
+
+    //FOR BRANDED/L3 / SHOW BRAND CATEGORIES
+    public function brandedIndexAction($date_from = null, $date_to = null, $brand = null, $category = null)
+    {
+        try {
+            $data = $this->getRequest()->request->all();
+
+            $this->route_prefix = 'gist_layered_sales_report_product';
+            $params = $this->getViewParams('List');
+            $this->getControllerBase();
+            $gl = $this->setupGridLoader();
+            $params['grid_cols'] = $gl->getColumns();
+
+            //PARAMS
+            $params['brand'] = $brand;
+            $params['category'] = $category;
+
+            if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+                $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+                $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+                $params['date_from'] = $date_from->format("m/d/Y");
+                $params['date_to'] = $date_to->format("m/d/Y");
+                $params['categories_data'] = $this->getCategoriesData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'),$brand);
+                $params['date_from_url'] = $date_from->format("m-d-Y");
+                $params['date_to_url'] = $date_to->format("m-d-Y");
+
+                return $this->render('GistSalesReportBundle:ProductLayered:categories.html.twig', $params);
+
+            } else {
+                return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+            }
+
+
+        } catch (Exception $e) {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
     }
 
     protected function getCategoriesData($date_from, $date_to, $brand)
     {
+        $em = $this->getDoctrine()->getManager();
 
+        //get all categories
+        $allCategories = $em->getRepository('GistInventoryBundle:ProductCategory')->findAll();
+
+        foreach ($allCategories as $categoryObject) {
+            //initiate totals
+            $categoryId = $categoryObject->getID();
+            $totalSales = 0;
+            $totalCost = 0;
+            $transactionIds = array();
+
+            //get all transaction items based on date filter
+            $query = $em->createQueryBuilder();
+            $query->from('GistPOSERPBundle:POSTransactionItem', 'o')
+                ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
+                ->where('o.date_create <= :date_to')
+                ->andWhere('o.date_create >= :date_from')
+                ->setParameter('date_from', $date_from)
+                ->setParameter('date_to', $date_to);
+
+            $transactionItems = $query->select('o')
+                ->getQuery()
+                ->getResult();
+
+            //loop items and check if item's brand is the current loop's brand then add the cost
+            foreach ($transactionItems as $transactionItem) {
+                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
+                if ($product->getCategory()->getID() == $categoryId && $product->getBrand()->getID() == $brand) {
+                    $totalCost += $product->getCost();
+                    //store transaction id of item for use
+                    array_push($transactionIds, $transactionItem->getTransaction()->getID());
+                }
+            }
+
+            //get all transactions based on date filter
+            $queryTrans = $em->createQueryBuilder();
+            $queryTrans->from('GistPOSERPBundle:POSTransaction', 'o')
+                ->where('o.date_create <= :date_to')
+                ->andWhere('o.date_create >= :date_from')
+                ->setParameter('date_from', $date_from)
+                ->setParameter('date_to', $date_to);
+
+            $transactions = $queryTrans->select('o')
+                ->getQuery()
+                ->getResult();
+
+            //check if transaction id is included in array created
+            foreach ($transactions as $transaction) {
+                if (in_array($transaction->getID(), $transactionIds)) {
+                    $totalSales += $transaction->getTransactionTotal();
+                }
+            }
+
+            $totalProfit = $totalSales - $totalCost;
+
+            $list_opts[] = array(
+                'date_from'=>$date_from,
+                'date_to'=> $date_to,
+                'brand_id' => $brand,
+                'category_id' => $categoryObject->getID(),
+                'category_name' => $categoryObject->getName(),
+                'total_sales' => number_format($totalSales, 2, '.',','),
+                'total_cost' => number_format($totalCost, 2, '.',','),
+                'total_profit' => number_format($totalProfit, 2, '.',','),
+            );
+        }
+        //883,590.00	500,252.90	383,337.10
+        return $list_opts;
     }
 
     protected function getProductsData($date_from, $date_to, $brand, $category)

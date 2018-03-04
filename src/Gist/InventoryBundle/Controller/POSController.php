@@ -114,7 +114,7 @@ class POSController extends CrudController
         $list_opts = [];
         foreach ($products as $p) {
             $fixedAssetsBrandID = $config->get('gist_fixed_asset_brand');
-            if ($p->getBrand()->getID() != $fixedAssetsBrandID && $p->getType()->getName() == 'Consumables' && in_array($p->getBrand()->getName(), $brands)) {
+            if ($p->getBrand()->getID() != $fixedAssetsBrandID && $p->getType()->getName() == 'Goods' && in_array($p->getBrand()->getName(), $brands)) {
                 $srp = 0;
                 $min = 0;
                 $o_srp = 0;

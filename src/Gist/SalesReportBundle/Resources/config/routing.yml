@@ -56,13 +56,20 @@ gist_layered_sales_report_product_index:
     methods:  [GET]
     defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:index, date_from: null, date_to: null, brand: null, category: null }
 
-gist_layered_sales_report_product_index_l1:
+gist_layered_sales_report_product_index_filter:
     path: /layered-sales-report/product/{date_from}/{date_to}/{brand}/{category}
     methods:  [POST]
     defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:index, date_from: null, date_to: null, brand: null, category: null }
 
+gist_layered_sales_report_product_index_brands:
+    path: /layered-sales-report/product_brands/{date_from}/{date_to}/{brand}/{category}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:brandsIndex, date_from: null, date_to: null, brand: null, category: null }
 
-
+gist_layered_sales_report_product_index_branded:
+    path: /layered-sales-report/product_branded/{date_from}/{date_to}/{brand}/{category}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:brandedIndex, date_from: null, date_to: null, brand: null, category: null }
 
 # LOCATION
 gist_layered_sales_report_location_index:
