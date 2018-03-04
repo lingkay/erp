@@ -78,9 +78,19 @@ gist_layered_sales_report_product_index_categorized:
 
 # LOCATION
 gist_layered_sales_report_location_index:
-    path: /layered-sales-report/location
+    path: /layered-sales-report/location/{date_from}/{date_to}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:index }
+    defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:index, date_from: null, date_to: null }
+
+gist_layered_sales_report_location_index_filter:
+    path: /layered-sales-report/location/{date_from}/{date_to}/{region}/{area}
+    methods:  [POST]
+    defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:index, date_from: null, date_to: null, region: null, area: null }
+
+gist_layered_sales_report_location_index_regions:
+    path: /layered-sales-report/location_regions/{date_from}/{date_to}/{region}/{area}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:regionsIndex, date_from: null, date_to: null, region: null, area: null }
 
 # EMPLOYEE
 gist_layered_sales_report_employee_index:

@@ -60,10 +60,10 @@
                     <tbody>
                             <tr>
                                 <td>{{ date_from }} - {{ date_to }}</td>
-                                <td>All</td>
-                                <td>{{ all_data['total_sales'] }}</td>
-                                <td>{{ all_data['total_cost'] }}</td>
-                                <td>{{ all_data['total_profit'] }}</td>
+                                <td class="text-center">All</td>
+                                <td class="text-right">{{ all_data['total_sales'] }}</td>
+                                <td class="text-right">{{ all_data['total_cost'] }}</td>
+                                <td class="text-right">{{ all_data['total_profit'] }}</td>
                                 <td><a href="{{ path('gist_layered_sales_report_product_index_brands', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                             </tr>
                     </tbody>

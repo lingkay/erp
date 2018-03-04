@@ -6,17 +6,15 @@
     <div class="col-md-12">
         <div class="portlet box blue-hoki">
             <div class="portlet-title">
-                <div class="caption">{{ list_title }} - Products</div>
+                <div class="caption">{{ list_title }} - Regions</div>
                 <div class="actions">
                 </div>
             </div>
             <div class="portlet-body">
                 <br>
                 <ul class="breadcrumbs2">
-                    <li><a href="{{ path('gist_layered_sales_report_product_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_brands', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Brands</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : products_data[0]['brand_id']}) }}">{{ products_data[0]['brand_name'] }}</a></li>
-                    <li>{{ products_data[0]['category_name'] }}</li>
+                    <li><a href="{{ path('gist_layered_sales_report_location_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
+                    <li>Regions</li>
                 </ul>
                 <br>
                 <div class="table-toolbar">
@@ -35,14 +33,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for bd in products_data %}
+                    {% for bd in regions_data %}
                         <tr>
                             <td>{{ date_from }} - {{ date_to }}</td>
-                            <td>{{ bd['product_name'] }}</td>
+                            <td>{{ bd['brand_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
                             <td class="text-right">{{ bd['total_cost'] }}</td>
                             <td class="text-right">{{ bd['total_profit'] }}</td>
-                            <td></td>
+                            <td><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : bd['region_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
