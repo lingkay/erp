@@ -11,6 +11,12 @@
                 </div>
             </div>
             <div class="portlet-body">
+                <br>
+                <ul class="breadcrumbs2">
+                    <li><a href="{{ path('gist_layered_sales_report_product_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
+                    <li>Brands</li>
+                </ul>
+                <br>
                 <div class="table-toolbar">
                     {% if app.user.hasAccess(prefix ~ '.add') %}
                     {% endif %}

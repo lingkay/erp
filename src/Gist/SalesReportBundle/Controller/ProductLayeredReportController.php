@@ -55,10 +55,18 @@ class ProductLayeredReportController extends Controller
             $params['date_from_url'] = $date_from->format("m-d-Y");
             $params['date_to_url'] = $date_to->format("m-d-Y");
         } else {
-            $date_from = new DateTime();
-            $date_to = new DateTime();
-            $date_from_twig = $date_from->format("m/01/Y");
-            $date_to_twig = $date_to->format("m/t/Y");
+            if ($date_from != null) {
+                $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+                $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+                $date_from_twig = $date_from->format("m/01/Y");
+                $date_to_twig = $date_to->format("m/t/Y");
+            } else {
+                $date_from = new DateTime();
+                $date_to = new DateTime();
+                $date_from_twig = $date_from->format("m/01/Y");
+                $date_to_twig = $date_to->format("m/t/Y");
+            }
+
             $params['date_from'] = $date_from_twig;
             $params['date_to'] = $date_to_twig;
             $params['date_from_url'] = $date_from->format("m-01-Y");
@@ -260,6 +268,7 @@ class ProductLayeredReportController extends Controller
 
         //get all categories
         $allCategories = $em->getRepository('GistInventoryBundle:ProductCategory')->findAll();
+        $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
 
         foreach ($allCategories as $categoryObject) {
             //initiate totals
@@ -296,6 +305,7 @@ class ProductLayeredReportController extends Controller
                 'date_to'=> $date_to,
                 'brand_id' => $brand,
                 'category_id' => $categoryObject->getID(),
+                'brand_name' => $brandObject->getName(),
                 'category_name' => $categoryObject->getName(),
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
@@ -352,6 +362,9 @@ class ProductLayeredReportController extends Controller
             'brand' => $brand
         ]);
 
+        $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
+        $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
+
         foreach ($allProducts as $productObject) {
             //initiate totals
             $productId = $productObject->getID();
@@ -389,6 +402,8 @@ class ProductLayeredReportController extends Controller
                 'brand_id' => $brand,
                 'category_id' => $category,
                 'product_name' => $productObject->getName(),
+                'brand_name' => $brandObject->getName(),
+                'category_name' => $categoryObject->getName(),
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
                 'total_profit' => number_format($totalProfit, 2, '.',','),
