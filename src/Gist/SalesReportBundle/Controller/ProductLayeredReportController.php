@@ -48,8 +48,8 @@ class ProductLayeredReportController extends Controller
             if ($date_from != null) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
                 $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
-                $date_from_twig = $date_from->format("m/01/Y");
-                $date_to_twig = $date_to->format("m/t/Y");
+                $date_from_twig = $date_from->format("m/d/Y");
+                $date_to_twig = $date_to->format("m/d/Y");
             } else {
                 $date_from = new DateTime();
                 $date_to = new DateTime();
@@ -75,8 +75,8 @@ class ProductLayeredReportController extends Controller
         $query->from('GistPOSERPBundle:POSTransaction', 'o')
             ->where('o.date_create <= :date_to')
             ->andWhere('o.date_create >= :date_from')
-            ->setParameter('date_from', $date_from)
-            ->setParameter('date_to', $date_to);
+            ->setParameter('date_from', $date_from. ' 00:00:00')
+            ->setParameter('date_to', $date_to.' 23:59:59');
 
         $data = $query->select('o')
             ->getQuery()
@@ -155,8 +155,8 @@ class ProductLayeredReportController extends Controller
                 ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
                 ->where('o.date_create <= :date_to')
                 ->andWhere('o.date_create >= :date_from')
-                ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to);
+                ->setParameter('date_from', $date_from. '00:')
+                ->setParameter('date_to', $date_to.' 23:59:59');
 
             $transactionItems = $query->select('o')
                 ->getQuery()
@@ -249,7 +249,7 @@ class ProductLayeredReportController extends Controller
                 ->where('o.date_create <= :date_to')
                 ->andWhere('o.date_create >= :date_from')
                 ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to);
+                ->setParameter('date_to', $date_to.' 11:59:59');
 
             $transactionItems = $query->select('o')
                 ->getQuery()
@@ -355,7 +355,7 @@ class ProductLayeredReportController extends Controller
                 ->where('o.date_create <= :date_to')
                 ->andWhere('o.date_create >= :date_from')
                 ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to);
+                ->setParameter('date_to', $date_to.' 11:59:59');
 
             $transactionItems = $query->select('o')
                 ->getQuery()

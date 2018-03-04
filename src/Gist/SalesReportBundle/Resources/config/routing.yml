@@ -104,6 +104,21 @@ gist_layered_sales_report_location_index_locations:
 
 # EMPLOYEE
 gist_layered_sales_report_employee_index:
-    path: /layered-sales-report/employee
+    path: /layered-sales-report/employee/{date_from}/{date_to}/{position}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:EmployeeLayeredReport:index }
+    defaults: { _controller: GistSalesReportBundle:EmployeeLayeredReport:index, date_from: null, date_to: null, position: null }
+
+gist_layered_sales_report_employee_index_filter:
+    path: /layered-sales-report/employee/{date_from}/{date_to}/{position}
+    methods:  [POST]
+    defaults: { _controller: GistSalesReportBundle:EmployeeLayeredReport:index, date_from: null, date_to: null, position: null }
+
+gist_layered_sales_report_employee_index_positions:
+    path: /layered-sales-report/employee_positions/{date_from}/{date_to}/{position}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:EmployeeLayeredReport:positionsIndex, date_from: null, date_to: null, position: null }
+
+gist_layered_sales_report_employee_index_employees:
+    path: /layered-sales-report/employee_employees/{date_from}/{date_to}/{position}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:EmployeeLayeredReport:employeesIndex, date_from: null, date_to: null, position: null }

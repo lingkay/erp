@@ -77,8 +77,8 @@ class LocationLayeredReportController extends Controller
         $query->from('GistPOSERPBundle:POSTransaction', 'o')
             ->where('o.date_create <= :date_to')
             ->andWhere('o.date_create >= :date_from')
-            ->setParameter('date_from', $date_from)
-            ->setParameter('date_to', $date_to);
+            ->setParameter('date_from', $date_from. ' 00:00:00')
+            ->setParameter('date_to', $date_to.' 23:59:59');
 
         $data = $query->select('o')
             ->getQuery()
@@ -160,8 +160,8 @@ class LocationLayeredReportController extends Controller
                 ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
                 ->where('o.date_create <= :date_to')
                 ->andWhere('o.date_create >= :date_from')
-                ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to);
+                ->setParameter('date_from', $date_from. ' 00:00:00')
+                ->setParameter('date_to', $date_to.' 23:59:59');
 
             $transactionItems = $query->select('o')
                 ->getQuery()
@@ -260,8 +260,8 @@ class LocationLayeredReportController extends Controller
                 ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
                 ->where('o.date_create <= :date_to')
                 ->andWhere('o.date_create >= :date_from')
-                ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to);
+                ->setParameter('date_from', $date_from. ' 00:00:00')
+                ->setParameter('date_to', $date_to.' 23:59:59');
 
             $transactionItems = $query->select('o')
                 ->getQuery()
@@ -375,8 +375,8 @@ class LocationLayeredReportController extends Controller
                 ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
                 ->where('o.date_create <= :date_to')
                 ->andWhere('o.date_create >= :date_from')
-                ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to);
+                ->setParameter('date_from', $date_from. ' 00:00:00')
+                ->setParameter('date_to', $date_to.' 23:59:59');
 
             $transactionItems = $query->select('o')
                 ->getQuery()

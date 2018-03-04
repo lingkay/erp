@@ -6,15 +6,15 @@
     <div class="col-md-12">
         <div class="portlet box blue-hoki">
             <div class="portlet-title">
-                <div class="caption">{{ list_title }} - Brands</div>
+                <div class="caption">{{ list_title }} - Categories</div>
                 <div class="actions">
                 </div>
             </div>
             <div class="portlet-body">
                 <br>
                 <ul class="breadcrumbs2">
-                    <li><a href="{{ path('gist_layered_sales_report_product_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
-                    <li>Brands</li>
+                    <li><a href="{{ path('gist_layered_sales_report_employee_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
+                    <li>Positions</li>
                 </ul>
                 <br>
                 <div class="table-toolbar">
@@ -25,24 +25,20 @@
                     <thead>
                     <tr>
                         <th>Date Range</th>
-                        <th>Product</th>
-                        <th>Total Sales</th>
-                        <th>Total Cost</th>
-                        <th>Total Profit</th>
+                        <th>Location</th>
+                        <th>Income</th>
                         <th style="width: 13px;"></th>
                     </tr>
                     </thead>
                     <tbody>
-                        {% for bd in brands_data %}
+                    {% for bd in positions_data %}
                         <tr>
                             <td>{{ date_from }} - {{ date_to }}</td>
-                            <td>{{ bd['brand_name'] }}</td>
+                            <td>{{ bd['position_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td class="text-right">{{ bd['total_cost'] }}</td>
-                            <td class="text-right">{{ bd['total_profit'] }}</td>
-                            <td><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : bd['brand_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
+                            <td><a href="{{ path('gist_layered_sales_report_employee_index_employees', {'date_from' : date_from_url, 'date_to' : date_to_url, 'position' : bd['position_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
-                        {% endfor %}
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -79,7 +75,7 @@
                         }
                     },
                     "aoColumnDefs": [
-                        { "bSortable": false, "aTargets": [5] },
+                        { "bSortable": false, "aTargets": [3] },
                     ],
                     "aaSorting": [[2,'desc']]
                 });
