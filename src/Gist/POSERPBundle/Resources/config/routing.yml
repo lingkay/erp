@@ -38,6 +38,7 @@ gist_poserp_settings_grid:
 gist_poserp_chg_rates_index:
     pattern: /interest_rates
     methods: [GET]
+    methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSChargeRates:index }
 
 gist_poserp_chg_rates_add_form:
@@ -82,7 +83,7 @@ gist_poserp_save_transaction:
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransaction }
 
 gist_poserp_save_item:
-    path:     /save_item/{trans_sys_id}/{prod_id}/{prod_name}/{orig_price}/{min_price}/{adjusted_price}/{discount_type}/{discount_value}/{isReturned}/{isNew}
+    path:     /save_item/{trans_sys_id}/{prod_id}/{prod_name}/{orig_price}/{min_price}/{adjusted_price}/{total_amount}/{discount_type}/{discount_value}/{isReturned}/{isNew}
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionItems }
 

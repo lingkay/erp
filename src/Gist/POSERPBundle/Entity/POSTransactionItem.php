@@ -52,6 +52,9 @@ class POSTransactionItem
      */
     protected $transaction;
 
+    /** @ORM\Column(type="float") */
+    protected $total_amount;
+
     public function __construct()
     {
         $this->initTrackCreate();
@@ -64,6 +67,17 @@ class POSTransactionItem
         $this->dataHasGeneratedID($data);
         $this->dataTrackCreate($data);
         return $data;
+    }
+
+    public function setTotalAmount($total_amount)
+    {
+        $this->total_amount = $total_amount;
+        return $this;
+    }
+
+    public function getTotalAmount()
+    {
+        return $this->total_amount;
     }
 
     /**

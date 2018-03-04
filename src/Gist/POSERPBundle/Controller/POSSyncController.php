@@ -99,7 +99,7 @@ class POSSyncController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    public function saveTransactionItemsAction($trans_sys_id, $prod_id, $prod_name, $orig_price, $min_price, $adjusted_price, $discount_type, $discount_value, $isReturned, $isNew)
+    public function saveTransactionItemsAction($trans_sys_id, $prod_id, $prod_name, $orig_price, $min_price, $adjusted_price, $total_amount, $discount_type, $discount_value, $isReturned, $isNew)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -110,7 +110,8 @@ class POSSyncController extends CrudController
         $transaction = $em->getRepository('GistPOSERPBundle:POSTransaction')->findOneBy(array('trans_display_id'=>$trans_sys_id));
         $user = $transaction->getUserCreate();
         $pos_location = $transaction->getPOSLocation();
-        
+
+        $transaction_item->setTotalAmount($total_amount);
         $transaction_item->setTransaction($transaction);
         $transaction_item->setProductId($prod_id);
         $transaction_item->setOrigPrice($orig_price);
