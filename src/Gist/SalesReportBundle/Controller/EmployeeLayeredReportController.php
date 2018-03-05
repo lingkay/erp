@@ -88,11 +88,13 @@ class EmployeeLayeredReportController extends Controller
         $total_profit = 0;
 
         foreach ($data as $d) {
-            $total_payments += $d->getTransactionTotal();
+            if (!$d->hasChild()) {
+                $total_payments += $d->getTransactionTotal();
 
-            foreach ($d->getItems() as $item) {
-                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
-                $total_cost += $product->getCost();
+                foreach ($d->getItems() as $item) {
+                    $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
+                    $total_cost += $product->getCost();
+                }
             }
         }
 
@@ -169,12 +171,14 @@ class EmployeeLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                $user = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
-                if ($user->getGroup()->getID() == $positionId) {
-                    //$totalCost += $product->getCost();
-                    $totalSales += $transactionItem->getTotalAmount();
-                    //store transaction id of item for use
-                    //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                    $user = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
+                    if ($user->getGroup()->getID() == $positionId) {
+                        //$totalCost += $product->getCost();
+                        $totalSales += $transactionItem->getTotalAmount();
+                        //store transaction id of item for use
+                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                    }
                 }
             }
 
@@ -267,12 +271,14 @@ class EmployeeLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                $employeex = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
-                if ($employeex->getID() == $employeeId && $employeex->getGroup()->getID() == $position) {
-                    //$totalCost += $product->getCost();
-                    $totalSales += $transactionItem->getTotalAmount();
-                    //store transaction id of item for use
-                    //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                    $employeex = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
+                    if ($employeex->getID() == $employeeId && $employeex->getGroup()->getID() == $position) {
+                        //$totalCost += $product->getCost();
+                        $totalSales += $transactionItem->getTotalAmount();
+                        //store transaction id of item for use
+                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                    }
                 }
             }
 
@@ -379,9 +385,11 @@ class EmployeeLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                if ($pos_loc->getRegion() == $region && $pos_loc->getArea()->getID() == $area) {
-                    $totalSales += $transactionItem->getTotalAmount();
+                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                    $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
+                    if ($pos_loc->getRegion() == $region && $pos_loc->getArea()->getID() == $area) {
+                        $totalSales += $transactionItem->getTotalAmount();
+                    }
                 }
             }
 

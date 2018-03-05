@@ -52,6 +52,15 @@ class POSTransactionItem
      */
     protected $transaction;
 
+    /** @ORM\Column(type="boolean", nullable=true) */
+    protected $issued;
+
+    /** @ORM\Column(type="boolean", nullable=true) */
+    protected $new_item;
+
+    /** @ORM\Column(type="boolean", nullable=true) */
+    protected $returned;
+
     /** @ORM\Column(type="float") */
     protected $total_amount;
 
@@ -78,6 +87,78 @@ class POSTransactionItem
     public function getTotalAmount()
     {
         return $this->total_amount;
+    }
+
+    /**
+     * Set issued
+     *
+     * @param boolean $issued
+     *
+     * @return POSTransactionItem
+     */
+    public function setIssued($issued)
+    {
+        $this->issued = $issued;
+
+        return $this;
+    }
+
+    /**
+     * Get issued
+     *
+     * @return boolean
+     */
+    public function getIssued()
+    {
+        return $this->issued;
+    }
+
+    /**
+     * Set returned
+     *
+     * @param boolean $returned
+     *
+     * @return POSTransactionItem
+     */
+    public function setReturned($returned)
+    {
+        $this->returned = $returned;
+
+        return $this;
+    }
+
+    /**
+     * Get returned
+     *
+     * @return boolean
+     */
+    public function getReturned()
+    {
+        return $this->returned;
+    }
+
+    /**
+     * setIsNewItem
+     *
+     * @param string $new_item
+     *
+     * @return POSTransactionItems
+     */
+    public function setIsNewItem($new_item)
+    {
+        $this->new_item = $new_item;
+
+        return $this;
+    }
+
+    /**
+     * getIsNewItem
+     *
+     * @return string
+     */
+    public function getIsNewItem()
+    {
+        return $this->new_item;
     }
 
     /**

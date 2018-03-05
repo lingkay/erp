@@ -25,7 +25,7 @@ class POSSyncController extends CrudController
         return $obj->getID();
     }
 
-    public function saveTransactionAction($pos_loc_id, $id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest,$transaction_ea, $uid)
+    public function saveTransactionAction($pos_loc_id, $id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest,$transaction_ea, $uid, $parentID)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -72,6 +72,11 @@ class POSSyncController extends CrudController
         $transaction->setStatus($status);
         $transaction->setSyncedToErp('true');
         $transaction->setTransactionMode($transaction_mode);
+
+        if ($parentID != '' && $parentID != 'n-a') {
+            $ref = $em->getRepository('GistPOSERPBundle:POSTransaction')->findOneBy(array('id'=>$parentID));
+            $transaction->setReferenceTransaction($ref);
+        }
 
         $transaction->setTaxRate($tax_rate);
         $transaction->setOrigVatAmt($orig_vat_amt);
@@ -120,6 +125,7 @@ class POSSyncController extends CrudController
         $transaction_item->setName($prod_name);
         $transaction_item->setDiscountType($discount_type);
         $transaction_item->setDiscountValue($discount_value);
+        $transaction_item->setReturned($isReturned === 'true');
 
         $em->persist($transaction_item);
         $em->flush();

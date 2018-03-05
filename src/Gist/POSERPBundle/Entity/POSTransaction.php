@@ -104,6 +104,11 @@ class POSTransaction
      */
     private $reference_transaction;
 
+    /**
+     * @ORM\OneToOne(targetEntity="POSTransaction", mappedBy="reference_transaction")
+     */
+    private $child_transaction;
+
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $extra_amount;
 
@@ -162,6 +167,15 @@ class POSTransaction
         }
 
         return $total;
+    }
+
+    public function hasChild()
+    {
+        if ($this->child_transaction == null) {
+            return false;
+        }
+
+        return true;
     }
 
     public function setTransactionMode($transaction_mode)

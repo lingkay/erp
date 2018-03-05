@@ -87,11 +87,12 @@ class ProductLayeredReportController extends Controller
         $total_profit = 0;
 
         foreach ($data as $d) {
-            $total_payments += $d->getTransactionTotal();
-
-            foreach ($d->getItems() as $item) {
-                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
-                $total_cost += $product->getCost();
+            if (!$d->hasChild()) {
+                $total_payments += $d->getTransactionTotal();
+                foreach ($d->getItems() as $item) {
+                        $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
+                        $total_cost += $product->getCost();
+                }
             }
         }
 
@@ -164,12 +165,14 @@ class ProductLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
-                if ($product->getBrand()->getID() == $brandId) {
-                    $brandTotalCost += $product->getCost();
-                    $brandTotalSales += $transactionItem->getTotalAmount();
-                    //store transaction id of item for use
-                    array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                    $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
+                    if ($product->getBrand()->getID() == $brandId) {
+                        $brandTotalCost += $product->getCost();
+                        $brandTotalSales += $transactionItem->getTotalAmount();
+                        //store transaction id of item for use
+                        array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                    }
                 }
             }
 
@@ -257,10 +260,12 @@ class ProductLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
-                if ($product->getCategory()->getID() == $categoryId && $product->getBrand()->getID() == $brand) {
-                    $totalCost += $product->getCost();
-                    $totalSales += $transactionItem->getTotalAmount();
+                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                    $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
+                    if ($product->getCategory()->getID() == $categoryId && $product->getBrand()->getID() == $brand) {
+                        $totalCost += $product->getCost();
+                        $totalSales += $transactionItem->getTotalAmount();
+                    }
                 }
             }
 
@@ -363,10 +368,12 @@ class ProductLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
-                if ($product->getCategory()->getID() == $category && $product->getBrand()->getID() == $brand && $product->getID() == $productId) {
-                    $totalCost += $product->getCost();
-                    $totalSales += $transactionItem->getTotalAmount();
+                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                    $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
+                    if ($product->getCategory()->getID() == $category && $product->getBrand()->getID() == $brand && $product->getID() == $productId) {
+                        $totalCost += $product->getCost();
+                        $totalSales += $transactionItem->getTotalAmount();
+                    }
                 }
             }
 
