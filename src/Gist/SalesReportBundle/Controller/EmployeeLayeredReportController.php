@@ -142,8 +142,9 @@ class EmployeeLayeredReportController extends Controller
     protected function getPositionsData($date_from, $date_to)
     {
         $em = $this->getDoctrine()->getManager();
-        //get all brands
-        $allPositions = $em->getRepository('GistUserBundle:Group')->findAll();
+        //get all positions
+        $salesDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Sales']);
+        $allPositions = $em->getRepository('GistUserBundle:Group')->findBy(['department'=>$salesDept->getID()]);
 
 
         foreach ($allPositions as $position) {
