@@ -85,13 +85,17 @@ class ProductLayeredReportController extends Controller
         $total_payments = 0;
         $total_cost = 0;
         $total_profit = 0;
+        $quantitySold = 0;
 
         foreach ($data as $d) {
             if (!$d->hasChild()) {
                 $total_payments += $d->getTransactionTotal();
                 foreach ($d->getItems() as $item) {
+                    if (!$item->getTransaction()->hasChild() && !$item->getReturned()) {
                         $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
                         $total_cost += $product->getCost();
+                        $quantitySold++;
+                    }
                 }
             }
         }
@@ -102,6 +106,7 @@ class ProductLayeredReportController extends Controller
             'total_sales' => number_format($total_payments, 2, '.',','),
             'total_cost' => number_format($total_cost, 2, '.',','),
             'total_profit' => number_format($total_profit, 2, '.',','),
+            'quantity_sold' => $quantitySold
         ];
     }
     //END TOP LAYER
@@ -148,6 +153,7 @@ class ProductLayeredReportController extends Controller
             $brandId = $brandObject->getID();
             $brandTotalSales = 0;
             $brandTotalCost = 0;
+            $quantitySold = 0;
             $brandTransactionIds = array();
 
             //get all transaction items based on date filter
@@ -172,6 +178,7 @@ class ProductLayeredReportController extends Controller
                         $brandTotalSales += $transactionItem->getTotalAmount();
                         //store transaction id of item for use
                         array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
+                        $quantitySold++;
                     }
                 }
             }
@@ -186,6 +193,7 @@ class ProductLayeredReportController extends Controller
                 'total_sales' => number_format($brandTotalSales, 2, '.',','),
                 'total_cost' => number_format($brandTotalCost, 2, '.',','),
                 'total_profit' => number_format($brandTotalProfit, 2, '.',','),
+                'quantity_sold' => $quantitySold
             );
         }
 
@@ -244,6 +252,7 @@ class ProductLayeredReportController extends Controller
             $categoryId = $categoryObject->getID();
             $totalSales = 0;
             $totalCost = 0;
+            $quantitySold = 0;
 
             //get all transaction items based on date filter
             $query = $em->createQueryBuilder();
@@ -265,6 +274,7 @@ class ProductLayeredReportController extends Controller
                     if ($product->getCategory()->getID() == $categoryId && $product->getBrand()->getID() == $brand) {
                         $totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
+                        $quantitySold++;
                     }
                 }
             }
@@ -281,6 +291,7 @@ class ProductLayeredReportController extends Controller
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
                 'total_profit' => number_format($totalProfit, 2, '.',','),
+                'quantity_sold' => $quantitySold
             );
         }
 
@@ -352,6 +363,7 @@ class ProductLayeredReportController extends Controller
             $productId = $productObject->getID();
             $totalSales = 0;
             $totalCost = 0;
+            $quantitySold = 0;
 
             //get all transaction items based on date filter
             $query = $em->createQueryBuilder();
@@ -373,6 +385,7 @@ class ProductLayeredReportController extends Controller
                     if ($product->getCategory()->getID() == $category && $product->getBrand()->getID() == $brand && $product->getID() == $productId) {
                         $totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
+                        $quantitySold++;
                     }
                 }
             }
@@ -391,6 +404,7 @@ class ProductLayeredReportController extends Controller
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
                 'total_profit' => number_format($totalProfit, 2, '.',','),
+                'quantity_sold' => $quantitySold
             );
         }
 
