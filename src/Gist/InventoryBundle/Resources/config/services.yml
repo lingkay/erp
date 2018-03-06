@@ -42,4 +42,9 @@ services:
                   em: "@doctrine.orm.entity_manager"
                   container: "@service_container"
                   security: "@security.context"
-
+    gist_layered_report_service:
+              class: Gist\SalesReportBundle\Model\LayeredReportDataManager
+              arguments:
+                  em: "@doctrine.orm.entity_manager"
+                  container: "@service_container"
+                  security: "@security.context"

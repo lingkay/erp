@@ -71,16 +71,8 @@ class ProductLayeredReportController extends Controller
     protected function getAllData($date_from, $date_to)
     {
         $em = $this->getDoctrine()->getManager();
-        $query = $em->createQueryBuilder();
-        $query->from('GistPOSERPBundle:POSTransaction', 'o')
-            ->where('o.date_create <= :date_to')
-            ->andWhere('o.date_create >= :date_from')
-            ->setParameter('date_from', $date_from. ' 00:00:00')
-            ->setParameter('date_to', $date_to.' 23:59:59');
-
-        $data = $query->select('o')
-            ->getQuery()
-            ->getResult();
+        $layeredReportService = $this->get('gist_layered_report_service');
+        $data = $layeredReportService->getTransactions($date_from, $date_to, null, null);
 
         $total_payments = 0;
         $total_cost = 0;
@@ -157,17 +149,8 @@ class ProductLayeredReportController extends Controller
             $brandTransactionIds = array();
 
             //get all transaction items based on date filter
-            $query = $em->createQueryBuilder();
-            $query->from('GistPOSERPBundle:POSTransactionItem', 'o')
-                ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
-                ->where('o.date_create <= :date_to')
-                ->andWhere('o.date_create >= :date_from')
-                ->setParameter('date_from', $date_from. '00:')
-                ->setParameter('date_to', $date_to.' 23:59:59');
-
-            $transactionItems = $query->select('o')
-                ->getQuery()
-                ->getResult();
+            $layeredReportService = $this->get('gist_layered_report_service');
+            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
@@ -255,17 +238,8 @@ class ProductLayeredReportController extends Controller
             $quantitySold = 0;
 
             //get all transaction items based on date filter
-            $query = $em->createQueryBuilder();
-            $query->from('GistPOSERPBundle:POSTransactionItem', 'o')
-                ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
-                ->where('o.date_create <= :date_to')
-                ->andWhere('o.date_create >= :date_from')
-                ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to.' 11:59:59');
-
-            $transactionItems = $query->select('o')
-                ->getQuery()
-                ->getResult();
+            $layeredReportService = $this->get('gist_layered_report_service');
+            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
@@ -366,17 +340,8 @@ class ProductLayeredReportController extends Controller
             $quantitySold = 0;
 
             //get all transaction items based on date filter
-            $query = $em->createQueryBuilder();
-            $query->from('GistPOSERPBundle:POSTransactionItem', 'o')
-                ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
-                ->where('o.date_create <= :date_to')
-                ->andWhere('o.date_create >= :date_from')
-                ->setParameter('date_from', $date_from)
-                ->setParameter('date_to', $date_to.' 11:59:59');
-
-            $transactionItems = $query->select('o')
-                ->getQuery()
-                ->getResult();
+            $layeredReportService = $this->get('gist_layered_report_service');
+            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
