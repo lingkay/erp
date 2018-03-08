@@ -124,9 +124,6 @@
             var date_to = $('#cform-date_to').val();
             var date_from = $('#cform-date_from').val();
 
-            alert(pos_loc_id + date_from + date_to);
-
-
             var path = "{{ path('gist_inv_existing_stock_grid_search', {
                 'pos_loc_id' : 'POS_LOC_ID',
                 'inv_type' : 'INV_TYPE',
@@ -189,7 +186,7 @@
                         // 'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
                         // 'This Month': [moment().startOf('month'), moment().endOf('month')],
                         // 'Last Month': [moment().subtract(1, 'month').startOf('month'), 
-                        'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment()]
+                        'Last 3 Months': [moment().subtract(3, 'month'), moment()]
                     },
                     opens: 'left',
                     format: 'MM/DD/YYYY',
