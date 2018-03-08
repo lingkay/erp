@@ -13,6 +13,7 @@ use Gist\InventoryBundle\Model\InventoryException;
 use Gist\TemplateBundle\Model\BaseController as Controller;
 use Gist\TemplateBundle\Model\RouteGenerator as RouteGenerator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use DateTime;
 
 class ExistingStockController extends Controller
 {
@@ -39,7 +40,22 @@ class ExistingStockController extends Controller
         $inv = $this->get('gist_inventory');
         $params['pos_loc_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
 
-        return $this->render('GistInventoryBundle:ExistingStock:index.html.twig', $params);
+        //added
+        $date_from = new DateTime();
+        $date_to = new DateTime();
+        $date_from->format("Y-m-d");
+        $date_to->format("Y-m-d");
+
+        //added
+        // $this->padFormParams($params, $date_from, $date_to);
+        $twig_file = 'GistInventoryBundle:ExistingStock:index.html.twig';
+
+        //added
+        $params['date_from'] = $date_from;
+        $params['date_to'] = $date_to;
+        $params['grid_cols'] = $gl->getColumns();
+
+        return $this->render($twig_file, $params);
     }
 
     protected function getRouteGen()
@@ -203,7 +219,7 @@ class ExistingStockController extends Controller
         return $resp;
     }
 
-    public function gridSearchAction($pos_loc_id, $inv_type)
+    public function gridSearchAction($pos_loc_id, $inv_type, $date_from, $date_to)
     {
         $this->getControllerBase();
         $inv = $this->get('gist_inventory');
