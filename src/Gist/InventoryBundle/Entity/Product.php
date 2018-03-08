@@ -106,6 +106,11 @@ class Product
      */
     protected $max_open_tester;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $piece_per_package;
+
 
     public function __construct()
     {
@@ -115,6 +120,17 @@ class Product
     public function getID()
     {
         return $this->id;
+    }
+
+    public function setPiecePerPackage($piece_per_package)
+    {
+        $this->piece_per_package = $piece_per_package;
+        return $this;
+    }
+
+    public function getPiecePerPackage()
+    {
+        return $this->piece_per_package;
     }
 
     public function setMaxTester($max_open_tester)

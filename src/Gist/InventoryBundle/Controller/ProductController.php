@@ -152,6 +152,10 @@ class ProductController extends CrudController
             $o->setBarcode($data['barcode']);
         }
 
+        if (isset($data['piece_per_package'])) {
+            $o->setPiecePerPackage($data['piece_per_package']);
+        }
+
         //parse items given
         if (isset($data['item_id'])) {
              $items_given = [];

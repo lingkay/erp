@@ -11,7 +11,7 @@ gist_inv_existing_stock_grid:
 
 
 gist_inv_existing_stock_grid_search:
-    pattern: /grid/{pos_loc_id}/{inv_type}
+    pattern: /grid/{pos_loc_id}/{inv_type}/{date_from}/{date_to}
     methods: [GET]
     defaults: { _controller: GistInventoryBundle:ExistingStock:gridSearch }
 

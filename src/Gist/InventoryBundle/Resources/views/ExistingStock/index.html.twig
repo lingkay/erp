@@ -11,10 +11,36 @@
                 <div class="portlet-body">
                     <!-- BEGIN FORM-->
                     <div class="row">
-                        <div class="col-md-5 col-md-offset-3" style="margin-bottom: 10px;">
-                            {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(-1),3,7) }}
-                            <br>
-                            {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, 'sales', 3, 7, false) }}
+                        <div class="col-md-12">
+                            <div class="portlet box blue">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-filter"></i>Filters
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-horizontal">
+                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(-1),4,7) }}
+                                                <br>
+                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, 'sales', 4, 7, false) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-horizontal">
+                                                {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', date_from, date_to, 4, 7) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="margin-bottom: 10px;">
+                            <button class="btn blue pull-left" id="filter_button" style="margin-right: 10px;">Apply Filters</button>
+                            <button class="btn red" id="clear_filter">Clear Filters</button>
                         </div>
                     </div>
                     <table class="table table-bordered table-hover" id="list_table">
@@ -95,11 +121,17 @@
         function generatePath() {
             var pos_loc_id = $('#cform-pos_location').val();
             var inv_type = $('#cform-inv_type').val();
+            var date_to = $('#cform-date_to').val();
+            var date_from = $('#cform-date_from').val();
+
+            alert(pos_loc_id + date_from + date_to);
 
 
             var path = "{{ path('gist_inv_existing_stock_grid_search', {
                 'pos_loc_id' : 'POS_LOC_ID',
                 'inv_type' : 'INV_TYPE',
+                'date_from' : 'DFROM',
+                'date_to' : 'DTO',
             }
             ) }}";
 
@@ -107,6 +139,14 @@
 
             path = path.replace('POS_LOC_ID', pos_loc_id);
             path = path.replace('INV_TYPE', inv_type);
+
+            if (date_from == null || date_from == '' || date_to == null || date_to == '') {
+                path = path.replace('DFROM', null);
+                path = path.replace('DTO', null);
+            } else {
+                path = path.replace('DFROM', date_from);
+                path = path.replace('DTO', date_to);
+            };
 
             return path;
         }
@@ -140,12 +180,32 @@
             $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
             $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
 
-            $("#cform-pos_location").live('change', function(){
-                path = generatePath();
-                dTable.fnReloadAjax(path);
-            });
+            $('#daterange').daterangepicker(
+                {
+                    ranges: {
+                        // 'Today': [new Date(), moment().add(1, 'days')],
+                        // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        // 'Last 7 Days': [moment().subtract(6, 'days'), new Date()],
+                        // 'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
+                        // 'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        // 'Last Month': [moment().subtract(1, 'month').startOf('month'), 
+                        'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment()]
+                    },
+                    opens: 'left',
+                    format: 'MM/DD/YYYY',
+                },
+                function(start, end) {
+                    $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+                    $('#cform-date_from').val(start.format('YYYYMMDD'));
+                    $('#cform-date_to').val(end.format('YYYYMMDD'));
 
-            $("#cform-inv_type").live('change', function(){
+                    filter_redirect();
+                }
+            );
+            $('#clear_filter').click(function (){
+                location.reload();
+            });
+            $('#filter_button').click(function (){
                 path = generatePath();
                 dTable.fnReloadAjax(path);
             });
