@@ -41,7 +41,7 @@ class ExistingStockController extends Controller
         $params['pos_loc_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
 
         //added
-        $date_from = new DateTime();
+        $date_from = new DateTime('-3 month');
         $date_to = new DateTime();
         $date_from->format("Y-m-d");
         $date_to->format("Y-m-d");
