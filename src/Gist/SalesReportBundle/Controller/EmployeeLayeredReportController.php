@@ -80,7 +80,7 @@ class EmployeeLayeredReportController extends Controller
         $total_profit = 0;
 
         foreach ($data as $d) {
-            if (!$d->hasChild()) {
+            if (!$d->hasChildLayeredReport()) {
                 $total_payments += $d->getTransactionTotal();
 
                 foreach ($d->getItems() as $item) {
@@ -154,7 +154,7 @@ class EmployeeLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $user = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
                     if ($user->getGroup()->getID() == $positionId) {
                         //$totalCost += $product->getCost();
@@ -245,7 +245,7 @@ class EmployeeLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $employeex = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
                     if ($employeex->getID() == $employeeId && $employeex->getGroup()->getID() == $position) {
                         //$totalCost += $product->getCost();
@@ -350,7 +350,7 @@ class EmployeeLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
                     if ($pos_loc->getRegion() == $region && $pos_loc->getArea()->getID() == $area) {
                         $totalSales += $transactionItem->getTotalAmount();

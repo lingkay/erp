@@ -80,10 +80,10 @@ class ProductLayeredReportController extends Controller
         $quantitySold = 0;
 
         foreach ($data as $d) {
-            if (!$d->hasChild()) {
+            if (!$d->hasChildLayeredReport()) {
                 $total_payments += $d->getTransactionTotal();
                 foreach ($d->getItems() as $item) {
-                    if (!$item->getTransaction()->hasChild() && !$item->getReturned()) {
+                    if (!$item->getTransaction()->hasChildLayeredReport() && !$item->getReturned()) {
                         $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
                         $total_cost += $product->getCost();
                         $quantitySold++;
@@ -154,7 +154,7 @@ class ProductLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
                     if ($product->getBrand()->getID() == $brandId) {
                         $brandTotalCost += $product->getCost();
@@ -243,7 +243,7 @@ class ProductLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
                     if ($product->getCategory()->getID() == $categoryId && $product->getBrand()->getID() == $brand) {
                         $totalCost += $product->getCost();
@@ -345,7 +345,10 @@ class ProductLayeredReportController extends Controller
 
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChild() && !$transactionItem->getReturned()) {
+                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+
+
+
                     $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
                     if ($product->getCategory()->getID() == $category && $product->getBrand()->getID() == $brand && $product->getID() == $productId) {
                         $totalCost += $product->getCost();

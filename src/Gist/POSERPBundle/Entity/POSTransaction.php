@@ -178,6 +178,19 @@ class POSTransaction
         return true;
     }
 
+    public function hasChildLayeredReport()
+    {
+        if ($this->child_transaction == null) {
+            return false;
+        } else {
+            if ($this->child_transaction->transaction_mode == 'upsell') {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
     public function setTransactionMode($transaction_mode)
     {
         $this->transaction_mode = $transaction_mode;
