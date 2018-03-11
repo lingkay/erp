@@ -58,7 +58,7 @@ class ExistingStockController extends Controller
 
         $inv = $this->get('gist_inventory');
         $params['pos_loc_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
-        
+
         //added
         $date_from = new DateTime('-3 month');
         $date_to = new DateTime();
@@ -326,12 +326,14 @@ class ExistingStockController extends Controller
 
     public function gridSearchAction($pos_loc_id, $inv_type, $date_from, $date_to)
     {
+        $inv = $this->get('gist_inventory');
         $config = $this->get('gist_configuration');
-        $this->inv_account = $config->get('gist_main_warehouse');
+        $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $this->inv_account = $main_warehouse->getInventoryAccount()->getID();
         $this->date_from = $date_from;
         $this->date_to = $date_to;
         $this->getControllerBase();
-        $inv = $this->get('gist_inventory');
+
         $gloader = $this->setupGridLoader();
 
         $this->date_from = $date_from;
