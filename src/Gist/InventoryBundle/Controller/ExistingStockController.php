@@ -15,6 +15,7 @@ use Gist\TemplateBundle\Model\RouteGenerator as RouteGenerator;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use DateTime;
 
+
 class ExistingStockController extends Controller
 {
     protected $repo;
@@ -47,6 +48,9 @@ class ExistingStockController extends Controller
         $params = $this->getViewParams('List');
         $this->getControllerBase();
         $gl = $this->setupGridLoader();
+
+        $params['xx'] = $this->inv_account;
+
         $params['main_warehouse'] = 0;
         $params['grid_cols'] = $gl->getColumns();
         $params['wh_type_opts'] = array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
@@ -97,7 +101,7 @@ class ExistingStockController extends Controller
         $params['route_delete'] = $this->getRouteGen()->getDelete();
         $params['route_grid'] = $this->getRouteGen()->getGrid();
         $params['prefix'] = $this->route_prefix;
-
+        $params['xx'] = $this->inv_account;
         $params['base_view'] = $this->base_view;
         return $params;
     }
@@ -366,7 +370,8 @@ class ExistingStockController extends Controller
         }
         elseif ($pos_loc_id == -1)
         {
-            $this->inv_account = $config->get('gist_main_warehouse');
+            $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            $this->inv_account = $main_warehouse->getInventoryAccount()->getID();
         }
         else
         {
