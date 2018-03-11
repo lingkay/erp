@@ -206,8 +206,10 @@ class ExistingStockController extends Controller
 
         foreach ($transactionItems as $transactionItem) {
             if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                if ($transactionItem->getProductId() == $productId) {
-                    $quantitySold++;
+                if ($transactionItem->getTransaction()->getPOSLocation()->getInventoryAccount()->getID() == $this->inv_account) {
+                    if ($transactionItem->getProductId() == $productId) {
+                        $quantitySold++;
+                    }
                 }
             }
         }
