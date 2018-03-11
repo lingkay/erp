@@ -21,8 +21,27 @@ class ExistingStockController extends Controller
     protected $base_view;
     protected $route_gen;
 
+    protected $date_from;
+    protected $inv_account;
+    protected $date_to;
+
+    public function __construct()
+    {
+        $date_from = new DateTime('-3 month');
+        $date_to = new DateTime();
+
+        $this->date_from = $date_from->format('Ymd');
+        $this->date_to = $date_to->format('Ymd');
+        $this->inv_account = '0';
+    }
+
     public function indexAction()
     {
+        $config = $this->get('gist_configuration');
+        $inv = $this->get('gist_inventory');
+        $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+        $this->inv_account = $main_warehouse->getInventoryAccount()->getID();
+
         $this->route_prefix = 'gist_inv_existing_stock';
         $this->title = 'Existing Stock';
         $params = $this->getViewParams('List');
@@ -39,6 +58,8 @@ class ExistingStockController extends Controller
 
         $inv = $this->get('gist_inventory');
         $params['pos_loc_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
+
+
 
         //added
         $date_from = new DateTime('-3 month');
@@ -121,15 +142,130 @@ class ExistingStockController extends Controller
         return array(
             $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
             $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
-            $grid->newColumn('Current Stock','getQuantity','quantity', 'o')
+            $grid->newColumn('Current Stock','getQuantity','quantity', 'o', [$this, 'formatNumeric']),
+            $grid->newColumn('Cost Per Unit','getCost','cost', 'prod', [$this, 'formatNumeric']),
+            $grid->newColumn('Total Cost','getID','id', 'prod', [$this, 'formatTotalCost']),
+            $grid->newColumn('Piece per package','getPiecePerPackage','piece_per_package', 'prod', [$this, 'formatNumeric']),
+            $grid->newColumn('Daily avg. consumption','getID','id', 'prod', [$this, 'formatAvgConsumption']),
+            $grid->newColumn('Days w/ Stock','getID','id', 'prod', [$this, 'formatDaysWithStock'])
         );
     }
 
-    public function formatNumericLinkThreshold($number) {
+    public function formatDaysWithStock($prodId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($prodId);
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$this->inv_account]);
+
+        $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
+        $date_to = DateTime::createFromFormat('Ymd', $this->date_to);
+
+        $productId = $product->getID();
+        $totalSales = 0;
+        $totalCost = 0;
+        $quantitySold = 0;
+
+
+
+        //get all transaction items based on date filter
+        $layeredReportService = $this->get('gist_layered_report_service');
+        $transactionItems = $layeredReportService->getTransactionItems($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), null, null);
+
+        //loop items and check if item's brand is the current loop's brand then add the cost
+        foreach ($transactionItems as $transactionItem) {
+            if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                if ($transactionItem->getProductId() == $productId) {
+                    $quantitySold++;
+                }
+            }
+        }
+
+        $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
+        $days = round($datediff / (60 * 60 * 24), 2);
+
+        // echo ;
+
+        $totalProfit = $totalSales - $totalCost;
+        if ($quantitySold == 0) {
+            $avgConsumption = 0;
+            $daysWithStock = 0;
+        } else {
+            if ($days == 0) {
+                $days = 1;
+            }
+            $avgConsumption = number_format($quantitySold/$days, 2);
+            $daysWithStock = abs($stock->getQuantity() / $avgConsumption);
+        }
+
+
+        return "<div class=\"numeric\">".number_format($daysWithStock, 2)."</div>";
+    }
+
+    public function formatAvgConsumption($prodId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($prodId);
+
+        $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
+        $date_to = DateTime::createFromFormat('Ymd', $this->date_to);
+
+        $productId = $product->getID();
+        $totalSales = 0;
+        $totalCost = 0;
+        $quantitySold = 0;
+
+        //get all transaction items based on date filter
+        $layeredReportService = $this->get('gist_layered_report_service');
+        $transactionItems = $layeredReportService->getTransactionItems($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), null, null);
+
+        //loop items and check if item's brand is the current loop's brand then add the cost
+        foreach ($transactionItems as $transactionItem) {
+            if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                if ($transactionItem->getProductId() == $productId) {
+                    $quantitySold++;
+                }
+            }
+        }
+
+        $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
+        $days = round($datediff / (60 * 60 * 24), 2);
+
+       // echo ;
+
+        $totalProfit = $totalSales - $totalCost;
+        if ($quantitySold == 0) {
+            $avgConsumption = 0;
+        } else {
+            if ($days == 0) {
+                $days = 1;
+            }
+            $avgConsumption = number_format($quantitySold/$days, 2);
+        }
+
+
+        return "<div class=\"numeric\">".abs($avgConsumption)."</div>";
+    }
+
+    public function formatNumericLinkThreshold($number)
+    {
         return "<div class=\"numeric\"><a style=\"text-decoration: none;\" href=\"javascript:void(0)\" class=\"change_threshold_btn\">".number_format($number, 2)."</a></div>";
     }
 
-    public function formatProductLink($id) {
+    public function formatTotalCost($prodId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$this->inv_account]);
+
+        $quantity = $stock->getQuantity();
+        $cost = $stock->getProduct()->getCost();
+
+        $total = $quantity * $cost;
+
+        return "<div class=\"numeric\">".number_format($total, 2)."</div>";
+    }
+
+    public function formatProductLink($id)
+    {
         $em = $this->getDoctrine()->getManager();
         $router = $this->get('router');
         $obj = $em->getRepository('GistInventoryBundle:Product')->find($id);
@@ -179,9 +315,10 @@ class ExistingStockController extends Controller
 
     public function gridAction($pos_loc_id = -1)
     {
+        $config = $this->get('gist_configuration');
+
         $this->getControllerBase();
         $inv = $this->get('gist_inventory');
-        $config = $this->get('gist_configuration');
         $gloader = $this->setupGridLoader();
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
@@ -189,16 +326,19 @@ class ExistingStockController extends Controller
         if($pos_loc_id == 0)
         {
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            $this->inv_account = $config->get('gist_main_warehouse');
             $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
         }
         elseif ($pos_loc_id == -1)
         {
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+            $this->inv_account = $config->get('gist_main_warehouse');
             $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
         }
         else
         {
             $selected_loc = $inv->findPOSLocation($pos_loc_id);
+            $this->inv_account = $selected_loc->getInventoryAccount()->getID();
             $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
         }
 
@@ -221,10 +361,15 @@ class ExistingStockController extends Controller
 
     public function gridSearchAction($pos_loc_id, $inv_type, $date_from, $date_to)
     {
+        $config = $this->get('gist_configuration');
+        $this->inv_account = $config->get('gist_main_warehouse');
+        $this->date_from = $date_from;
+        $this->date_to = $date_to;
         $this->getControllerBase();
         $inv = $this->get('gist_inventory');
-        $config = $this->get('gist_configuration');
         $gloader = $this->setupGridLoader();
+
+        $this->date_from = $date_from;
 
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
@@ -233,37 +378,48 @@ class ExistingStockController extends Controller
         {
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
 
+
             if ($inv_type == 'sales') {
                 $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
+                $this->inv_account = $main_warehouse->getInventoryAccount()->getID();
             } elseif ($inv_type == 'damaged') {
                 $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getDamagedContainer()->getID()."')";
+                $this->inv_account = $main_warehouse->getInventoryAccount()->getDamagedContainer()->getID();
             } elseif ($inv_type == 'tester') {
                 $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getTesterContainer()->getID()."')";
+                $this->inv_account = $main_warehouse->getInventoryAccount()->getTesterContainer()->getID();
             } elseif ($inv_type == 'missing') {
                 $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getMissingContainer()->getID()."')";
+                $this->inv_account = $main_warehouse->getInventoryAccount()->getMissingContainer()->getID();
             } else {
                 $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
+                $this->inv_account = $main_warehouse->getInventoryAccount()->getID();
             }
 
 
         }
         elseif ($pos_loc_id == -1)
         {
-
+            $this->inv_account = $config->get('gist_main_warehouse');
         }
         else
         {
             $selected_loc = $inv->findPOSLocation($pos_loc_id);
             if ($inv_type == 'sales') {
                 $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+                $this->inv_account = $selected_loc->getInventoryAccount()->getID();
             } elseif ($inv_type == 'damaged') {
                 $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getDamagedContainer()->getID()."')";
+                $this->inv_account = $selected_loc->getInventoryAccount()->getDamagedContainer()->getID();
             } elseif ($inv_type == 'tester') {
                 $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getTesterContainer()->getID()."')";
+                $this->inv_account = $selected_loc->getInventoryAccount()->getTesterContainer()->getID();
             } elseif ($inv_type == 'missing') {
                 $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getMissingContainer()->getID()."')";
+                $this->inv_account = $selected_loc->getInventoryAccount()->getMissingContainer()->getID();
             } else {
                 $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
+                $this->inv_account = $selected_loc->getInventoryAccount()->getID();
             }
         }
 

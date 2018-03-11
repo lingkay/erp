@@ -51,9 +51,9 @@ class LayeredReportDataManager
         $query = $this->em->createQueryBuilder();
         $query->from('GistPOSERPBundle:POSTransactionItem', 'o')
             ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
-            ->where('o.date_create <= :date_to')
-            ->andWhere('o.date_create >= :date_from')
-            ->setParameter('date_from', $dateFrom. '00:00:00')
+            ->where('t.date_create <= :date_to')
+            ->andWhere('t.date_create >= :date_from')
+            ->setParameter('date_from', $dateFrom. ' 00:00:00')
             ->setParameter('date_to', $dateTo.' 23:59:59');
 
         $transactionItems = $query->select('o')
