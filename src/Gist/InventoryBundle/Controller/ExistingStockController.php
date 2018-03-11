@@ -292,8 +292,6 @@ class ExistingStockController extends Controller
         {
             $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
             $this->inv_account = $main_warehouse->getInventoryAccount()->getID();
-
-            $this->inv_account = $config->get('gist_main_warehouse');
             $qry[] = "(o.inv_account = '".$main_warehouse->getInventoryAccount()->getID()."')";
         }
         elseif ($pos_loc_id == -1)
