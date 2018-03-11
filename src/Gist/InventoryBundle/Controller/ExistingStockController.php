@@ -58,9 +58,7 @@ class ExistingStockController extends Controller
 
         $inv = $this->get('gist_inventory');
         $params['pos_loc_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
-
-
-
+        
         //added
         $date_from = new DateTime('-3 month');
         $date_to = new DateTime();
@@ -154,40 +152,15 @@ class ExistingStockController extends Controller
     public function formatDaysWithStock($prodId)
     {
         $em = $this->getDoctrine()->getManager();
-        $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($prodId);
         $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$this->inv_account]);
-
         $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
         $date_to = DateTime::createFromFormat('Ymd', $this->date_to);
-
-        $productId = $product->getID();
-        $totalSales = 0;
-        $totalCost = 0;
-        $quantitySold = 0;
-
-
-
-        //get all transaction items based on date filter
-        $layeredReportService = $this->get('gist_layered_report_service');
-        $transactionItems = $layeredReportService->getTransactionItems($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), null, null);
-
-        //loop items and check if item's brand is the current loop's brand then add the cost
-        foreach ($transactionItems as $transactionItem) {
-            if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                if ($transactionItem->getProductId() == $productId) {
-                    $quantitySold++;
-                }
-            }
-        }
+        $quantitySold = $this->getQuantitySold($prodId, $date_from,$date_to);
 
         $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
         $days = round($datediff / (60 * 60 * 24), 2);
 
-        // echo ;
-
-        $totalProfit = $totalSales - $totalCost;
         if ($quantitySold == 0) {
-            $avgConsumption = 0;
             $daysWithStock = 0;
         } else {
             if ($days == 0) {
@@ -203,36 +176,12 @@ class ExistingStockController extends Controller
 
     public function formatAvgConsumption($prodId)
     {
-        $em = $this->getDoctrine()->getManager();
-        $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($prodId);
-
         $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
         $date_to = DateTime::createFromFormat('Ymd', $this->date_to);
-
-        $productId = $product->getID();
-        $totalSales = 0;
-        $totalCost = 0;
-        $quantitySold = 0;
-
-        //get all transaction items based on date filter
-        $layeredReportService = $this->get('gist_layered_report_service');
-        $transactionItems = $layeredReportService->getTransactionItems($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), null, null);
-
-        //loop items and check if item's brand is the current loop's brand then add the cost
-        foreach ($transactionItems as $transactionItem) {
-            if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                if ($transactionItem->getProductId() == $productId) {
-                    $quantitySold++;
-                }
-            }
-        }
-
+        $quantitySold = $this->getQuantitySold($prodId, $date_from,$date_to);
         $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
         $days = round($datediff / (60 * 60 * 24), 2);
 
-       // echo ;
-
-        $totalProfit = $totalSales - $totalCost;
         if ($quantitySold == 0) {
             $avgConsumption = 0;
         } else {
@@ -242,8 +191,24 @@ class ExistingStockController extends Controller
             $avgConsumption = number_format($quantitySold/$days, 2);
         }
 
-
         return "<div class=\"numeric\">".abs($avgConsumption)."</div>";
+    }
+
+    public function getQuantitySold($productId, $dateFrom, $dateTo)
+    {
+        $quantitySold = 0;
+        $layeredReportService = $this->get('gist_layered_report_service');
+        $transactionItems = $layeredReportService->getTransactionItems($dateFrom->format('Y-m-d'), $dateTo->format('Y-m-d'), null, null);
+
+        foreach ($transactionItems as $transactionItem) {
+            if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                if ($transactionItem->getProductId() == $productId) {
+                    $quantitySold++;
+                }
+            }
+        }
+
+        return $quantitySold;
     }
 
     public function formatNumericLinkThreshold($number)
