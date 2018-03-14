@@ -122,3 +122,89 @@ gist_layered_sales_report_employee_index_employees:
     path: /layered-sales-report/employee_employees/{date_from}/{date_to}/{position}
     methods:  [GET]
     defaults: { _controller: GistSalesReportBundle:EmployeeLayeredReport:employeesIndex, date_from: null, date_to: null, position: null }
+
+# SUPPLIER
+gist_layered_sales_report_supplier_index:
+    path: /layered-sales-report/supplier/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SupplierLayeredReport:index, date_from: null, date_to: null }
+
+gist_layered_sales_report_supplier_index_filter:
+    path: /layered-sales-report/supplier/{date_from}/{date_to}
+    methods:  [POST]
+    defaults: { _controller: GistSalesReportBundle:SupplierLayeredReport:index, date_from: null, date_to: null }
+
+gist_layered_sales_report_supplier_index_list:
+    path: /layered-sales-report/suppliers/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SupplierLayeredReport:positionsIndex, date_from: null, date_to: null }
+
+# CUSTOMER
+gist_layered_sales_report_customer_index:
+    path: /layered-sales-report/customer/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:index, date_from: null, date_to: null }
+
+gist_layered_sales_report_customer_index_filter:
+    path: /layered-sales-report/customer/{date_from}/{date_to}
+    methods:  [POST]
+    defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:index, date_from: null, date_to: null }
+
+gist_layered_sales_report_customer_index_list:
+    path: /layered-sales-report/customer_list/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:index, date_from: null, date_to: null }
+
+gist_layered_sales_report_customer_index_transactions:
+    path: /layered-sales-report/customer_transactions/{date_from}/{date_to}/{customer_id}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:positionsIndex, date_from: null, date_to: null, customer_id: null }
+
+
+# SALES
+# L1
+gist_layered_sales_report_sales_index:
+    path: /layered-sales-report/sales/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:index, date_from: null, date_to: null }
+
+gist_layered_sales_report_sales_index_filter:
+    path: /layered-sales-report/sales/{date_from}/{date_to}
+    methods:  [POST]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:index, date_from: null, date_to: null }
+
+# L2
+gist_layered_sales_report_sales_index_modes:
+    path: /layered-sales-report/sales_modes/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null }
+
+# L3 - CASH
+gist_layered_sales_report_sales_index_cash_transactions:
+    path: /layered-sales-report/sales/cash_transactions/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null }
+
+# L3 - CARD - TERMINALS
+gist_layered_sales_report_sales_index_card_terminals:
+    path: /layered-sales-report/sales/card_terminals/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null }
+
+# L3 - CARD - TERMINALS
+gist_layered_sales_report_sales_index_check_types:
+    path: /layered-sales-report/sales/check_types/{date_from}/{date_to}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null }
+
+# L4 - CARD - TRANSACTIONS
+gist_layered_sales_report_sales_index_card_transactions:
+    path: /layered-sales-report/sales/card_transactions/{date_from}/{date_to}/{terminal}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null, terminal: null }
+
+# L4 - CHECK - TRANSACTIONS
+gist_layered_sales_report_sales_index_check_transactions:
+    path: /layered-sales-report/sales/check_transactions/{date_from}/{date_to}/{check_type}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null, check_type: null }
