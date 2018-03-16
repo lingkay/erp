@@ -100,12 +100,12 @@ class CustomerLayeredReportController extends Controller
     }
     //END TOP LAYER
     //FOR POSITIONS/L2
-    public function positionsIndexAction($date_from = null, $date_to = null, $position = null)
+    public function customersIndexAction($date_from = null, $date_to = null, $position = null)
     {
         $em = $this->getDoctrine()->getManager();
         try {
             $data = $this->getRequest()->request->all();
-            $this->route_prefix = 'gist_layered_sales_report_employee';
+            $this->route_prefix = 'gist_layered_sales_report_customer';
             $params = $this->getViewParams('List');
             $this->getControllerBase();
 
@@ -117,13 +117,13 @@ class CustomerLayeredReportController extends Controller
                 $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
                 $params['date_from'] = $date_from->format("m/d/Y");
                 $params['date_to'] = $date_to->format("m/d/Y");
-                $params['positions_data'] = $this->getPositionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+                $params['positions_data'] = $this->getCustomersData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
 
 
 
-                return $this->render('GistSalesReportBundle:CustomerLayered:positions.html.twig', $params);
+                return $this->render('GistSalesReportBundle:CustomerLayered:customers.html.twig', $params);
 
             } else {
                 return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
@@ -133,17 +133,17 @@ class CustomerLayeredReportController extends Controller
         }
     }
 
-    protected function getPositionsData($date_from, $date_to)
+    protected function getCustomersData($date_from, $date_to)
     {
         $em = $this->getDoctrine()->getManager();
         //get all positions
         $salesDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Sales']);
-        $allPositions = $em->getRepository('GistUserBundle:Group')->findBy(['department'=>$salesDept->getID()]);
+        $allCustomers = $em->getRepository('GistCustomerBundle:Customer')->findAll();
 
 
-        foreach ($allPositions as $position) {
+        foreach ($allCustomers as $customer) {
             //initiate totals
-            $positionId = $position->getID();
+            $customerId = $customer->getID();
             $totalSales = 0;
             $totalCost = 0;
             $transactionIds = array();
@@ -155,8 +155,7 @@ class CustomerLayeredReportController extends Controller
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                    $user = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
-                    if ($user->getGroup()->getID() == $positionId) {
+                    if ($transactionItem->getTransaction()->getCustomer()->getID() == $customer->getID()) {
                         //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
                         //store transaction id of item for use
@@ -170,15 +169,15 @@ class CustomerLayeredReportController extends Controller
             $list_opts[] = array(
                 'date_from'=>$date_from,
                 'date_to'=> $date_to,
-                'position_id' => $positionId,
-                'position_name' => $position->getName(),
+                'customer_id' => $customer->getID(),
+                'customer_name' => $customer->getNameFormatted(),
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
                 'total_profit' => number_format($brandTotalProfit, 2, '.',','),
             );
         }
 
-        if (count($allPositions) > 0) {
+        if (count($allCustomers) > 0) {
             return $list_opts;
         } else {
             return null;
