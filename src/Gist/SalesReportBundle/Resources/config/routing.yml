@@ -137,7 +137,7 @@ gist_layered_sales_report_supplier_index_filter:
 gist_layered_sales_report_supplier_index_list:
     path: /layered-sales-report/suppliers/{date_from}/{date_to}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:SupplierLayeredReport:positionsIndex, date_from: null, date_to: null }
+    defaults: { _controller: GistSalesReportBundle:SupplierLayeredReport:suppliersIndex, date_from: null, date_to: null }
 
 # CUSTOMER
 gist_layered_sales_report_customer_index:

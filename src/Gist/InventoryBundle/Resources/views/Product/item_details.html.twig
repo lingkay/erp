@@ -10,6 +10,7 @@
                 {#{{ form.group_number('Maximum Stock', 'max_stock', object.getMaxStock|default(''), 3, 4, readonly) }}#}
                 {{ form.group_select("Category", "category", category_opts, category.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Brand", "brand", brand_opts, brand.getID|default(''), 3, 4, readonly) }}
+                {{ form.group_select("Supplier", "supplier", supplier_opts, object.getSupplier.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Type", "item_type", type_opts, object.getType.getID|default(''), 3, 4, readonly) }}
                 {{ form.group_select("Class", "class", class_opts, object.getClass|default(''), 3, 4, readonly) }}
                 {% if object.getID == '' %}

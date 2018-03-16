@@ -49,6 +49,12 @@ class Product
     protected $brand;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Supplier")
+     * @ORM\JoinColumn(name="supplier_id", referencedColumnName="id")
+     */
+    protected $supplier;
+
+    /**
      * @ORM\ManyToOne(targetEntity="ProductCategory")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
@@ -142,6 +148,17 @@ class Product
     public function getMaxTester()
     {
         return $this->max_open_tester;
+    }
+
+    public function setSupplier($supplier)
+    {
+        $this->supplier = $supplier;
+        return $this;
+    }
+
+    public function getSupplier()
+    {
+        return $this->supplier;
     }
 
     public function setName($name)

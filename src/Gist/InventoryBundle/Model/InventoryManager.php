@@ -176,17 +176,17 @@ class InventoryManager
 
     public function getSupplierOptions($filter = array())
     {
-        // $whs = $this->em
-        //     ->getRepository('x:Supplier')
-        //     ->findBy(
-        //         $filter
-        //     );
+         $whs = $this->em
+             ->getRepository('GistInventoryBundle:Supplier')
+             ->findBy(
+                 $filter
+             );
 
-        // $wh_opts = array();
-        // foreach ($whs as $wh)
-        //     $wh_opts[$wh->getID()] = $wh->getNameFormatted();
+         $wh_opts = array();
+         foreach ($whs as $wh)
+             $wh_opts[$wh->getID()] = $wh->getName();
 
-        return null;
+        return $wh_opts;
     }
 
     public function getDamagedReasonsOptions($filter = array())
