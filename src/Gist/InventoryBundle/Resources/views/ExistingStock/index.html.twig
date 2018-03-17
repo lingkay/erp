@@ -24,7 +24,7 @@
                                             <div class="form-horizontal">
                                                 {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(-1),4,7) }}
                                                 <br>
-                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, 'sales', 4, 7, false) }}
+                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, 'all', 4, 7, false) }}
                                             </div>
                                         </div>
                                         <div class="col-md-6">

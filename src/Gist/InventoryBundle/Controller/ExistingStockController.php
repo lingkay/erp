@@ -53,7 +53,7 @@ class ExistingStockController extends Controller
 
         $params['main_warehouse'] = 0;
         $params['grid_cols'] = $gl->getColumns();
-        $params['wh_type_opts'] = array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
+        $params['wh_type_opts'] = array('all'=>'All') + array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
 
         $params['computation_opts'] = array(
             'manual' => 'Manual',
@@ -61,7 +61,7 @@ class ExistingStockController extends Controller
         );
 
         $inv = $this->get('gist_inventory');
-        $params['pos_loc_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
+        $params['pos_loc_opts'] = array('-20'=>'All') + array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
 
         //added
         $date_from = new DateTime('-3 month');

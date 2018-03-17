@@ -162,7 +162,7 @@ class SalesLayeredReportController extends Controller
                     }
                 }
             }
-            
+
 
             $brandTotalProfit = $totalSales - $totalCost;
 
