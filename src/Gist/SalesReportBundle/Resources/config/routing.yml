@@ -158,7 +158,7 @@ gist_layered_sales_report_customer_index_list:
 gist_layered_sales_report_customer_index_transactions:
     path: /layered-sales-report/customer_transactions/{date_from}/{date_to}/{customer_id}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:positionsIndex, date_from: null, date_to: null, customer_id: null }
+    defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:transactionsIndex, date_from: null, date_to: null, customer_id: null }
 
 
 # SALES

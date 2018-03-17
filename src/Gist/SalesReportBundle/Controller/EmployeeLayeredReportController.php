@@ -49,8 +49,8 @@ class EmployeeLayeredReportController extends Controller
             if ($date_from != null) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
                 $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
-                $date_from_twig = $date_from->format("m/01/Y");
-                $date_to_twig = $date_to->format("m/t/Y");
+                $date_from_twig = $date_from->format("m/d/Y");
+                $date_to_twig = $date_to->format("m/d/Y");
             } else {
                 $date_from = new DateTime();
                 $date_to = new DateTime();
