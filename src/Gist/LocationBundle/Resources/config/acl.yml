@@ -15,6 +15,18 @@ acl:
           label: "Edit"
         - id: gist_loc_areas.delete
           label: "Delete"
+    - category: Regions
+      entries:
+        - id: gist_loc_regions.menu
+          label: "Menu"
+        - id: gist_loc_regions.view
+          label: "View"
+        - id: gist_loc_regions.add
+          label: "Add"
+        - id: gist_loc_regions.edit
+          label: "Edit"
+        - id: gist_loc_regions.delete
+          label: "Delete"
     - category: POS Locations
       entries:
         - id: gist_loc_pos_locations.menu

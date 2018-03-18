@@ -35,10 +35,47 @@ gist_loc_areas_grid:
     defaults: { _controller: GistLocationBundle:Areas:grid }
 
 
-gist_loc_areas_group_view:
-    pattern: /area/group/{id}
+#REGION
+gist_loc_regions_index:
+    pattern: /regions
     methods: [GET]
-    defaults: { _controller: GistLocationBundle:Areas:viewGroup }
+    defaults: { _controller: GistLocationBundle:Regions:index }
+
+gist_loc_regions_add_form:
+    pattern: /region
+    methods: [GET]
+    defaults: { _controller: GistLocationBundle:Regions:addForm }
+
+gist_loc_regions_add_submit:
+    pattern: /region
+    methods: [POST]
+    defaults: { _controller: GistLocationBundle:Regions:addSubmit }
+
+gist_loc_regions_edit_form:
+    pattern: /region/{id}
+    methods: [GET]
+    defaults: { _controller: GistLocationBundle:Regions:editForm }
+
+gist_loc_regions_edit_submit:
+    pattern: /region/{id}
+    methods: [POST]
+    defaults: { _controller: GistLocationBundle:Regions:editSubmit }
+
+gist_loc_regions_delete:
+    pattern: /region/{id}/delete
+    methods: [GET]
+    defaults: { _controller: GistLocationBundle:Regions:delete }
+
+gist_loc_regions_grid:
+    pattern: /regions/grid
+    methods: [GET]
+    defaults: { _controller: GistLocationBundle:Regions:grid }
+
+gist_loc_regions_group_view:
+    pattern: /region/group/{id}
+    methods: [GET]
+    defaults: { _controller: GistLocationBundle:Regions:viewGroup }
+
 
 #POS LOCS
 gist_loc_pos_locations_index:
