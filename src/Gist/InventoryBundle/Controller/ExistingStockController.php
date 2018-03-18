@@ -36,7 +36,7 @@ class ExistingStockController extends Controller
         $this->inv_account = '0';
     }
 
-    public function indexAction($pos_loc_id = null, $inv_type = null, $date_from = null, $date_to = null)
+    public function indexAction($pos_loc_id = null, $inv_type = 'all', $date_from = null, $date_to = null)
     {
         $inv = $this->get('gist_inventory');
         $this->route_prefix = 'gist_inv_existing_stock';
@@ -164,7 +164,7 @@ class ExistingStockController extends Controller
             $main_warehouse = null;
             $selected_inv_account = null;
             $selected_loc = null;
-            $inv_type = 'all';
+            //$inv_type = 'all';
 
 
 
@@ -185,7 +185,6 @@ class ExistingStockController extends Controller
             } elseif ($pos_loc_id === '-20' || $pos_loc_id == null) {
 
             } else {
-
                 $selected_loc = $inv->findPOSLocation($pos_loc_id);
                 //$selected_inv_account = $selected_loc->getInventoryAccount()->getID();
                 if ($inv_type == 'sales') {
