@@ -69,7 +69,7 @@
                                 {% if all_data['total_sales'] > 0 and all_data['total_profit'] > 0 %}
                                     {% set percent_prof = all_data['total_profit'] // all_data['total_sales'] %}
                                 {% endif %}
-                                <td class="text-right">{{ percent_prof }}%</td>
+                                <td class="text-right">{{ all_data['profit_percentage'] }}%</td>
                                 <td><a href="{{ path('gist_layered_sales_report_product_index_brands', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                             </tr>
                     </tbody>

@@ -30,6 +30,7 @@
                         <th>Total Sales</th>
                         <th>Total Cost</th>
                         <th>Total Profit</th>
+                        <th>% of Profit</th>
                         <th style="width: 13px;"></th>
                     </tr>
                     </thead>
@@ -42,6 +43,7 @@
                             <td class="text-right">{{ bd['total_sales'] }}</td>
                             <td class="text-right">{{ bd['total_cost'] }}</td>
                             <td class="text-right">{{ bd['total_profit'] }}</td>
+                            <td class="text-right">{{ bd['profit_percentage'] }}%</td>
                             <td><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : bd['brand_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                         {% endfor %}

@@ -93,12 +93,14 @@ class ProductLayeredReportController extends Controller
         }
 
         $total_profit = $total_payments - $total_cost;
+        $profit_percentage = ($total_profit / $total_payments) * 100;
 
         return [
             'total_sales' => number_format($total_payments, 2, '.',','),
             'total_cost' => number_format($total_cost, 2, '.',','),
             'total_profit' => number_format($total_profit, 2, '.',','),
-            'quantity_sold' => $quantitySold
+            'quantity_sold' => $quantitySold,
+            'profit_percentage' => number_format($profit_percentage, 2, '.',',')
         ];
     }
     //END TOP LAYER
@@ -167,6 +169,12 @@ class ProductLayeredReportController extends Controller
             }
 
             $brandTotalProfit = $brandTotalSales - $brandTotalCost;
+            if ($brandTotalSales < 1) {
+                $profit_percentage = ($brandTotalProfit / 1) * 100;
+            } else {
+                $profit_percentage = ($brandTotalProfit / $brandTotalSales) * 100;
+            }
+
 
             $list_opts[] = array(
                 'date_from'=>$date_from,
@@ -176,7 +184,8 @@ class ProductLayeredReportController extends Controller
                 'total_sales' => number_format($brandTotalSales, 2, '.',','),
                 'total_cost' => number_format($brandTotalCost, 2, '.',','),
                 'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-                'quantity_sold' => $quantitySold
+                'quantity_sold' => $quantitySold,
+                'profit_percentage' => number_format($profit_percentage, 2, '.',',')
             );
         }
 
@@ -254,6 +263,12 @@ class ProductLayeredReportController extends Controller
             }
 
             $totalProfit = $totalSales - $totalCost;
+            //$profit_percentage = ($totalProfit / $totalSales) * 100;
+            if ($totalSales < 1) {
+                $profit_percentage = ($totalProfit / 1) * 100;
+            } else {
+                $profit_percentage = ($totalProfit / $totalSales) * 100;
+            }
 
             $list_opts[] = array(
                 'date_from'=>$date_from,
@@ -265,7 +280,8 @@ class ProductLayeredReportController extends Controller
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
                 'total_profit' => number_format($totalProfit, 2, '.',','),
-                'quantity_sold' => $quantitySold
+                'quantity_sold' => $quantitySold,
+                'profit_percentage' => number_format($profit_percentage, 2, '.',',')
             );
         }
 
@@ -359,6 +375,11 @@ class ProductLayeredReportController extends Controller
             }
 
             $totalProfit = $totalSales - $totalCost;
+            if ($totalSales < 1) {
+                $profit_percentage = ($totalProfit / 1) * 100;
+            } else {
+                $profit_percentage = ($totalProfit / $totalSales) * 100;
+            }
 
             $list_opts[] = array(
                 'date_from'=>$date_from,
@@ -372,7 +393,8 @@ class ProductLayeredReportController extends Controller
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
                 'total_profit' => number_format($totalProfit, 2, '.',','),
-                'quantity_sold' => $quantitySold
+                'quantity_sold' => $quantitySold,
+                'profit_percentage' => number_format($profit_percentage, 2, '.',',')
             );
         }
 
