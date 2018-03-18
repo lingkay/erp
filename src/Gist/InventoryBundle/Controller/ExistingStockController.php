@@ -36,7 +36,7 @@ class ExistingStockController extends Controller
         $this->inv_account = '0';
     }
 
-    public function indexAction()
+    public function indexAction($pos_loc_id = null, $inv_type = null, $date_from = null, $date_to = null)
     {
         $config = $this->get('gist_configuration');
         $inv = $this->get('gist_inventory');
@@ -78,7 +78,237 @@ class ExistingStockController extends Controller
         $params['date_to'] = $date_to;
         $params['grid_cols'] = $gl->getColumns();
 
+        $params['es_data'] = $this->getExistingStockData($pos_loc_id, $inv_type, $date_from, $date_to);
+        $params['selected_inv_type'] = $inv_type;
+        $params['selected_loc'] = $pos_loc_id;
+
         return $this->render($twig_file, $params);
+    }
+
+    protected function getExistingStockData($pos_loc_id, $inv_type, $date_from, $date_to)
+    {
+        $config = $this->get('gist_configuration');
+        $inv = $this->get('gist_inventory');
+
+        $sql = " 
+                    SELECT  
+                    s.product_id, 
+                    p.name,
+                    p.item_code,
+                    p.cost,
+                    p.piece_per_package
+                    FROM inv_stock s
+                    JOIN inv_product p
+                    ON s.product_id = p.id
+                    GROUP BY s.product_id
+
+
+        ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $uniqueProducts = $stmt->fetchAll();
+
+        $processedData = [];
+
+        foreach ($uniqueProducts as $product) {
+            $sql = " 
+                    SELECT 
+                    a.name, 
+                    p.item_code,
+                    s.product_id, 
+                    p.name,
+                    a.id AS 'inv_acct_id',
+                    s.quantity, 
+                    CASE 
+                        WHEN upper(a.name) LIKE '%DMG%'
+                        OR upper(a.name) LIKE '%TEST%'
+                        OR upper(a.name) LIKE '%ADJ%'
+                        THEN 'less'
+                        ELSE 'add'
+                    END 'quantity_operation',
+                    CASE 
+                        WHEN upper(a.name) LIKE '%DMG%'
+                        THEN 'damaged'
+                        WHEN upper(a.name) LIKE '%TEST%'
+                        THEN 'tester'
+                        WHEN upper(a.name) LIKE '%ADJ%'
+                        THEN 'adjustment'
+                        WHEN upper(a.name) LIKE '%MAIN%'
+                        THEN 'main wh'
+                        WHEN upper(a.name) LIKE '%POS%'
+                        THEN 'sales'
+                    END 'inv_type'
+                    FROM inv_stock s
+                    JOIN inv_product p
+                    ON s.product_id = p.id
+                    JOIN inv_account a
+                    ON s.inv_account_id = a.id
+                    WHERE inv_account_id NOT IN (SELECT id FROM inv_account WHERE name LIKE '%adjustment%')
+                    AND s.product_id = ".$product['product_id'];
+
+            $em = $this->getDoctrine()->getManager();
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->execute();
+            $stockData = $stmt->fetchAll();
+
+            $totalStock = 0;
+            $totalCost = 0;
+            $totalAvgCons = 0;
+            $totalDaysWithStock = 0;
+
+            if($pos_loc_id == 0)
+            {
+                $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+                $selected_inv_account = $main_warehouse->getInventoryAccount();
+            }
+            elseif ($pos_loc_id == -20)
+            {
+                $main_warehouse = null;
+                $selected_inv_account = null;
+            }
+            else
+            {
+                $selected_loc = $inv->findPOSLocation($pos_loc_id);
+                $selected_inv_account = $selected_loc->getInventoryAccount()->getID();
+            }
+
+            foreach ($stockData as $sd) {
+                if ($selected_inv_account == null) {
+                    if ($inv_type == 'all') {
+                        if ($sd['quantity_operation'] == 'add') {
+                            $totalStock += $sd['quantity'];
+
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        } else {
+                            //$totalStock -= $sd['quantity'];
+                        }
+                    } else {
+                        if ($sd['inv_type'] == $inv_type) {
+                            $totalStock += $sd['quantity'];
+
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalDaysWithStock += $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        }
+                    }
+                } elseif ($selected_inv_account == $sd['inv_acct_id']) {
+                    if ($inv_type == 'all') {
+                        if ($sd['quantity_operation'] == 'add') {
+                            $totalStock += $sd['quantity'];
+
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        } else {
+                            //$totalStock -= $sd['quantity'];
+                        }
+                    } else {
+                        if ($sd['inv_type'] == $inv_type) {
+                            $totalStock += $sd['quantity'];
+
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalDaysWithStock += $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        }
+                    }
+                }
+            }
+
+            $processedData[] = array(
+                'prod_name' => $product['name'],
+                'item_code' => $product['item_code'],
+                'quantity' => $totalStock,
+                'cost' => number_format($product['cost'], 2),
+                'total_cost' => number_format($totalCost, 2),
+                'piece_per_package' => $product['piece_per_package'],
+                'avg_consumption' => $totalAvgCons,
+                'days_with_stock' => $totalDaysWithStock
+            );
+
+        }
+
+        return $processedData;
+    }
+
+    public function calcDaysWithStock($prodId, $invAcctId, $date_from, $date_to)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$invAcctId]);
+        $date_from = DateTime::createFromFormat('Ymd', $date_from->format('Ymd'));
+        $date_to = DateTime::createFromFormat('Ymd', $date_to->format('Ymd'));
+        $quantitySold = $this->countQuantitySold($prodId, $invAcctId, $date_from,$date_to);
+
+        $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
+        $days = round($datediff / (60 * 60 * 24), 2);
+
+        if ($quantitySold == 0) {
+            $daysWithStock = 0;
+        } else {
+            if ($days == 0) {
+                $days = 1;
+            }
+            $avgConsumption = number_format($quantitySold/$days, 2);
+            $daysWithStock = abs($stock->getQuantity() / $avgConsumption);
+        }
+
+
+        return $daysWithStock;
+    }
+
+    public function calcAvgConsumption($prodId, $invAcctId)
+    {
+        $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
+        $date_to = DateTime::createFromFormat('Ymd', $this->date_to);
+        $quantitySold = $this->countQuantitySold($prodId, $invAcctId, $date_from,$date_to);
+        $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
+        $days = round($datediff / (60 * 60 * 24), 2);
+
+        if ($quantitySold == 0) {
+            $avgConsumption = 0;
+        } else {
+            if ($days == 0) {
+                $days = 1;
+            }
+            $avgConsumption = number_format($quantitySold/$days, 2);
+        }
+
+        return abs($avgConsumption);
+    }
+
+    public function countQuantitySold($productId, $invAcctId, $dateFrom, $dateTo)
+    {
+        $quantitySold = 0;
+        $layeredReportService = $this->get('gist_layered_report_service');
+        $transactionItems = $layeredReportService->getTransactionItems($dateFrom->format('Y-m-d'), $dateTo->format('Y-m-d'), null, null);
+
+        foreach ($transactionItems as $transactionItem) {
+            if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                if ($transactionItem->getTransaction()->getPOSLocation()->getInventoryAccount()->getID() == $invAcctId) {
+                    if ($transactionItem->getProductId() == $productId) {
+                        $quantitySold++;
+                    }
+                }
+            }
+        }
+
+        return $quantitySold;
+    }
+
+    public function calcTotalCost($prodId, $invAcctId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$invAcctId]);
+
+        $quantity = $stock->getQuantity();
+        $cost = $stock->getProduct()->getCost();
+
+        $total = $quantity * $cost;
+
+        return $total;
     }
 
     protected function getRouteGen()

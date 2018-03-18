@@ -22,9 +22,9 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-horizontal">
-                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(-1),4,7) }}
+                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, selected_loc,4,7) }}
                                                 <br>
-                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, 'all', 4, 7, false) }}
+                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, selected_inv_type, 4, 7, false) }}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -56,6 +56,18 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% for d in es_data %}
+                            <tr>
+                                <td>{{ d.item_code }}</td>
+                                <td>{{ d.prod_name }}</td>
+                                <td class="text-right">{{ d.quantity }}</td>
+                                <td class="text-right">{{ d.cost }}</td>
+                                <td class="text-right">{{ d.total_cost }}</td>
+                                <td class="text-right">{{ d.piece_per_package }}</td>
+                                <td class="text-right">{{ d.avg_consumption }}</td>
+                                <td class="text-right">{{ d.days_with_stock }}</td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                     <!-- END FORM-->
@@ -124,7 +136,7 @@
             var date_to = $('#cform-date_to').val();
             var date_from = $('#cform-date_from').val();
 
-            var path = "{{ path('gist_inv_existing_stock_grid_search', {
+            var path = "{{ path('gist_inv_existing_stock_index', {
                 'pos_loc_id' : 'POS_LOC_ID',
                 'inv_type' : 'INV_TYPE',
                 'date_from' : 'DFROM',
@@ -152,9 +164,9 @@
             var dTable;
 
             dTable = $('#list_table').dataTable({
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "{{ path('gist_inv_existing_stock_grid') }}",
+                "bProcessing": false,
+                "bServerSide": false,
+                //"sAjaxSource": "{{ path('gist_inv_existing_stock_grid') }}",
                 "iDisplayLength": 10,
                 "sPaginationType": "bootstrap",
                 "bFilter" : false,
@@ -204,7 +216,7 @@
             });
             $('#filter_button').click(function (){
                 path = generatePath();
-                dTable.fnReloadAjax(path);
+                location.replace(path);
             });
 
             $('.radio').on("click",function(){
