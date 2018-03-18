@@ -113,6 +113,8 @@ class ExistingStockController extends Controller
                     p.item_code,
                     s.product_id, 
                     p.name,
+                    s.max_stock,
+                    s.min_stock,
                     a.id AS 'inv_acct_id',
                     s.quantity, 
                     CASE 
@@ -123,6 +125,8 @@ class ExistingStockController extends Controller
                         ELSE 'add'
                     END 'quantity_operation',
                     CASE 
+                        WHEN upper(a.name) LIKE '%LOST%'
+                        THEN 'missing'
                         WHEN upper(a.name) LIKE '%DMG%'
                         THEN 'damaged'
                         WHEN upper(a.name) LIKE '%TEST%'
@@ -133,6 +137,7 @@ class ExistingStockController extends Controller
                         THEN 'main wh'
                         WHEN upper(a.name) LIKE '%POS%'
                         THEN 'sales'
+                        ELSE 'sales'
                     END 'inv_type'
                     FROM inv_stock s
                     JOIN inv_product p
@@ -152,23 +157,27 @@ class ExistingStockController extends Controller
             $totalAvgCons = 0;
             $totalDaysWithStock = 0;
 
+            $max = 0;
+            $min = 0;
+
             $main_warehouse = null;
             $selected_inv_account = null;
+            $selected_loc = null;
 
             if($pos_loc_id == 0)
             {
-                $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
+                $selected_loc = $inv->findWarehouse($config->get('gist_main_warehouse'));
 
                 if ($inv_type == 'sales') {
-                    $selected_inv_account = $main_warehouse->getInventoryAccount();
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
                 } elseif ($inv_type == 'damaged') {
-                    $selected_inv_account = $main_warehouse->getInventoryAccount()->getDamagedContainer();
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getDamagedContainer();
                 } elseif ($inv_type == 'tester') {
-                    $selected_inv_account = $main_warehouse->getInventoryAccount()->getTesterContainer();
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getTesterContainer();
                 } elseif ($inv_type == 'missing') {
-                    $selected_inv_account = $main_warehouse->getInventoryAccount()->getMissingContainer();
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getMissingContainer();
                 } else {
-                    $selected_inv_account = $main_warehouse->getInventoryAccount();
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
                 }
             }
             elseif ($pos_loc_id == -20)
@@ -197,12 +206,13 @@ class ExistingStockController extends Controller
                 }
             }
 
+            $thresholdAlert = false;
+
             foreach ($stockData as $sd) {
                 if ($selected_inv_account == null) {
                     if ($inv_type == 'all') {
                         if ($sd['quantity_operation'] == 'add') {
                             $totalStock += $sd['quantity'];
-
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
                             $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                             $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
@@ -212,7 +222,6 @@ class ExistingStockController extends Controller
                     } else {
                         if ($sd['inv_type'] == $inv_type) {
                             $totalStock += $sd['quantity'];
-
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
                             $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                             $totalDaysWithStock += $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
@@ -237,19 +246,33 @@ class ExistingStockController extends Controller
                         }
                     }
                 }
+
+//                if ($sd['max_stock'] != null && $sd['max_stock'] != '') {
+//                    if ($totalStock > $sd['max_stock'] || $totalStock < $sd['min_stock']) {
+//                        $thresholdAlert = true;
+//                    }
+//                }
+                $max = $sd['max_stock'];
+                $min = $sd['min_stock'];
+
             }
+
+
+
 
             $processedData[] = array(
                 'sel_inv_acct_id' => $selected_inv_account,
+                'inv_acct_id' => ($selected_loc == null ? null : $selected_loc->getInventoryAccount()),
                 'prod_id' => $sd['product_id'],
                 'prod_name' => $product['name'],
+                'thresholdAlert' => false,//(($totalStock > $max || $totalStock < $min) ? true : false),
                 'item_code' => $product['item_code'],
                 'quantity' => $totalStock,
                 'cost' => number_format($product['cost'], 2),
                 'total_cost' => number_format($totalCost, 2),
                 'piece_per_package' => $product['piece_per_package'],
-                'avg_consumption' => $totalAvgCons,
-                'days_with_stock' => $totalDaysWithStock
+                'avg_consumption' => number_format($totalAvgCons,2),
+                'days_with_stock' => number_format($totalDaysWithStock,2)
             );
 
         }
