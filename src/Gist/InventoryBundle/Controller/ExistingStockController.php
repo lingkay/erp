@@ -42,6 +42,7 @@ class ExistingStockController extends Controller
         $this->route_prefix = 'gist_inv_existing_stock';
         $this->title = 'Existing Stock';
         $params = $this->getViewParams('List');
+        $params['selected_loc'] = $pos_loc_id;
         $this->getControllerBase();
         $gl = $this->setupGridLoader();
 
@@ -73,7 +74,7 @@ class ExistingStockController extends Controller
         $params['grid_cols'] = $gl->getColumns();
         $params['es_data'] = $this->getExistingStockData($pos_loc_id, $inv_type, $date_from, $date_to);
         $params['selected_inv_type'] = $inv_type;
-        $params['selected_loc'] = $pos_loc_id;
+
 
         $twig_file = 'GistInventoryBundle:ExistingStock:index.html.twig';
         return $this->render($twig_file, $params);
@@ -163,9 +164,11 @@ class ExistingStockController extends Controller
             $main_warehouse = null;
             $selected_inv_account = null;
             $selected_loc = null;
+            $inv_type = 'all';
 
-            if($pos_loc_id == 0)
-            {
+
+
+            if($pos_loc_id === '0') {
                 $selected_loc = $inv->findWarehouse($config->get('gist_main_warehouse'));
 
                 if ($inv_type == 'sales') {
@@ -179,16 +182,10 @@ class ExistingStockController extends Controller
                 } else {
                     $selected_inv_account = $selected_loc->getInventoryAccount();
                 }
-            }
-            elseif ($pos_loc_id == -20)
-            {
+            } else {
 
-            }
-            else
-            {
                 $selected_loc = $inv->findPOSLocation($pos_loc_id);
                 //$selected_inv_account = $selected_loc->getInventoryAccount()->getID();
-
                 if ($inv_type == 'sales') {
                     $selected_inv_account = $selected_loc->getInventoryAccount();
                 } elseif ($inv_type == 'damaged') {
@@ -256,10 +253,7 @@ class ExistingStockController extends Controller
                 $min = $sd['min_stock'];
 
             }
-
-
-
-
+            
             $processedData[] = array(
                 'sel_inv_acct_id' => $selected_inv_account,
                 'inv_acct_id' => ($selected_loc == null ? null : $selected_loc->getInventoryAccount()),

@@ -22,7 +22,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-horizontal">
-                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, selected_loc,4,7) }}
+                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, selected_loc|default(-20),4,7) }}
                                                 <br>
                                                 {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, selected_inv_type, 4, 7, false) }}
                                             </div>
