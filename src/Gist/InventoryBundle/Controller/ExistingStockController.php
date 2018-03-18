@@ -168,7 +168,7 @@ class ExistingStockController extends Controller
 
 
 
-            if($pos_loc_id === '0' || $pos_loc_id === '-20') {
+            if($pos_loc_id === '0') {
                 $selected_loc = $inv->findWarehouse($config->get('gist_main_warehouse'));
 
                 if ($inv_type == 'sales') {
@@ -182,6 +182,8 @@ class ExistingStockController extends Controller
                 } else {
                     $selected_inv_account = $selected_loc->getInventoryAccount();
                 }
+            } elseif ($pos_loc_id === '-20' || $pos_loc_id == null) {
+
             } else {
 
                 $selected_loc = $inv->findPOSLocation($pos_loc_id);
