@@ -38,18 +38,12 @@ class ExistingStockController extends Controller
 
     public function indexAction($pos_loc_id = null, $inv_type = null, $date_from = null, $date_to = null)
     {
-        $config = $this->get('gist_configuration');
         $inv = $this->get('gist_inventory');
-        $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
-        $this->inv_account = $main_warehouse->getInventoryAccount()->getID();
-
         $this->route_prefix = 'gist_inv_existing_stock';
         $this->title = 'Existing Stock';
         $params = $this->getViewParams('List');
         $this->getControllerBase();
         $gl = $this->setupGridLoader();
-
-        $params['xx'] = $this->inv_account;
 
         $params['main_warehouse'] = 0;
         $params['grid_cols'] = $gl->getColumns();
@@ -60,28 +54,28 @@ class ExistingStockController extends Controller
             'formula' => 'Formula'
         );
 
-        $inv = $this->get('gist_inventory');
+
+        if ($date_from != null) {
+            $date_from = DateTime::createFromFormat('Ymd', $date_from);
+            $date_to = DateTime::createFromFormat('Ymd', $date_to);
+            $date_from_twig = $date_from->format("m/d/Y");
+            $date_to_twig = $date_to->format("m/d/Y");
+        } else {
+            $date_from = new DateTime('-3 month');
+            $date_to = new DateTime();
+            $date_from_twig = $date_from->format("m/01/Y");
+            $date_to_twig = $date_to->format("m/t/Y");
+        }
+
         $params['pos_loc_opts'] = array('-20'=>'All') + array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
-
-        //added
-        $date_from = new DateTime('-3 month');
-        $date_to = new DateTime();
-        $date_from->format("Y-m-d");
-        $date_to->format("Y-m-d");
-
-        //added
-        // $this->padFormParams($params, $date_from, $date_to);
-        $twig_file = 'GistInventoryBundle:ExistingStock:index.html.twig';
-
-        //added
-        $params['date_from'] = $date_from;
-        $params['date_to'] = $date_to;
+        $params['date_from'] = $date_from_twig;
+        $params['date_to'] = $date_to_twig;
         $params['grid_cols'] = $gl->getColumns();
-
         $params['es_data'] = $this->getExistingStockData($pos_loc_id, $inv_type, $date_from, $date_to);
         $params['selected_inv_type'] = $inv_type;
         $params['selected_loc'] = $pos_loc_id;
 
+        $twig_file = 'GistInventoryBundle:ExistingStock:index.html.twig';
         return $this->render($twig_file, $params);
     }
 
@@ -158,20 +152,49 @@ class ExistingStockController extends Controller
             $totalAvgCons = 0;
             $totalDaysWithStock = 0;
 
+            $main_warehouse = null;
+            $selected_inv_account = null;
+
             if($pos_loc_id == 0)
             {
                 $main_warehouse = $inv->findWarehouse($config->get('gist_main_warehouse'));
-                $selected_inv_account = $main_warehouse->getInventoryAccount();
+
+                if ($inv_type == 'sales') {
+                    $selected_inv_account = $main_warehouse->getInventoryAccount();
+                } elseif ($inv_type == 'damaged') {
+                    $selected_inv_account = $main_warehouse->getInventoryAccount()->getDamagedContainer();
+                } elseif ($inv_type == 'tester') {
+                    $selected_inv_account = $main_warehouse->getInventoryAccount()->getTesterContainer();
+                } elseif ($inv_type == 'missing') {
+                    $selected_inv_account = $main_warehouse->getInventoryAccount()->getMissingContainer();
+                } else {
+                    $selected_inv_account = $main_warehouse->getInventoryAccount();
+                }
             }
             elseif ($pos_loc_id == -20)
             {
-                $main_warehouse = null;
-                $selected_inv_account = null;
+
             }
             else
             {
                 $selected_loc = $inv->findPOSLocation($pos_loc_id);
-                $selected_inv_account = $selected_loc->getInventoryAccount()->getID();
+                //$selected_inv_account = $selected_loc->getInventoryAccount()->getID();
+
+                if ($inv_type == 'sales') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
+                } elseif ($inv_type == 'damaged') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getDamagedContainer();
+                } elseif ($inv_type == 'tester') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getTesterContainer();
+                } elseif ($inv_type == 'missing') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getMissingContainer();
+                } else {
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
+                }
+
+                if ($selected_loc->getInventoryAccount() == null) {
+                    return $processedData;
+                }
             }
 
             foreach ($stockData as $sd) {
@@ -181,7 +204,7 @@ class ExistingStockController extends Controller
                             $totalStock += $sd['quantity'];
 
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
-                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                             $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                         } else {
                             //$totalStock -= $sd['quantity'];
@@ -191,17 +214,16 @@ class ExistingStockController extends Controller
                             $totalStock += $sd['quantity'];
 
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
-                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                             $totalDaysWithStock += $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                         }
                     }
-                } elseif ($selected_inv_account == $sd['inv_acct_id']) {
+                } elseif ($selected_inv_account->getID() == $sd['inv_acct_id']) {
                     if ($inv_type == 'all') {
                         if ($sd['quantity_operation'] == 'add') {
                             $totalStock += $sd['quantity'];
-
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
-                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                             $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                         } else {
                             //$totalStock -= $sd['quantity'];
@@ -209,9 +231,8 @@ class ExistingStockController extends Controller
                     } else {
                         if ($sd['inv_type'] == $inv_type) {
                             $totalStock += $sd['quantity'];
-
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
-                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                             $totalDaysWithStock += $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                         }
                     }
@@ -219,6 +240,8 @@ class ExistingStockController extends Controller
             }
 
             $processedData[] = array(
+                'sel_inv_acct_id' => $selected_inv_account,
+                'prod_id' => $sd['product_id'],
                 'prod_name' => $product['name'],
                 'item_code' => $product['item_code'],
                 'quantity' => $totalStock,
@@ -238,8 +261,8 @@ class ExistingStockController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$invAcctId]);
-        $date_from = DateTime::createFromFormat('Ymd', $date_from->format('Ymd'));
-        $date_to = DateTime::createFromFormat('Ymd', $date_to->format('Ymd'));
+//        $date_from = DateTime::createFromFormat('Ymd', $date_from->format('Ymd'));
+//        $date_to = DateTime::createFromFormat('Ymd', $date_to->format('Ymd'));
         $quantitySold = $this->countQuantitySold($prodId, $invAcctId, $date_from,$date_to);
 
         $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
@@ -259,10 +282,10 @@ class ExistingStockController extends Controller
         return $daysWithStock;
     }
 
-    public function calcAvgConsumption($prodId, $invAcctId)
+    public function calcAvgConsumption($prodId, $invAcctId, $date_from, $date_to)
     {
-        $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
-        $date_to = DateTime::createFromFormat('Ymd', $this->date_to);
+//        $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
+//        $date_to = DateTime::createFromFormat('Ymd', $this->date_to);
         $quantitySold = $this->countQuantitySold($prodId, $invAcctId, $date_from,$date_to);
         $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
         $days = round($datediff / (60 * 60 * 24), 2);

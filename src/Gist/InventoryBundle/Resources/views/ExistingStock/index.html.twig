@@ -58,9 +58,16 @@
                         <tbody>
                         {% for d in es_data %}
                             <tr>
+                                <input type="hidden" class="row_prod_id" value="{{ d.prod_id }}">
                                 <td>{{ d.item_code }}</td>
                                 <td>{{ d.prod_name }}</td>
-                                <td class="text-right">{{ d.quantity }}</td>
+                                <td class="text-right">
+                                    {% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}
+                                        {{ d.quantity }}
+                                    {% else %}
+                                        {{ d.quantity }}{#&nbsp;&nbsp;<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i></a>#}
+                                    {% endif %}
+                                </td>
                                 <td class="text-right">{{ d.cost }}</td>
                                 <td class="text-right">{{ d.total_cost }}</td>
                                 <td class="text-right">{{ d.piece_per_package }}</td>
@@ -286,7 +293,7 @@
                         if (msg.status == 'success') {
                             toastr['success']('Stock threshold changed', 'Success');
                             clearStockModal();
-                            dTable.fnReloadAjax();
+                            location.reload();
                         } else {
                             toastr['error']('Stock threshold not changed', 'Error');
                             clearStockModal();
