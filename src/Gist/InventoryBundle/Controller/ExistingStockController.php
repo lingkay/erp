@@ -168,7 +168,7 @@ class ExistingStockController extends Controller
 
 
 
-            if($pos_loc_id === '0') {
+            if($pos_loc_id === '0' || $pos_loc_id === '-20') {
                 $selected_loc = $inv->findWarehouse($config->get('gist_main_warehouse'));
 
                 if ($inv_type == 'sales') {
@@ -253,7 +253,9 @@ class ExistingStockController extends Controller
                 $min = $sd['min_stock'];
 
             }
-            
+
+
+
             $processedData[] = array(
                 'sel_inv_acct_id' => $selected_inv_account,
                 'inv_acct_id' => ($selected_loc == null ? null : $selected_loc->getInventoryAccount()),
