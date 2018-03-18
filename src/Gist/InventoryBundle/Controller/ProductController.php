@@ -98,6 +98,8 @@ class ProductController extends CrudController
             $params['ptype'] = 'package';
         }
 
+        $params['supplier_opts'] = $inv->getSupplierOptions();
+
         return $params;
     }
 
@@ -120,6 +122,11 @@ class ProductController extends CrudController
 
         if (isset($data['class'])) {
             $o->setClass($data['class']);
+        }
+
+        if (isset($data['supplier'])) {
+            $supplier = $em->getRepository('GistInventoryBundle:Supplier')->find($data['supplier']);
+            $o->setSupplier($supplier);
         }
 
 //        if (isset($data['min_stock'])) {

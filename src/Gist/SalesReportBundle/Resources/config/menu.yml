@@ -24,6 +24,18 @@ menu_items:
       acl: gist_layered_sales_report_employee.menu
       label: Employee
       parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_supplier_index
+      acl: gist_layered_sales_report_supplier.menu
+      label: Supplier
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_customer_index
+      acl: gist_layered_sales_report_customer.menu
+      label: Customer
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_sales_index
+      acl: gist_layered_sales_report_sales.menu
+      label: Sales
+      parent: menu_layered_sales_report
 #    - id: gist_sales_report_sales_order_summary
 #      acl: gist_sales_report_sales_order.menu
 #      label: Sales Orders

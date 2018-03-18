@@ -31,6 +31,24 @@ acl:
           label: Menu
         - id: gist_layered_sales_report_employee.view
           label: View
+    - category: Supplier Layered Report
+      entries:
+        - id: gist_layered_sales_report_supplier.menu
+          label: Menu
+        - id: gist_layered_sales_report_supplier.view
+          label: View
+    - category: Customer Layered Report
+      entries:
+        - id: gist_layered_sales_report_customer.menu
+          label: Menu
+        - id: gist_layered_sales_report_customer.view
+          label: View
+    - category: Sales Layered Report
+      entries:
+        - id: gist_layered_sales_report_sales.menu
+          label: Menu
+        - id: gist_layered_sales_report_sales.view
+          label: View
 #    - category: Sales Order Report
 #      entries:
 #        - id: gist_sales_report_sales_order.menu

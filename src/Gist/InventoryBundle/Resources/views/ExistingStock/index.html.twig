@@ -22,9 +22,9 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-horizontal">
-                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, main_warehouse.getID|default(-1),4,7) }}
+                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, selected_loc,4,7) }}
                                                 <br>
-                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, 'sales', 4, 7, false) }}
+                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, selected_inv_type, 4, 7, false) }}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -53,9 +53,44 @@
                                     <th>{{ col.getLabel }}</th>
                                 {% endif %}
                             {% endfor %}
+                            {#<th style="width: 30px;"></th>#}
                         </tr>
                         </thead>
                         <tbody>
+                        {% for d in es_data %}
+                            <tr>
+                                <input type="hidden" class="row_prod_id" value="{{ d.prod_id }}">
+                                <input type="hidden" class="row_inv_id" value="{{ d.inv_acct_id.getID|default(0) }}">
+                                <td>{{ d.item_code }}</td>
+                                <td>{{ d.prod_name }}</td>
+                                {% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}
+                                    <td class="text-right">
+                                        {{ d.quantity }}
+                                    </td>
+                                {% else %}
+                                    {% if d.thresholdAlert %}
+                                        <td class="text-right" style="color: #ff0000;">
+                                    {% else %}
+                                        <td class="text-right">
+                                    {% endif %}
+                                        {{ d.quantity }}
+                                    </td>
+                                    {#&nbsp;&nbsp;<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i></a>#}
+                                {% endif %}
+                                <td class="text-right">{{ d.cost }}</td>
+                                <td class="text-right">{{ d.total_cost }}</td>
+                                <td class="text-right">{{ d.piece_per_package }}</td>
+                                <td class="text-right">{{ d.avg_consumption }}</td>
+                                <td class="text-right">{{ d.days_with_stock }}</td>
+                                {#<td>#}
+                                {#{% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}#}
+
+                                 {#{% else %}#}
+                                {#<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i> Change Threshold</a>#}
+                                {#{% endif %}#}
+                                {#</td>#}
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                     <!-- END FORM-->
@@ -80,7 +115,7 @@
                                 <input type="hidden" id="formula_min" value="0">
                                 <input type="hidden" id="formula_max" value="0">
                                 {{ form.group_text('Product', 'product', '', 4, 7, true) }}
-                                {{ form.radio_set_pos_white('Computation', 'computation', computation_opts, 'manual', false, '') }}
+                                {#{{ form.radio_set_pos_white('Computation', 'computation', computation_opts, 'manual', false, '') }}#}
                                 {{ form.group_number_no_step('Min. Quantity', 'min_qty', '', 4, 7, false) }}
                                 {{ form.group_number_no_step('Max. Quantity', 'max_qty', '', 4, 7, false) }}
                             </div>
@@ -105,11 +140,7 @@
     <script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}"></script>
     <script src="{{ asset('bundles/gisttemplate/assets/admin/pages/scripts/form-validation.js') }}"></script>
-
-
-
     <script>
-
         function clearStockModal() {
             $('#cform-min_qty').val('0');
             $('#cform-max_qty').val('0');
@@ -124,7 +155,7 @@
             var date_to = $('#cform-date_to').val();
             var date_from = $('#cform-date_from').val();
 
-            var path = "{{ path('gist_inv_existing_stock_grid_search', {
+            var path = "{{ path('gist_inv_existing_stock_index', {
                 'pos_loc_id' : 'POS_LOC_ID',
                 'inv_type' : 'INV_TYPE',
                 'date_from' : 'DFROM',
@@ -152,9 +183,9 @@
             var dTable;
 
             dTable = $('#list_table').dataTable({
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "{{ path('gist_inv_existing_stock_grid') }}",
+                "bProcessing": false,
+                "bServerSide": false,
+                //"sAjaxSource": "{{ path('gist_inv_existing_stock_grid') }}",
                 "iDisplayLength": 10,
                 "sPaginationType": "bootstrap",
                 "bFilter" : false,
@@ -180,13 +211,13 @@
             $('#daterange').daterangepicker(
                 {
                     ranges: {
-                        // 'Today': [new Date(), moment().add(1, 'days')],
-                        // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        // 'Last 7 Days': [moment().subtract(6, 'days'), new Date()],
-                        // 'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
-                        // 'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        // 'Last Month': [moment().subtract(1, 'month').startOf('month'), 
-                        'Last 3 Months': [moment().subtract(3, 'month'), moment()]
+                        'Today': [new Date(), new Date()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), new Date()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month')],
+                        'Last 3 Months' : [moment().subtract(3, 'month'), moment()]
                     },
                     opens: 'left',
                     format: 'MM/DD/YYYY',
@@ -195,8 +226,6 @@
                     $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
                     $('#cform-date_from').val(start.format('YYYYMMDD'));
                     $('#cform-date_to').val(end.format('YYYYMMDD'));
-
-                    filter_redirect();
                 }
             );
             $('#clear_filter').click(function (){
@@ -204,7 +233,7 @@
             });
             $('#filter_button').click(function (){
                 path = generatePath();
-                dTable.fnReloadAjax(path);
+                location.replace(path);
             });
 
             $('.radio').on("click",function(){
@@ -274,7 +303,7 @@
                         if (msg.status == 'success') {
                             toastr['success']('Stock threshold changed', 'Success');
                             clearStockModal();
-                            dTable.fnReloadAjax();
+                            location.reload();
                         } else {
                             toastr['error']('Stock threshold not changed', 'Error');
                             clearStockModal();
