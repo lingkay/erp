@@ -101,7 +101,7 @@ class POSLocationsController extends CrudController
             'No' => 'No'
         );
 
-        $params['region_opts'] = LocationRegion::getRegionOptions();
+        $params['region_opts'] = $this->getRegionOptions();
 
         $params['terminals'] = $em->getRepository('GistAccountingBundle:Terminal')->findBy(array('actual_location'=>$o->getID()));
         $params['ledger_entries'] = $em->getRepository('GistLocationBundle:LedgerEntry')->findBy(array('pos_location'=>$o->getID()),array('date_create' => 'DESC'));
@@ -122,6 +122,7 @@ class POSLocationsController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        $em = $this->getDoctrine()->getManager();
         $media = $this->get('gist_media');
         $o->setName($data['name']);
         $o->setLeasor($data['leasor']);
@@ -134,14 +135,15 @@ class POSLocationsController extends CrudController
         }
         $o->setCity($data['city']);
         $o->setPostal($data['postal']);
-        $o->setRegion($data['region']);
+        $region = $em->getRepository('GistLocationBundle:Regions')->findOneById($data['region']);
+        $o->setRegion($region);
         $o->setCountry($data['country']);
         $o->setStatus($data['status']);
 
         $o->setCountingRule($data['counting_rule']);
         $o->setOtherLocStockVisible($data['other_stocks_visible']);
 
-        $em = $this->getDoctrine()->getManager();
+
         if (isset($data['area'])) {
             $area = $em->getRepository('GistLocationBundle:Areas')->find($data['area']);
             $o->setArea($area);
@@ -456,6 +458,17 @@ class POSLocationsController extends CrudController
         return $this->getOptionsArray(
             'GistLocationBundle:Areas',
             $filter, 
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
+
+    public function getRegionOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistLocationBundle:Regions',
+            $filter,
             array('name' => 'ASC'),
             'getID',
             'getName'

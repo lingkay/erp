@@ -139,11 +139,11 @@ class LocationLayeredReportController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         //get all brands
-        $allRegions = LocationRegion::getRegionOptions();
+        $allRegions = $em->getRepository('GistLocationBundle:Regions')->findAll();
 
-        foreach ($allRegions as $regionId => $regionName) {
+        foreach ($allRegions as $region) {
             //initiate totals
-            $brandId = $regionId;
+            $regionId = $region->getID();
             $totalSales = 0;
             $totalCost = 0;
             $transactionIds = array();
@@ -156,7 +156,7 @@ class LocationLayeredReportController extends Controller
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion() == $regionId) {
+                    if ($pos_loc->getRegion()->getID() == $regionId) {
                         //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
                         //store transaction id of item for use
@@ -171,7 +171,7 @@ class LocationLayeredReportController extends Controller
                 'date_from'=>$date_from,
                 'date_to'=> $date_to,
                 'region_id' => $regionId,
-                'region_name' => $regionName,
+                'region_name' => $region->getName(),
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
                 'total_profit' => number_format($brandTotalProfit, 2, '.',','),
@@ -209,12 +209,10 @@ class LocationLayeredReportController extends Controller
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
 
-                $ref = new ReflectionClass('Gist\LocationBundle\LocationRegion');
-                $region_name = $ref->getConstant($region);
-                //$areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
+                $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
 
                 $params['region_id'] = $region;
-                $params['region_name'] = $region_name;
+                $params['region_name'] = $regionObject->getName();
 
                 return $this->render('GistSalesReportBundle:LocationLayered:areas.html.twig', $params);
 
@@ -249,7 +247,7 @@ class LocationLayeredReportController extends Controller
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion() == $region && $pos_loc->getArea()->getID() == $areaId) {
+                    if ($pos_loc->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $areaId) {
                         //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
                         //store transaction id of item for use
@@ -307,12 +305,11 @@ class LocationLayeredReportController extends Controller
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
 
-                $ref = new ReflectionClass('Gist\LocationBundle\LocationRegion');
-                $region_name = $ref->getConstant($region);
+                $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
                 $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
 
-                $params['region_id'] = $region;
-                $params['region_name'] = $region_name;
+                $params['region_id'] = $regionObject->getID();
+                $params['region_name'] = $regionObject->getName();
                 $params['area_id'] = $areaObject->getID();
                 $params['area_name'] = $areaObject->getName();
 
@@ -357,7 +354,7 @@ class LocationLayeredReportController extends Controller
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion() == $region && $pos_loc->getArea()->getID() == $area) {
+                    if ($pos_loc->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area) {
                         $totalSales += $transactionItem->getTotalAmount();
                     }
                 }

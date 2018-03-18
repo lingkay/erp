@@ -56,7 +56,10 @@ class POSLocations
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $postal;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /**
+     * @ORM\ManyToOne(targetEntity="Regions")
+     * @ORM\JoinColumn(name="region_id", referencedColumnName="id")
+     */
     protected $region;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */

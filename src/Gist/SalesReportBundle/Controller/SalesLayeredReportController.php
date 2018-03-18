@@ -325,16 +325,13 @@ class SalesLayeredReportController extends Controller
     protected function getPOSData($date_from, $date_to, $region, $area)
     {
         $em = $this->getDoctrine()->getManager();
-        //get all categories
-        $ref = new ReflectionClass('Gist\LocationBundle\LocationRegion');
-        $region_name = $ref->getConstant($region);
 
         $allPOS = $em->getRepository('GistLocationBundle:POSLocations')->findBy([
             'area' => $area,
             'region' => $region
         ]);
 
-        //$regionObject = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($region);
+        $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
         $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
 
         foreach ($allPOS as $POSObject) {
@@ -351,7 +348,7 @@ class SalesLayeredReportController extends Controller
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion() == $region && $pos_loc->getArea()->getID() == $area) {
+                    if ($pos_loc->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area) {
                         $totalSales += $transactionItem->getTotalAmount();
                     }
                 }
@@ -363,10 +360,10 @@ class SalesLayeredReportController extends Controller
                 'date_from'=>$date_from,
                 'date_to'=> $date_to,
                 'pos_loc_id' => $POSObject->getID(),
-                'region_id' => $region,
+                'region_id' => $regionObject->getID(),
                 'area_id' => $area,
                 'pos_name' => $POSObject->getName(),
-                'region_name' => $region_name,
+                'region_name' => $regionObject->getName(),
                 'area_name' => $areaObject->getName(),
                 'total_sales' => number_format($totalSales, 2, '.',','),
                 'total_cost' => number_format($totalCost, 2, '.',','),
