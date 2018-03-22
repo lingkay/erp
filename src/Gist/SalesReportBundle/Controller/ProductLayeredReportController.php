@@ -93,7 +93,11 @@ class ProductLayeredReportController extends Controller
         }
 
         $total_profit = $total_payments - $total_cost;
-        $profit_percentage = ($total_profit / $total_payments) * 100;
+        if ($total_payments == 0) {
+            $profit_percentage = ($total_profit / 1) * 100;
+        } else {
+            $profit_percentage = ($total_profit / $total_payments) * 100;
+        }
 
         return [
             'total_sales' => number_format($total_payments, 2, '.',','),
