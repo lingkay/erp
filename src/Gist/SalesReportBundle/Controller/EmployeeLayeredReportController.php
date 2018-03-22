@@ -52,19 +52,22 @@ class EmployeeLayeredReportController extends Controller
                 $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
                 $date_from_twig = $date_from->format("m/d/Y");
                 $date_to_twig = $date_to->format("m/d/Y");
+                $params['date_from_url'] = $date_from->format("m-d-Y");
+                $params['date_to_url'] = $date_to->format("m-d-Y");
                 $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
             } else {
                 $date_from = new DateTime();
                 $date_to = new DateTime();
                 $date_from_twig = $date_from->format("m/01/Y");
                 $date_to_twig = $date_to->format("m/t/Y");
+                $params['date_from_url'] = $date_from->format("m-01-Y");
+                $params['date_to_url'] = $date_to->format("m-t-Y");
                 $params['all_data'] = $this->getAllData($date_from->format('Y-m-01'), $date_to->format('Y-m-t'));
             }
 
             $params['date_from'] = $date_from_twig;
             $params['date_to'] = $date_to_twig;
-            $params['date_from_url'] = $date_from->format("m-01-Y");
-            $params['date_to_url'] = $date_to->format("m-t-Y");
+
 
         }
 
