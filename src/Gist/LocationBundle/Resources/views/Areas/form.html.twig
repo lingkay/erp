@@ -14,7 +14,7 @@
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
                             {{ form.group_text('Name', 'name', object.getName, 3, 4, readonly) }}
-
+                            {{ form.group_select('Region', 'region', region_opts, object.getRegion.getId|default(''), 3, 4, readonly) }}
                         </div>
                         <div class="form-actions fluid">
                             <div class="col-md-9">
@@ -76,6 +76,9 @@
                 },
                 rules: {
                     name: {
+                        required: true
+                    },
+                    region: {
                         required: true
                     }
                 },

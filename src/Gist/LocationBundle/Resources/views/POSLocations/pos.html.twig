@@ -14,7 +14,7 @@
 
                 {{ form.group_text('City', 'city', object.getCity, 3, 4, readonly) }}
                 {{ form.group_text('Postal', 'postal', object.getPostal|default(''), 3, 4, readonly) }}
-                {{ form.group_select('Region', 'region', region_opts, object.getRegion.getId|default(''), 3, 4, readonly) }}
+
                 {{ form.group_text('Country', 'country', object.getCountry|default(''), 3, 4, readonly) }}
                 {{ form.group_select('Status', 'status', status_opts, object.getStatus|default(''), 3, 4, readonly) }}
                 {{ form.group_select('Area', 'area', area_opts, object.getArea.getID|default(''), 3, 4, readonly) }}

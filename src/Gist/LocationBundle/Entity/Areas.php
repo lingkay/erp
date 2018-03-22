@@ -30,6 +30,12 @@ class Areas
     /** @ORM\Column(type="string", length=50) */
     protected $name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Regions")
+     * @ORM\JoinColumn(name="region_id", referencedColumnName="id")
+     */
+    protected $region;
+
 
 
 
@@ -38,6 +44,29 @@ class Areas
         $this->initTrackCreate();
     }
 
+    /**
+     * Set region
+     *
+     * @param string $region
+     *
+     * @return POSLocations
+     */
+    public function setRegion($region)
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    /**
+     * Get region
+     *
+     * @return string
+     */
+    public function getRegion()
+    {
+        return $this->region;
+    }
 
 
     public function setName($name)

@@ -159,7 +159,7 @@ class LocationLayeredReportController extends Controller
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion()->getID() == $regionId) {
+                    if ($pos_loc->getArea()->getRegion()->getID() == $regionId) {
                         //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
                         //store transaction id of item for use

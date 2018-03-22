@@ -65,13 +65,45 @@ class AreasController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $params['region_opts'] = $this->getRegionOptions();
 
         return $params;
     }
 
+    protected function getOptionsArray($repo, $filter, $order, $id_method, $value_method)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $objects = $em->getRepository($repo)
+            ->findBy(
+                $filter,
+                $order
+            );
+
+        $opts = array();
+        foreach ($objects as $o)
+            $opts[$o->$id_method()] = $o->$value_method();
+
+        return $opts;
+    }
+
+    public function getRegionOptions($filter = array())
+    {
+        return $this->getOptionsArray(
+            'GistLocationBundle:Regions',
+            $filter,
+            array('name' => 'ASC'),
+            'getID',
+            'getName'
+        );
+    }
+
     protected function update($o, $data, $is_new = false)
     {
+        $em = $this->getDoctrine()->getManager();
         $o->setName($data['name']);
+
+        $region = $em->getRepository('GistLocationBundle:Regions')->findOneById($data['region']);
+        $o->setRegion($region);
     }
 
     public function viewGroupAction($id)
