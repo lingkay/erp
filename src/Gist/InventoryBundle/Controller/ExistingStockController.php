@@ -64,8 +64,8 @@ class ExistingStockController extends Controller
         } else {
             $date_from = new DateTime('-3 month');
             $date_to = new DateTime();
-            $date_from_twig = $date_from->format("m/01/Y");
-            $date_to_twig = $date_to->format("m/t/Y");
+            $date_from_twig = $date_from->format("m/d/Y");
+            $date_to_twig = $date_to->format("m/d/Y");
         }
 
         $params['pos_loc_opts'] = array('-20'=>'All') + array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
