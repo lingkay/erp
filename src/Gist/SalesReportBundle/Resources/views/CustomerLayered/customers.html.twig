@@ -25,6 +25,7 @@
                     <thead>
                     <tr><th colspan="7">Date Range: {{ date_from }} - {{ date_to }}</th></tr>
                     <tr>
+                        <th>Customer ID</th>
                         <th>Customer</th>
                         <th>Total Purchase</th>
                         <th style="width: 13px;"></th>
@@ -33,6 +34,7 @@
                     <tbody>
                     {% for bd in positions_data %}
                         <tr>
+                            <td>{{ bd['customer_display_id'] }}</td>
                             <td>{{ bd['customer_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
                             <td><a href="{{ path('gist_layered_sales_report_customer_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'customer_id' : bd['customer_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
@@ -74,9 +76,9 @@
                         }
                     },
                     "aoColumnDefs": [
-                        { "bSortable": false, "aTargets": [2] },
+                        { "bSortable": false, "aTargets": [3] },
                     ],
-                    "aaSorting": [[1,'desc']]
+                    "aaSorting": [[2,'desc']]
                 });
 
                 $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
