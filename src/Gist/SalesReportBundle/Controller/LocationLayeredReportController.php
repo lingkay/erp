@@ -255,7 +255,7 @@ class LocationLayeredReportController extends Controller
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $areaId) {
+                    if ($pos_loc->getArea()->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $areaId) {
                         //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
                         //store transaction id of item for use
@@ -362,7 +362,7 @@ class LocationLayeredReportController extends Controller
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area) {
+                    if ($pos_loc->getArea()->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area) {
                         $totalSales += $transactionItem->getTotalAmount();
                     }
                 }
