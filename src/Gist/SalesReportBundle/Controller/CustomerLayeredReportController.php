@@ -237,7 +237,7 @@ class CustomerLayeredReportController extends Controller
         $em = $this->getDoctrine()->getManager();
         //get all brands
         $layeredReportService = $this->get('gist_layered_report_service');
-        $allTransactions = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);//$em->getRepository('GistPOSERPBundle:POSTransaction')->findBy(['customer'=>$customer_id]);
+        $allTransactions = $layeredReportService->getTransactions($date_from, $date_to, null, null);//$em->getRepository('GistPOSERPBundle:POSTransaction')->findBy(['customer'=>$customer_id]);
 
         foreach ($allTransactions as $transaction) {
             if (!$transaction->hasChildLayeredReport() && $transaction->getCustomer()->getID() == $customer_id) {
