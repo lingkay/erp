@@ -337,8 +337,8 @@ class LocationLayeredReportController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         //get all categories
-        $ref = new ReflectionClass('Gist\LocationBundle\LocationRegion');
-        $region_name = $ref->getConstant($region);
+        $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
+        $region_name = $regionObject->getName();
 
         $allPOS = $em->getRepository('GistLocationBundle:POSLocations')->findBy([
             'area' => $area,
