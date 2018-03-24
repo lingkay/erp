@@ -88,7 +88,8 @@ gist_poserp_save_item:
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionItems }
 
 gist_poserp_save_payment:
-    path:     /save_payment/{trans_sys_id}/{payment_type}/{amount}
+#file_get_contents($conf->get('gist_sys_erp_url')."/pos_erp/save_payment/".$transaction->getTransDisplayId()."/".$payment->getType()."/".$payment->getAmount()."/".$payment->getBank()."/".$payment->getCardTerminalOperator()."/".$payment->getCheckType()."/".$payment->getCheckDate()."/".$payment->getControlNumber()."/".$payment->getAccountNumber());
+    path:     /save_payment/{trans_sys_id}/{payment_type}/{amount}/{bank}/{terminal_operator}/{check_type}/{check_date}/{control_number}/{account_number}
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionPayments }
 

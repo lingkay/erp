@@ -211,7 +211,7 @@ class POSSyncController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    public function saveTransactionPaymentsAction($trans_sys_id, $payment_type, $amount)
+    public function saveTransactionPaymentsAction($trans_sys_id, $payment_type, $amount, $bank, $terminal_operator, $check_type, $check_date, $control_number, $account_number)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -222,6 +222,21 @@ class POSSyncController extends CrudController
         $transaction_payment->setTransaction($transaction);
         $transaction_payment->setType($payment_type);
         $transaction_payment->setAmount($amount);
+        $transaction_payment->setBank($bank);
+        $transaction_payment->setCardTerminalOperator($terminal_operator);
+
+        if ($payment_type == 'Check') {
+            if ($check_type == 1 || $check_type == '1') {
+                $transaction_payment->setCheckType('PDC');
+            } else {
+                $transaction_payment->setCheckType('Cash');
+            }
+        }
+
+        $transaction_payment->setCheckDate($check_date);
+        $transaction_payment->setControlNumber($control_number);
+        $transaction_payment->setAccountNumber($account_number);
+
 
         $em->persist($transaction_payment);
         $em->flush();
