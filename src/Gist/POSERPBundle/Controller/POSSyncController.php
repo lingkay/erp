@@ -6,6 +6,7 @@ use Gist\TemplateBundle\Model\CrudController;
 use Gist\POSERPBundle\Entity\POSTransaction;
 use Gist\POSERPBundle\Entity\POSTransactionItem;
 use Gist\POSERPBundle\Entity\POSTransactionPayment;
+use Gist\POSERPBundle\Entity\POSTransactionSplit;
 use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,6 +40,11 @@ class POSSyncController extends CrudController
         // REMOVE EXISTING TRANSACTION
         $existing_transactions = $em->getRepository('GistPOSERPBundle:POSTransaction')->findBy(array('trans_display_id'=>$display_id));   
         foreach ($existing_transactions as $et) {
+            // REMOVE SPLITS
+            foreach ($et->getSplits() as $split) {
+                $em->remove($split);
+            }
+
             // REMOVE PAYMENTS
             foreach ($et->getItems() as $item) {
                 $em->remove($item);
@@ -126,6 +132,7 @@ class POSSyncController extends CrudController
         $transaction_item->setDiscountType($discount_type);
         $transaction_item->setDiscountValue($discount_value);
         $transaction_item->setReturned($isReturned === 'true');
+        $transaction_item->setIsNewItem($isNew === 'true');
 
         $em->persist($transaction_item);
         $em->flush();
@@ -217,6 +224,28 @@ class POSSyncController extends CrudController
         $transaction_payment->setAmount($amount);
 
         $em->persist($transaction_payment);
+        $em->flush();
+
+        $list_opts[] = array('status'=>'ok');
+        return new JsonResponse($list_opts);
+    }
+
+    //{trans_sys_id}/{user_id}/{amount}/{percent}
+    public function saveTransactionSplitsAction($trans_sys_id, $user_id, $amount, $percent)
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        $em = $this->getDoctrine()->getManager();
+        $transaction = $em->getRepository('GistPOSERPBundle:POSTransaction')->findOneBy(array('trans_display_id'=>$trans_sys_id));
+        $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user_id));
+
+        $split_entry = new POSTransactionSplit();
+        $split_entry->setConsultant($user);
+        $split_entry->setTransaction($transaction);
+        $split_entry->setAmount($amount);
+        $split_entry->setPercent($percent);
+
+        $em->persist($split_entry);
         $em->flush();
 
         $list_opts[] = array('status'=>'ok');

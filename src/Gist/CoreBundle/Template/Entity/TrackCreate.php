@@ -53,6 +53,11 @@ trait TrackCreate
         return $this->date_create->format('h:i a');
     }
 
+    public function getDateCreateFormattedPOS()
+    {
+        return $this->date_create->format('m/d/Y h:i A');
+    }
+
     public function setUserCreate($user)
     {
         $this->user_create = $user;

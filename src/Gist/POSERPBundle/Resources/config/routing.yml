@@ -92,6 +92,11 @@ gist_poserp_save_payment:
     methods: [GET]
     defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionPayments }
 
+gist_poserp_save_split:
+    path:     /save_split/{trans_sys_id}/{user_id}/{amount}/{percent}
+    methods: [GET]
+    defaults: { _controller: GistPOSERPBundle:POSSync:saveTransactionSplits }
+
 gist_poserp_get_users:
     path:     /get/users/{area_id}
     methods: [GET]

@@ -280,6 +280,30 @@ class CustomerLayeredReportController extends Controller
         }
     }
     //END AREAS/L3
+    public function viewTransactionDetailsAction($date_from, $date_to, $id, $customer_id)
+    {
+        //$this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+       // $params = $this->getViewParams('List');
+        $obj = $em->getRepository('GistPOSERPBundle:POSTransaction')->find($id);
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['customer_name'] = $obj->getCustomer()->getNameFormatted();
+        $params['customer_creator'] = $obj->getCustomer()->getUserCreate()->getName();
+        $params['customer'] = $obj->getCustomer();
+        //$params['o_label'] = $this->getObjectLabel($obj);
+
+        // check if we have access to form
+        $params['readonly'] = true;
+
+
+
+        return $this->render('GistSalesReportBundle:CustomerLayered:transaction_details.html.twig', $params);
+    }
 
     protected function getPOSData($date_from, $date_to, $region, $area)
     {

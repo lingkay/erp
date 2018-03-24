@@ -19,6 +19,14 @@
     {% endfor %}
 {% endmacro %}
 
+{% macro group_textarea_bare(label, name, value, row_size, label_size, body_size, readonly = false, prefix = 'c') %}
+    <div id="{{ prefix }}group-{{ name }}" class="form-group">
+        <div class="col-md-{{ body_size }}">
+            <textarea id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control" rows="{{ row_size }}" placeholder="{{ label }}" {{ readonly ? 'readonly ' : '' }}>{{ value }}</textarea>
+        </div>
+    </div>
+{% endmacro %}
+
 {% macro multi_options(fields, selected) %}
     <option></option>
 {% for value,display in fields %}

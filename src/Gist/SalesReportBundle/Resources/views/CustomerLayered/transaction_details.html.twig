@@ -1,0 +1,281 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+
+        <form method="post" class="form-horizontal">
+            <div class="row" style="width: 100%;">
+                <div class="col-md-12">
+                    <h2 class="form-section">Details for Transaction {{object.getTransDisplayId|default('')}}</h2>
+                    {% if object.hasParent|default(false) %}
+                        <h4>Reference Transaction: {{object.getReferenceTransaction.getTransDisplayId|default('')}}</h4>
+                    {% endif %}
+                    <br>
+                    <div class="portlet-body form">
+                        <!-- BEGIN FORM-->
+                        <form method="post" class="form-horizontal">
+                            <div class="form-body">
+                                <h4 class="form-section">Information</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form.group_text('Receipt Number', 'receipt_number', object.getTransDisplayId|default(''), 4, 5, true) }}
+                                        {{ form.group_text('Date', 'date', object.getDateCreateFormattedPOS|default(''), 4, 5, true) }}
+                                        {{ form.group_text('Cosnultant', 'consultant', customer_creator|default(''), 4, 5, true) }}
+                                        {{ form.group_text('Location', 'location', x|default('Default Location'), 4, 5, true) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.group_text('Customer Name', 'customer', customer.getNameFormatted|default(''), 4, 5, true) }}
+                                        {{ form.group_text('Email', 'email', customer.getCEmailAddress|default(''), 4, 5, true) }}
+                                        {{ form.group_text('Contact No', 'contact_no', customer.getMobileNumber|default(''), 4, 5, true) }}
+                                        {{ form.group_text('Address', 'address', customer.getAddress1|default(''), 4, 5, true) }}
+                                        {{ form.group_text('Birthdate', 'birthdate', customer.getBirthdate|default(''), 4, 5, true) }}
+                                    </div>
+                                </div>
+                                {% if object.getTransactionMode|default('none') == 'exchange' or object.getTransactionMode|default('none') == 'refund' %}
+                                    <h4 class="form-section">Remarks</h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            {{ form.group_textarea_bare('Remarks', 'refund_reason', object.getRemarks|default('None'), 5, 4, 12, true) }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {# ITEMS #}
+                                {% if object.getTransactionMode|default('none') == 'exchange' or object.getTransactionMode|default('none') == 'refund' %}
+                                    {% embed "GistSalesReportBundle:CustomerLayered:exchange_items.html.twig" %}{% endembed %}
+                                {% else %}
+                                    {% embed "GistSalesReportBundle:CustomerLayered:items.html.twig" %}{% endembed %}
+                                {% endif %}
+
+                                {% if object.getChildType != 'Deposit' and object.getTransactionMode != 'upsell' %}
+                                    <div class="row" style="margin-top: 30px;">
+                                        <div class="col-md-8">
+                                            <table class="table table-striped table-bordered table-hover" id="list_table">
+                                                <thead>
+                                                <tr>
+                                                    {% if object.getTransactionMode|default('') == 'Deposit' or object.getReferenceTransaction.getTransactionMode|default('') == 'Deposit' %}
+                                                        <th width="15%">Reference</th>
+                                                    {% endif %}
+                                                    <th width="15%">Mode</th>
+                                                    <th width="15%">Amount</th>
+                                                    <th width="20%">Terms</th>
+                                                    <th width="15%">Interest</th>
+                                                    <th width="20%">Bank</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="items_given_tbody">
+                                                {% if object.hasParent and not object.hasPayments %}
+                                                    {% for i in object.getReferenceTransaction.getPayments|default('') %}
+                                                        <tr>
+                                                            {% if object.getTransactionMode|default('') == 'Deposit' or object.getReferenceTransaction.getTransactionMode|default('') == 'Deposit' %}
+                                                                {% if i.getPaymentIssuedOn|default(null) is not null %}
+                                                                    <td style="text-align: center;"><a href="{{ path('gist_pos_reports_edit_form', { 'id': i.getPaymentIssuedOn.getID|default('0') }) }}" class="btn default blue-madison" data-toggle="tooltip" data-placement="left" title="View" style="width: 100%;">{{i.getPaymentIssuedOn.getTransDisplayId|default('')}}</a></td>
+                                                                {% else %}
+                                                                    <td style="text-align: center;"></td>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                            <td><input type="text" name="rate_name[]" value="{{i.getType|default('')}}" class="form-control rate_name" readonly="true"></td>
+                                                            <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getAmount|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                                            <td><input type="text" style="text-align: left !important;" name="x" class="form-control terms" value="{{i.getCardTerms|default('')}}"  readonly="true"></td>
+                                                            <td><input type="text" style="text-align: left !important;" name="x" class="form-control terms" value="{{i.getInterest|default('')}}"  readonly="true"></td>
+                                                            <td><input type="text" style="text-align: left !important;" name="x" class="form-control terms" value="{{i.getBank|default('')}}"  readonly="true"></td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for i in object.getPayments|default('') %}
+                                                        <tr>
+                                                            {% if object.getTransactionMode|default('') == 'Deposit' or object.getReferenceTransaction.getTransactionMode|default('') == 'Deposit' %}
+                                                                {% if i.getPaymentIssuedOn|default(null) is not null %}
+                                                                    <td style="text-align: center;"><a href="{{ path('gist_pos_reports_edit_form', { 'id': i.getPaymentIssuedOn.getID|default('0') }) }}" class="btn default blue-madison" data-toggle="tooltip" data-placement="left" title="View" style="width: 100%;">{{i.getPaymentIssuedOn.getTransDisplayId|default('')}}</a></td>
+                                                                {% else %}
+                                                                    <td style="text-align: center;"></td>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                            <td><input type="text" name="rate_name[]" value="{{i.getType|default('')}}" class="form-control rate_name" readonly="true"></td>
+                                                            <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getAmount|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                                            <td><input type="text" style="text-align: left !important;" name="x" class="form-control terms" value="{{i.getCardTerms|default('')}}"  readonly="true"></td>
+                                                            <td><input type="text" style="text-align: left !important;" name="x" class="form-control terms" value="{{i.getInterest|default('')}}"  readonly="true"></td>
+                                                            <td><input type="text" style="text-align: left !important;" name="x" class="form-control terms" value="{{i.getBank|default('')}}"  readonly="true"></td>
+                                                        </tr>
+
+                                                        {% if i.getType == 'Gift Card' %}
+                                                            <tr>
+                                                                {% if object.getGCCredit|default('0') > 0 %}
+                                                                    <td>
+                                                                        <input type="text" name="rate_name[]" value="GC Credit Amount" class="form-control rate_name" readonly="true" style="font-size: 12px;">
+                                                                    </td>
+                                                                    <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{object.getGCCreditAbsolute|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                                                    <td colspan="3"></td>
+                                                                {% else %}
+                                                                    <td>
+                                                                        <input type=3"text" name="rate_name[]" value="GC Debit Amount" class="form-control rate_name" readonly="true" style="font-size: 12px;">
+                                                                    </td>
+                                                                    <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{object.getGCDebit|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                                                    <td colspan="3"></td>
+                                                                {% endif %}
+                                                            </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                                <tr>
+                                                    {% if object.getTransactionMode|default('') == 'Deposit' or object.getReferenceTransaction.getTransactionMode|default('') == 'Deposit' %}
+                                                        <td colspan="6"><b class="pull-right">Total Payments</b><input type="text" name="x" class="form-control qty" style="text-align: right !important;" value="{{object.getTotalPayments|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                                    {% else %}
+                                                        <td colspan="5"><b class="pull-right">Total Payments</b><input type="text" name="x" class="form-control qty" style="text-align: right !important;" value="{{object.getTotalPayments|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+                                                    {% endif %}
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-4">
+                                            {% if object.getTransactionMode|default('none') == 'refund' or object.getTransactionMode|default('none') == 'exchange' %}
+                                                {{ form.group_text('Sub Total', 'sub_total', object.getCartOrigTotal|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            {% else %}
+                                                {{ form.group_text('Sub Total', 'sub_total', object.getCartOrigTotal|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            {% endif %}
+                                            {{ form.group_text('Discount', 'discount', object.getDiscountAmount|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            {{ form.group_text('Bulk Discount', 'bulk_discount', object.getDiscountAmount|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            {% if object.getTransactionMode|default('none') == 'refund' or object.getTransactionMode|default('none') == 'exchange' %}
+                                                {{ form.group_text('VAT', 'vat', object.getRefundVAT|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            {% else %}
+                                                {{ form.group_text('VAT', 'vat', object.getFinalVAT|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            {% endif %}
+                                            {{ form.group_text('Grand Total', 'grand_total', object.getTransactionTotal|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            <hr style="border-top: dotted 2px;" />
+                                            {% if object.getTransactionMode|default('none') == 'refund' %}
+                                                {{ form.group_text('Refund Amount', 'change', object.getRefundTotalER|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                                {% if object.getRefundMethod|default('none') == 'Gift Card' %}
+                                                    {{ form.group_text('GC Credits Earned', 'gc_credit', object.getGCCredit|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                                {% endif %}
+                                            {% else %}
+                                                {{ form.group_text('Change', 'change', object.getChange|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            {% endif %}
+                                            {{ form.group_text('Balance', 'balance', object.getBalanceDisplay|number_format(2, '.', ',')|default(''), 4, 5, true) }}
+                                            <hr style="border-top: dotted 2px;" />
+                                        </div>
+                                    </div>
+                                    <h4 class="form-section">Splits</h4>
+                                    <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                                        <thead>
+                                        <tr>
+                                            <th width="40%">Consultant</th>
+                                            <th width="20%">Sales Commission Rate</th>
+                                            <th width="20%">Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="items_given_tbody">
+                                        {% if object.getSplits|default('') != '' %}
+                                            {% for i in object.getSplits|default('') %}
+                                                <tr>
+                                                    <td><input type="text" name="rate_name[]" value="{{i.getConsultant.getDisplayName|default('N/A')}}" class="form-control rate_name" readonly="true"></td>
+                                                    <td>
+                                                        <div class="input-group">
+                                                            <input type="number" max="100" step="0.01" min="1" class="form-control percent_allocation" name="percent_allocation[]" placeholder="" aria-describedby="sizing-addon1" value="{{i.getPercent|default('')}}" readonly="true" style="text-align: right;">
+                                                            <span class="input-group-addon" id="sizing-addon1">%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td><input type="text" name="x" class="form-control" value="{{i.getAmount|number_format(2, '.', ',')|default('')}}"  readonly="true" style="text-align: right;"></td>
+                                                </tr>
+                                            {% endfor %}
+
+
+                                        {% else %}
+                                            {% if object.getTransactionMode|default('none') == 'quotation' or object.getTransactionMode|default('none') == 'frozen' %}
+                                                <tr>
+                                                    <td colspan="3" style="text-align: center;"><h4>Transaction must be completed or in normal mode to perform split</h4></td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="3" style="text-align: center;"><h4>No split added for this transaction</h4></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+
+                                        </tbody>
+                                    </table>
+                                    {% if object.getTransactionMode|default('none') != 'refund' %}
+                                        <h4 class="form-section">Percent of Sale</h4>
+                                        <p style="font-size: 20px;">This transaction is {{object.getPercentOfSale|default('')}} of the total SRP</p>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="row" style="margin-top: 30px;">
+                                        <div class="col-md-8">
+                                            <table class="table table-striped table-bordered table-hover" id="list_table">
+                                                <thead>
+                                                <tr>
+                                                    {% if object.getTransactionMode|default('') == 'Deposit' or object.getReferenceTransaction.getTransactionMode|default('') == 'Deposit' %}
+                                                        <th width="15%">Reference</th>
+                                                    {% endif %}
+                                                    <th width="15%">Mode</th>
+                                                    <th width="15%">Amount</th>
+                                                    <th width="20%">Terms</th>
+                                                    <th width="15%">Interest</th>
+                                                    <th width="20%">Bank</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="items_given_tbody">
+                                                <tr>
+                                                    <td colspan="5" style="text-align: center;"><h4>N/A</h4></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-4">
+
+                                        </div>
+                                    </div>
+                                    <h4 class="form-section">Splits</h4>
+                                    <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                                        <thead>
+                                        <tr>
+                                            <th width="40%">Consultant</th>
+                                            <th width="20%">Sales Commission Rate</th>
+                                            <th width="20%">Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="items_given_tbody">
+                                        <tr>
+                                            <td colspan="3" style="text-align: center;"><h4>Transaction must be completed or in normal mode to perform split</h4></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <h4 class="form-section">Percent of Sale</h4>
+                                    <p style="font-size: 20px;">This transaction is {{object.getPercentOfSale|default('')}} of the total SRP</p>
+                                {% endif %}
+                            </div>
+                            <div class="form-actions fluid">
+                                <div class="col-md-9">
+
+                                </div>
+                            </div>
+                        </form>
+                        <!-- END FORM-->
+
+                    </div>
+                </div>
+            </div>
+        </form>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            var discount = "{{object.getTransactionTypeFormatted|default('')}}";
+            var parent_discount = "{{object.getReferenceTransaction.getTransactionTypeFormatted|default('')}}";
+            var mode = "{{ object.getTransactionMode|default('none') }}";
+            $('#cgroup-bulk_discount').hide();
+            $('#cgroup-discount').hide();
+            //$('#cgroup-discounted_total').hide();
+            if (discount == "Bulk Discount" || (mode == 'refund' && parent_discount == "Bulk Discount")|| (mode == 'exchange' && parent_discount == "Bulk Discount")) {
+                $('#cgroup-bulk_discount').show();
+                //$('#cgroup-discounted_total').show();
+            } else if(discount == 'Per-item Discount' || (mode == 'refund' && parent_discount == "Per-item Discount")|| (mode == 'exchange' && parent_discount == "Per-item Discount")) {
+                //$('#cgroup-discounted_total').show();
+                $('#cgroup-discount').show();
+            } else {
+//                $('#cgroup-discount').show();
+//                $('#cgroup-bulk_discount').show();
+            }
+        });
+    </script>
+{% endblock %}

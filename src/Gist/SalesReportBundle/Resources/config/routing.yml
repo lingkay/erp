@@ -160,6 +160,11 @@ gist_layered_sales_report_customer_index_transactions:
     methods:  [GET]
     defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:transactionsIndex, date_from: null, date_to: null, customer_id: null }
 
+gist_layered_sales_report_customer_index_transaction_details:
+    path: /layered-sales-report/customer_transaction/details/{date_from}/{date_to}/{id}/{customer_id}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:CustomerLayeredReport:viewTransactionDetails, date_from: null, date_to: null, id: null, customer_id: null }
+
 
 # SALES
 # L1

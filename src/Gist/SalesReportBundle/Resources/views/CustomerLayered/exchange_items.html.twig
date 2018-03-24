@@ -1,0 +1,45 @@
+<h4 class="form-section">Items</h4>
+<table class="table table-bordered" style="margin-top: 20px;" id="list_table">
+    <thead>
+    <tr>
+        {% if object.getTransactionMode|default('') == 'Deposit' or object.getReferenceTransaction.getTransactionMode|default('') == 'Deposit' %}
+            <th width="10%">Reference</th>
+        {% endif %}
+        <th width="10%">Barcode</th>
+        <th width="30%">Item</th>
+        <th width="5%">Qty</th>
+        <th width="10%">Amount</th>
+        <th width="10%">Discount Type</th>
+        <th width="10%">Discount Value</th>
+        <th width="10%">Adjusted Price</th>
+    </tr>
+    </thead>
+    <tbody id="items_given_tbody">
+    {% for i in object.getItems|default('') %}
+        {% if i.getIsNewItem|default(false) == true %}
+            <tr style="background-color: #5b9909 !important;">
+        {% elseif i.getReturned|default(false) == true %}
+            <tr style="background-color: #a9302a !important;">
+        {% else %}
+            <tr>
+        {% endif %}
+        <td><input type="text" name="barcode[]" value="{{i.getBarcode|default('')}}" class="form-control barcode" readonly="true"></td>
+        <td><input type="text" name="item_name[]" value="{{i.getName|default('')}}" class="form-control item_name" readonly="true"></td>
+        <td><input type="text" class="form-control" readonly="true" name="qty" value="1"></td>
+        {% if i.getReturned|default(false) == true %}
+            <td><strike><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getOrigPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></strike></td>
+        {% else %}
+            <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getOrigPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+        {% endif %}
+        <td><input type="text" name="x" class="form-control" value="{{i.getDiscountTypeFormatted2|default('')}}"  readonly="true"></td>
+        <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getDiscountValue|number_format(0, '.', ',')|default('')}}"  readonly="true"></td>
+        {% if i.getReturned|default(false) == true %}
+            <td><strike><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getAdjustedPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></strike></td>
+        {% else %}
+            <td><input type="text" style="text-align: right !important;" name="x" class="form-control qty" value="{{i.getAdjustedPrice|number_format(2, '.', ',')|default('')}}"  readonly="true"></td>
+        {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<p style="font-size: 14px;"><span style="color: #5b9909 !important;">&#x25A0;</span> New item &nbsp; <span style="color: #a9302a !important;">&#x25A0;</span> Returned item</p>

@@ -18,25 +18,17 @@ use stdClass;
 
 class POSTransaction
 {
-
-
     use HasGeneratedID;
     use TrackCreate;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $trans_display_id;
 
-    /** @ORM\Column(type="float", length=150, nullable=true) */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $transaction_total;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $transaction_balance;
-
-    /** @ORM\Column(type="string", length=150, nullable=true) */
-    protected $transaction_mode;
-
-    /** @ORM\Column(type="string", length=150, nullable=true) */
-    protected $transaction_cc_interest;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $customer_id;
@@ -47,28 +39,19 @@ class POSTransaction
      */
     protected $customer;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\POSLocations")
-     * @ORM\JoinColumn(name="pos_location_id", referencedColumnName="id")
-     */
-    protected $pos_location;
-
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $transaction_type;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $transaction_mode;
+
+    /** @ORM\Column(type="string", length=150, nullable=true) */
+    protected $transaction_cc_interest;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $status;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
-    protected $synced_to_erp;
-
-    /** @ORM\OneToMany(targetEntity="POSTransactionItem", mappedBy="transaction") */
-    protected $items;
-
-    /** @ORM\OneToMany(targetEntity="POSTransactionPayment", mappedBy="transaction") */
-    protected $payments;
-
-        /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $tax_rate;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -98,6 +81,52 @@ class POSTransaction
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $bulk_discount_type;
 
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $selected_bulk_discount_type;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $selected_bulk_discount_amount;
+
+    /** @ORM\OneToMany(targetEntity="POSTransactionItem", mappedBy="transaction") */
+    protected $items;
+
+    /** @ORM\OneToMany(targetEntity="POSTransactionPayment", mappedBy="transaction") */
+    protected $payments;
+
+    /** @ORM\OneToMany(targetEntity="POSTransactionSplit", mappedBy="transaction") */
+    protected $splits;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $deposit_vat_amt;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $deposit_amt_net_vat;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $balance_vat_amt;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $balance_amt_net_vat;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $balance;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $deposit_amount;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $gc_credit_amount;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $gc_debit_amount;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\POSLocations")
+     * @ORM\JoinColumn(name="pos_location_id", referencedColumnName="id")
+     */
+    protected $pos_location;
+
+
     /**
      * @ORM\OneToOne(targetEntity="POSTransaction")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
@@ -119,7 +148,16 @@ class POSTransaction
     protected $location;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $refundMethod;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
+    protected $refundAmount;
+
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $generic_var1;
+
+    /** @ORM\Column(type="string", length=255, nullable=true) */
+    protected $remarks;
 
 
     public function __construct()
@@ -127,7 +165,7 @@ class POSTransaction
         $this->initTrackCreate();
     }
 
-    
+
     public function toData()
     {
         $data = new \stdClass();
@@ -136,46 +174,35 @@ class POSTransaction
         return $data;
     }
 
-    public function setTransactionCCInterest($transaction_cc_interest)
+    public function setPOSLocation($pos_location)
     {
-        $this->transaction_cc_interest = $transaction_cc_interest;
+        $this->pos_location = $pos_location;
 
         return $this;
     }
 
-    public function getTransactionCCInterest()
+    public function getPOSLocation()
     {
-        return $this->transaction_cc_interest;
+        return $this->pos_location;
     }
 
-    public function getItems()
+    public function getDiscountAmount()
     {
-        return $this->items;
+        return ($this->transaction_total - $this->cart_orig_total);
     }
 
-    public function getPayments()
+    public function getPercentOfSale()
     {
-        return $this->payments;
+        return round((($this->transaction_total/$this->cart_orig_total)*100),2)."%";
     }
 
-    public function getTotalPayments()
+    public function hasItems()
     {
-        $total = 0;
-
-        foreach ($this->payments as $p) {
-            $total = $total + $p->getAmount();
+        if (count($this->items) > 0) {
+            return true;
         }
 
-        return $total;
-    }
-
-    public function hasChild()
-    {
-        if ($this->child_transaction == null) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
     public function hasChildLayeredReport()
@@ -190,6 +217,193 @@ class POSTransaction
             }
         }
     }
+
+    public function getTransDisplayIdFormatted()
+    {
+        $ret = $this->trans_display_id;
+
+        if ($this->transaction_mode == 'quotation') {
+            $ret = 'Quotation';
+        }
+        return $ret;
+    }
+
+    public function hasPayments()
+    {
+        if (count($this->payments) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getFinalVAT()
+    {
+        if (($this->transaction_type == 'per' || $this->transaction_type == 'bulk')) {
+            return $this->new_vat_amt;
+        }
+
+        return $this->orig_vat_amt;
+    }
+
+    public function getRefundVAT()
+    {
+        if (($this->reference_transaction->transaction_type == 'per' || $this->reference_transaction->transaction_type == 'bulk')) {
+            return $this->new_vat_amt;
+        }
+
+        return $this->orig_vat_amt;
+    }
+
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    public function getSplits()
+    {
+        return $this->splits;
+    }
+
+    public function getTotalPayments()
+    {
+        $total = 0;
+
+        if ($this->hasParent() && !$this->hasPayments()) {
+            foreach ($this->reference_transaction->getPayments() as $p) {
+                $total = $total + $p->getAmount();
+            }
+
+            return $total;
+        }
+
+        foreach ($this->payments as $p) {
+            $total = $total + $p->getAmount();
+        }
+
+        return $total;
+    }
+
+    public function getPaymentIssued()
+    {
+        $total = 0;
+
+        // if ($this->hasParent() && !$this->hasPayments()) {
+        //     foreach ($this->reference_transaction->getPayments() as $p) {
+        //         if ($this->id == $p->getPaymentIssuedOn()->getID()) {
+        //             $total = $total + $p->getAmount();
+        //         }
+        //     }
+
+        //     return $total;
+        // }
+
+        foreach ($this->payments as $p) {
+            if ($this->id == $p->getPaymentIssuedOn()->getID()) {
+                $total = $total + $p->getAmount();
+            }
+        }
+
+        return $total;
+    }
+
+    public function getTransactionTotalER()
+    {
+        $total = 0;
+
+        foreach ($this->items as $p) {
+            if ($p->getReturned() == false) {
+                if ($this->transaction_type == 'per') {
+                    $total = $total + $p->getAdjustedPrice();
+                } else {
+                    $total = $total + $p->getOrigPrice();
+                }
+            }
+        }
+
+        return $total;
+    }
+
+    public function getRefundTotalER()
+    {
+        $total = 0;
+
+        if ($this->refundAmount == 0) {
+            $total = 0;
+        } else {
+            if ($this->reference_transaction->transaction_type != 'bulk') {
+                foreach ($this->items as $p) {
+                    if ($p->getReturned() == true) {
+                        if ($this->transaction_type == 'per') {
+                            $total = $total + $p->getAdjustedPrice();
+                        } else {
+                            $total = $total + $p->getOrigPrice();
+                        }
+                    }
+                }
+            } else {
+                $total = $this->refundAmount;
+            }
+        }
+
+
+        return $total;
+    }
+
+
+    public function getAmountIssued()
+    {
+        $total = 0;
+
+        if ($this->hasItems()) {
+            foreach ($this->getItems() as $p) {
+                if ($p->getItemIssuedOn()) {
+                    if ($this->id == $p->getItemIssuedOn()->getID()) {
+                        if ($this->transaction_type == 'per') {
+                            $total = $total + $p->getAdjustedPrice();
+                        } else {
+                            $total = $total + $p->getOrigPrice();
+                        }
+                    }
+                }
+            }
+        }
+
+        return $total;
+    }
+
+    public function getChange()
+    {
+        if ($this->transaction_mode == 'exchange' && $this->refundAmount == 0) {
+            return 0;
+        }
+
+        $change = $this->getTotalPayments() - $this->transaction_total;
+        if ($change > 0) {
+            return $change;
+        }
+
+        return 0;
+
+    }
+
+    public function setERPID($erp_id)
+    {
+        $this->erp_id = $erp_id;
+
+        return $this;
+    }
+
+    public function getERPID()
+    {
+        return $this->erp_id;
+    }
+
 
     public function setTransactionMode($transaction_mode)
     {
@@ -208,7 +422,29 @@ class POSTransaction
         return ucfirst($this->transaction_mode);
     }
 
-    
+    public function setTransactionCCInterest($transaction_cc_interest)
+    {
+        $this->transaction_cc_interest = $transaction_cc_interest;
+
+        return $this;
+    }
+
+    public function getRemarks()
+    {
+        return ucfirst($this->remarks);
+    }
+
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    public function getTransactionCCInterest()
+    {
+        return $this->transaction_cc_interest;
+    }
 
     /**
      * Set transactionTotal
@@ -238,7 +474,7 @@ class POSTransaction
      */
     public function getTransactionTotal()
     {
-        return floatval($this->transaction_total);
+        return $this->transaction_total;
     }
 
     /**
@@ -265,18 +501,6 @@ class POSTransaction
         return $this->trnasaction_balance;
     }
 
-    public function setPOSLocation($pos_location)
-    {
-        $this->pos_location = $pos_location;
-
-        return $this;
-    }
-
-    public function getPOSLocation()
-    {
-        return $this->pos_location;
-    }
-
     /**
      * Set customerId
      *
@@ -291,6 +515,13 @@ class POSTransaction
         return $this;
     }
 
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
     /**
      * Get customerId
      *
@@ -299,6 +530,11 @@ class POSTransaction
     public function getCustomerId()
     {
         return $this->customer_id;
+    }
+
+    public function getCustomer()
+    {
+        return $this->customer;
     }
 
     /**
@@ -373,16 +609,6 @@ class POSTransaction
         return $this->trans_display_id;
     }
 
-    public function getTransDisplayIdFormatted()
-    {
-        $ret = $this->trans_display_id;
-        
-        if ($this->transaction_mode == 'quotation') {
-            $ret = 'Quotation';
-        }
-        return $ret;
-    }
-
     /**
      * Set transactionType
      *
@@ -405,6 +631,54 @@ class POSTransaction
     public function getTransactionType()
     {
         return $this->transaction_type;
+    }
+
+    /**
+     * Set RefundMethod
+     *
+     * @param string $refundMethod
+     *
+     * @return POSTransaction
+     */
+    public function setRefundMethod($refundMethod)
+    {
+        $this->refundMethod = $refundMethod;
+
+        return $this;
+    }
+
+    /**
+     * Get RefundMethod
+     *
+     * @return string
+     */
+    public function getRefundMethod()
+    {
+        return $this->refundMethod;
+    }
+
+    /**
+     * Set RefundAmount
+     *
+     * @param string $refundAmount
+     *
+     * @return POSTransaction
+     */
+    public function setRefundAmount($refundAmount)
+    {
+        $this->refundAmount = $refundAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get RefundAmount
+     *
+     * @return string
+     */
+    public function getRefundAmount()
+    {
+        return $this->refundAmount;
     }
 
     public function getTransactionTypeFormatted()
@@ -470,20 +744,6 @@ class POSTransaction
     {
         return $this->transaction_balance;
     }
-
-    public function setCustomer($customer)
-    {
-        $this->customer = $customer;
-
-        return $this;
-    }
-
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-
 
     /**
      * Set taxRate
@@ -701,63 +961,6 @@ class POSTransaction
         return $this->cart_new_total;
     }
 
-    public function getCartTotalFormatted()
-    {
-        if ($this->cart_new_total != 0) {
-            return $this->cart_new_total;
-        } else {
-            return $this->cart_orig_total;
-        }
-    }
-
-    /**
-     * Add item
-     *
-     * @param \Gist\POSERPBundle\Entity\POSTransactionItem $item
-     *
-     * @return POSTransaction
-     */
-    public function addItem($item)
-    {
-        $this->items[] = $item;
-
-        return $this;
-    }
-
-    /**
-     * Remove item
-     *
-     * @param \Gist\POSERPBundle\Entity\POSTransactionItem $item
-     */
-    public function removeItem($item)
-    {
-        $this->items->removeElement($item);
-    }
-
-    /**
-     * Add payment
-     *
-     * @param \Gist\POSERPBundle\Entity\POSTransactionPayment $payment
-     *
-     * @return POSTransaction
-     */
-    public function addPayment($payment)
-    {
-        $this->payments[] = $payment;
-
-        return $this;
-    }
-
-    /**
-     * Remove payment
-     *
-     * @param \Gist\POSERPBundle\Entity\POSTransactionPayment $payment
-     */
-    public function removePayment($payment)
-    {
-        $this->payments->removeElement($payment);
-    }
-
     /**
      * Set bulkDiscountType
      *
@@ -780,6 +983,124 @@ class POSTransaction
     public function getBulkDiscountType()
     {
         return $this->bulk_discount_type;
+    }
+
+    /**
+     * Add item
+     *
+     * @param \Gist\POSBundle\Entity\POSTransactionItem $item
+     *
+     * @return POSTransaction
+     */
+    public function addItem($item)
+    {
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove item
+     *
+     * @param \Gist\POSBundle\Entity\POSTransactionItem $item
+     */
+    public function removeItem($item)
+    {
+        $this->items->removeElement($item);
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \Gist\POSBundle\Entity\POSTransactionPayment $payment
+     *
+     * @return POSTransaction
+     */
+    public function addPayment($payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \Gist\POSBundle\Entity\POSTransactionPayment $payment
+     */
+    public function removePayment($payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Set referenceTransaction
+     *
+     * @param \Gist\POSBundle\Entity\POSTransaction $referenceTransaction
+     *
+     * @return POSTransaction
+     */
+    public function setReferenceTransaction($referenceTransaction = null)
+    {
+        $this->reference_transaction = $referenceTransaction;
+
+        return $this;
+    }
+
+    /**
+     * Get referenceTransaction
+     *
+     * @return \Gist\POSBundle\Entity\POSTransaction
+     */
+    public function getReferenceTransaction()
+    {
+        return $this->reference_transaction;
+    }
+
+    public function getReferenceTransactionDisplayID()
+    {
+        if ($this->reference_transaction != null) {
+            return $this->reference_transaction->getTransDisplayId();
+        }
+
+        return '-';
+
+    }
+
+    public function getChildType()
+    {
+        if ($this->child_transaction == null) {
+            return 'null';
+        }
+        $child = $this->child_transaction;
+        return $child->getTransactionMode();
+    }
+
+    public function hasChild()
+    {
+        if ($this->child_transaction == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function hasSplit()
+    {
+        if (count($this->splits) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasParent()
+    {
+        if ($this->reference_transaction == null) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -831,30 +1152,6 @@ class POSTransaction
     }
 
     /**
-     * Set referenceTransaction
-     *
-     * @param \Gist\POSERPBundle\Entity\POSTransaction $referenceTransaction
-     *
-     * @return POSTransaction
-     */
-    public function setReferenceTransaction($referenceTransaction = null)
-    {
-        $this->reference_transaction = $referenceTransaction;
-
-        return $this;
-    }
-
-    /**
-     * Get referenceTransaction
-     *
-     * @return \Gist\POSERPBundle\Entity\POSTransaction
-     */
-    public function getReferenceTransaction()
-    {
-        return $this->reference_transaction;
-    }
-
-    /**
      * Set location
      *
      * @param string $location
@@ -900,5 +1197,312 @@ class POSTransaction
     public function getGenericVar1()
     {
         return $this->generic_var1;
+    }
+
+    /**
+     * Set depositVatAmt
+     *
+     * @param string $depositVatAmt
+     *
+     * @return POSTransaction
+     */
+    public function setDepositVatAmt($depositVatAmt)
+    {
+        $this->deposit_vat_amt = $depositVatAmt;
+
+        return $this;
+    }
+
+    /**
+     * Get depositVatAmt
+     *
+     * @return string
+     */
+    public function getDepositVatAmt()
+    {
+        return $this->deposit_vat_amt;
+    }
+
+    /**
+     * Set depositAmtNetVat
+     *
+     * @param string $depositAmtNetVat
+     *
+     * @return POSTransaction
+     */
+    public function setDepositAmtNetVat($depositAmtNetVat)
+    {
+        $this->deposit_amt_net_vat = $depositAmtNetVat;
+
+        return $this;
+    }
+
+    /**
+     * Get depositAmtNetVat
+     *
+     * @return string
+     */
+    public function getDepositAmtNetVat()
+    {
+        return $this->deposit_amt_net_vat;
+    }
+
+    /**
+     * Set balanceVatAmt
+     *
+     * @param string $balanceVatAmt
+     *
+     * @return POSTransaction
+     */
+    public function setBalanceVatAmt($balanceVatAmt)
+    {
+        $this->balance_vat_amt = $balanceVatAmt;
+
+        return $this;
+    }
+
+    /**
+     * Get balanceVatAmt
+     *
+     * @return string
+     */
+    public function getBalanceVatAmt()
+    {
+        return $this->balance_vat_amt;
+    }
+
+    /**
+     * Set balanceAmtNetVat
+     *
+     * @param string $balanceAmtNetVat
+     *
+     * @return POSTransaction
+     */
+    public function setBalanceAmtNetVat($balanceAmtNetVat)
+    {
+        $this->balance_amt_net_vat = $balanceAmtNetVat;
+
+        return $this;
+    }
+
+    /**
+     * Get balanceAmtNetVat
+     *
+     * @return string
+     */
+    public function getBalanceAmtNetVat()
+    {
+        return $this->balance_amt_net_vat;
+    }
+
+    /**
+     * Set balance
+     *
+     * @param string $balance
+     *
+     * @return POSTransaction
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+
+        return $this;
+    }
+
+    /**
+     * Get balance
+     *
+     * @return string
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    public function getBalanceDisplay()
+    {
+        if ($this->balance < 0) {
+            return 0;
+        }
+        return $this->balance;
+    }
+
+    /**
+     * Set depositAmount
+     *
+     * @param string $depositAmount
+     *
+     * @return POSTransaction
+     */
+    public function setDepositAmount($depositAmount)
+    {
+        $this->deposit_amount = $depositAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get depositAmount
+     *
+     * @return string
+     */
+    public function getDepositAmount()
+    {
+        return $this->deposit_amount;
+    }
+
+    /**
+     * Add split
+     *
+     * @param \Gist\POSBundle\Entity\POSTransactionSplit $split
+     *
+     * @return POSTransaction
+     */
+    public function addSplit(POSTransactionSplit $split)
+    {
+        $this->splits[] = $split;
+
+        return $this;
+    }
+
+    /**
+     * Remove split
+     *
+     * @param \Gist\POSBundle\Entity\POSTransactionSplit $split
+     */
+    public function removeSplit(POSTransactionSplit $split)
+    {
+        $this->splits->removeElement($split);
+    }
+
+    /**
+     * Set childTransaction
+     *
+     * @param \Gist\POSBundle\Entity\POSTransaction $childTransaction
+     *
+     * @return POSTransaction
+     */
+    public function setChildTransaction(POSTransaction $childTransaction = null)
+    {
+        $this->child_transaction = $childTransaction;
+
+        return $this;
+    }
+
+    /**
+     * Get childTransaction
+     *
+     * @return \Gist\POSBundle\Entity\POSTransaction
+     */
+    public function getChildTransaction()
+    {
+        return $this->child_transaction;
+    }
+
+    /**
+     * Set selectedBulkDiscountType
+     *
+     * @param string $selectedBulkDiscountType
+     *
+     * @return POSTransaction
+     */
+    public function setSelectedBulkDiscountType($selectedBulkDiscountType)
+    {
+        $this->selected_bulk_discount_type = $selectedBulkDiscountType;
+
+        return $this;
+    }
+
+    /**
+     * Get selectedBulkDiscountType
+     *
+     * @return string
+     */
+    public function getSelectedBulkDiscountType()
+    {
+        return $this->selected_bulk_discount_type;
+    }
+
+    /**
+     * Set selectedBulkDiscountAmount
+     *
+     * @param string $selectedBulkDiscountAmount
+     *
+     * @return POSTransaction
+     */
+    public function setSelectedBulkDiscountAmount($selectedBulkDiscountAmount)
+    {
+        $this->selected_bulk_discount_amount = $selectedBulkDiscountAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get selectedBulkDiscountAmount
+     *
+     * @return string
+     */
+    public function getSelectedBulkDiscountAmount()
+    {
+        return $this->selected_bulk_discount_amount;
+    }
+
+    /**
+     * Set setGCCredit
+     *
+     * @param string $gc_credit_amount
+     *
+     * @return POSTransaction
+     */
+    public function setGCCredit($gc_credit_amount)
+    {
+        $this->gc_credit_amount = $gc_credit_amount;
+
+        return $this;
+    }
+
+    /**
+     * Get getGCCredit
+     *
+     * @return string
+     */
+    public function getGCCredit()
+    {
+        return $this->gc_credit_amount;
+    }
+
+    /**
+     * Get getGCDebit
+     *
+     * @return string
+     */
+    public function getGCDebit()
+    {
+        return $this->gc_debit_amount;
+    }
+
+    /**
+     * Set setGCDebit
+     *
+     * @param string $gc_debit_amount
+     *
+     * @return POSTransaction
+     */
+    public function setGCDebit($gc_debit_amount)
+    {
+        $this->gc_debit_amount = $gc_debit_amount;
+
+        return $this;
+    }
+
+
+    /**
+     * Get getGCCredit fmtd
+     *
+     * @return string
+     */
+    public function getGCCreditAbsolute()
+    {
+        return abs($this->gc_credit_amount);
     }
 }
