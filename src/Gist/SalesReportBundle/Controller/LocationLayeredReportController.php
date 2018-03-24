@@ -341,8 +341,7 @@ class LocationLayeredReportController extends Controller
         $region_name = $regionObject->getName();
 
         $allPOS = $em->getRepository('GistLocationBundle:POSLocations')->findBy([
-            'area' => $area,
-            'region' => $region
+            'area' => $area
         ]);
 
         //$regionObject = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($region);
