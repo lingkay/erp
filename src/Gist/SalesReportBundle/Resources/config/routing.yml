@@ -194,13 +194,13 @@ gist_layered_sales_report_sales_index_cash_transactions:
 gist_layered_sales_report_sales_index_card_terminals:
     path: /layered-sales-report/sales/card_terminals/{date_from}/{date_to}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null }
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:terminalsIndex, date_from: null, date_to: null }
 
 # L3 - CARD - TERMINALS
 gist_layered_sales_report_sales_index_check_types:
     path: /layered-sales-report/sales/check_types/{date_from}/{date_to}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null }
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:checkTypesIndex, date_from: null, date_to: null }
 
 # L4 - CARD - TRANSACTIONS
 gist_layered_sales_report_sales_index_card_transactions:

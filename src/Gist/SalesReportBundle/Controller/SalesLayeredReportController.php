@@ -232,6 +232,7 @@ class SalesLayeredReportController extends Controller
 
     protected function cashTransactionsData($date_from, $date_to, $mode)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         $layeredReportService = $this->get('gist_layered_report_service');
         $transactions = $layeredReportService->getTransactions($date_from, $date_to, null, null);
@@ -264,9 +265,9 @@ class SalesLayeredReportController extends Controller
             return null;
         }
     }
-    //END AREAS/L3
-    //FOR POS LOCS/L4 / SHOW POS LOCATIONS
-    public function posIndexAction($date_from = null, $date_to = null, $position = null)
+    //END CASH TRANS/L3
+    //FOR L3 CHECK TYPES
+    public function checkTypesIndexAction($date_from = null, $date_to = null)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -276,29 +277,17 @@ class SalesLayeredReportController extends Controller
             $params = $this->getViewParams('List');
             $this->getControllerBase();
 
-            //PARAMS
-            $params['region '] = $region ;
-            $params['area'] = $area;
 
             if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
                 $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
                 $params['date_from'] = $date_from->format("m/d/Y");
                 $params['date_to'] = $date_to->format("m/d/Y");
-                $params['pos_data'] = $this->getPOSData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'),$region, $area);
+                $params['data'] = $this->getCheckTypesData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
 
-                $ref = new ReflectionClass('Gist\LocationBundle\LocationRegion');
-                $region_name = $ref->getConstant($region);
-                $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
-
-                $params['region_id'] = $region;
-                $params['region_name'] = $region_name;
-                $params['area_id'] = $areaObject->getID();
-                $params['area_name'] = $areaObject->getName();
-
-                return $this->render('GistSalesReportBundle:LocationLayered:locations.html.twig', $params);
+                return $this->render('GistSalesReportBundle:SalesLayered:check_type.html.twig', $params);
 
             } else {
                 return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
@@ -310,63 +299,114 @@ class SalesLayeredReportController extends Controller
         }
     }
 
-    protected function getPOSData($date_from, $date_to, $region, $area)
+    protected function getCheckTypesData($date_from, $date_to)
     {
         $em = $this->getDoctrine()->getManager();
+        $list_opts = [];
+        $qb = $em->getRepository('GistPOSERPBundle:POSTransactionPayment')->createQueryBuilder('a')->groupBy('a.check_type');
 
-        $allPOS = $em->getRepository('GistLocationBundle:POSLocations')->findBy([
-            'area' => $area,
-            'region' => $region
-        ]);
+        $allCheckTypes = $qb->getQuery()->getResult();
 
-        $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
-        $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
-
-        foreach ($allPOS as $POSObject) {
-            //initiate totals
-            $productId = $POSObject->getID();
+        foreach ($allCheckTypes as $type) {
             $totalSales = 0;
-            $totalCost = 0;
 
-            //get all transaction items based on date filter
             $layeredReportService = $this->get('gist_layered_report_service');
-            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
-
+            $transactionPayments = $layeredReportService->getTransactionPayments($date_from, $date_to, null, null);
             //loop items and check if item's brand is the current loop's brand then add the cost
-            foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                    $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area) {
-                        $totalSales += $transactionItem->getTotalAmount();
+            foreach ($transactionPayments as $payment) {
+                if (!$payment->getTransaction()->hasChildLayeredReport()) {
+                    if ($payment->getCheckType() == $type->getCheckType() && $payment->getType() == 'Check') {
+                        $totalSales += $payment->getAmount();
                     }
                 }
             }
 
-            $totalProfit = $totalSales - $totalCost;
-
             $list_opts[] = array(
                 'date_from'=>$date_from,
                 'date_to'=> $date_to,
-                'pos_loc_id' => $POSObject->getID(),
-                'region_id' => $regionObject->getID(),
-                'area_id' => $area,
-                'pos_name' => $POSObject->getName(),
-                'region_name' => $regionObject->getName(),
-                'area_name' => $areaObject->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($totalProfit, 2, '.',','),
+                'type' => $type->getCheckType(),
+                'total_sales' => number_format($totalSales, 2, '.',',')
             );
         }
 
-        if (count($allPOS) > 0) {
+        if (count($allCheckTypes) > 0) {
             return $list_opts;
         } else {
             return null;
         }
 
     }
+    //END L3 CHECKTYPES
+    //FOR L3 CHECK TYPES
+    public function terminalsIndexAction($date_from = null, $date_to = null)
+    {
+        $em = $this->getDoctrine()->getManager();
 
+        try {
+            $data = $this->getRequest()->request->all();
+            $this->route_prefix = 'gist_layered_sales_report_sales';
+            $params = $this->getViewParams('List');
+            $this->getControllerBase();
+
+
+            if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+                $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+                $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+                $params['date_from'] = $date_from->format("m/d/Y");
+                $params['date_to'] = $date_to->format("m/d/Y");
+                $params['data'] = $this->getTerminalsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+                $params['date_from_url'] = $date_from->format("m-d-Y");
+                $params['date_to_url'] = $date_to->format("m-d-Y");
+
+                return $this->render('GistSalesReportBundle:SalesLayered:terminals.html.twig', $params);
+
+            } else {
+                return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+            }
+
+
+        } catch (Exception $e) {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
+    }
+
+    protected function getTerminalsData($date_from, $date_to)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $list_opts = [];
+        $qb = $em->getRepository('GistPOSERPBundle:POSTransactionPayment')->createQueryBuilder('a')->groupBy('a.card_terminal_operator');
+
+        $allCheckTypes = $qb->getQuery()->getResult();
+
+        foreach ($allCheckTypes as $type) {
+            $totalSales = 0;
+
+            $layeredReportService = $this->get('gist_layered_report_service');
+            $transactionPayments = $layeredReportService->getTransactionPayments($date_from, $date_to, null, null);
+            //loop items and check if item's brand is the current loop's brand then add the cost
+            foreach ($transactionPayments as $payment) {
+                if (!$payment->getTransaction()->hasChildLayeredReport()) {
+                    if ($payment->getCardTerminalOperator() == $type->getCardTerminalOperator() && $payment->getType() == 'Credit Card') {
+                        $totalSales += $payment->getAmount();
+                    }
+                }
+            }
+
+            $list_opts[] = array(
+                'date_from'=>$date_from,
+                'date_to'=> $date_to,
+                'type' => $type->getCardTerminalOperator(),
+                'total_sales' => number_format($totalSales, 2, '.',',')
+            );
+        }
+
+        if (count($allCheckTypes) > 0) {
+            return $list_opts;
+        } else {
+            return null;
+        }
+
+    }
     protected function getRouteGen()
     {
         if ($this->route_gen == null)

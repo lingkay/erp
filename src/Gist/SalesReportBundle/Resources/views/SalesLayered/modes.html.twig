@@ -32,11 +32,21 @@
                     </thead>
                     <tbody>
                     {% for bd in data %}
+                        {% if bd['name'] != 'Gift Card' %}
                         <tr>
                             <td>{{ bd['name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td><a href="{{ path('gist_layered_sales_report_sales_index_cash_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'mode' : bd['name']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
+                            <td>
+                                {% if bd['name'] == 'Cash' %}
+                                    <a href="{{ path('gist_layered_sales_report_sales_index_cash_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'mode' : bd['name']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a>
+                                {% elseif bd['name'] == 'Check' %}
+                                    <a href="{{ path('gist_layered_sales_report_sales_index_check_types', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a>
+                                {% elseif bd['name'] == 'Credit Card' %}
+                                    <a href="{{ path('gist_layered_sales_report_sales_index_card_terminals', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a>
+                                {% endif %}
+                            </td>
                         </tr>
+                        {% endif %}
                     {% endfor %}
                     </tbody>
                 </table>

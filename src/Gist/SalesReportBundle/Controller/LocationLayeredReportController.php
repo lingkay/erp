@@ -143,6 +143,7 @@ class LocationLayeredReportController extends Controller
 
     protected function getRegionsData($date_from, $date_to)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all brands
         $allRegions = $em->getRepository('GistLocationBundle:Regions')->findAll();
@@ -234,6 +235,7 @@ class LocationLayeredReportController extends Controller
 
     protected function getAreasData($date_from, $date_to, $region)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all brands
         $allAreas = $em->getRepository('GistLocationBundle:Areas')->findAll();
