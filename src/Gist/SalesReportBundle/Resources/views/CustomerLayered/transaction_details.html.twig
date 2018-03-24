@@ -6,6 +6,15 @@
         <form method="post" class="form-horizontal">
             <div class="row" style="width: 100%;">
                 <div class="col-md-12">
+                    <hr>
+                    <ul class="breadcrumbs2">
+                        <li><a href="{{ path('gist_layered_sales_report_customer_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
+                        <li><a href="{{ path('gist_layered_sales_report_customer_index_list', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Customers</a></li>
+                        <li><a href="{{ path('gist_layered_sales_report_customer_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'customer_id' : object.getCustomer.getID}) }}">{{ customer_name }} - Transaction(s)</a></li>
+                        <li>{{  object.getTransDisplayId }}</li>
+                    </ul>
+                    <br>
+                    <hr>
                     <h2 class="form-section">Details for Transaction {{object.getTransDisplayId|default('')}}</h2>
                     {% if object.hasParent|default(false) %}
                         <h4>Reference Transaction: {{object.getReferenceTransaction.getTransDisplayId|default('')}}</h4>

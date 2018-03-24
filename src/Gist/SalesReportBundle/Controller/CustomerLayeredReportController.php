@@ -264,8 +264,10 @@ class CustomerLayeredReportController extends Controller
                     'transaction_pos_name' => $transaction->getPOSLocation()->getName(),
                     'transaction_date' => $transaction->getDateCreate()->format('F d, Y h:i A'),
                     'transaction_id' => $transactionId,
+                    'transaction_system_id' => $transaction->getID(),
                     'customer_name' => $customerObject->getNameFormatted(),
                     'customer_display_id' => $customerObject->getDisplayID(),
+                    'customer_id' => $customerObject->getID(),
                     'total_sales' => number_format($totalSales, 2, '.', ','),
                     'total_cost' => number_format($totalCost, 2, '.', ','),
                     'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
@@ -300,9 +302,28 @@ class CustomerLayeredReportController extends Controller
         // check if we have access to form
         $params['readonly'] = true;
 
+        if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+            $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+            $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+            $params['date_from'] = $date_from->format("m/d/Y");
+            $params['date_to'] = $date_to->format("m/d/Y");
+            $params['data'] = $this->getCustomerTransactionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $customer_id);
+            $params['date_from_url'] = $date_from->format("m-d-Y");
+            $params['date_to_url'] = $date_to->format("m-d-Y");
 
 
-        return $this->render('GistSalesReportBundle:CustomerLayered:transaction_details.html.twig', $params);
+            $customerObject = $em->getRepository('GistCustomerBundle:Customer')->findOneById($customer_id);
+
+            $params['customer_id'] = $customerObject->getID();
+            $params['customer_name'] = $customerObject->getNameFormatted();
+
+            return $this->render('GistSalesReportBundle:CustomerLayered:transaction_details.html.twig', $params);
+
+        } else {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
+
+
     }
 
     protected function getPOSData($date_from, $date_to, $region, $area)

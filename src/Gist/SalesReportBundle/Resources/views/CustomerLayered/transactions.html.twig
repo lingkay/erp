@@ -32,6 +32,7 @@
                         <th>Transaction POS</th>
                         <th>Transaction Date</th>
                         <th>Total Purchase</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -43,6 +44,7 @@
                             <td>{{ bd['transaction_pos_name'] }}</td>
                             <td>{{ bd['transaction_date'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
+                            <td><a href="{{ path('gist_layered_sales_report_customer_index_transaction_details', {'date_from' : date_from_url, 'date_to' : date_to_url, 'id' : bd['transaction_system_id'], 'customer_id' : bd['customer_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
