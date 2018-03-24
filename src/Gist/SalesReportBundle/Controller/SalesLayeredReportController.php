@@ -321,12 +321,14 @@ class SalesLayeredReportController extends Controller
                 }
             }
 
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'type' => $type->getCheckType(),
-                'total_sales' => number_format($totalSales, 2, '.',',')
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'type' => $type->getCheckType(),
+                    'total_sales' => number_format($totalSales, 2, '.', ',')
+                );
+            }
         }
 
         if (count($allCheckTypes) > 0) {
@@ -388,12 +390,14 @@ class SalesLayeredReportController extends Controller
                 }
             }
 
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'type' => $type->getCardTerminalOperator(),
-                'total_sales' => number_format($totalSales, 2, '.',',')
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'type' => $type->getCardTerminalOperator(),
+                    'total_sales' => number_format($totalSales, 2, '.', ',')
+                );
+            }
         }
 
         if (count($allCheckTypes) > 0) {
