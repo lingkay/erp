@@ -127,7 +127,7 @@
                     }
                 );
                 $('#clear_filter').click(function (){
-                    location.reload();
+                    location.replace('{{ path("gist_layered_sales_report_customer_index") }}');
                 });
                 $('#filter_button').click(function (){
                     path = generatePath();
