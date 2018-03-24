@@ -14,7 +14,8 @@
                 <br>
                 <ul class="breadcrumbs2">
                     <li><a href="{{ path('gist_layered_sales_report_sales_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
-                    <li>Modes of Payment</li>
+                    <li><a href="{{ path('gist_layered_sales_report_sales_index_modes', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Modes of Payment</a></li>
+                    <li>Cash Transactions</li>
                 </ul>
                 <br>
                 <div class="table-toolbar">
@@ -27,15 +28,13 @@
                     <tr>
                         <th>Sales</th>
                         <th>Total Income</th>
-                        <th style="width: 14px !important;"></th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for bd in data %}
                         <tr>
-                            <td>{{ bd['name'] }}</td>
+                            <td>{{ bd['transaction_display_id'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td><a href="{{ path('gist_layered_sales_report_sales_index_cash_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'mode' : bd['name']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -74,7 +73,7 @@
                         }
                     },
                     "aoColumnDefs": [
-                        { "bSortable": false, "aTargets": [1,2] },
+                        { "bSortable": false, "aTargets": [1] },
                     ]
                 });
 

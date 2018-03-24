@@ -189,8 +189,8 @@ class SalesLayeredReportController extends Controller
         }
     }
     //END POSITIONS/L2
-    //FOR EMPLOYEES/L3 / SHOW EMPLOYEES
-    public function employeesIndexAction($date_from = null, $date_to = null, $position = null)
+    //FOR EMPLOYEES/L3 / CASH TRANS
+    public function cashTransactionsIndexAction($date_from = null, $date_to = null, $mode = null)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -201,24 +201,24 @@ class SalesLayeredReportController extends Controller
             $this->getControllerBase();
 
             //PARAMS
-            $params['position '] = $position ;
+            $params['position '] = $mode ;
 
             if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
                 $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
                 $params['date_from'] = $date_from->format("m/d/Y");
                 $params['date_to'] = $date_to->format("m/d/Y");
-                $params['employees_data'] = $this->getEmployeesData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $position);
+                $params['data'] = $this->cashTransactionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $mode);
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
 
 
-                $positionObject = $em->getRepository('GistUserBundle:Group')->findOneById($position);
+                //$positionObject = $em->getRepository('GistUserBundle:Group')->findOneById($position);
 
-                $params['position_id'] = $positionObject->getID();
-                $params['position_name'] = $positionObject->getName();
+                //$params['position_id'] = $positionObject->getID();
+                $params['mode_name'] = $mode;
 
-                return $this->render('GistSalesReportBundle:SalesLayered:employees.html.twig', $params);
+                return $this->render('GistSalesReportBundle:SalesLayered:cash_transactions.html.twig', $params);
 
             } else {
                 return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
@@ -230,52 +230,35 @@ class SalesLayeredReportController extends Controller
         }
     }
 
-    protected function getEmployeesData($date_from, $date_to, $position)
+    protected function cashTransactionsData($date_from, $date_to, $mode)
     {
         $em = $this->getDoctrine()->getManager();
-        //get all brands
-        $allEmployees = $em->getRepository('GistUserBundle:User')->findBy(['group'=>$position]);
+        $layeredReportService = $this->get('gist_layered_report_service');
+        $transactions = $layeredReportService->getTransactions($date_from, $date_to, null, null);
 
-        foreach ($allEmployees as $employee) {
-            //initiate totals
-            $employeeId = $employee->getID();
+        foreach ($transactions as $transaction) {
             $totalSales = 0;
-            $totalCost = 0;
-            $transactionIds = array();
+            foreach ($transaction->getPayments() as $payment) {
+                if (!$payment->getTransaction()->hasChildLayeredReport()) {
+                    $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($payment->getTransaction()->getPOSLocation());
 
-            //get all transaction items based on date filter
-            $layeredReportService = $this->get('gist_layered_report_service');
-            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
+                    if ($payment->getType() == $mode) {
+                        $totalSales += $payment->getAmount();
 
-            //loop items and check if item's brand is the current loop's brand then add the cost
-            foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                    $employeex = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
-                    if ($employeex->getID() == $employeeId && $employeex->getGroup()->getID() == $position) {
-                        //$totalCost += $product->getCost();
-                        $totalSales += $transactionItem->getTotalAmount();
-                        //store transaction id of item for use
-                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
                     }
                 }
             }
 
-            $brandTotalProfit = $totalSales - $totalCost;
-
-
-
             $list_opts[] = array(
                 'date_from'=>$date_from,
                 'date_to'=> $date_to,
-                'employee_id' => $employeeId,
-                'employee_name' => $employee->getDisplayName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
+                'transaction_display_id' => $transaction->getTransDisplayId(),
+                'transaction_id' => $transaction->getID(),
+                'total_sales' => number_format($totalSales, 2, '.',',')
             );
         }
 
-        if (count($allEmployees) > 0) {
+        if (count($transactions) > 0) {
             return $list_opts;
         } else {
             return null;

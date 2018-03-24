@@ -186,9 +186,9 @@ gist_layered_sales_report_sales_index_modes:
 
 # L3 - CASH
 gist_layered_sales_report_sales_index_cash_transactions:
-    path: /layered-sales-report/sales/cash_transactions/{date_from}/{date_to}
+    path: /layered-sales-report/sales/cash_transactions/{date_from}/{date_to}/{mode}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null }
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:cashTransactionsIndex, date_from: null, date_to: null, mode: null }
 
 # L3 - CARD - TERMINALS
 gist_layered_sales_report_sales_index_card_terminals:
