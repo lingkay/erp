@@ -24,8 +24,8 @@
                 </div>
                 <table class="table table-striped table-bordered table-hover" id="list_table">
                     <thead>
+                    <tr><th colspan="2">Date Range: {{ date_from }} - {{ date_to }}</th></tr>
                     <tr>
-                        <th>Date Range</th>
                         <th>Employee</th>
                         <th>Income</th>
                     </tr>
@@ -33,7 +33,6 @@
                     <tbody>
                     {% for bd in employees_data %}
                         <tr>
-                            <td>{{ date_from }} - {{ date_to }}</td>
                             <td>{{ bd['employee_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
                         </tr>
@@ -72,8 +71,7 @@
                             "sPrevious": "Prev",
                             "sNext": "Next"
                         }
-                    },
-                    "aaSorting": [[2,'desc']]
+                    }
                 });
 
                 $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input

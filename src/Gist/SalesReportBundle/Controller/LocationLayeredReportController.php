@@ -21,7 +21,6 @@ class LocationLayeredReportController extends Controller
     {
         $this->route_prefix = 'gist_layered_sales_report_location';
         $this->title = 'Layered Report - Location';
-
         $this->list_title = 'Layered Report - Location';
         $this->list_type = 'static';
     }
@@ -33,8 +32,6 @@ class LocationLayeredReportController extends Controller
         $this->route_prefix = 'gist_layered_sales_report_location';
         $params = $this->getViewParams('List');
         $this->getControllerBase();
-
-        //PARAMS
         $params['brand'] = $brand;
         $params['category'] = $category;
 
@@ -69,9 +66,7 @@ class LocationLayeredReportController extends Controller
             $params['date_from'] = $date_from_twig;
             $params['date_to'] = $date_to_twig;
 
-
         }
-
 
         return $this->render('GistSalesReportBundle:LocationLayered:index.html.twig', $params);
     }
@@ -115,8 +110,6 @@ class LocationLayeredReportController extends Controller
             $this->route_prefix = 'gist_layered_sales_report_location';
             $params = $this->getViewParams('List');
             $this->getControllerBase();
-
-            //PARAMS
             $params['region'] = $region;
             $params['area'] = $area;
 
@@ -128,8 +121,6 @@ class LocationLayeredReportController extends Controller
                 $params['regions_data'] = $this->getRegionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
-
 
                 return $this->render('GistSalesReportBundle:LocationLayered:regions.html.twig', $params);
 
@@ -145,35 +136,24 @@ class LocationLayeredReportController extends Controller
     {
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        //get all brands
         $allRegions = $em->getRepository('GistLocationBundle:Regions')->findAll();
 
         foreach ($allRegions as $region) {
-            //initiate totals
             $regionId = $region->getID();
             $totalSales = 0;
             $totalCost = 0;
-            $transactionIds = array();
-
-            //get all transaction items based on date filter
             $layeredReportService = $this->get('gist_layered_report_service');
             $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
-
-            //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
                     if ($pos_loc->getArea()->getRegion()->getID() == $regionId) {
-                        //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
-                        //store transaction id of item for use
-                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
                     }
                 }
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-
             $list_opts[] = array(
                 'date_from'=>$date_from,
                 'date_to'=> $date_to,
@@ -202,8 +182,6 @@ class LocationLayeredReportController extends Controller
             $this->route_prefix = 'gist_layered_sales_report_location';
             $params = $this->getViewParams('List');
             $this->getControllerBase();
-
-            //PARAMS
             $params['region '] = $region ;
             $params['area'] = $area;
 
@@ -215,9 +193,7 @@ class LocationLayeredReportController extends Controller
                 $params['areas_data'] = $this->getAreasData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $region);
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
                 $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
-
                 $params['region_id'] = $region;
                 $params['region_name'] = $regionObject->getName();
 
@@ -237,7 +213,6 @@ class LocationLayeredReportController extends Controller
     {
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        //get all brands
         $allAreas = $em->getRepository('GistLocationBundle:Areas')->findAll();
 
         foreach ($allAreas as $area) {
@@ -245,30 +220,21 @@ class LocationLayeredReportController extends Controller
             $areaId = $area->getID();
             $totalSales = 0;
             $totalCost = 0;
-            $transactionIds = array();
-
-            //get all transaction items based on date filter
             $layeredReportService = $this->get('gist_layered_report_service');
             $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
-            //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
                     if ($pos_loc->getArea()->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $areaId) {
-                        //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
-                        //store transaction id of item for use
-                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
                     }
                 }
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-
-            $ref = new ReflectionClass('Gist\LocationBundle\LocationRegion');
-            $region_name = $ref->getConstant($region);
-
+            $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
+            $region_name = $regionObject->getName();
             $list_opts[] = array(
                 'date_from'=>$date_from,
                 'date_to'=> $date_to,
@@ -299,8 +265,6 @@ class LocationLayeredReportController extends Controller
             $this->route_prefix = 'gist_layered_sales_report_location';
             $params = $this->getViewParams('List');
             $this->getControllerBase();
-
-            //PARAMS
             $params['region '] = $region ;
             $params['area'] = $area;
 
@@ -312,10 +276,8 @@ class LocationLayeredReportController extends Controller
                 $params['pos_data'] = $this->getPOSData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'),$region, $area);
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
                 $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
                 $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
-
                 $params['region_id'] = $regionObject->getID();
                 $params['region_name'] = $regionObject->getName();
                 $params['area_id'] = $areaObject->getID();
@@ -335,8 +297,8 @@ class LocationLayeredReportController extends Controller
 
     protected function getPOSData($date_from, $date_to, $region, $area)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        //get all categories
         $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
         $region_name = $regionObject->getName();
 
@@ -344,44 +306,34 @@ class LocationLayeredReportController extends Controller
             'area' => $area
         ]);
 
-        //$regionObject = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($region);
         $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
 
         foreach ($allPOS as $POSObject) {
-            //initiate totals
-            $productId = $POSObject->getID();
-            $totalSales = 0;
-            $totalCost = 0;
-
-            //get all transaction items based on date filter
-            $layeredReportService = $this->get('gist_layered_report_service');
-            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
-
-            //loop items and check if item's brand is the current loop's brand then add the cost
-            foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                    $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getArea()->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area) {
-                        $totalSales += $transactionItem->getTotalAmount();
+            if ($POSObject->getArea()->getRegion()->getID() == $region) {
+                $totalSales = 0;
+                $layeredReportService = $this->get('gist_layered_report_service');
+                $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
+                foreach ($transactionItems as $transactionItem) {
+                    if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                        $pos_loc = $transactionItem->getTransaction()->getPOSLocation();
+                        if ($pos_loc->getArea()->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area && $POSObject->getID() == $pos_loc->getID()) {
+                            $totalSales += $transactionItem->getTotalAmount();
+                        }
                     }
                 }
+
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'pos_loc_id' => $POSObject->getID(),
+                    'region_id' => $region,
+                    'area_id' => $area,
+                    'pos_name' => $POSObject->getName(),
+                    'region_name' => $region_name,
+                    'area_name' => $areaObject->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ',')
+                );
             }
-
-            $totalProfit = $totalSales - $totalCost;
-
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'pos_loc_id' => $POSObject->getID(),
-                'region_id' => $region,
-                'area_id' => $area,
-                'pos_name' => $POSObject->getName(),
-                'region_name' => $region_name,
-                'area_name' => $areaObject->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($totalProfit, 2, '.',','),
-            );
         }
 
         if (count($allPOS) > 0) {
