@@ -196,7 +196,7 @@ gist_layered_sales_report_sales_index_card_terminals:
     methods:  [GET]
     defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:terminalsIndex, date_from: null, date_to: null }
 
-# L3 - CARD - TERMINALS
+# L3 - CARD - CHECK TYPES
 gist_layered_sales_report_sales_index_check_types:
     path: /layered-sales-report/sales/check_types/{date_from}/{date_to}
     methods:  [GET]
@@ -206,10 +206,10 @@ gist_layered_sales_report_sales_index_check_types:
 gist_layered_sales_report_sales_index_card_transactions:
     path: /layered-sales-report/sales/card_transactions/{date_from}/{date_to}/{terminal}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null, terminal: null }
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:cardTransactionsIndex, date_from: null, date_to: null, terminal: null }
 
 # L4 - CHECK - TRANSACTIONS
 gist_layered_sales_report_sales_index_check_transactions:
     path: /layered-sales-report/sales/check_transactions/{date_from}/{date_to}/{check_type}
     methods:  [GET]
-    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:positionsIndex, date_from: null, date_to: null, check_type: null }
+    defaults: { _controller: GistSalesReportBundle:SalesLayeredReport:checkTransactionsIndex, date_from: null, date_to: null, check_type: null }

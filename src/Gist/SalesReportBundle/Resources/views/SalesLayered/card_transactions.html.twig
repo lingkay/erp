@@ -15,7 +15,8 @@
                 <ul class="breadcrumbs2">
                     <li><a href="{{ path('gist_layered_sales_report_sales_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
                     <li><a href="{{ path('gist_layered_sales_report_sales_index_modes', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Modes of Payment</a></li>
-                    <li>Cash Transactions</li>
+                    <li><a href="{{ path('gist_layered_sales_report_sales_index_card_terminals', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Terminal Operators</a></li>
+                    <li>Card Transactions - Terminal Operator: {{ terminal_name }}</li>
                 </ul>
                 <br>
                 <div class="table-toolbar">

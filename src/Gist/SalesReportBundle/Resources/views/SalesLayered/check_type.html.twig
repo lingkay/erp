@@ -36,7 +36,7 @@
                         <tr>
                             <td>{{ bd['type'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td><a href="{{ path('gist_layered_sales_report_sales_index_cash_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'mode' : bd['type']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
+                            <td><a href="{{ path('gist_layered_sales_report_sales_index_check_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'check_type' : bd['type']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
