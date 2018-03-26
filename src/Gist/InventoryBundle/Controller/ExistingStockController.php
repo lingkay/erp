@@ -322,6 +322,7 @@ class ExistingStockController extends Controller
 
     public function calcAvgConsumption($prodId, $invAcctId, $date_from, $date_to)
     {
+        $em = $this->getDoctrine()->getManager();
         $config = $this->get('gist_configuration');
         $inv = $this->get('gist_inventory');
 //        $date_from = DateTime::createFromFormat('Ymd', $this->date_from);
@@ -329,10 +330,11 @@ class ExistingStockController extends Controller
         $quantitySold = $this->countQuantitySold($prodId, $invAcctId, $date_from,$date_to);
         $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
         $days = round($datediff / (60 * 60 * 24), 2);
+        $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$invAcctId]);
 
         if ($quantitySold == 0) {
             $avgConsumption = 0;
-            if ($inv->findWarehouse($config->get('gist_main_warehouse'))->getInventoryAccount()->getID() != $invAcctId) {
+            if ($inv->findWarehouse($config->get('gist_main_warehouse'))->getInventoryAccount()->getID() != $invAcctId && $stock->getQuantity() > 0) {
                 $avgConsumption = 0.001;
             }
 
