@@ -183,18 +183,19 @@ class ProductLayeredReportController extends Controller
                 $profit_percentage = ($brandTotalProfit / $brandTotalSales) * 100;
             }
 
-
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'brand_id' => $brandObject->getID(),
-                'brand_name' => $brandObject->getName(),
-                'total_sales' => number_format($brandTotalSales, 2, '.',','),
-                'total_cost' => number_format($brandTotalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-                'quantity_sold' => $quantitySold,
-                'profit_percentage' => number_format($profit_percentage, 2, '.',',')
-            );
+            if ($brandTotalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'brand_id' => $brandObject->getID(),
+                    'brand_name' => $brandObject->getName(),
+                    'total_sales' => number_format($brandTotalSales, 2, '.', ','),
+                    'total_cost' => number_format($brandTotalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                    'quantity_sold' => $quantitySold,
+                    'profit_percentage' => number_format($profit_percentage, 2, '.', ',')
+                );
+            }
         }
 
         return $list_opts;
@@ -273,24 +274,26 @@ class ProductLayeredReportController extends Controller
             $totalProfit = $totalSales - $totalCost;
             //$profit_percentage = ($totalProfit / $totalSales) * 100;
             if ($totalSales < 1) {
-                $profit_percentage = ($totalProfit / 1) * 100;
+                $profit_percentage = ($totalProfit / 0.001) * 100;
             } else {
                 $profit_percentage = ($totalProfit / $totalSales) * 100;
             }
 
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'brand_id' => $brand,
-                'category_id' => $categoryObject->getID(),
-                'brand_name' => $brandObject->getName(),
-                'category_name' => $categoryObject->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($totalProfit, 2, '.',','),
-                'quantity_sold' => $quantitySold,
-                'profit_percentage' => number_format($profit_percentage, 2, '.',',')
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'brand_id' => $brand,
+                    'category_id' => $categoryObject->getID(),
+                    'brand_name' => $brandObject->getName(),
+                    'category_name' => $categoryObject->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($totalProfit, 2, '.', ','),
+                    'quantity_sold' => $quantitySold,
+                    'profit_percentage' => number_format($profit_percentage, 2, '.', ',')
+                );
+            }
         }
 
         if (count($allCategories) > 0) {
@@ -389,21 +392,23 @@ class ProductLayeredReportController extends Controller
                 $profit_percentage = ($totalProfit / $totalSales) * 100;
             }
 
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'product_id' => $productObject->getID(),
-                'brand_id' => $brand,
-                'category_id' => $category,
-                'product_name' => $productObject->getName(),
-                'brand_name' => $brandObject->getName(),
-                'category_name' => $categoryObject->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($totalProfit, 2, '.',','),
-                'quantity_sold' => $quantitySold,
-                'profit_percentage' => number_format($profit_percentage, 2, '.',',')
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'product_id' => $productObject->getID(),
+                    'brand_id' => $brand,
+                    'category_id' => $category,
+                    'product_name' => $productObject->getName(),
+                    'brand_name' => $brandObject->getName(),
+                    'category_name' => $categoryObject->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($totalProfit, 2, '.', ','),
+                    'quantity_sold' => $quantitySold,
+                    'profit_percentage' => number_format($profit_percentage, 2, '.', ',')
+                );
+            }
         }
 
         if (count($allProducts) > 0) {

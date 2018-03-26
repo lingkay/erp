@@ -141,6 +141,7 @@ class EmployeeLayeredReportController extends Controller
 
     protected function getPositionsData($date_from, $date_to)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all positions
         $salesDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Sales']);
@@ -172,16 +173,17 @@ class EmployeeLayeredReportController extends Controller
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'position_id' => $positionId,
-                'position_name' => $position->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'position_id' => $positionId,
+                    'position_name' => $position->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allPositions) > 0) {
@@ -234,6 +236,7 @@ class EmployeeLayeredReportController extends Controller
 
     protected function getEmployeesData($date_from, $date_to, $position)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all brands
         $allEmployees = $em->getRepository('GistUserBundle:User')->findBy(['group'=>$position]);
@@ -265,16 +268,17 @@ class EmployeeLayeredReportController extends Controller
             $brandTotalProfit = $totalSales - $totalCost;
 
 
-
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'employee_id' => $employeeId,
-                'employee_name' => $employee->getDisplayName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'employee_id' => $employeeId,
+                    'employee_name' => $employee->getDisplayName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allEmployees) > 0) {

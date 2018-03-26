@@ -154,15 +154,17 @@ class LocationLayeredReportController extends Controller
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'region_id' => $regionId,
-                'region_name' => $region->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'region_id' => $regionId,
+                    'region_name' => $region->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allRegions) > 0) {
@@ -235,17 +237,19 @@ class LocationLayeredReportController extends Controller
             $brandTotalProfit = $totalSales - $totalCost;
             $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
             $region_name = $regionObject->getName();
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'region_id' => $region,
-                'region_name' => $region_name,
-                'area_id' => $areaId,
-                'area_name' => $area->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'region_id' => $region,
+                    'region_name' => $region_name,
+                    'area_id' => $areaId,
+                    'area_name' => $area->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allAreas) > 0) {
@@ -321,18 +325,19 @@ class LocationLayeredReportController extends Controller
                         }
                     }
                 }
-
-                $list_opts[] = array(
-                    'date_from' => $date_from,
-                    'date_to' => $date_to,
-                    'pos_loc_id' => $POSObject->getID(),
-                    'region_id' => $region,
-                    'area_id' => $area,
-                    'pos_name' => $POSObject->getName(),
-                    'region_name' => $region_name,
-                    'area_name' => $areaObject->getName(),
-                    'total_sales' => number_format($totalSales, 2, '.', ',')
-                );
+                if ($totalSales > 0) {
+                    $list_opts[] = array(
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+                        'pos_loc_id' => $POSObject->getID(),
+                        'region_id' => $region,
+                        'area_id' => $area,
+                        'pos_name' => $POSObject->getName(),
+                        'region_name' => $region_name,
+                        'area_name' => $areaObject->getName(),
+                        'total_sales' => number_format($totalSales, 2, '.', ',')
+                    );
+                }
             }
         }
 

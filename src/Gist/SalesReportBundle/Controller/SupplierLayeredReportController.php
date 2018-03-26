@@ -139,6 +139,7 @@ class SupplierLayeredReportController extends Controller
 
     protected function getSuppliersData($date_from, $date_to)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all positions
         $salesDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Sales']);
@@ -166,16 +167,17 @@ class SupplierLayeredReportController extends Controller
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'supplier_name' => $supplier->getName(),
-                'supplier_id' => $supplier->getID(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'supplier_name' => $supplier->getName(),
+                    'supplier_id' => $supplier->getID(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allSuppliers) > 0) {

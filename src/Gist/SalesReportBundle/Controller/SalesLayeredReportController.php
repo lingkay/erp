@@ -170,16 +170,17 @@ class SalesLayeredReportController extends Controller
 
 
             $brandTotalProfit = $totalSales - $totalCost;
-
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'name' => $modeName,
-                'id' => $modeId,
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'name' => $modeName,
+                    'id' => $modeId,
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allModes) > 0) {

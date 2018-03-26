@@ -172,17 +172,18 @@ class CustomerLayeredReportController extends Controller
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'customer_id' => $customer->getID(),
-                'customer_name' => $customer->getNameFormatted(),
-                'customer_display_id' => $customer->getDisplayID(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($brandTotalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'customer_id' => $customer->getID(),
+                    'customer_name' => $customer->getNameFormatted(),
+                    'customer_display_id' => $customer->getDisplayID(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allCustomers) > 0) {
@@ -261,20 +262,22 @@ class CustomerLayeredReportController extends Controller
 
                 $brandTotalProfit = $totalSales - $totalCost;
                 $customerObject = $em->getRepository('GistCustomerBundle:Customer')->findOneById($customer_id);
-                $list_opts[] = array(
-                    'date_from' => $date_from,
-                    'date_to' => $date_to,
-                    'transaction_pos_name' => $transaction->getPOSLocation()->getName(),
-                    'transaction_date' => $transaction->getDateCreate()->format('F d, Y h:i A'),
-                    'transaction_id' => $transactionId,
-                    'transaction_system_id' => $transaction->getID(),
-                    'customer_name' => $customerObject->getNameFormatted(),
-                    'customer_display_id' => $customerObject->getDisplayID(),
-                    'customer_id' => $customerObject->getID(),
-                    'total_sales' => number_format($totalSales, 2, '.', ','),
-                    'total_cost' => number_format($totalCost, 2, '.', ','),
-                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
-                );
+                if ($totalSales > 0) {
+                    $list_opts[] = array(
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+                        'transaction_pos_name' => $transaction->getPOSLocation()->getName(),
+                        'transaction_date' => $transaction->getDateCreate()->format('F d, Y h:i A'),
+                        'transaction_id' => $transactionId,
+                        'transaction_system_id' => $transaction->getID(),
+                        'customer_name' => $customerObject->getNameFormatted(),
+                        'customer_display_id' => $customerObject->getDisplayID(),
+                        'customer_id' => $customerObject->getID(),
+                        'total_sales' => number_format($totalSales, 2, '.', ','),
+                        'total_cost' => number_format($totalCost, 2, '.', ','),
+                        'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                    );
+                }
             }
         }
 
@@ -364,19 +367,21 @@ class CustomerLayeredReportController extends Controller
 
             $totalProfit = $totalSales - $totalCost;
 
-            $list_opts[] = array(
-                'date_from'=>$date_from,
-                'date_to'=> $date_to,
-                'pos_loc_id' => $POSObject->getID(),
-                'region_id' => $region,
-                'area_id' => $area,
-                'pos_name' => $POSObject->getName(),
-                'region_name' => $regionObject->getName(),
-                'area_name' => $areaObject->getName(),
-                'total_sales' => number_format($totalSales, 2, '.',','),
-                'total_cost' => number_format($totalCost, 2, '.',','),
-                'total_profit' => number_format($totalProfit, 2, '.',','),
-            );
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'pos_loc_id' => $POSObject->getID(),
+                    'region_id' => $region,
+                    'area_id' => $area,
+                    'pos_name' => $POSObject->getName(),
+                    'region_name' => $regionObject->getName(),
+                    'area_name' => $areaObject->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($totalProfit, 2, '.', ','),
+                );
+            }
         }
 
         if (count($allPOS) > 0) {
