@@ -141,6 +141,7 @@ class CustomerLayeredReportController extends Controller
 
     protected function getCustomersData($date_from, $date_to)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all positions
         $salesDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Sales']);
@@ -234,6 +235,7 @@ class CustomerLayeredReportController extends Controller
 
     protected function getCustomerTransactionsData($date_from, $date_to, $customer_id)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all brands
         $layeredReportService = $this->get('gist_layered_report_service');
