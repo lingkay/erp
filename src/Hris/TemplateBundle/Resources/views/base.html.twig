@@ -222,9 +222,10 @@
     <link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
      {% embed "HrisTemplateBundle::css.html.twig" with {'conf': conf, 'theme':theme} %}{% endembed %}
- 
+
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="{{ asset('bundles/gisttemplate/assets/global/img/logo_new.png') }}"/>
+{#<link rel="shortcut icon" href="{{ asset('bundles/gisttemplate/assets/global/img/logo_new.png') }}"/>#}
+    <link rel="shortcut icon" href="{{ conf.getAll['hris_com_favicon_url'] is defined and conf.getAll['hris_com_favicon_url'] != '' ?conf.getAll['hris_com_favicon_url'] : asset('bundles/gisttemplate/assets/global/img/logo_new.png') }}"/>
 <script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
 
 </head>
@@ -250,10 +251,10 @@
             <div class="menu-toggler sidebar-toggler">
                 <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
             </div>
-            
+
         </div>
 
-         
+
 
         <!-- END LOGO -->
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
@@ -277,7 +278,8 @@
         <div class="menu-logo">
                 <a href="/">
                     <span class="helper"></span>
-                    <img src="{{ asset('bundles/gisttemplate/assets/global/img/cosmeti_logo.png') }}" style="width:100%;" alt="logo" class="logo-default"/>
+                    {#<img src="{{ asset('bundles/gisttemplate/assets/global/img/cosmeti_logo.png') }}" style="width:100%;" alt="logo" class="logo-default"/>#}
+                    <img src="{{ conf.getAll['hris_com_logo_url'] is defined and conf.getAll['hris_com_logo_url'] != '' ?conf.getAll['hris_com_logo_url'] :asset('bundles/gisttemplate/assets/global/img/cosmeti_logo.png') }}" style="width:100%;" alt="logo" class="logo-default"/>
                     <span class="helper"></span>
                 </a>
         </div>
@@ -352,7 +354,7 @@
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
     <div class="page-footer-inner" style="color: white !important;">
-         2017 &copy; CosmetiGroup Int'l Corp. | 22nd Floor Pearl Bank Center 146 Valero St., Salcedo Village, Makati City
+         2018 &copy; CosmetiGroup Int'l Corp. | 22nd Floor Pearl Bank Center 146 Valero St., Salcedo Village, Makati City
     </div>
     <div class="page-footer-tools">
         <span class="go-top">
@@ -365,7 +367,7 @@
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
 <script src="{{ asset('bundles/gisttemplate/assets/global/plugins/respond.min.js') }}"></script>
-<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/excanvas.min.js') }}"></script> 
+<script src="{{ asset('bundles/gisttemplate/assets/global/plugins/excanvas.min.js') }}"></script>
 <![endif]-->
 <script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-1.11.0.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('bundles/gisttemplate/assets/global/plugins/jquery-migrate-1.2.1.min.js') }}" type="text/javascript"></script>
@@ -475,7 +477,7 @@ jQuery(document).ready(function() {
     //set to readonly typeaheads with value
     $( ".typeahead" ).each(function() {
         var auto = $(this);
-        if (auto.val() != '') 
+        if (auto.val() != '')
         {
             auto.prop('readonly', true);
         }
