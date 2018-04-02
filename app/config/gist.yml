@@ -26,8 +26,8 @@ gist_user:
     acl_entries:
         - id: HrisDashboardBundle
           label: Dashboard
-#        - id: GistAdminBundle
-#          label: Administration
+        - id: GistAdminBundle
+          label: Administration
         - id: GistConfigurationBundle
           label: Settings
         - id: GistAccountingBundle
@@ -50,7 +50,7 @@ gist_user:
 gist_configuration:
     bundles:
         - GistInventoryBundle
-#        - GistAccountingBundle
+#        - GistAdminBundle
 
 
 gist_media:
