@@ -2,7 +2,7 @@ gist_menu:
     bundle_menu:
         - GistDashboardBundle
 #        - GistAdminBundle
-        #- HrisAdminBundle
+        - HrisAdminBundle
         - GistUserBundle
         - GistLocationBundle
         - GistAccountingBundle
@@ -12,7 +12,7 @@ gist_menu:
         - GistPOSERPBundle
         - GistSalesReportBundle
         #- HrisBiometricsBundle
-        #- HrisWorkforceBundle
+#        - HrisWorkforceBundle
         #- HrisRemunerationBundle
         #- HrisRecruitmentBundle
         #- HrisEmployeeSatisfactionBundle
@@ -46,6 +46,8 @@ gist_user:
           label: Sales
         - id: HrisCompanyOverviewBundle
           label: Company
+        - id: HrisAdminBundle
+          label: HRIS
 
 gist_configuration:
     bundles:

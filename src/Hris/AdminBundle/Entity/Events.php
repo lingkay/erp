@@ -33,10 +33,29 @@ class Events
     /** @ORM\Column(type="string", length=80) */
     protected $holiday_type;
 
+    /** @ORM\Column(type="decimal", length=80, nullable=true) */
+    protected $rate;
+
     public function __construct()
     {
         $this->initTrackCreate();
         $this->initHasName();
+    }
+
+    public function setRate($rate)
+    {
+        $this->rate = $rate;
+        return $this;
+    }
+
+    public function getRate()
+    {
+        return $this->rate;
+    }
+
+    public function getRateFormatted()
+    {
+        return $this->rate . '%';
     }
 
     public function setDateFrom($date_from)

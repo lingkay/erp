@@ -22,22 +22,23 @@ class EventsController extends CrudController
         $this->list_type = 'static';
     }
 
-    protected function newBaseClass() 
+    protected function newBaseClass()
     {
         return new Events();
     }
-    
+
     protected function update($o, $data, $is_new = false)
-    {   
+    {
         $evm = $this->get('hris_events');
         $evm->checkForEventsTomorrow();
         $em = $this->getDoctrine()->getManager();
 
-        if (isset($data['allday'])) 
+        $o->setRate($data['rate']);
+        if (isset($data['allday']))
         {
             $start = new DateTime($data['event_date'].'12:00 AM');
             $end = new DateTime($data['event_date'].'11:59 PM');
-            
+
             $o->setDateFrom($start);
             $o->setDateTo($end);
             $o->setName($data['event_name']);
@@ -45,10 +46,10 @@ class EventsController extends CrudController
             $this->updateTrackCreate($o,$data,$is_new);
         }
         else
-        {     
+        {
             $start = new DateTime($data['date_from'].$data['start']);
             $end = new DateTime($data['date_to'].$data['end']);
-            
+
             $o->setDateFrom($start);
             $o->setDateTo($end);
             $o->setName($data['event_name']);
@@ -86,13 +87,13 @@ class EventsController extends CrudController
     }
 
 
-    protected function getObjectLabel($obj) 
+    protected function getObjectLabel($obj)
     {
         if ($obj == null){
             return '';
         }
         return $obj->getName();
-    }  
+    }
 
     protected function getGridColumns()
     {
@@ -100,6 +101,7 @@ class EventsController extends CrudController
 
         return array(
             $grid->newColumn('Name','getName','name'),
+            $grid->newColumn('Rate','getRateFormatted','rate'),
             $grid->newColumn('Date From','getDateFrom','name'),
             $grid->newColumn('Date To','getDateTo','name'),
             $grid->newColumn('Type','getHolidayType','name'),
@@ -113,9 +115,9 @@ class EventsController extends CrudController
         $arr[] = array('title'=>'','start'=>'1800-12-12T00:00:00','end'=>'1800-12-12T00:00:00');
 
         $data = $em->getRepository('HrisAdminBundle:Events')->findAll();
-        foreach ($data as $event) 
+        foreach ($data as $event)
         {
-            if (($event->getDateFrom2()->format('Y-m-d') == $event->getDateTo2()->format('Y-m-d')) && ($event->getDateFrom2()->format('H:i:s') == "00:00:00" && $event->getDateTo2()->format('H:i:s') == "23:59:00")) 
+            if (($event->getDateFrom2()->format('Y-m-d') == $event->getDateTo2()->format('Y-m-d')) && ($event->getDateFrom2()->format('H:i:s') == "00:00:00" && $event->getDateTo2()->format('H:i:s') == "23:59:00"))
             {
                 $arr[] = array('allDay'=>true,'title'=>$event->getName(), 'start'=>$event->getDateFrom2()->format('Y-m-d').'T'.$event->getDateFrom2()->format('H:i:s'), 'end'=>$event->getDateTo2()->format('Y-m-d').'T'.$event->getDateTo2()->format('H:i:s'));
             }

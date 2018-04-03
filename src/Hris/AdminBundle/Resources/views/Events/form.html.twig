@@ -13,7 +13,8 @@
                 <form method="post" class="form-horizontal">
                     <div class="form-body">
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-                        {{ form.group_text('Event Name', 'event_name', object.getName|default(''), 3, 4, readonly) }}
+                        {{ form.group_text('Name', 'event_name', object.getName|default(''), 3, 4, readonly) }}
+                        {{form.group_number('Rate (%)', 'rate', object.getRate|default(''), 3, 4, readonly)}}
                         {# ADD SELECTOR IF ALL DAY #}
                         <div class="form-group">
                             <label class="col-md-3 control-label">All-day event</label>
@@ -37,7 +38,7 @@
                                         </div>
                                     </div>
                                 </div>
-                        
+
                             {{ form.group_date('End Date','date_to', object.getDateTo|date('m/d/Y'),3,4) }}
                              <div class="form-group">
                                     <label class="col-md-3 control-label">End Time</label>
@@ -57,12 +58,12 @@
                             {{ form.group_select('Event Type', 'event_holiday_type', holiday_opts, '', 3, 4) }}
                         </div>
                     </div>
-                    
+
                     <div class="form-actions fluid">
                         <div class="col-md-offset-3 col-md-9">
                             {% if not readonly %}
                             <button type="submit" class="btn blue">Submit</button>
-                            {% endif %} 
+                            {% endif %}
                             <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
                         </div>
                     </div>
@@ -91,7 +92,7 @@ $(document).ready( function() {
     }
 });
 
-    
+
     $('#all_day').hide();
     $('.calendar').prop('disabled', true);
 
@@ -106,7 +107,7 @@ $(document).ready( function() {
             startDate: $('#cform-date_from').val(),
             });
     });
-    
+
  $('.timepicker-no-seconds').timepicker({
         autoclose: true,
         minuteStep: 1
@@ -122,12 +123,12 @@ $(document).ready( function() {
                 element.parent().parent().addClass('has-error');
             }
             else if(element.parent().parent().hasClass('checker'))
-            {   
+            {
                 error.appendTo(element.parent().parent().parent().parent().last());
                 element.parent().parent().parent().parent().parent().parent().addClass('has-error');
             }
             else if(element.parent().parent().hasClass('radio'))
-            {   
+            {
                 error.appendTo(element.parent().parent().parent().parent().last());
                 element.parent().parent().parent().parent().parent().parent().addClass('has-error');
             }
@@ -139,22 +140,22 @@ $(document).ready( function() {
         },
         success: function(element) {
             if(element.parent().parent().hasClass('form-group'))
-            {  
+            {
                 element.parent().parent().removeClass('has-error');
                 element.parent().parent().addClass('has-success');
             }
             else if(element.parent().parent().hasClass('checker'))
-            {   
+            {
                 element.parent().parent().parent().parent().parent().removeClass('has-error');
                 element.parent().parent().parent().parent().parent().addClass('has-success');
             }
             else if(element.parent().parent().hasClass('radio'))
-            {   
+            {
                 element.parent().parent().parent().parent().parent().removeClass('has-error');
                 element.parent().parent().parent().parent().parent().addClass('has-success');
             }
             else
-            {  
+            {
                 element.parent().parent().parent().removeClass('has-error');
                 element.parent().parent().parent().addClass('has-success');
             }
