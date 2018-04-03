@@ -23,16 +23,16 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Characteristics</label>
-                            <div class="col-md-5">
-                                <div class="radio-list">
-                                {% for id,type in types %}
-                                    {{ form.radio(type|replace(' ', ''), id, type,  object.getType|default('') == type ? 'checked':'','characteristics') }}
-                                {% endfor %}
-                                </div>
-                            </div>
-                        </div>
+                        {#<div class="form-group">#}
+                            {#<label class="col-md-3 control-label">Characteristics</label>#}
+                            {#<div class="col-md-5">#}
+                                {#<div class="radio-list">#}
+                                {#{% for id,type in types %}#}
+                                    {#{{ form.radio(type|replace(' ', ''), id, type,  object.getType|default('') == type ? 'checked':'','characteristics') }}#}
+                                {#{% endfor %}#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div>#}
 
                          <div class="form-group">
                             <label class="col-md-3 control-label">Gender</label>
@@ -40,16 +40,16 @@
                                 {{ form.checkbox_set('gender', gender_opts, object.getGender) }}
                             </div>
                         </div>
-            
-                      {{ form.group_selectmulti("Department", 'department', dept_opts, object.getDepartment, 3, 4)}}
-              
+
+                      {#{{ form.group_selectmulti("Department", 'department', dept_opts, object.getDepartment, 3, 4)}}#}
+
                     </div>
-                    
+
                     <div class="form-actions fluid">
                         <div class="col-md-offset-3 col-md-9">
                             {% if not readonly %}
                             <button type="submit" class="btn blue">Submit</button>
-                            {% endif %} 
+                            {% endif %}
                             <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
                         </div>
                     </div>
@@ -78,12 +78,12 @@ $(document).ready( function() {
                 element.parent().parent().addClass('has-error');
             }
             else if(element.parent().parent().hasClass('checker'))
-            {   
+            {
                 error.appendTo(element.parent().parent().parent().parent().last());
                 element.parent().parent().parent().parent().parent().parent().addClass('has-error');
             }
             else if(element.parent().parent().hasClass('radio'))
-            {   
+            {
                 error.appendTo(element.parent().parent().parent().parent().last());
                 element.parent().parent().parent().parent().parent().parent().addClass('has-error');
             }
@@ -95,22 +95,22 @@ $(document).ready( function() {
         },
         success: function(element) {
             if(element.parent().parent().hasClass('form-group'))
-            {  
+            {
                 element.parent().parent().removeClass('has-error');
                 element.parent().parent().addClass('has-success');
             }
             else if(element.parent().parent().hasClass('checker'))
-            {   
+            {
                 element.parent().parent().parent().parent().parent().removeClass('has-error');
                 element.parent().parent().parent().parent().parent().addClass('has-success');
             }
             else if(element.parent().parent().hasClass('radio'))
-            {   
+            {
                 element.parent().parent().parent().parent().parent().removeClass('has-error');
                 element.parent().parent().parent().parent().parent().addClass('has-success');
             }
             else
-            {  
+            {
                 element.parent().parent().parent().removeClass('has-error');
                 element.parent().parent().parent().addClass('has-success');
             }

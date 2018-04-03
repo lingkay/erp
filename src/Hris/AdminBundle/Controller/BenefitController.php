@@ -96,13 +96,13 @@ class BenefitController extends CrudController
         $this->updateTrackCreate($o, $data, $is_new);
     }
 
-    protected function getObjectLabel($obj) 
+    protected function getObjectLabel($obj)
     {
         if ($obj == null){
             return '';
         }
         return $obj->getName();
-    }  
+    }
 
     protected function getGridColumns()
     {
@@ -110,7 +110,7 @@ class BenefitController extends CrudController
         return array(
             $grid->newColumn('Benefit', 'getName', 'name'),
             $grid->newColumn('Description', 'getNotes', 'notes'),
-            $grid->newColumn('Benefit Type', 'getType', 'type'),
+//            $grid->newColumn('Benefit Type', 'getType', 'type'),
         );
     }
 }
