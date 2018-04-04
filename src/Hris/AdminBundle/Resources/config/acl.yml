@@ -1,35 +1,21 @@
 acl:
-    # Admin Menu
-    - category: Administration
-      entries:
-      - id: cat_admin.menu
-        label: "Menu"
-
-    # Omnibar
-    - category: Omnibar
-      entries:
-      - id: hris_omnibar.view
-        label: "View"
-
     # HR Settings Menu
-    - category: HR Settings
+    - category: HRIS Settings
       entries:
       - id: hris_admin.menu
         label: "Menu"
 
-    # Department Sub-menu
-#    - category: Department
-#      entries:
-#      - id: hris_admin_department.menu
-#        label: "Menu"
-#      - id: hris_admin_department.view
-#        label: "View"
-#      - id: hris_admin_department.add
-#        label: "Add"
-#      - id: hris_admin_department.edit
-#        label: "Edit"
-#      - id: hris_admin_department.delete
-#        label: "Delete"
+    # Basic Settings
+    - category: Basic Settings
+      entries:
+      - id: hris_admin_basic_settings.menu
+        label: "Menu"
+      - id: hris_admin_basic_settings.view
+        label: "View"
+      - id: hris_admin_basic_settings.add
+        label: "Add"
+      - id: hris_admin_basic_settings.edit
+        label: "Edit"
 
     # Events Sub-menu
     - category: Events
@@ -45,48 +31,6 @@ acl:
       - id: hris_admin_events.delete
         label: "Delete"
 
-#    # Position / Job Title Sub-menu
-#    - category: Position
-#      entries:
-#      - id: hris_admin_jobtitles.menu
-#        label: "Menu"
-#      - id: hris_admin_jobtitles.view
-#        label: "View"
-#      - id: hris_admin_jobtitles.add
-#        label: "Add"
-#      - id: hris_admin_jobtitles.edit
-#        label: "Edit"
-#      - id: hris_admin_jobtitles.delete
-#        label: "Delete"
-#
-#    # Job Level
-#    - category: Job Level
-#      entries:
-#      - id: hris_admin_joblevel.menu
-#        label: "Menu"
-#      - id: hris_admin_joblevel.view
-#        label: "View"
-#      - id: hris_admin_joblevel.add
-#        label: "Add"
-#      - id: hris_admin_joblevel.edit
-#        label: "Edit"
-#      - id: hris_admin_joblevel.delete
-#        label: "Delete"
-
-    # Location Sub-menu
-#    - category: Location
-#      entries:
-#      - id: hris_admin_location.menu
-#        label: "Menu"
-#      - id: hris_admin_location.view
-#        label: "View"
-#      - id: hris_admin_location.add
-#        label: "Add"
-#      - id: hris_admin_location.edit
-#        label: "Edit"
-#      - id: hris_admin_location.delete
-#        label: "Delete"
-
     # Benefit Sub-menu
     - category: Benefit
       entries:
@@ -100,6 +44,90 @@ acl:
         label: "Edit"
       - id: hris_admin_benefit.delete
         label: "Delete"
+
+    # Leave Type
+    - category: Leave Type
+      entries:
+      - id: hris_admin_leave_type.menu
+        label: "Menu"
+      - id: hris_admin_leave_type.view
+        label: "View"
+      - id: hris_admin_leave_type.add
+        label: "Add"
+      - id: hris_admin_leave_type.edit
+        label: "Edit"
+      - id: hris_admin_leave_type.delete
+        label: "Delete"
+
+    # Overtime
+    - category: Overtime
+      entries:
+      - id: hris_admin_otsetting.menu
+        label: "Menu"
+      - id: hris_admin_otsetting.edit
+        label: "Edit"
+
+    - category: Tax Matrix
+      entries:
+        - id: hris_admin_tax_matrix.menu
+          label: "Menu"
+        - id: hris_admin_tax_matrix.view
+          label: "View"
+        - id: hris_admin_tax_matrix.add
+          label: "Add"
+        - id: hris_admin_tax_matrix.edit
+          label: "Edit"
+        - id: hris_admin_tax_matrix.delete
+          label: "Delete"
+
+    # Biometrics
+#    - category: Biometrics Settings
+#      entries:
+#       - id: hris_biometrics.menu
+#         label: "Menu"
+#       - id: hris_biometrics.view
+#         label: "View"
+#       - id: hris_biometrics.add
+#         label: "Add"
+
+    # Form Codes Sub-menu
+#    - category: HR Form Codes
+#      entries:
+#      - id: hris_admin_form_codes.menu
+#        label: "Menu"
+#      - id: hris_admin_form_codes.view
+#        label: "View"
+#      - id: hris_admin_form_codes.edit
+#        label: "Edit"
+
+    # Leave Rules
+#    - category: Leave Rules
+#      entries:
+#      - id: hris_admin_leave_rules.menu
+#        label: "Menu"
+#      - id: hris_admin_leave_rules.view
+#        label: "View"
+#      - id: hris_admin_leave_rules.add
+#        label: "Add"
+#      - id: hris_admin_leave_rules.edit
+#        label: "Edit"
+#      - id: hris_admin_leave_rules.delete
+#        label: "Delete"
+
+    # Appraisal Settings
+#    - category: Appraisal Settings
+#      entries:
+#      - id: hris_admin_appraisal_settings.menu
+#        label: "Menu"
+#      - id: hris_admin_appraisal_settings.view
+#        label: "View"
+#      - id: hris_admin_appraisal_settings.add
+#        label: "Add"
+#      - id: hris_admin_appraisal_settings.edit
+#        label: "Edit"
+#      - id: hris_admin_appraisal_settings.delete
+#        label: "Delete"
+
 
     # Time Schedule Sub-menu
 #    - category: Employee Time Schedule
@@ -165,86 +193,70 @@ acl:
 #      - id: hris_admin_leave.menu
 #        label: "Menu"
 
-    # Leave Type
-    - category: Leave Type
-      entries:
-      - id: hris_admin_leave_type.menu
-        label: "Menu"
-      - id: hris_admin_leave_type.view
-        label: "View"
-      - id: hris_admin_leave_type.add
-        label: "Add"
-      - id: hris_admin_leave_type.edit
-        label: "Edit"
-      - id: hris_admin_leave_type.delete
-        label: "Delete"
-
-    # Leave Rules
-#    - category: Leave Rules
+#    # Position / Job Title Sub-menu
+#    - category: Position
 #      entries:
-#      - id: hris_admin_leave_rules.menu
+#      - id: hris_admin_jobtitles.menu
 #        label: "Menu"
-#      - id: hris_admin_leave_rules.view
+#      - id: hris_admin_jobtitles.view
 #        label: "View"
-#      - id: hris_admin_leave_rules.add
+#      - id: hris_admin_jobtitles.add
 #        label: "Add"
-#      - id: hris_admin_leave_rules.edit
+#      - id: hris_admin_jobtitles.edit
 #        label: "Edit"
-#      - id: hris_admin_leave_rules.delete
+#      - id: hris_admin_jobtitles.delete
+#        label: "Delete"
+#
+#    # Job Level
+#    - category: Job Level
+#      entries:
+#      - id: hris_admin_joblevel.menu
+#        label: "Menu"
+#      - id: hris_admin_joblevel.view
+#        label: "View"
+#      - id: hris_admin_joblevel.add
+#        label: "Add"
+#      - id: hris_admin_joblevel.edit
+#        label: "Edit"
+#      - id: hris_admin_joblevel.delete
 #        label: "Delete"
 
-    # Appraisal Settings
-#    - category: Appraisal Settings
+    # Location Sub-menu
+#    - category: Location
 #      entries:
-#      - id: hris_admin_appraisal_settings.menu
+#      - id: hris_admin_location.menu
 #        label: "Menu"
-#      - id: hris_admin_appraisal_settings.view
+#      - id: hris_admin_location.view
 #        label: "View"
-#      - id: hris_admin_appraisal_settings.add
+#      - id: hris_admin_location.add
 #        label: "Add"
-#      - id: hris_admin_appraisal_settings.edit
+#      - id: hris_admin_location.edit
 #        label: "Edit"
-#      - id: hris_admin_appraisal_settings.delete
+#      - id: hris_admin_location.delete
 #        label: "Delete"
 
-    # Overtime
-    - category: Overtime
-      entries:
-      - id: hris_admin_otsetting.menu
-        label: "Menu"
-      - id: hris_admin_otsetting.edit
-        label: "Edit"
-
-    # Biometrics
-#    - category: Biometrics Settings
+    # Department Sub-menu
+#    - category: Department
 #      entries:
-#       - id: hris_biometrics.menu
-#         label: "Menu"
-#       - id: hris_biometrics.view
-#         label: "View"
-#       - id: hris_biometrics.add
-#         label: "Add"
-
-    # Form Codes Sub-menu
-#    - category: HR Form Codes
-#      entries:
-#      - id: hris_admin_form_codes.menu
+#      - id: hris_admin_department.menu
 #        label: "Menu"
-#      - id: hris_admin_form_codes.view
+#      - id: hris_admin_department.view
 #        label: "View"
-#      - id: hris_admin_form_codes.edit
+#      - id: hris_admin_department.add
+#        label: "Add"
+#      - id: hris_admin_department.edit
 #        label: "Edit"
+#      - id: hris_admin_department.delete
+#        label: "Delete"
 
+    # Admin Menu
+#    - category: Administration
+#      entries:
+#      - id: cat_admin.menu
+#        label: "Menu"
 
-    - category: Tax Matrix
-      entries:
-        - id: hris_admin_tax_matrix.menu
-          label: "Menu"
-        - id: hris_admin_tax_matrix.view
-          label: "View"
-        - id: hris_admin_tax_matrix.add
-          label: "Add"
-        - id: hris_admin_tax_matrix.edit
-          label: "Edit"
-        - id: hris_admin_tax_matrix.delete
-          label: "Delete"
+    # Omnibar
+#    - category: Omnibar
+#      entries:
+#      - id: hris_omnibar.view
+#        label: "View"

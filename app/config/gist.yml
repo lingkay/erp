@@ -2,8 +2,8 @@ gist_menu:
     bundle_menu:
         - GistDashboardBundle
 #        - GistAdminBundle
-        - HrisAdminBundle
         - GistUserBundle
+        - HrisAdminBundle
         - GistLocationBundle
         - GistAccountingBundle
         - GistInventoryBundle

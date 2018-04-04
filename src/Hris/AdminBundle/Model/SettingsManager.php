@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Hris\AdminBundle\Entity\Department;
 use Hris\AdminBundle\Entity\Schedules;
 use Hris\WorkforceBundle\Entity\Employee;
+use Hris\AdminBundle\Entity\HRISConfigEntry;
 
 class SettingsManager
 {
@@ -258,5 +259,36 @@ class SettingsManager
     public function getResignedCount()
     {
         return count($this->em->getRepository("HrisWorkforceBundle:Employee")->findBy(array('employment_status'=> Employee::EMP_RESIGNED)));
+    }
+
+    public function set($id, $value)
+    {
+        $em = $this->em;
+        $entry = $em->getRepository('HrisAdminBundle:HRISConfigEntry')->find($id);
+
+        if ($entry == null)
+        {
+            $entry = new HRISConfigEntry($id, $value);
+
+            $em->persist($entry);
+
+            return $this;
+        }
+
+        // if it's there already
+        $entry->setValue($value);
+
+        return $this;
+    }
+
+    public function get($id)
+    {
+        $em = $this->em;
+        $entry = $em->getRepository('HrisAdminBundle:HRISConfigEntry')->find($id);
+
+        if ($entry == null)
+            return null;
+
+        return $entry->getValue();
     }
 }

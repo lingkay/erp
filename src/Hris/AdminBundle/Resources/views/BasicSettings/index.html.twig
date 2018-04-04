@@ -1,0 +1,32 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">HRIS - Basic Settings</div>
+                </div>
+                <div class="portlet-body form">
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                            {{ form.group_number_no_step('Minimum work hours', 'hris_settings_minimum_work_hours',hris_settings_minimum_work_hours ,3,2)}}
+                            {{ form.group_number_no_step('Minimum hourly rate', 'hris_settings_minimum_hourly_rate',hris_settings_minimum_hourly_rate ,3,2)}}
+                            {{ form.group_number_no_step('Minimum daily rate', 'hris_settings_minimum_daily_rate',hris_settings_minimum_daily_rate ,3,2)}}
+                        </div>
+
+                        {% if app.user.hasAccess('hris_admin_basic_settings.edit') %}
+                            <div class="form-actions fluid">
+                                <div class="col-md-9">
+                                    <button type="submit" class="btn blue">Submit</button>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

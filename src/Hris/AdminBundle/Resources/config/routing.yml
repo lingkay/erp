@@ -711,3 +711,14 @@ hris_admin_tax_matrix_grid:
     pattern: /tax-matrix/grid
     methods: [GET]
     defaults: { _controller: HrisAdminBundle:TaxMatrix:grid }
+
+#    BASIC SETTINGS
+hris_admin_basic_settings_index:
+    path:  /basic-settings
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:BasicSettings:index }
+
+hris_admin_basic_settings_index_submit:
+    pattern: /basic-settings
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:BasicSettings:indexSubmit }
