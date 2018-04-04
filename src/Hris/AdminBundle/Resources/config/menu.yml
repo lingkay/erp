@@ -7,6 +7,14 @@ menu_items:
       acl: hris_admin_basic_settings.menu
       label: Basic Settings
       parent: menu_hr
+    - id: hris_admin_overtime_matrix_index
+      acl: hris_admin_overtime_matrix.menu
+      label: Overtime Matrix
+      parent: menu_hr
+    - id: hris_admin_night_differential_matrix_index
+      acl: hris_admin_night_differential_matrix.menu
+      label: Night Differential Matrix
+      parent: menu_hr
     - id: hris_admin_benefit_index
       acl: hris_admin_benefit.menu
       label: Benefit

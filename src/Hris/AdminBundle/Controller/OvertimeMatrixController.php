@@ -7,28 +7,29 @@ use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
-use Hris\AdminBundle\Entity\TaxMatrix;
+use Hris\AdminBundle\Entity\OvertimeMatrix;
 use DateTime;
 
-class TaxMatrixController extends CrudController
+class OvertimeMatrixController extends CrudController
 {
     use TrackCreate;
     public function __construct()
     {
-        $this->route_prefix = 'hris_admin_tax_matrix';
-        $this->title = 'Tax Matrix';
-        $this->list_title = 'Tax Matrix';
+        $this->route_prefix = 'hris_admin_overtime_matrix';
+        $this->title = 'Overtime Matrix';
+
+        $this->list_title = 'Overtime Matrix Entry';
         $this->list_type = 'static';
     }
 
     protected function newBaseClass()
     {
-        return new TaxMatrix();
+        return new OvertimeMatrix();
     }
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setTax($data['tax']);
+        $o->setRate($data['rate']);
         $o->setMinimum($data['amountFrom']);
         $o->setMaximum($data['amountTo']);
         $bracket = $data['amountFrom'].'-'.$data['amountTo'];
@@ -37,9 +38,6 @@ class TaxMatrixController extends CrudController
 
     protected function padFormParams(&$params, $o = null)
     {
-        $em = $this->getDoctrine()->getManager();
-        $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
-
         return $params;
     }
 
@@ -54,11 +52,13 @@ class TaxMatrixController extends CrudController
         $params = $this->getViewParams('Edit');
         $params['object'] = $obj;
         $params['o_label'] = $this->getObjectLabel($obj);
+
+        // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
 
         $this->padFormParams($params, $obj);
 
-        return $this->render('HrisAdminBundle:TaxMatrix:edit.html.twig', $params);
+        return $this->render('HrisAdminBundle:OvertimeMatrix:form.html.twig', $params);
     }
 
 
@@ -75,9 +75,9 @@ class TaxMatrixController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('From','getMinimum','amount_from'),
-            $grid->newColumn('To','getMaximum','amount_to'),
-            $grid->newColumn('Tax Amount','getTax','amount_tax'),
+            $grid->newColumn('Hours From','getMinimum','amount_from'),
+            $grid->newColumn('Hours To','getMaximum','amount_to'),
+            $grid->newColumn('Rate','getRate','rate'),
         );
     }
 }

@@ -17,6 +17,34 @@ acl:
       - id: hris_admin_basic_settings.edit
         label: "Edit"
 
+    # Basic Settings
+    - category: Overtime Matrix
+      entries:
+      - id: hris_admin_overtime_matrix.menu
+        label: "Menu"
+      - id: hris_admin_overtime_matrix.view
+        label: "View"
+      - id: hris_admin_overtime_matrix.add
+        label: "Add"
+      - id: hris_admin_overtime_matrix.edit
+        label: "Edit"
+      - id: hris_admin_overtime_matrix.delete
+        label: "Delete"
+
+    # Basic Settings
+    - category: Night Differential Matrix
+      entries:
+      - id: hris_admin_night_differential_matrix.menu
+        label: "Menu"
+      - id: hris_admin_night_differential_matrix.view
+        label: "View"
+      - id: hris_admin_night_differential_matrix.add
+        label: "Add"
+      - id: hris_admin_night_differential_matrix.edit
+        label: "Edit"
+      - id: hris_admin_night_differential_matrix.delete
+        label: "Delete"
+
     # Events Sub-menu
     - category: Events
       entries:

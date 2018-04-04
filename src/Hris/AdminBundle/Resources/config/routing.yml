@@ -722,3 +722,73 @@ hris_admin_basic_settings_index_submit:
     pattern: /basic-settings
     methods: [POST]
     defaults: { _controller: HrisAdminBundle:BasicSettings:indexSubmit }
+
+#    OVERTIME MATRIX
+hris_admin_overtime_matrix_index:
+    path:  /overtime-matrix
+    defaults: { _controller: HrisAdminBundle:OvertimeMatrix:index }
+
+hris_admin_overtime_matrix_add_form:
+    pattern: /overtime-matrix/form
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:OvertimeMatrix:addForm }
+
+hris_admin_overtime_matrix_add_submit:
+    pattern: /overtime-matrix/form
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:OvertimeMatrix:addSubmit }
+
+hris_admin_overtime_matrix_edit_form:
+    pattern: /overtime-matrix/form-edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:OvertimeMatrix:editForm }
+
+hris_admin_overtime_matrix_edit_submit:
+    pattern: /overtime-matrix/form-edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:OvertimeMatrix:editSubmit }
+
+hris_admin_overtime_matrix_delete:
+    pattern: /overtime-matrix/entry/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:OvertimeMatrix:delete }
+
+hris_admin_overtime_matrix_grid:
+    pattern: /overtime-matrix/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:OvertimeMatrix:grid }
+
+#    NIGHT DIFFERENTIAL MATRIX
+hris_admin_night_differential_matrix_index:
+    path:  /nightdifferential-matrix
+    defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:index }
+
+hris_admin_night_differential_matrix_add_form:
+    pattern: /nightdifferential-matrix/form
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:addForm }
+
+hris_admin_night_differential_matrix_add_submit:
+    pattern: /nightdifferential-matrix/form
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:addSubmit }
+
+hris_admin_night_differential_matrix_edit_form:
+    pattern: /nightdifferential-matrix/form-edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:editForm }
+
+hris_admin_night_differential_matrix_edit_submit:
+    pattern: /nightdifferential-matrix/form-edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:editSubmit }
+
+hris_admin_night_differential_matrix_delete:
+    pattern: /nightdifferential-matrix/entry/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:delete }
+
+hris_admin_night_differential_matrix_grid:
+    pattern: /nightdifferential-matrix/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:grid }
