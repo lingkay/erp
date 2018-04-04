@@ -9,6 +9,7 @@ use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Cookie;
+use Utility\SalaryTypes;
 
 class GroupController extends CrudController
 {
@@ -83,7 +84,7 @@ class GroupController extends CrudController
 
 
         $twig_file = 'GistUserBundle:Group:index.html.twig';
-        
+
 
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
@@ -102,9 +103,9 @@ class GroupController extends CrudController
         if (isset($data['head']) && $data['head'] != '-1') {
             if ($data['head'] != '') {
                 $position = $em->getRepository('GistUserBundle:Group')->find($data['head']);
-                $o->setParent($position);        
+                $o->setParent($position);
             }
-            
+
         }
         else {
             $o->setParent(null);
@@ -113,7 +114,10 @@ class GroupController extends CrudController
         if (isset($data['job_description'])) {
             $o->setJobDescription($data['job_description']);
         }
-        
+
+        $o->setRate($data['rate']);
+        $o->setSalaryType($data['salaryType']);
+
 
         // validate name
         if (strlen($data['name']) > 0)
@@ -129,7 +133,7 @@ class GroupController extends CrudController
                     $o->addAccess($id);
             }
         }
-        
+
     }
 
     protected function padFormParams(&$params, $object = null)
@@ -141,7 +145,7 @@ class GroupController extends CrudController
         $params['department_opts'] = $um->getDepartmentOptions();
         $params['acl_entries'] = $acl_entries;
 
-
+        $params['salary_types'] = SalaryTypes::getOptions();
 
         return $params;
     }
@@ -166,7 +170,7 @@ class GroupController extends CrudController
 
                 $this->addFlash('success', $this->title . ' ' . $this->getObjectLabel($object) . ' has been deleted.');
 
-                return $this->redirect($this->generateUrl($this->getRouteGen()->getList())); 
+                return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
             }
             else
             {
@@ -174,7 +178,7 @@ class GroupController extends CrudController
                 $this->addFlash('error', 'Could not delete ' . $this->title . '.');
                 return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
             }
-            
+
         }
         catch (DBALException $e)
         {
@@ -210,7 +214,7 @@ class GroupController extends CrudController
                 $parent = $department->getParent()->getID();
             }
             $dept_head = "";
-            
+
             $list[] = array('id' => $department->getID(), 'name' => $department->getName(), 'description' => $dept_head, 'parent' => $parent);
         }
         $params['departments'] = $list;
@@ -248,7 +252,7 @@ class GroupController extends CrudController
 
     public function aclUpdateAction($group_id)
     {
-        
+
 
         $em = $this->getDoctrine()->getManager();
         $data = $this->getRequest()->request->all();

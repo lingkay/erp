@@ -18,8 +18,8 @@
                         {{ form.group_select('Head', 'head', position_opts, object.getParent.getID|default('0'), 3, 4, readonly) }}
                         {{ form.group_textarea('Job Description', 'job_description',object.getJobDescription|default(''),3,3,4)}}
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-
-                        
+                        {{ form.group_select('Salary Type', 'salaryType', salary_types, object.getSalaryType|default('0'), 3, 4, readonly) }}
+                        {{ form.group_number('Rate', 'rate',object.getRate|default(''), 3, 4, readonly) }}
                     </div>
                     <div class="form-actions fluid">
                         <div class="col-md-9">
@@ -72,7 +72,7 @@ $(document).ready(function() {
     {
         //updateHeads();
     });
-    
+
     // set default error and success elements
     jQuery.validator.setDefaults({
         errorClass: 'help-block',
@@ -91,12 +91,12 @@ $(document).ready(function() {
         },
         success: function(element) {
             if(element.parent().parent().hasClass('form-group'))
-            {  
+            {
                 element.parent().parent().removeClass('has-error');
                 element.parent().parent().addClass('has-success');
             }
             else
-            {  
+            {
                 element.parent().parent().parent().removeClass('has-error');
                 element.parent().parent().parent().addClass('has-success');
             }
@@ -115,7 +115,7 @@ $(document).ready(function() {
             name: {
                 required: true
             }
-        },  
+        },
         submitHandler: function(form) {
             form.submit();
         }

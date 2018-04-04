@@ -46,6 +46,34 @@ class Group extends BaseGroup implements GroupInterface
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $job_description;
 
+    /** @ORM\Column(type="integer") */
+    protected $salaryType;
+
+    /** @ORM\Column(type="decimal",precision=10, scale=2) */
+    protected $rate;
+
+    public function setRate($rate)
+    {
+        $this->rate = $rate;
+        return $this;
+    }
+
+    public function getRate()
+    {
+        return $this->rate;
+    }
+
+    public function setSalaryType($type)
+    {
+        $this->salaryType = $type;
+        return $this;
+    }
+
+    public function getSalaryType()
+    {
+        return $this->salaryType;
+    }
+
     //parent&child
     public function setParent($group)
     {
@@ -171,7 +199,7 @@ class Group extends BaseGroup implements GroupInterface
     }
 
     public function hasAccess($key)
-    {   
+    {
         // check if it's id = 1, that's the super admin
         // if ($this->getID() == 1)
         //     return true;
