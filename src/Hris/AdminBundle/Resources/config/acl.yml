@@ -234,3 +234,17 @@ acl:
 #        label: "View"
 #      - id: hris_admin_form_codes.edit
 #        label: "Edit"
+
+
+    - category: Tax Matrix
+      entries:
+        - id: hris_admin_tax_matrix.menu
+          label: "Menu"
+        - id: hris_admin_tax_matrix.view
+          label: "View"
+        - id: hris_admin_tax_matrix.add
+          label: "Add"
+        - id: hris_admin_tax_matrix.edit
+          label: "Edit"
+        - id: hris_admin_tax_matrix.delete
+          label: "Delete"

@@ -675,3 +675,39 @@ hris_admin_form_codes_ajax_get:
     pattern: /ajax/form-code/{id}
     methods: [GET]
     defaults: { _controller: HrisAdminBundle:FormCodes:ajaxGet }
+
+
+#    TAX MATRIX 2018
+hris_admin_tax_matrix_index:
+    path:  /tax-matrix
+    defaults: { _controller: HrisAdminBundle:TaxMatrix:index }
+
+hris_admin_tax_matrix_add_form:
+    pattern: /tax-matrix/form
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:TaxMatrix:addForm }
+
+hris_admin_tax_matrix_add_submit:
+    pattern: /tax-matrix/form
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:TaxMatrix:addSubmit }
+
+hris_admin_tax_matrix_edit_form:
+    pattern: /tax-matrix/form-edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:TaxMatrix:editForm }
+
+hris_admin_tax_matrix_edit_submit:
+    pattern: /tax-matrix/form-edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:TaxMatrix:editSubmit }
+
+hris_admin_tax_matrix_delete:
+    pattern: /tax-matrix/entry/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:TaxMatrix:delete }
+
+hris_admin_tax_matrix_grid:
+    pattern: /tax-matrix/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:TaxMatrix:grid }
