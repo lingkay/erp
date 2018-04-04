@@ -28,10 +28,10 @@ menu_items:
       acl: hris_admin_benefit.menu
       label: Benefit
       parent: menu_hr
-    - id: hris_admin_schedules_index
-      acl: hris_admin_schedules.menu
-      label: Employee Time Schedule
-      parent: menu_hr
+#    - id: hris_admin_schedules_index
+#      acl: hris_admin_schedules.menu
+#      label: Employee Time Schedule
+#      parent: menu_hr
 #    - id: hris_admin_checklist_index
 #      acl: hris_admin_checklist.menu
 #      label: Employment Checklist
@@ -78,3 +78,4 @@ menu_items:
 #      acl: hris_admin_leave_rules.menu
 #      label: Leave Rules
 #      parent: hris_admin_leave
+

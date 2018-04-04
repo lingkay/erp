@@ -29,31 +29,37 @@ class LeaveType
     /** @ORM\Column(type="text", nullable=true) */
     protected $emp_status;
 
-   /** @ORM\Column(type="boolean") */
+   /** @ORM\Column(type="boolean", nullable=true) */
     protected $accrue_enabled;
 
-    /** @ORM\Column(type="float", nullable=true) */ 
+    /** @ORM\Column(type="boolean") */
+    protected $collectible;
+
+    /** @ORM\Column(type="boolean") */
+    protected $convertible_to_cash;
+
+    /** @ORM\Column(type="float", nullable=true) */
     protected $accrue_count;
 
     /** @ORM\Column(type="string", length=20, nullable=true) */
     protected $accrue_rule;
 
-    /** @ORM\Column(type="boolean") */
+    /** @ORM\Column(type="boolean", nullable=true) */
     protected $carried_enabled;
 
-    /** @ORM\Column(type="integer", nullable=true) */ 
+    /** @ORM\Column(type="integer", nullable=true) */
     protected $carry_percentage;
 
-    /** @ORM\Column(type="integer", nullable=true) */ 
+    /** @ORM\Column(type="integer", nullable=true) */
     protected $carry_period;
 
-    /** @ORM\Column(type="float") */ 
+    /** @ORM\Column(type="float") */
     protected $leave_count;
 
-    /** @ORM\Column(type="string", length=20) */ 
-    protected $count_type;    
+    /** @ORM\Column(type="string", length=20, nullable=true) */
+    protected $count_type;
 
-    /** @ORM\Column(type="integer", nullable=true) */ 
+    /** @ORM\Column(type="integer", nullable=true, nullable=true) */
     protected $service_months;
 
     /** @ORM\Column(type="string", length=20, nullable=true) */
@@ -74,6 +80,30 @@ class LeaveType
         $this->dataTrackCreate($data);
 
         return $data;
+    }
+
+    public function setCollectible($bool)
+    {
+        $this->collectible = $bool;
+
+        return $this;
+    }
+
+    public function setConvertibleToCash($bool)
+    {
+        $this->convertible_to_cash = $bool;
+
+        return $this;
+    }
+
+    public function getCollectible()
+    {
+        return $this->collectible;
+    }
+
+    public function getConvertibleToCash()
+    {
+        return $this->convertible_to_cash;
     }
 
     /**

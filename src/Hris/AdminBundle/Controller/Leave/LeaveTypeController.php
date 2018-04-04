@@ -36,6 +36,7 @@ class LeaveTypeController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $params['bool_opts'] = array(0 => 'No', 1=> 'Yes');
         $params['accrued_opts'] = array(0 => 'No', 1=> 'Yes');
         $params['carried_opts'] = array(0 => 'No', 1=> 'Yes');
         $params['payment_type'] = array(
@@ -100,97 +101,100 @@ class LeaveTypeController extends CrudController
         $params = [];
         $this->padFormParams($params, $o);
 
-        $gender = array();
-        $gender_opts = $params['gender_opts'];
-        foreach ($gender_opts as $id => $gen) {
-            foreach ($data['gender'] as $entry) {
-                if($entry == $id)
-                    $gender[$id] = $gen;
-            }
-        }
-        $o->setGender($gender);
+//        $gender = array();
+//        $gender_opts = $params['gender_opts'];
+//        foreach ($gender_opts as $id => $gen) {
+//            foreach ($data['gender'] as $entry) {
+//                if($entry == $id)
+//                    $gender[$id] = $gen;
+//            }
+//        }
+//        $o->setGender($gender);
 
-        $emp_status = array();
-        $emp_status_opts = $params['emp_status_opts'];
-        foreach ($emp_status_opts as $id => $gen) {
-            foreach ($data['emp_status'] as $entry) {
-                if($entry == $id)
-                    $emp_status[$id] = $gen;
-            }
-        }
-        $o->setEmpStatus($emp_status);
+//        $emp_status = array();
+//        $emp_status_opts = $params['emp_status_opts'];
+//        foreach ($emp_status_opts as $id => $gen) {
+//            foreach ($data['emp_status'] as $entry) {
+//                if($entry == $id)
+//                    $emp_status[$id] = $gen;
+//            }
+//        }
+//        $o->setEmpStatus($emp_status);
 
         $o->setName($data['name']);
         $o->setNotes($data['desc']);
         $o->setLeaveCount($data['leave_count']);
-        $o->setCountType($data['count_type']);
-        $o->setServiceMonths($data['service_months']);
-        $o->setPaymentType($data['payment_type']);
+//        $o->setCountType($data['count_type']);
+//        $o->setServiceMonths($data['service_months']);
+//        $o->setPaymentType($data['payment_type']);
 
-        if ($data['accrued_enabled'] == 1) {
-            $o->setAccrueEnabled(true)
-                ->setAccrueCount($data['accrue_time'])
-                ->setAccrueRule($data['accrue_rule']);
+        $o->setCollectible($data['collectible']);
+        $o->setConvertibleToCash($data['convertible_to_cash']);
 
-            if ($data['carried_enabled'] == 1) {
-                $o->setCarriedEnabled(true)
-                    ->setCarryPercentage($data['carry_percentage'])
-                    ->setCarryPeriod($data['carry_period']);
-            } else {
-                $o->setCarriedEnabled(false)
-                    ->setCarryPercentage(null)
-                    ->setCarryPeriod(null);
-            }
-        }
-        else {
-            $o->setAccrueEnabled(false)
-                ->setAccrueCount(null)
-                ->setAccrueRule(null);
-            $o->setCarriedEnabled(false)
-                ->setCarryPercentage(null)
-                ->setCarryPeriod(null);
-        }
+//        if ($data['accrued_enabled'] == 1) {
+//            $o->setAccrueEnabled(true)
+//                ->setAccrueCount($data['accrue_time'])
+//                ->setAccrueRule($data['accrue_rule']);
+//
+//            if ($data['carried_enabled'] == 1) {
+//                $o->setCarriedEnabled(true)
+//                    ->setCarryPercentage($data['carry_percentage'])
+//                    ->setCarryPeriod($data['carry_period']);
+//            } else {
+//                $o->setCarriedEnabled(false)
+//                    ->setCarryPercentage(null)
+//                    ->setCarryPeriod(null);
+//            }
+//        }
+//        else {
+//            $o->setAccrueEnabled(false)
+//                ->setAccrueCount(null)
+//                ->setAccrueRule(null);
+//            $o->setCarriedEnabled(false)
+//                ->setCarryPercentage(null)
+//                ->setCarryPeriod(null);
+//        }
 
         $em->persist($o);
         $em->flush();
-        
-        $req = new Requirements();
-        if (!empty($data['req_name'])) {
-            $reqs = $this->getRequirements($o->getID());
-            foreach ($reqs as $r) {
-                $em->remove($r);
-                $em->flush();
-            }
 
-            foreach ($data['req_name'] as $id => $r) {
-                $req->setName($r)
-                    ->setReqType($data['req_type'][$id])
-                    ->setLeaveType($o);
-                $em->persist($req);
-                $em->flush();
-            }
-        }
-        else
-        {
-            if ($is_new == false) {
-                $reqs = $this->getRequirements($o->getID());
-                foreach ($reqs as $r) {
-                    $em->remove($r);
-                    $em->flush();
-                }
-            }
-        }
+//        $req = new Requirements();
+//        if (!empty($data['req_name'])) {
+//            $reqs = $this->getRequirements($o->getID());
+//            foreach ($reqs as $r) {
+//                $em->remove($r);
+//                $em->flush();
+//            }
+//
+//            foreach ($data['req_name'] as $id => $r) {
+//                $req->setName($r)
+//                    ->setReqType($data['req_type'][$id])
+//                    ->setLeaveType($o);
+//                $em->persist($req);
+//                $em->flush();
+//            }
+//        }
+//        else
+//        {
+//            if ($is_new == false) {
+//                $reqs = $this->getRequirements($o->getID());
+//                foreach ($reqs as $r) {
+//                    $em->remove($r);
+//                    $em->flush();
+//                }
+//            }
+//        }
 
         $this->updateTrackCreate($o, $data, $is_new);
     }
 
-    protected function getObjectLabel($obj) 
+    protected function getObjectLabel($obj)
     {
         if ($obj == null){
             return '';
         }
         return $obj->getName();
-    }  
+    }
 
     protected function getGridColumns()
     {
@@ -199,7 +203,7 @@ class LeaveTypeController extends CrudController
             $grid->newColumn('Leave Name', 'getName', 'name'),
             $grid->newColumn('Description', 'getNotes', 'notes'),
             $grid->newColumn('Leaves Count', 'getLeaveCount', 'leave_count'),
-            $grid->newColumn('Length of Service (in months)', 'getServiceMonths', 'service_months'),
+//            $grid->newColumn('Length of Service (in months)', 'getServiceMonths', 'service_months'),
         );
     }
 
