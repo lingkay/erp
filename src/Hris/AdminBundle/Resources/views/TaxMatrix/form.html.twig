@@ -13,9 +13,8 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-                            {{form.group_number('Amount From', 'amountFrom', object.getMinimum|default(''), 3, 4, readonly)}}
-                            {{form.group_number('Amount To', 'amountTo', object.getMaximum|default(''), 3, 4, readonly)}}
-                            {{form.group_number('Tax', 'tax', object.getTax|default(''), 3, 4, readonly)}}
+                            {{form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly)}}
+                            {{form.group_number('Tax Rate (%)', 'tax', object.getTax|default(''), 3, 4, readonly)}}
                         </div>
 
                         <div class="form-actions fluid">
@@ -95,12 +94,12 @@
                     this.element(element);
                 },
                 rules: {
-                    amount_from: "required",
-                    amount_to: "required",
+                    name: "required",
+                    tax: "required",
                 },
                 messages: {
-                    amount_from: "Amount from cannot be blank.",
-                    amount_to: "Amount to cannot be blank.",
+                    name: "Name cannot be blank.",
+                    tax: "Tax cannot be blank.",
                 },
                 submitHandler: function(form) {
                     form.submit();

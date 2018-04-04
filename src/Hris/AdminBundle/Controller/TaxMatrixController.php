@@ -29,10 +29,7 @@ class TaxMatrixController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $o->setTax($data['tax']);
-        $o->setMinimum($data['amountFrom']);
-        $o->setMaximum($data['amountTo']);
-        $bracket = $data['amountFrom'].'-'.$data['amountTo'];
-        $o->setBracket($bracket);
+        $o->setName($data['name']);
     }
 
     protected function padFormParams(&$params, $o = null)
@@ -75,9 +72,8 @@ class TaxMatrixController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('From','getMinimum','amount_from'),
-            $grid->newColumn('To','getMaximum','amount_to'),
-            $grid->newColumn('Tax Amount','getTax','amount_tax'),
+            $grid->newColumn('Name','getName','name'),
+            $grid->newColumn('Tax Rate','getTaxFormatted','amount_tax'),
         );
     }
 }

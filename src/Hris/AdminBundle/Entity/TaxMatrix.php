@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Gist\CoreBundle\Template\Entity\HasGeneratedID;
+use Gist\CoreBundle\Template\Entity\HasName;
 
 use stdClass;
 
@@ -16,14 +17,15 @@ use stdClass;
 class TaxMatrix
 {
     use HasGeneratedID;
+    use HasName;
 
-    /** @ORM\Column(type="string")*/
+    /** @ORM\Column(type="string", nullable=true)*/
     protected $bracket;
 
-    /** @ORM\Column(type="decimal", precision=10, scale=2) */
+    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
     protected $amount_from;
 
-    /** @ORM\Column(type="decimal", precision=10, scale=2) */
+    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
     protected $amount_to;
 
     /** @ORM\Column(type="decimal", precision=10, scale=2) */
@@ -31,6 +33,7 @@ class TaxMatrix
 
     public function __construct()
     {
+        $this->initHasName();
     }
 
     public function setBracket($bracket)
@@ -77,6 +80,11 @@ class TaxMatrix
         return $this->amount_tax;
     }
 
+    public function getTaxFormatted()
+    {
+        return $this->amount_tax. '%';
+    }
+
     public function setPeriod(\Hris\PayrollBundle\Entity\PayPeriod $period)
     {
         $this->period = $period;
@@ -103,7 +111,7 @@ class TaxMatrix
     {
         $data = new \stdClass();
         $this->dataHasGeneratedID($data);
-
+        $this->dataHasName($data);
         return $data;
     }
 }
