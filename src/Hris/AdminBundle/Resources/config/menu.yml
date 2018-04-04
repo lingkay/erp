@@ -25,12 +25,12 @@ menu_items:
       parent: menu_hr
     - id: hris_admin_events_index
       acl: hris_admin_events.menu
-      label: Events
+      label: Events & Holidays
       parent: menu_hr
-    - id: hris_admin_otsetting_index
-      acl: hris_admin_otsetting.menu
-      label: Overtime
-      parent: menu_hr
+#    - id: hris_admin_otsetting_index
+#      acl: hris_admin_otsetting.menu
+#      label: Overtime
+#      parent: menu_hr
     - id: hris_admin_leave_type_index
       acl: hris_admin_leave_type.menu
       label: Leaves

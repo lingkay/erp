@@ -16,6 +16,7 @@
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                         {{ form.group_text('Name','name',object.getName|default(''),3,4) }}
                         {{ form.group_textarea('Description','desc',object.getNotes|default(''),3,3,4) }}
+                        {{ form.group_number('Months in service','service_months',object.getServiceMonths|default(0),3,4) }}
                         {{ form.group_number('Leave Count (in days)','leave_count',object.getLeaveCount|default(0),3,4) }}
                         <div class="form-group">
                             <label class="col-md-3 control-label">Collectible</label>
@@ -44,4 +45,79 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+    <!-- HERE -->
+    <script>
+        $(document).ready(function() {
+            // set default error and success elements
+            jQuery.validator.setDefaults({
+                errorClass: 'help-block',
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    $("#help").html('');
+                    if(element.parent().parent().hasClass('form-group'))
+                    {
+                        error.appendTo(element.parent().last());
+                        element.parent().parent().addClass('has-error');
+                    }
+                    else if(element.parent().parent().hasClass('checker'))
+                    {
+                        error.appendTo(element.parent().parent().parent().parent().last());
+                        element.parent().parent().parent().parent().parent().addClass('has-error');
+                    }
+                    else
+                    {
+                        error.appendTo(element.parent().parent().last());
+                        element.parent().parent().parent().addClass('has-error');
+                    }
+                },
+                success: function(element) {
+                    $("#help").html('');
+                    if(element.parent().parent().hasClass('form-group'))
+                    {
+                        element.parent().parent().removeClass('has-error');
+                        element.parent().parent().addClass('has-success');
+                    }
+                    else if(element.parent().parent().hasClass('checker'))
+                    {
+                        element.parent().parent().parent().parent().parent().addClass('has-error');
+                        element.parent().parent().parent().parent().parent().addClass('has-success');
+                    }
+                    else
+                    {
+                        element.parent().parent().parent().removeClass('has-error');
+                        element.parent().parent().parent().addClass('has-success');
+                    }
+
+                    element.remove();
+                }
+            });
+
+
+            // validate form elements
+            $(".form-horizontal").validate({
+                ignore: "#list_table, #entries_table, .amount .date .modal-body",
+                onfocusout: function(element) {
+                    this.element(element);
+                },
+                rules: {
+                    name: {
+                        required: true
+                    },
+                    service_months: {
+                        required: true
+                    },
+                    leave_count: {
+                        required: true
+                    }
+                },
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+
+        });
+    </script>
 {% endblock %}

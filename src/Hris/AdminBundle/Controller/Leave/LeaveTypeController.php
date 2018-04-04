@@ -49,6 +49,7 @@ class LeaveTypeController extends CrudController
         $o->setLeaveCount($data['leave_count']);
         $o->setCollectible($data['collectible']);
         $o->setConvertibleToCash($data['convertible_to_cash']);
+        $o->setServiceMonths($data['service_months']);
 
         $em->persist($o);
         $em->flush();
