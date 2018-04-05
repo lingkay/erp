@@ -179,6 +179,18 @@ acl:
           label: "Edit"
         - id: gist_inv_existing_stock.delete
           label: "Delete"
+    - category: Existing Stock by Product
+      entries:
+        - id: gist_inv_existing_stock_by_product.menu
+          label: "Menu"
+        - id: gist_inv_existing_stock_by_product.view
+          label: "View"
+        - id: gist_inv_existing_stock_by_product.add
+          label: "Add"
+        - id: gist_inv_existing_stock_by_product.edit
+          label: "Edit"
+        - id: gist_inv_existing_stock_by_product.delete
+          label: "Delete"
     - category: Damaged Item Reasons
       entries:
         - id: gist_inv_damaged_item_reason.menu

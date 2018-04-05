@@ -1,0 +1,37 @@
+
+gist_inv_existing_stock_by_product_index:
+    pattern: /list/{pos_loc_id}/{inv_type}/{date_from}/{date_to}/{product_name}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStockByProduct:index, pos_loc_id: null, inv_type: null, date_from: null, date_to: null, product_name: null }
+
+gist_inv_existing_stock_by_product_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStockByProduct:grid }
+
+
+gist_inv_existing_stock_by_product_grid_search:
+    pattern: /grid/{pos_loc_id}/{inv_type}/{date_from}/{date_to}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStockByProduct:gridSearch }
+
+gist_inv_existing_stock_by_product_get_prod_details:
+    path:     /grid/get_prod_info/{id}/{inv_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStockByProduct:getProductDetailsStock }
+
+gist_inv_existing_stock_by_product_save_stock_threshold:
+    path:     /grid/save_stock_threshold/{id}/{min}/{max}/{pos_loc_id}/{inv_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStockByProduct:saveStockThreshold }
+
+
+gist_inv_existing_stock_by_product_pos_grid_data:
+    pattern: /pos/grid/{origin}/{pos_loc_id}/{inv_type}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStockByProduct:getExistingStockData }
+
+gist_inv_existing_stock_by_product_pos_other_visibility:
+    pattern: /pos/visibility/{pos_loc_id}
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:ExistingStockByProduct:getPOSVisibility }
