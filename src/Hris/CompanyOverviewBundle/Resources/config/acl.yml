@@ -11,15 +11,15 @@ acl:
          label: "View"
        - id: hris_com_info.add
          label: "Add"
-    - category: Organizational Chart
-      entries:
-       - id: hris_com_orgchart.menu
-         label: "Menu"
-       - id: hris_com_orgchart.view
-         label: "View"
-    - category: Directory
-      entries:
-       - id: hris_com_directory.menu
-         label: "Menu"
-       - id: hris_com_directory.view
-         label: "View"
+#    - category: Organizational Chart
+#      entries:
+#       - id: hris_com_orgchart.menu
+#         label: "Menu"
+#       - id: hris_com_orgchart.view
+#         label: "View"
+#    - category: Directory
+#      entries:
+#       - id: hris_com_directory.menu
+#         label: "Menu"
+#       - id: hris_com_directory.view
+#         label: "View"

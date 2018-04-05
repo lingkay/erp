@@ -64,7 +64,7 @@ class BenefitController extends CrudController
 
         $o->setName($data['name']);
         $o->setNotes($data['notes']);
-        $o->setDepartment($data['department']);
+        //$o->setDepartment($data['department']);
         unset($foo);
         $foo = array();
 
@@ -87,11 +87,11 @@ class BenefitController extends CrudController
         }
         $o->setGender($gender);
 
-        $char_opts = $this->getBenType();
-        foreach ($char_opts as $id => $char) {
-            if($data['characteristics'] == $id)
-                $o->setType($char);
-        }
+//        $char_opts = $this->getBenType();
+//        foreach ($char_opts as $id => $char) {
+//            if($data['characteristics'] == $id)
+//                $o->setType($char);
+//        }
 
         $this->updateTrackCreate($o, $data, $is_new);
     }
