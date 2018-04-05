@@ -108,6 +108,10 @@ gist_inv_existing_stock:
     resource: "@GistInventoryBundle/Resources/config/routes/existing_stock.yml"
     prefix: /existing_stock
 
+gist_inv_existing_stock_by_product:
+    resource: "@GistInventoryBundle/Resources/config/routes/existing_stock_by_product.yml"
+    prefix: /existing_stock_by_product
+
 gist_inv_damaged_item_reason:
     resource: "@GistInventoryBundle/Resources/config/routes/damaged_item_reason.yml"
     prefix: /damaged_reasons
