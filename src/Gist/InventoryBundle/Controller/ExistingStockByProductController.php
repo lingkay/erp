@@ -85,6 +85,7 @@ class ExistingStockByProductController extends Controller
         return $this->render($twig_file, $params);
     }
 
+    //THIS METHOD WILL BE REFACTORED (as well as the entire class)
     protected function getExistingStockData($pos_loc_id, $inv_type, $date_from, $date_to, $product_name)
     {
         if ($inv_type == null) {
@@ -94,6 +95,8 @@ class ExistingStockByProductController extends Controller
         $config = $this->get('gist_configuration');
         $inv = $this->get('gist_inventory');
 
+        //GET UNIQUE PRODUCTS FROM STOCK TABLE (JOINED TO PRODUCTS)
+        //APPLY SEARCHING BY PRODUCT
         $sql = " 
                     SELECT  
                     s.product_id, 
@@ -112,14 +115,19 @@ class ExistingStockByProductController extends Controller
 
         ";
 
+        //EXECUTE RAW SQL COMMAND
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->execute();
+        //GET THE RESULT
         $uniqueProducts = $stmt->fetchAll();
 
+        //THIS WILL HOLD THE DATA THAT WE WILL PASS TO THE TWIG
         $processedData = [];
 
+        //LOOP THE PRODUCT RESULTS
         foreach ($uniqueProducts as $product) {
+            //THIS SQL WILL GET STOCK, PRODUCT, INV ACCOUNT DATA
             $sql = " 
                     SELECT 
                     a.name, 
@@ -160,21 +168,17 @@ class ExistingStockByProductController extends Controller
                     WHERE inv_account_id NOT IN (SELECT id FROM inv_account WHERE name LIKE '%adjustment%')
                     AND s.product_id = ".$product['product_id'];
 
+            //EXECUTE THE RAW SQL COMMAND
             $em = $this->getDoctrine()->getManager();
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->execute();
+            //GET THE RESULT
             $stockData = $stmt->fetchAll();
 
-
-
-            $max = 0;
-            $min = 0;
 
             $main_warehouse = null;
             $selected_inv_account = null;
             $selected_loc = null;
-            //$inv_type = 'all';
-
 
 
             if($pos_loc_id === '0') {
@@ -214,25 +218,30 @@ class ExistingStockByProductController extends Controller
                 }
             }
 
-            $thresholdAlert = false;
-
+            //LOOP STOCK DATA RESULTS
             foreach ($stockData as $sd) {
+                //INITIALIZE COUNTERS
                 $totalStock = 0;
                 $totalCost = 0;
                 $totalAvgCons = 0;
                 $totalDaysWithStock = 0;
 
                 if ($selected_inv_account == null) {
+                    //IF THERES NO LOCATION APPLIED
+                    //INVENTORY ACCOUNT == POS LOCATION's INVENTORY ACCOUNT OR WAREHOUSE's INVENTORY ACCOUNT
                     if ($inv_type == 'all') {
                         if ($sd['quantity_operation'] == 'add') {
+                            //$sd['quantity_operation'] == FROM THE SQL's CASE
+                            //WE TREAT SALES STOCKS AS POSITIVE STOCK COUNT AND THE REST AS NEGATIVE
                             $totalStock += $sd['quantity'];
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
                             $totalAvgCons = $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                             $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
                         } else {
-                            //$totalStock -= $sd['quantity'];
+                            //WE DONT NEED NEGATIVE STOCK COUNTS
                         }
                     } else {
+                        //IF THERES AN INVENTORY ACCOUNT/LOCATION SELECTED
                         if ($sd['inv_type'] == $inv_type) {
                             $totalStock += $sd['quantity'];
                             $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
@@ -241,9 +250,11 @@ class ExistingStockByProductController extends Controller
                         }
                     }
 
+                    //GET THE SELECTED LOCATION's INVENTORY ACCOUNT OBJECT
                     $em = $this->getDoctrine()->getManager();
                     $invAcct = $em->getRepository('GistInventoryBundle:Account')->findOneById($sd['inv_acct_id']);
 
+                    //STORE THE DATA
                     $processedData[] = array(
                         'loc_name' => $invAcct->getName(),
                         'sel_inv_acct_id' => $selected_inv_account,
@@ -298,21 +309,7 @@ class ExistingStockByProductController extends Controller
                         'days_with_stock' => number_format($totalDaysWithStock,2)
                     );
                 }
-
-//                if ($sd['max_stock'] != null && $sd['max_stock'] != '') {
-//                    if ($totalStock > $sd['max_stock'] || $totalStock < $sd['min_stock']) {
-//                        $thresholdAlert = true;
-//                    }
-//                }
-                $max = $sd['max_stock'];
-                $min = $sd['min_stock'];
-
-
-
             }
-
-
-
         }
 
         return $processedData;
@@ -324,10 +321,7 @@ class ExistingStockByProductController extends Controller
         $inv = $this->get('gist_inventory');
         $em = $this->getDoctrine()->getManager();
         $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(['product'=>$prodId, 'inv_account'=>$invAcctId]);
-//        $date_from = DateTime::createFromFormat('Ymd', $date_from->format('Ymd'));
-//        $date_to = DateTime::createFromFormat('Ymd', $date_to->format('Ymd'));
         $quantitySold = $this->countQuantitySold($prodId, $invAcctId, $date_from,$date_to);
-
         $datediff = strtotime($date_from->format('Y-m-d')) - strtotime($date_to->format('Y-m-d'));
         $days = round($datediff / (60 * 60 * 24), 3);
 
