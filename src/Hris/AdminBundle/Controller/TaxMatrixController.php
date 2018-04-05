@@ -55,7 +55,7 @@ class TaxMatrixController extends CrudController
 
         $this->padFormParams($params, $obj);
 
-        return $this->render('HrisAdminBundle:TaxMatrix:edit.html.twig', $params);
+        return $this->render('HrisAdminBundle:TaxMatrix:form.html.twig', $params);
     }
 
 
