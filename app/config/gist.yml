@@ -7,7 +7,6 @@ gist_menu:
         - GistLocationBundle
         - GistAccountingBundle
         - GistInventoryBundle
-        - GistConfigurationBundle
         - GistCustomerBundle
         - GistPOSERPBundle
         - GistSalesReportBundle
@@ -22,6 +21,7 @@ gist_menu:
         #- HrisProfileBundle
         #- HrisArchivesBundle
         #- HrisReportBundle
+        - GistConfigurationBundle
 gist_user:
     acl_entries:
         - id: HrisDashboardBundle

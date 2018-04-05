@@ -33,19 +33,34 @@ class CustomerLayeredReportController extends Controller
         $this->route_prefix = 'gist_layered_sales_report_customer';
         $params = $this->getViewParams('List');
         //$this->getControllerBase();
-
+        $params['date_opts'] = ['1' => 'By range', '2' => 'By end date'];
         //PARAMS
 
+//        var_dump($data);
+//        die();
+        $params['selected_date_opt'] = '1';
 
-        if (isset($data['date_from']) && isset($data['date_to'])) {
-            $date_from = DateTime::createFromFormat('Ymd', $data['date_from']);
-            $date_to = DateTime::createFromFormat('Ymd', $data['date_to']);
-            $params['date_from'] = $date_from->format("m/d/Y");
-            $params['date_to'] = $date_to->format("m/d/Y");
-            $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
-            $params['date_from_url'] = $date_from->format("m-d-Y");
-            $params['date_to_url'] = $date_to->format("m-d-Y");
-            $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+        if (isset($data['date_from']) && isset($data['date_to']) && isset($data['all'])) {
+            if ($data['all'] == 'false') {
+                $date_from = DateTime::createFromFormat('Ymd', $data['date_from']);
+                $date_to = DateTime::createFromFormat('Ymd', $data['date_to']);
+                $params['date_from'] = $date_from->format("m/d/Y");
+                $params['date_to'] = $date_to->format("m/d/Y");
+                $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+                $params['date_from_url'] = $date_from->format("m-d-Y");
+                $params['date_to_url'] = $date_to->format("m-d-Y");
+                $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+            } else {
+                $params['selected_date_opt'] = '2';
+                $date_from = DateTime::createFromFormat('m/d/Y', $data['date_from_all']);
+                $date_to = DateTime::createFromFormat('m/d/Y', $data['date_to_all']);
+                $params['date_from'] = $date_from->format("m/d/Y");
+                $params['date_to'] = $date_to->format("m/d/Y");
+                $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+                $params['date_from_url'] = $date_from->format("m-d-Y");
+                $params['date_to_url'] = $date_to->format("m-d-Y");
+                $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+            }
         } else {
             if ($date_from != null) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
