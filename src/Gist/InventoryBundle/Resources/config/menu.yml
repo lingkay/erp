@@ -3,10 +3,6 @@ menu_items:
       acl: cat_inv.menu
       label: Inventory
       icon: fa-dropbox
-#    - id: cat_inv_wh_index
-#      acl: cat_inv_wh.menu
-#      label: Warehouse
-#      parent: menu_inventory
     - id: cat_inv_prod_index
       acl: cat_inv_prod.menu
       label: Products
@@ -39,14 +35,6 @@ menu_items:
       acl: gist_inv_counting_gridform.menu
       label: Counting Form
       parent: menu_inventory
-    # - id: cat_inv_pg_index
-    #   acl: cat_inv_pg.menu
-    #   label: Product Group
-    #   parent: menu_inventory
-#    - id: cat_inv_trans_index
-#      acl: cat_inv_trans.menu
-#      label: Transfer Stock
-#      parent: menu_inventory
     - id: gist_inv_stock_transfer_index
       acl: gist_inv_stock_transfer.menu
       label: Stock Transfer
@@ -67,17 +55,7 @@ menu_items:
       acl: cat_inv_adjust.menu
       label: Stock Adjustment
       parent: menu_inventory
-    - id: menu_supplier
-      acl: gist_supplier.menu
-      label: Suppliers
-      icon: fa-truck
     - id: gist_supp_index
       acl: gist_supp.menu
       label: Supplier
-      parent: menu_supplier
-
-
-    # - id: gist_inv_pos_indexx
-    #   acl: gist_inv_pos.menu
-    #   label: Point of Sales (POS)
-    #   icon: fa-calculator
+      parent: menu_inventory

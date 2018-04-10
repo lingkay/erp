@@ -1,9 +1,13 @@
 menu_items:
     - id: cat_config
       acl: cat_config.menu
-      label: System Configuration
+      label: General Settings
       icon: fa-wrench
     - id: cat_config_index
       acl: cat_config.menu
       label: Settings
+      parent: cat_config
+    - id: hris_com_info_index
+      acl: hris_com_info.menu
+      label: Company Information
       parent: cat_config

@@ -1,27 +1,12 @@
 gist_menu:
     bundle_menu:
-        - GistDashboardBundle
-#        - GistAdminBundle
         - GistUserBundle
-        - HrisAdminBundle
-        - GistLocationBundle
-        - GistAccountingBundle
         - GistInventoryBundle
-        - GistCustomerBundle
         - GistPOSERPBundle
-        - GistSalesReportBundle
-        #- HrisBiometricsBundle
-#        - HrisWorkforceBundle
-        #- HrisRemunerationBundle
-        #- HrisRecruitmentBundle
-        #- HrisEmployeeSatisfactionBundle
-        #- HrisTrainingBundle
-        - HrisCompanyOverviewBundle
-        #- HrisPayrollBundle
-        #- HrisProfileBundle
-        #- HrisArchivesBundle
-        #- HrisReportBundle
+        - GistCustomerBundle
+        - GistAccountingBundle
         - GistConfigurationBundle
+
 gist_user:
     acl_entries:
         - id: HrisDashboardBundle

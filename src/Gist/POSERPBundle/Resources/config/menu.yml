@@ -1,7 +1,7 @@
 menu_items:
     - id: gist_poserp_menu
       acl: gist_poserp.menu
-      label: Point of Sales
+      label: POS
       icon: fa-calculator
     - id: gist_poserp_settings_index
       acl: gist_poserp_settings.menu
@@ -15,3 +15,38 @@ menu_items:
       acl:  gist_poserp_transaction.menu
       label: Transactions
       parent: gist_poserp_menu
+
+    - id: gist_sales_report_main_summary
+      acl: gist_sales_report_main.menu
+      label: Main Report
+      parent: gist_poserp_menu
+
+
+    - id: menu_layered_sales_report
+      acl: gist_layered_sales_report.menu
+      label: Layered Sales Report
+      parent: gist_poserp_menu
+    - id: gist_layered_sales_report_product_index
+      acl: gist_layered_sales_report_product.menu
+      label: Product
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_location_index
+      acl: gist_layered_sales_report_location.menu
+      label: Location
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_employee_index
+      acl: gist_layered_sales_report_employee.menu
+      label: Employee
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_supplier_index
+      acl: gist_layered_sales_report_supplier.menu
+      label: Supplier
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_customer_index
+      acl: gist_layered_sales_report_customer.menu
+      label: Customer
+      parent: menu_layered_sales_report
+    - id: gist_layered_sales_report_sales_index
+      acl: gist_layered_sales_report_sales.menu
+      label: Sales
+      parent: menu_layered_sales_report

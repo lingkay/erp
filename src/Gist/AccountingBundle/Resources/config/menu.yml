@@ -16,7 +16,7 @@ menu_items:
     - id: gist_terminals_menu
       acl: gist_terminals.menu
       label: Terminals
-      icon: fa-credit-card
+      parent: gist_accounting_menu
     - id: gist_terminals_terminal_index
       acl: gist_terminals_terminal.menu
       label: Terminal
@@ -25,3 +25,40 @@ menu_items:
       acl: gist_terminals_terminal_operator.menu
       label: Terminal Operator
       parent: gist_terminals_menu
+
+    - id: menu_hr
+      acl: hris_admin.menu
+      label: Payroll Settings
+      parent: gist_accounting_menu
+    - id: hris_admin_basic_settings_index
+      acl: hris_admin_basic_settings.menu
+      label: Basic Settings
+      parent: menu_hr
+    - id: hris_admin_overtime_matrix_index
+      acl: hris_admin_overtime_matrix.menu
+      label: Overtime Matrix
+      parent: menu_hr
+    - id: hris_admin_night_differential_matrix_index
+      acl: hris_admin_night_differential_matrix.menu
+      label: Night Differential Matrix
+      parent: menu_hr
+    - id: hris_admin_benefit_index
+      acl: hris_admin_benefit.menu
+      label: Benefit
+      parent: menu_hr
+    - id: hris_admin_schedules_index
+      acl: hris_admin_schedules.menu
+      label: Employee Time Schedule
+      parent: menu_hr
+    - id: hris_admin_events_index
+      acl: hris_admin_events.menu
+      label: Events & Holidays
+      parent: menu_hr
+    - id: hris_admin_leave_type_index
+      acl: hris_admin_leave_type.menu
+      label: Leaves
+      parent: menu_hr
+    - id: hris_admin_tax_matrix_index
+      acl: hris_admin_tax_matrix.menu
+      label: Tax Matrix
+      parent: menu_hr

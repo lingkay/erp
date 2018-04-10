@@ -1,14 +1,14 @@
 menu_items:
     - id: menu_customer
       acl: gist_customer.menu
-      label: Customer
+      label: CRM
       icon: fa-user
     - id: gist_customer_list_index
       acl: gist_customer_list.menu
-      label: List
+      label: Customers
       parent: menu_customer
     - id: gist_customer_fields_index
       acl: gist_customer_fields.menu
-      label: POS Fields
+      label: POS Form Fields
       parent: menu_customer
 
