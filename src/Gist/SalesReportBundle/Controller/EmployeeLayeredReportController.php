@@ -93,10 +93,14 @@ class EmployeeLayeredReportController extends Controller
                     if (!$item->getReturned()) {
                         $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
                         $total_cost += $product->getCost();
+
+                        echo 'ID: '.$item->getID().'<br>AMT: '.$product->getCost().'<br>';
                     }
                 }
             }
         }
+
+        die();
 
         $total_profit = $total_payments - $total_cost;
 
@@ -167,9 +171,12 @@ class EmployeeLayeredReportController extends Controller
                     $user = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
                     if ($user->getGroup()->getID() == $positionId) {
                         $totalSales += $transactionItem->getTotalAmount();
+                        echo 'ID: '.$transactionItem->getID().'<br>AMT: '.$transactionItem->getTotalAmount().'<br>';
                     }
                 }
             }
+
+            die();
 
             $brandTotalProfit = $totalSales - $totalCost;
             if ($totalSales > 0) {
