@@ -223,4 +223,12 @@ cat_inv_prod_check_sku:
     pattern: /product/check_sku/{sku}
     defaults: { _controller: GistInventoryBundle:Product:ajaxCheckSKU }
 
-# SUPPLIERS
+gist_inv_settings_index:
+    path:  /settings
+    methods: [GET]
+    defaults: { _controller: GistInventoryBundle:InventorySettings:index }
+
+gist_inv_settings_index_submit:
+    pattern: /settings
+    methods: [POST]
+    defaults: { _controller: GistInventoryBundle:InventorySettings:indexSubmit }

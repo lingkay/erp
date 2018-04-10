@@ -64,12 +64,8 @@ class ProductCategoryController extends CrudController
 
     protected function padFormParams(&$params, $product = null)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $params['brand'] = $product->getBrand();
         $params['brand_opts'] = $this->getBrandOptions();
-        
-
         return $params;
     }
 

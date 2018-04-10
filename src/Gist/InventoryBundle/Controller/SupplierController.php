@@ -39,9 +39,6 @@ class SupplierController extends CrudController
 
         return array(
             $grid->newColumn('Name', 'getName', 'name'),
-            // $grid->newColumn('Area', 'getName', 'name','a'),
-            // $grid->newColumn('Contact No.', 'getContactNumber', 'contact_number'),
-            // $grid->newColumn('Location', 'getLocatorDesc', 'locator_desc'),
         );
     }
 
@@ -50,7 +47,6 @@ class SupplierController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $im = $this->get('gist_inventory');
         $am = $this->get('gist_accounting');
-
         $params['type_opts'] = $im->getSupplierTypeOptions();
         $params['category_opts'] = $im->getSupplierCategoryOptions();
         $params['tax_opts'] = $im->getSupplierTaxOptions();
@@ -61,8 +57,6 @@ class SupplierController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        //$media = $this->get('gist_media');
-
         $o->setName($data['name']);
         $o->setType($data['type']);
         $o->setFirstName($data['first_name']);
@@ -79,6 +73,5 @@ class SupplierController extends CrudController
         $o->setWebsite($data['website']);
         $o->setEmail($data['email']);
         $o->setStatus($data['status']);
-        
     }
 }

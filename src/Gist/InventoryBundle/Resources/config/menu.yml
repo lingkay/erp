@@ -59,3 +59,7 @@ menu_items:
       acl: gist_supp.menu
       label: Supplier
       parent: menu_inventory
+    - id: gist_inv_settings_index
+      acl: gist_inv_settings.menu
+      label: Inventory Settings
+      parent: menu_inventory

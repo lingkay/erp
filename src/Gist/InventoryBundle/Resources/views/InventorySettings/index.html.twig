@@ -1,0 +1,30 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">Inventory - Settings</div>
+                </div>
+                <div class="portlet-body form">
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                            {{ form.group_select('POS Counting Rule', 'gist_pos_counting_system_count_visibility', counting_opts, gist_pos_counting_system_count_visibility , 3, 2) }}
+                            {{ form.group_number_no_step('Counting Max Submissions', 'gist_pos_counting_max_submissions',gist_pos_counting_max_submissions ,3,2)}}
+                            {{ form.group_number_no_step('POS Max Refund Day/s', 'gist_pos_max_refund_days',gist_pos_max_refund_days ,3,2)}}
+                            {{ form.group_number_no_step('POS Refund Code', 'gist_pos_refund_code',gist_pos_refund_code ,3,2)}}
+                            {{ form.group_number_no_step('POS Upsell Time (seconds)', 'gist_pos_upsell_seconds',gist_pos_upsell_seconds ,3,2)}}
+                        </div>
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                <button type="submit" class="btn blue">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

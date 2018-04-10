@@ -73,15 +73,10 @@ class ProductController extends CrudController
         );
 
         $inv = $this->get('gist_inventory');
-        //$params['wh_opts'] = $inv->getWarehouseOptions();
-
-        // $params['ptype'] = 'single';
         $params['type_opts'] = $this->getTypeOptions();
-
         $params['item_opts'] = $this->getProductOptions();
         $params['brand_opts'] = $this->getBrandOptions();
         $params['category_opts'] = $this->getCategoryOptions();
-
         $params['category'] = $product->getCategory();
         $params['brand'] = $product->getBrand();
 
@@ -105,8 +100,6 @@ class ProductController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        // var_dump($data);
-        // die();
         $media = $this->get('gist_media');
         $em = $this->getDoctrine()->getManager();
         $o->setName($data['name']);
@@ -128,18 +121,6 @@ class ProductController extends CrudController
             $supplier = $em->getRepository('GistInventoryBundle:Supplier')->find($data['supplier']);
             $o->setSupplier($supplier);
         }
-
-//        if (isset($data['min_stock'])) {
-//            $o->setMinStock($data['min_stock']);
-//        } else {
-//            $o->setMinStock(0);
-//        }
-//
-//        if (isset($data['max_stock'])) {
-//            $o->setMaxStock($data['max_stock']);
-//        } else {
-//            $o->setMaxStock(0);
-//        }
 
         if (isset($data['category'])) {
             $category = $em->getRepository('GistInventoryBundle:ProductCategory')->find($data['category']);

@@ -27,12 +27,9 @@ class ProductTypeController extends CrudController
         return $obj->getName();
     }
 
-
-
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
-
         return array(
             $grid->newColumn('Name', 'getName', 'name')
         );
@@ -40,17 +37,11 @@ class ProductTypeController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        $em = $this->getDoctrine()->getManager();
         $o->setName($data['name']);
-
     }
 
     protected function padFormParams(&$params, $product = null)
     {
-        $em = $this->getDoctrine()->getManager();
-
-
         return $params;
     }
-
 }

@@ -106,14 +106,11 @@ class WarehouseController extends CrudController
     {
         $grid = $this->get('gist_grid');
         $data = $this->getRequest()->query->all();
-        $em = $this->getDoctrine()->getManager();
 
-        // limit to this warehouse's stock
         $fg = $grid->newFilterGroup();
         $fg->where('w.id = ?1')
             ->setParameter(1, $id);
 
-        // setup grid
         $gl = $grid->newLoader();
         $gl->processParams($data)
             ->setRepository('GistInventoryBundle:Stock')
@@ -122,7 +119,6 @@ class WarehouseController extends CrudController
             ->enableCountFilter()
             ->setQBFilterGroup($fg);
 
-        // columns
         $stock_cols = $this->getStockColumns();
         foreach ($stock_cols as $col)
             $gl->addColumn($col);
@@ -164,15 +160,7 @@ class WarehouseController extends CrudController
         foreach ($existing_stocks as $es) {
             array_push($existingProductsArray, $es->getProduct()->getID());
         }
-        //create ZERO stock entries for products
-        //if ($obj->getBrand() != '') {
-            //$brands = explode(',', $obj->getBrand());
-            //foreach ($brands as $brand) {
 
-                //$brand_object = $em->getRepository('GistInventoryBundle:Brand')->findOneBy(array('name'=>$brand));
-
-
-                //$brand_id = $brand_object->getID();
                 $products = $em->getRepository('GistInventoryBundle:Product')->findAll();
 
                 if ($products) {
@@ -202,12 +190,7 @@ class WarehouseController extends CrudController
                             $em->flush();
                         }
                     }
-                    //IF BRAND PRODUCTS FOUND
                 }
-
-                //END BRANDS LOOP
-            //}
-        //}
 
         //CREATE ENTRIES FOR FIXED ASSETS
         $fixedAssetsBrandID = $config->get('gist_fixed_asset_brand');
@@ -229,4 +212,3 @@ class WarehouseController extends CrudController
         }
     }
 }
-

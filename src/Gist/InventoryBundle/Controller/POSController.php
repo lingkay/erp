@@ -46,23 +46,13 @@ class POSController extends CrudController
     public function indexAction()
     {
         $this->checkAccess($this->route_prefix . '.view');
-
         $this->hookPreAction();
         $em = $this->getDoctrine()->getManager();
-        $am = $this->get('gist_accounting');
-
-        //$gl = $this->setupGridLoader();
-
         $params = $this->getViewParams('List');
         $params['product_categories'] = $em->getRepository('GistInventoryBundle:ProductCategory')->findAll();
         $params['products'] = $em->getRepository('GistInventoryBundle:Product')->findAll();
-
-
         $twig_file = 'GistInventoryBundle:POS:app.html.twig';
-
-
         $params['list_title'] = $this->list_title;
-        //$params['grid_cols'] = $gl->getColumns();
 
         return $this->render($twig_file, $params);
     }
@@ -81,6 +71,7 @@ class POSController extends CrudController
             }
             
         }
+
         return new JsonResponse($list_opts);
     }
 
@@ -88,12 +79,8 @@ class POSController extends CrudController
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
-
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
         $brands = explode(',', $pos_location->getBrand());
-
-        //var_dump($brands);
-        //die();
 
         $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
         $config = $this->get('gist_configuration');

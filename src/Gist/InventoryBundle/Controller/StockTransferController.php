@@ -30,21 +30,15 @@ class StockTransferController extends CrudController
     public function indexAction()
     {
         $this->checkAccess($this->route_prefix . '.view');
-
         $this->hookPreAction();
         $gl = $this->setupGridLoader();
-
         $params = $this->getViewParams('List', 'gist_inv_stock_transfer_index');
-
         $date_from = new DateTime();
         $date_to = new DateTime();
         $date_from->format("Y-m-d");
         $date_to->format("Y-m-d");
-
         $this->padFormParams($params, $date_from, $date_to);
         $twig_file = 'GistInventoryBundle:StockTransfer:index.html.twig';
-
-
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
         return $this->render($twig_file, $params);
@@ -53,47 +47,36 @@ class StockTransferController extends CrudController
     public function editFormAction($id)
     {
         $this->checkAccess($this->route_prefix . '.view');
-
         $this->hookPreAction();
         $em = $this->getDoctrine()->getManager();
         $obj = $em->getRepository($this->repo)->find($id);
-
         $session = $this->getRequest()->getSession();
         $session->set('csrf_token', md5(uniqid()));
-
         $params = $this->getViewParams('Edit');
         $params['object'] = $obj;
         $params['o_label'] = $this->getObjectLabel($obj);
 
         // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
-
         $params['main_status'] = '';
         if ($obj->getID() != '') {
             $params['main_status'] = $obj->getStatus();
         }
 
         $this->padFormParams($params, $obj);
-
         return $this->render('GistTemplateBundle:Object:edit.html.twig', $params);
     }
 
     public function addFormAction()
     {
         $this->checkAccess($this->route_prefix . '.add');
-
         $this->hookPreAction();
         $obj = $this->newBaseClass();
-
-
         $session = $this->getRequest()->getSession();
         $session->set('csrf_token', md5(uniqid()));
-
         $params = $this->getViewParams('Add');
         $params['object'] = $obj;
         $params['main_status'] = '';
-
-        // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
         $this->padFormParams($params, $obj);
 
@@ -107,17 +90,12 @@ class StockTransferController extends CrudController
         $this->hookPreAction();
         $em = $this->getDoctrine()->getManager();
         $obj = $em->getRepository($this->repo)->find($id);
-
         $session = $this->getRequest()->getSession();
         $session->set('csrf_token', md5(uniqid()));
-
         $params = $this->getViewParams('Edit');
         $params['object'] = $obj;
         $params['o_label'] = $this->getObjectLabel($obj);
-
-        // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
-
         $this->padFormParams($params, $obj);
         $params['is_rolled_back'] = 'true';
 
@@ -128,7 +106,6 @@ class StockTransferController extends CrudController
         } elseif ($obj->getStatus() == 'delivered') {
             $params['main_status'] = 'processed';
         }
-
 
         return $this->render('GistTemplateBundle:Object:edit.html.twig', $params);
     }

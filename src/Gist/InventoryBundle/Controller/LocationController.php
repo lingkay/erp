@@ -15,24 +15,16 @@ class LocationController extends Controller
     protected $repo;
     protected $base_view;
     protected $route_gen;
-//    protected $inv_acct_id;
 
     public function indexAction()
     {
         $this->route_prefix = 'gist_inv_loc';
         $this->title = 'Dashboard';
-        $config = $this->get('gist_configuration');
-        $inv = $this->get('gist_inventory');
         $params = $this->getViewParams('List');
-        $settings = $this->get('hris_settings');
-        $recruitment = $this->get('hris_recruitment');
-        $request = $this->get('hris_request');
         $this->getControllerBase();
         $gl = $this->setupGridLoader();
         $params['main_warehouse'] = 0;
         $params['grid_cols'] = $gl->getColumns();
-//        $this->inv_acct_id = '0';
-
         $params['computation_opts'] = array(
             'manual' => 'Manual',
             'formula' => 'Formula'
@@ -89,8 +81,6 @@ class LocationController extends Controller
         // grid columns
         $gcols = $this->getGridColumns($pos_loc_id);
 
-
-
         // add columns
         foreach ($gcols as $gc)
             $gloader->addColumn($gc);
@@ -113,8 +103,6 @@ class LocationController extends Controller
         $grid = $this->get('gist_grid');
         return array(
             $grid->newColumn('Location','getID','name', 'inv', array($this,'formatInv')),
-//            $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
-//            $grid->newColumn('Item Barcode','getBarcode','item_code', 'prod'),
             $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
             $grid->newColumn('Min. Stock','getMinStock','min_stock', 'o', array($this,'formatNumericLinkThreshold')),
             $grid->newColumn('Max. Stock','getMaxStock','max_stock', 'o', array($this,'formatNumericLinkThreshold')),
@@ -181,8 +169,6 @@ class LocationController extends Controller
         $config = $this->get('gist_configuration');
         $gloader = $this->setupGridLoader();
 
-//        $gloader->setQBFilterGroup($this->filterGrid());
-
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
 
@@ -226,12 +212,8 @@ class LocationController extends Controller
         $config = $this->get('gist_configuration');
         $gloader = $this->setupGridLoader();
 
-//        $gloader->setQBFilterGroup($this->filterGrid());
-
         $grid = $this->get('gist_grid');
         $fg = $grid->newFilterGroup();
-
-
 
         if($pos_loc_id == 0)
         {
@@ -248,7 +230,6 @@ class LocationController extends Controller
             $selected_loc = $inv->findPOSLocation($pos_loc_id);
             $qry[] = "(o.inv_account = '".$selected_loc->getInventoryAccount()->getID()."')";
         }
-
 
         if (!empty($qry))
         {
@@ -295,7 +276,6 @@ class LocationController extends Controller
      */
     public function getProductDetailsStockAction($id, $inv_id)
     {
-        $split_trans_total = 0;
         $em = $this->getDoctrine()->getManager();
         $product = $em->getRepository('GistInventoryBundle:Product')->findOneBy(array('id'=>$id));
         $stock = $em->getRepository('GistInventoryBundle:Stock')->findOneBy(array('product'=>$id, 'inv_account'=>$inv_id));

@@ -227,3 +227,15 @@ acl:
           label: "Edit"
         - id: gist_inv_counting_gridform.delete
           label: "Delete"
+    - category: Inventory Settings
+      entries:
+        - id: gist_inv_settings.menu
+          label: "Menu"
+        - id: gist_inv_settings.view
+          label: "View"
+        - id: gist_inv_settings.add
+          label: "Add"
+        - id: gist_inv_settings.edit
+          label: "Edit"
+        - id: gist_inv_settings.delete
+          label: "Delete"

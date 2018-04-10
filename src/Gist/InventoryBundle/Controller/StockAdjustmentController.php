@@ -25,10 +25,12 @@ class StockAdjustmentController extends CrudController
 
     protected function newBaseClass()
     {
+
     }
 
     protected function getObjectLabel($obj)
     {
+
     }
 
     // TODO: this should refer to settings but we don't have a way to create
@@ -49,18 +51,14 @@ class StockAdjustmentController extends CrudController
     public function indexAction($wh_id = null, $wh_type = null)
     {
         $this->hookPreAction();
-
         $gl = $this->setupGridLoader();
-
         $params = $this->getViewParams('List');
         $params['title_icon'] = 'fa-suitcase';
         $twig_file = 'GistInventoryBundle:StockAdjustment:index.html.twig';
-
         $inv = $this->get('gist_inventory');
         $params['wh_id'] = $wh_id;
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
-        //$params['wh_opts'] = array('0'=>'Select Warehouse') + $inv->getWarehouseOptionsByType('physical','id') + $inv->getWarehouseOptionsByType('virtual','id');
         $params['wh_opts'] = array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
         $params['wh_type_opts'] = array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
         $params['prodgroup_opts'] = $inv->getProductGroupOptions();  
@@ -115,14 +113,11 @@ class StockAdjustmentController extends CrudController
                     ->setProduct($prod);
 
                 // check if debit or credit
-                if ($new_qty > $old_qty)
-                {
+                if ($new_qty > $old_qty) {
                     $qty = $new_qty - $old_qty;
                     $wh_entry->setDebit($qty);
                     $adj_entry->setCredit($qty);
-                }
-                else
-                {
+                } else {
                     $qty = $old_qty - $new_qty;
                     $wh_entry->setCredit($qty);
                     $adj_entry->setDebit($qty);
@@ -138,21 +133,11 @@ class StockAdjustmentController extends CrudController
 
     public function addSubmitAction($wh_id = null, $wh_type = null)
     {
-
-
+        $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
         $log = $this->get('gist_log');
-
-        $em = $this->getDoctrine()->getManager();
-        
-        //die($url);
-
         $data = $this->getRequest()->request->all();
         $url = $this->generateUrl('cat_inv_adjust_index', array('wh_id'=>$data['from_wh_id']));
-
-        // var_dump($data);
-        // die();
-
         $config = $this->get('gist_configuration');
         $adj_warehouse_id = $config->get('gist_warehouse_stock_adjustment');
 
@@ -183,7 +168,6 @@ class StockAdjustmentController extends CrudController
             $wh = $em->getRepository('GistInventoryBundle:Warehouse')->find($wh_id);
             if ($wh == null)
                 throw new ValidationException('Could not find warehouse.');
-            $wh_acc = $wh->getInventoryAccount();
 
             foreach ($data['prod_id'] as $index => $prod_id)
             {
@@ -267,7 +251,6 @@ class StockAdjustmentController extends CrudController
             ];
             
         }
-
 
         return new JsonResponse($products);   
     }

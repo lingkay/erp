@@ -41,7 +41,6 @@ class AccountController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        // validate name
         if (empty($data['name']))
             throw new ValidationException('Cannot leave name blank');
             

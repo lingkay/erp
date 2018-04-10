@@ -37,8 +37,6 @@ gist_user:
 gist_configuration:
     bundles:
         - GistInventoryBundle
-#        - GistAdminBundle
-
 
 gist_media:
     upload_storage:
