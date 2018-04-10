@@ -107,6 +107,7 @@ class EmployeeLayeredReportController extends Controller
         ];
     }
     //END TOP LAYER
+
     //FOR POSITIONS/L2
     public function positionsIndexAction($date_from = null, $date_to = null, $position = null)
     {
@@ -192,6 +193,7 @@ class EmployeeLayeredReportController extends Controller
         }
     }
     //END POSITIONS/L2
+
     //FOR EMPLOYEES/L3 / SHOW EMPLOYEES
     public function employeesIndexAction($date_from = null, $date_to = null, $position = null)
     {
@@ -256,10 +258,7 @@ class EmployeeLayeredReportController extends Controller
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $employeex = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
                     if ($employeex->getID() == $employeeId && $employeex->getGroup()->getID() == $position) {
-                        //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
-                        //store transaction id of item for use
-                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
                     }
                 }
             }
@@ -287,6 +286,7 @@ class EmployeeLayeredReportController extends Controller
         }
     }
     //END AREAS/L3
+
     //FOR POS LOCS/L4 / SHOW POS LOCATIONS
     public function posIndexAction($date_from = null, $date_to = null, $position = null)
     {
@@ -342,7 +342,6 @@ class EmployeeLayeredReportController extends Controller
             'region' => $region
         ]);
 
-        //$regionObject = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($region);
         $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
 
         foreach ($allPOS as $POSObject) {
@@ -434,4 +433,3 @@ class EmployeeLayeredReportController extends Controller
         return $base;
     }
 }
-

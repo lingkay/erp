@@ -101,10 +101,10 @@ class LocationLayeredReportController extends Controller
         ];
     }
     //END TOP LAYER
+
     //FOR REGIONS/L2
     public function regionsIndexAction($date_from = null, $date_to = null, $region = null, $area = null)
     {
-        $em = $this->getDoctrine()->getManager();
         try {
             $data = $this->getRequest()->request->all();
             $this->route_prefix = 'gist_layered_sales_report_location';
@@ -121,7 +121,6 @@ class LocationLayeredReportController extends Controller
                 $params['regions_data'] = $this->getRegionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
                 return $this->render('GistSalesReportBundle:LocationLayered:regions.html.twig', $params);
 
             } else {
@@ -178,7 +177,6 @@ class LocationLayeredReportController extends Controller
     public function areasIndexAction($date_from = null, $date_to = null, $region = null, $area = null)
     {
         $em = $this->getDoctrine()->getManager();
-
         try {
             $data = $this->getRequest()->request->all();
             $this->route_prefix = 'gist_layered_sales_report_location';
@@ -259,6 +257,7 @@ class LocationLayeredReportController extends Controller
         }
     }
     //END AREAS/L3
+
     //FOR POS LOCS/L4 / SHOW POS LOCATIONS
     public function posIndexAction($date_from = null, $date_to = null, $region = null, $area = null)
     {
@@ -370,7 +369,6 @@ class LocationLayeredReportController extends Controller
         $params['route_grid'] = $this->getRouteGen()->getGrid();
         $params['list_title'] = $this->list_title;
         $params['prefix'] = $this->route_prefix;
-
         $params['base_view'] = $this->base_view;
         return $params;
     }
@@ -393,4 +391,3 @@ class LocationLayeredReportController extends Controller
         return $base;
     }
 }
-

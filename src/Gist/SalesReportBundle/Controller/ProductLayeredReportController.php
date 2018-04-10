@@ -112,6 +112,7 @@ class ProductLayeredReportController extends Controller
         ];
     }
     //END TOP LAYER
+
     //FOR BRANDS/L2
     public function brandsIndexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
@@ -169,7 +170,6 @@ class ProductLayeredReportController extends Controller
                     if ($product->getBrand()->getID() == $brandId) {
                         $brandTotalCost += $product->getCost();
                         $brandTotalSales += $transactionItem->getTotalAmount();
-                        //store transaction id of item for use
                         array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
                         $quantitySold++;
                     }
@@ -201,6 +201,7 @@ class ProductLayeredReportController extends Controller
         return $list_opts;
     }
     //END BRANDS/L2
+
     //FOR BRANDED/L3 / SHOW BRAND CATEGORIES
     public function brandedIndexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
@@ -272,7 +273,6 @@ class ProductLayeredReportController extends Controller
             }
 
             $totalProfit = $totalSales - $totalCost;
-            //$profit_percentage = ($totalProfit / $totalSales) * 100;
             if ($totalSales < 1) {
                 $profit_percentage = ($totalProfit / 0.001) * 100;
             } else {
@@ -303,6 +303,7 @@ class ProductLayeredReportController extends Controller
         }
     }
     //END BRANDED/L3
+
     //FOR CATEGORIZED/L4 / SHOW PRODUCTS
     public function categorizedIndexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
@@ -373,9 +374,6 @@ class ProductLayeredReportController extends Controller
             //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-
-
-
                     $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
                     if ($product->getCategory()->getID() == $category && $product->getBrand()->getID() == $brand && $product->getID() == $productId) {
                         $totalCost += $product->getCost();
@@ -462,4 +460,3 @@ class ProductLayeredReportController extends Controller
         return $base;
     }
 }
-

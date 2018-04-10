@@ -32,11 +32,6 @@ class SalesLayeredReportController extends Controller
         $data = $this->getRequest()->request->all();
         $this->route_prefix = 'gist_layered_sales_report_sales';
         $params = $this->getViewParams('List');
-        //$this->getControllerBase();
-
-        //PARAMS
-
-
         if (isset($data['date_from']) && isset($data['date_to'])) {
             $date_from = DateTime::createFromFormat('Ymd', $data['date_from']);
             $date_to = DateTime::createFromFormat('Ymd', $data['date_to']);
@@ -141,7 +136,6 @@ class SalesLayeredReportController extends Controller
     protected function getModesData($date_from, $date_to)
     {
         $em = $this->getDoctrine()->getManager();
-        //get all brands
         $allModes = ModesOfPayment::getModesOptions();
 
         foreach ($allModes as $modeId => $modeName) {
@@ -158,16 +152,11 @@ class SalesLayeredReportController extends Controller
             foreach ($transactionPayments as $payment) {
                 if (!$payment->getTransaction()->hasChildLayeredReport()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($payment->getTransaction()->getPOSLocation());
-
                     if ($payment->getType() == $modeName) {
-                        //$totalCost += $product->getCost();
                         $totalSales += $payment->getAmount();
-                        //store transaction id of item for use
-                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
                     }
                 }
             }
-
 
             $brandTotalProfit = $totalSales - $totalCost;
             if ($totalSales > 0) {
@@ -190,6 +179,7 @@ class SalesLayeredReportController extends Controller
         }
     }
     //END POSITIONS/L2
+
     //FOR EMPLOYEES/L3 / CASH TRANS
     public function cashTransactionsIndexAction($date_from = null, $date_to = null, $mode = null)
     {
@@ -201,9 +191,7 @@ class SalesLayeredReportController extends Controller
             $params = $this->getViewParams('List');
             $this->getControllerBase();
 
-            //PARAMS
             $params['position '] = $mode ;
-
             if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
                 $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
@@ -212,13 +200,7 @@ class SalesLayeredReportController extends Controller
                 $params['data'] = $this->cashTransactionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $mode);
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
-
-                //$positionObject = $em->getRepository('GistUserBundle:Group')->findOneById($position);
-
-                //$params['position_id'] = $positionObject->getID();
                 $params['mode_name'] = $mode;
-
                 return $this->render('GistSalesReportBundle:SalesLayered:cash_transactions.html.twig', $params);
 
             } else {
@@ -271,6 +253,7 @@ class SalesLayeredReportController extends Controller
         }
     }
     //END CASH TRANS/L3
+
     //FOR L3 CHECK TYPES
     public function checkTypesIndexAction($date_from = null, $date_to = null)
     {
@@ -288,14 +271,11 @@ class SalesLayeredReportController extends Controller
                 $params['data'] = $this->getCheckTypesData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
                 return $this->render('GistSalesReportBundle:SalesLayered:check_type.html.twig', $params);
 
             } else {
                 return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
             }
-
-
         } catch (Exception $e) {
             return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
         }
@@ -339,6 +319,7 @@ class SalesLayeredReportController extends Controller
         }
     }
     //END L3 CHECKTYPES
+
     //FOR L3 CHECK TYPES
     public function terminalsIndexAction($date_from = null, $date_to = null)
     {
@@ -553,13 +534,6 @@ class SalesLayeredReportController extends Controller
     }
     //END CARD TRANS/L4
 
-
-
-
-
-
-
-
     protected function getRouteGen()
     {
         if ($this->route_gen == null)
@@ -604,4 +578,3 @@ class SalesLayeredReportController extends Controller
         return $base;
     }
 }
-

@@ -19,7 +19,6 @@ class SupplierLayeredReportController extends Controller
     {
         $this->route_prefix = 'gist_layered_sales_report_supplier';
         $this->title = 'Layered Report - Supplier';
-
         $this->list_title = 'Layered Report - Suppliers';
         $this->list_type = 'static';
     }
@@ -30,11 +29,6 @@ class SupplierLayeredReportController extends Controller
         $data = $this->getRequest()->request->all();
         $this->route_prefix = 'gist_layered_sales_report_supplier';
         $params = $this->getViewParams('List');
-        //$this->getControllerBase();
-
-        //PARAMS
-
-
         if (isset($data['date_from']) && isset($data['date_to'])) {
             $date_from = DateTime::createFromFormat('Ymd', $data['date_from']);
             $date_to = DateTime::createFromFormat('Ymd', $data['date_to']);
@@ -62,13 +56,9 @@ class SupplierLayeredReportController extends Controller
                 $params['date_to_url'] = $date_to->format("m-t-Y");
                 $params['all_data'] = $this->getAllData($date_from->format('Y-m-01'), $date_to->format('Y-m-t'));
             }
-
             $params['date_from'] = $date_from_twig;
             $params['date_to'] = $date_to_twig;
-
-
         }
-
 
         return $this->render('GistSalesReportBundle:SupplierLayered:index.html.twig', $params);
     }
@@ -78,7 +68,6 @@ class SupplierLayeredReportController extends Controller
         $em = $this->getDoctrine()->getManager();
         $layeredReportService = $this->get('gist_layered_report_service');
         $data = $layeredReportService->getTransactions($date_from, $date_to, null, null);
-
         $total_payments = 0;
         $total_cost = 0;
         $total_profit = 0;
@@ -95,7 +84,6 @@ class SupplierLayeredReportController extends Controller
         }
 
         $total_profit = $total_payments - $total_cost;
-
         return [
             'total_sales' => number_format($total_payments, 2, '.',','),
             'total_cost' => number_format($total_cost, 2, '.',','),
@@ -103,6 +91,7 @@ class SupplierLayeredReportController extends Controller
         ];
     }
     //END TOP LAYER
+
     //FOR POSITIONS/L2
     public function suppliersIndexAction($date_from = null, $date_to = null, $position = null)
     {
@@ -112,8 +101,6 @@ class SupplierLayeredReportController extends Controller
             $this->route_prefix = 'gist_layered_sales_report_supplier';
             $params = $this->getViewParams('List');
             $this->getControllerBase();
-
-            //PARAMS
             $params['position'] = $position;
 
             if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
@@ -124,11 +111,7 @@ class SupplierLayeredReportController extends Controller
                 $params['positions_data'] = $this->getSuppliersData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
-
-
                 return $this->render('GistSalesReportBundle:SupplierLayered:suppliers.html.twig', $params);
-
             } else {
                 return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
             }
@@ -141,13 +124,10 @@ class SupplierLayeredReportController extends Controller
     {
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        //get all positions
-        $salesDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Sales']);
         $allSuppliers = $em->getRepository('GistInventoryBundle:Supplier')->findAll();
 
 
         foreach ($allSuppliers as $supplier) {
-            //initiate totals
             $supplierId = $supplier->getID();
             $totalSales = 0;
             $totalCost = 0;
@@ -232,4 +212,3 @@ class SupplierLayeredReportController extends Controller
         return $base;
     }
 }
-
