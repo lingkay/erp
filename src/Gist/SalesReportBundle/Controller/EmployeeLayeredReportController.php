@@ -90,8 +90,10 @@ class EmployeeLayeredReportController extends Controller
                 $total_payments += $d->getTransactionTotal();
 
                 foreach ($d->getItems() as $item) {
-                    $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
-                    $total_cost += $product->getCost();
+                    if (!$item->getReturned()) {
+                        $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($item->getProductId());
+                        $total_cost += $product->getCost();
+                    }
                 }
             }
         }
@@ -164,10 +166,7 @@ class EmployeeLayeredReportController extends Controller
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $user = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
                     if ($user->getGroup()->getID() == $positionId) {
-                        //$totalCost += $product->getCost();
                         $totalSales += $transactionItem->getTotalAmount();
-                        //store transaction id of item for use
-                        //array_push($brandTransactionIds, $transactionItem->getTransaction()->getID());
                     }
                 }
             }
