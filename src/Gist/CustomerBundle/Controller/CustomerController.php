@@ -127,7 +127,7 @@ class CustomerController extends CrudController
         $o->setCountry($data['country']);
         $o->setZip($data['zip']);
         $o->setNotes($data['notes']);
-
+        $o->setUserCreate($this->getUser());
 
     }
 
