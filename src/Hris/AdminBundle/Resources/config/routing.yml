@@ -792,3 +792,143 @@ hris_admin_night_differential_matrix_grid:
     pattern: /nightdifferential-matrix/grid
     methods: [GET]
     defaults: { _controller: HrisAdminBundle:NightDifferentialMatrix:grid }
+
+#    BONUS
+hris_payroll_settings_bonus_index:
+    path:  /payroll-settings/bonus
+    defaults: { _controller: HrisAdminBundle:Bonus:index }
+
+hris_payroll_settings_bonus_add_form:
+    pattern: /payroll-settings/bonus/form
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Bonus:addForm }
+
+hris_payroll_settings_bonus_add_submit:
+    pattern: /payroll-settings/bonus/form
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Bonus:addSubmit }
+
+hris_payroll_settings_bonus_edit_form:
+    pattern: /payroll-settings/bonus/form-edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Bonus:editForm }
+
+hris_payroll_settings_bonus_edit_submit:
+    pattern: /payroll-settings/bonus/form-edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Bonus:editSubmit }
+
+hris_payroll_settings_bonus_delete:
+    pattern: /payroll-settings/bonus/entry/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Bonus:delete }
+
+hris_payroll_settings_bonus_grid:
+    pattern: /payroll-settings/bonus/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Bonus:grid }
+
+#    FINES
+hris_payroll_settings_fines_index:
+    path:  /payroll-settings/fines
+    defaults: { _controller: HrisAdminBundle:Fines:index }
+
+hris_payroll_settings_fines_add_form:
+    pattern: /payroll-settings/fines/form
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Fines:addForm }
+
+hris_payroll_settings_fines_add_submit:
+    pattern: /payroll-settings/fines/form
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Fines:addSubmit }
+
+hris_payroll_settings_fines_edit_form:
+    pattern: /payroll-settings/fines/form-edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Fines:editForm }
+
+hris_payroll_settings_fines_edit_submit:
+    pattern: /payroll-settings/fines/form-edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Fines:editSubmit }
+
+hris_payroll_settings_fines_delete:
+    pattern: /payroll-settings/fines/entry/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Fines:delete }
+
+hris_payroll_settings_fines_grid:
+    pattern: /payroll-settings/fines/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Fines:grid }
+
+#    DEPOSIT
+hris_payroll_settings_deposit_index:
+    path:  /payroll-settings/deposit
+    defaults: { _controller: HrisAdminBundle:Deposit:index }
+
+hris_payroll_settings_deposit_add_form:
+    pattern: /payroll-settings/deposit/form
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Deposit:addForm }
+
+hris_payroll_settings_deposit_add_submit:
+    pattern: /payroll-settings/deposit/form
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Deposit:addSubmit }
+
+hris_payroll_settings_deposit_edit_form:
+    pattern: /payroll-settings/deposit/form-edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Deposit:editForm }
+
+hris_payroll_settings_deposit_edit_submit:
+    pattern: /payroll-settings/deposit/form-edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Deposit:editSubmit }
+
+hris_payroll_settings_deposit_delete:
+    pattern: /payroll-settings/deposit/entry/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Deposit:delete }
+
+hris_payroll_settings_deposit_grid:
+    pattern: /payroll-settings/deposit/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Deposit:grid }
+
+#    Incentive
+hris_payroll_settings_incentive_index:
+    path:  /payroll-settings/incentive
+    defaults: { _controller: HrisAdminBundle:Incentive:index }
+
+hris_payroll_settings_incentive_add_form:
+    pattern: /payroll-settings/incentive/form
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Incentive:addForm }
+
+hris_payroll_settings_incentive_add_submit:
+    pattern: /payroll-settings/incentive/form
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Incentive:addSubmit }
+
+hris_payroll_settings_incentive_edit_form:
+    pattern: /payroll-settings/incentive/form-edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Incentive:editForm }
+
+hris_payroll_settings_incentive_edit_submit:
+    pattern: /payroll-settings/incentive/form-edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisAdminBundle:Incentive:editSubmit }
+
+hris_payroll_settings_incentive_delete:
+    pattern: /payroll-settings/incentive/entry/{id}/delete
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Incentive:delete }
+
+hris_payroll_settings_incentive_grid:
+    pattern: /payroll-settings/incentive/grid
+    methods: [GET]
+    defaults: { _controller: HrisAdminBundle:Incentive:grid }
