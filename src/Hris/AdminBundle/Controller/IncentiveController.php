@@ -30,6 +30,24 @@ class IncentiveController extends CrudController
     {
         $o->setTax($data['tax']);
         $o->setName($data['name']);
+
+        /*
+         *
+         * if (isset($data['item_id'])) {
+             $items_given = [];
+            foreach ($data['item_id'] as $i => $item_id) {
+                $items_given[] = array($item_id, $data['qty'][$i]);
+            }
+
+            $items_given_formatted = implode("&",array_map(function($a) {return implode("~",$a);},$items_given));
+
+
+            $o->setProductCompositions($items_given_formatted);
+        } else {
+            $o->setProductCompositions(null);
+        }
+         *
+         */
     }
 
     protected function padFormParams(&$params, $o = null)

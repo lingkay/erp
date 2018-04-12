@@ -79,7 +79,6 @@ class FinesController extends CrudController
         return $this->render('HrisAdminBundle:Fines:form.html.twig', $params);
     }
 
-
     protected function getObjectLabel($obj)
     {
         if ($obj == null){
