@@ -25,7 +25,7 @@ class Fines
     /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
     protected $amount;
 
-    /** @ORM\Column(type="string", length=200) */
+    /** @ORM\Column(type="string", length=200, nullable=true) */
     protected $formula;
 
     public function __construct()

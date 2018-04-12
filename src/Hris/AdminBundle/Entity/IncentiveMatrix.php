@@ -12,18 +12,31 @@ use stdClass;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="payroll_settings_deposit")
+ * @ORM\Table(name="payroll_settings_incentive_matrix")
  */
-class Deposit
+class IncentiveMatrix
 {
     use HasGeneratedID;
     use HasName;
 
-    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
-    protected $amount;
+    /** @ORM\Column(type="string", nullable=true)*/
+    protected $bracket;
 
-    /** @ORM\Column(type="string", length=200, nullable=true) */
-    protected $remarks;
+    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
+    protected $amount_from;
+
+    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
+    protected $amount_to;
+
+    /** @ORM\Column(type="decimal", precision=10, scale=2) */
+    protected $percent_amount;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Incentive")
+     * @ORM\JoinColumn(name="incentive_id", referencedColumnName="id")
+     */
+    protected $incentive;
+
 
     public function __construct()
     {
