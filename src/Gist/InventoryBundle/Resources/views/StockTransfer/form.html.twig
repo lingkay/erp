@@ -192,7 +192,7 @@
                                     <input type="hidden" name="status" value="requested">
                                     <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue"><i class="fa fa-save"></i> Save</a>
                                     <a href="javascript:void(0)" id="transfer_form_btn_sp" class="btn blue"><i class="fa fa-print"></i> Save & Print</a>
-                                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                                    <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
                                 {% else %}
                                     {% if main_status|default('') == 'requested' %}
                                         <input type="hidden" name="status" value="processed">

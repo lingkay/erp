@@ -4,6 +4,7 @@ namespace Hris\AdminBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\ValidationException;
+use Hris\AdminBundle\Entity\Deposit;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
@@ -23,20 +24,17 @@ class DepositController extends CrudController
 
     protected function newBaseClass()
     {
-        return new TaxMatrix();
+        return new Deposit();
     }
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setTax($data['tax']);
+        $o->setAmount($data['amount']);
         $o->setName($data['name']);
     }
 
     protected function padFormParams(&$params, $o = null)
     {
-        $em = $this->getDoctrine()->getManager();
-        $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
-
         return $params;
     }
 
@@ -73,7 +71,7 @@ class DepositController extends CrudController
 
         return array(
             $grid->newColumn('Name','getName','name'),
-            $grid->newColumn('Tax Rate','getTaxFormatted','amount_tax'),
+            $grid->newColumn('Amount','getAmount','amount'),
         );
     }
 }

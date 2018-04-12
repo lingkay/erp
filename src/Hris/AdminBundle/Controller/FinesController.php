@@ -94,6 +94,7 @@ class FinesController extends CrudController
 
         return array(
             $grid->newColumn('Name','getName','name'),
+            $grid->newColumn('Amount','getAmount','amount'),
         );
     }
 }

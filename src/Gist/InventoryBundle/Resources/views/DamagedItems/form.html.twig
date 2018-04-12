@@ -55,7 +55,7 @@
                             <div class="col-md-9">
                                 {% if object.getID|default('') == '' %}
                                     <a href="javascript:void(0)" id="transfer_form_btn" class="btn blue">Submit</a>
-                                    <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                                    <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
                                 {% else %}
                                     {% if object.getStatus|default('') == 'for_return' %}
                                         <button name="status" type="submit" value="processed" class="btn blue"><i class="fa fa-pencil"></i> Returned</button>
