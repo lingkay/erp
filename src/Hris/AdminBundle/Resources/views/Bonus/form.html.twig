@@ -14,7 +14,8 @@
                         <div class="form-body">
                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                             {{form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly)}}
-                            {{form.group_number('Tax Rate (%)', 'tax', object.getTax|default(''), 3, 4, readonly)}}
+                            {{ form.group_select('Type','type',type_options, object.getType.getID|default('') ,3,4, readonly) }}
+                            {{ form.group_select('Authorized Giver','giver',giver_options, object.getAuthorizedGiver.getID|default('') ,3,4, readonly) }}
                         </div>
 
                         <div class="form-actions fluid">
@@ -22,7 +23,7 @@
                                 {% if not readonly %}
                                     <button type="submit" class="btn blue">Submit</button>
                                 {% endif %}
-                                <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                                <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
                             </div>
                         </div>
                     </form>
@@ -95,11 +96,9 @@
                 },
                 rules: {
                     name: "required",
-                    tax: "required",
                 },
                 messages: {
                     name: "Name cannot be blank.",
-                    tax: "Tax cannot be blank.",
                 },
                 submitHandler: function(form) {
                     form.submit();

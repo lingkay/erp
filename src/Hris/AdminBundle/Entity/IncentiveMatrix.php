@@ -50,4 +50,124 @@ class IncentiveMatrix
         $this->dataHasName($data);
         return $data;
     }
+
+    /**
+     * Set bracket
+     *
+     * @param string $bracket
+     *
+     * @return IncentiveMatrix
+     */
+    public function setBracket($bracket)
+    {
+        $this->bracket = $bracket;
+
+        return $this;
+    }
+
+    /**
+     * Get bracket
+     *
+     * @return string
+     */
+    public function getBracket()
+    {
+        return $this->bracket;
+    }
+
+    /**
+     * Set amountFrom
+     *
+     * @param string $amountFrom
+     *
+     * @return IncentiveMatrix
+     */
+    public function setAmountFrom($amountFrom)
+    {
+        $this->amount_from = $amountFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get amountFrom
+     *
+     * @return string
+     */
+    public function getAmountFrom()
+    {
+        return $this->amount_from;
+    }
+
+    /**
+     * Set amountTo
+     *
+     * @param string $amountTo
+     *
+     * @return IncentiveMatrix
+     */
+    public function setAmountTo($amountTo)
+    {
+        $this->amount_to = $amountTo;
+
+        return $this;
+    }
+
+    /**
+     * Get amountTo
+     *
+     * @return string
+     */
+    public function getAmountTo()
+    {
+        return $this->amount_to;
+    }
+
+    /**
+     * Set percentAmount
+     *
+     * @param string $percentAmount
+     *
+     * @return IncentiveMatrix
+     */
+    public function setPercentAmount($percentAmount)
+    {
+        $this->percent_amount = $percentAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get percentAmount
+     *
+     * @return string
+     */
+    public function getPercentAmount()
+    {
+        return $this->percent_amount;
+    }
+
+    /**
+     * Set incentive
+     *
+     * @param \Hris\AdminBundle\Entity\Incentive $incentive
+     *
+     * @return IncentiveMatrix
+     */
+    public function setIncentive(\Hris\AdminBundle\Entity\Incentive $incentive = null)
+    {
+        $this->incentive = $incentive;
+
+        return $this;
+    }
+
+    /**
+     * Get incentive
+     *
+     * @return \Hris\AdminBundle\Entity\Incentive
+     */
+    public function getIncentive()
+    {
+        return $this->incentive;
+    }
 }

@@ -37,4 +37,52 @@ class Deposit
         $this->dataHasName($data);
         return $data;
     }
+
+    /**
+     * Set amount
+     *
+     * @param string $amount
+     *
+     * @return Deposit
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return string
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return Deposit
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
 }

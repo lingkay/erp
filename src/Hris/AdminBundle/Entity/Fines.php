@@ -40,4 +40,76 @@ class Fines
         $this->dataHasName($data);
         return $data;
     }
+
+    /**
+     * Set automatic
+     *
+     * @param boolean $automatic
+     *
+     * @return Fines
+     */
+    public function setAutomatic($automatic)
+    {
+        $this->automatic = $automatic;
+
+        return $this;
+    }
+
+    /**
+     * Get automatic
+     *
+     * @return boolean
+     */
+    public function getAutomatic()
+    {
+        return $this->automatic;
+    }
+
+    /**
+     * Set amount
+     *
+     * @param string $amount
+     *
+     * @return Fines
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return string
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Set formula
+     *
+     * @param string $formula
+     *
+     * @return Fines
+     */
+    public function setFormula($formula)
+    {
+        $this->formula = $formula;
+
+        return $this;
+    }
+
+    /**
+     * Get formula
+     *
+     * @return string
+     */
+    public function getFormula()
+    {
+        return $this->formula;
+    }
 }
