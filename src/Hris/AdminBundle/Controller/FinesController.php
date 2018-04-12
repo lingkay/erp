@@ -4,6 +4,7 @@ namespace Hris\AdminBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\ValidationException;
+use Hris\AdminBundle\Entity\Fines;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
@@ -23,21 +24,41 @@ class FinesController extends CrudController
 
     protected function newBaseClass()
     {
-        return new TaxMatrix();
+        return new Fines();
     }
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setTax($data['tax']);
         $o->setName($data['name']);
+        $o->setAmount($data['amount']);
+        $o->setFormula($data['formula']);
+
+        $em = $this->getDoctrine()->getManager();
+        $type = $em->getRepository('HrisAdminBundle:FineTypes')->findOneById($data['type']);
+        $o->setType($type);
     }
 
     protected function padFormParams(&$params, $o = null)
     {
-        $em = $this->getDoctrine()->getManager();
-        $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
-
+        $params['type_options'] = $this->getTypeOptions();
         return $params;
+    }
+
+    public function getTypeOptions($filter = array())
+    {
+        $em = $this->getDoctrine()->getManager();
+        $whs = $em
+            ->getRepository('HrisAdminBundle:FineTypes')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $bonusTypeOptions = array();
+        foreach ($whs as $wh)
+            $bonusTypeOptions[$wh->getID()] = $wh->getName();
+
+        return $bonusTypeOptions;
     }
 
     public function editFormAction($id)
@@ -73,7 +94,6 @@ class FinesController extends CrudController
 
         return array(
             $grid->newColumn('Name','getName','name'),
-            $grid->newColumn('Tax Rate','getTaxFormatted','amount_tax'),
         );
     }
 }

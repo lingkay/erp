@@ -57,7 +57,7 @@ class BonusController extends CrudController
             ->getRepository('HrisAdminBundle:BonusTypes')
             ->findBy(
                 $filter,
-                array('name' => 'ASC')
+                array('id' => 'ASC')
             );
 
         $bonusTypeOptions = array();
@@ -74,7 +74,7 @@ class BonusController extends CrudController
             ->getRepository('GistUserBundle:User')
             ->findBy(
                 $filter,
-                array('name' => 'ASC')
+                array('id' => 'ASC')
             );
 
         $giverOptions = array();

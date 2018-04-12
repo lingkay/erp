@@ -19,8 +19,11 @@ class Fines
     use HasGeneratedID;
     use HasName;
 
-    /** @ORM\Column(type="boolean", nullable=true) */
-    protected $automatic;
+    /**
+     * @ORM\ManyToOne(targetEntity="FineTypes")
+     * @ORM\JoinColumn(name="type", referencedColumnName="id")
+     */
+    protected $type;
 
     /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
     protected $amount;
@@ -111,5 +114,29 @@ class Fines
     public function getFormula()
     {
         return $this->formula;
+    }
+
+    /**
+     * Set type
+     *
+     * @param \Hris\AdminBundle\Entity\FineTypes $type
+     *
+     * @return Fines
+     */
+    public function setType(\Hris\AdminBundle\Entity\FineTypes $type = null)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \Hris\AdminBundle\Entity\FineTypes
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }
