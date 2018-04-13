@@ -30,6 +30,14 @@
                                 {{ form.radio_set('convertible_to_cash',bool_opts,object.getConvertibleToCash|default(0)) }}
                             </div>
                         </div>
+                        {% if object.getConvertibleToCash == 1 %}
+                            {% set payment_percentage_stat = null %}
+                        {% else %}
+                            {% set payment_percentage_stat = "hidden" %}
+                        {% endif %}
+                        <div id="form-convertible" {{payment_percentage_stat}}>
+                            {{ form.group_number('% of Payment', 'payment_percentage', object.getPaymentPercentage|default(''), 3, 4, readonly) }}
+                        </div>
                     </div>
                     <div class="form-actions fluid">
                         <div class="col-md-9">
@@ -95,6 +103,20 @@
                 }
             });
 
+            // if($('[name=payment_percentage]').val() != "") {
+            //     $('#form-convertible').show();
+            // } else {
+            //     $('#form-convertible').hide();
+            // }
+
+            $('[name=convertible_to_cash]').change(function() {
+                if($(this).val() == "1") {
+                    $('#form-convertible').show();
+                }
+                else {
+                    $('#form-convertible').hide();
+                }
+            });
 
             // validate form elements
             $(".form-horizontal").validate({
