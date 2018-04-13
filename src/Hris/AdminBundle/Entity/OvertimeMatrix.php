@@ -77,6 +77,11 @@ class OvertimeMatrix
         return $this->rate;
     }
 
+    public function getRateFormatted()
+    {
+        return $this->rate. '%';
+    }
+
     public function toData()
     {
         $data = new \stdClass();
