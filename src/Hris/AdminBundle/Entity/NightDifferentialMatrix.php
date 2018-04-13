@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Gist\CoreBundle\Template\Entity\HasGeneratedID;
 
+use DateTime;
 use stdClass;
 
 /**
@@ -20,11 +21,11 @@ class NightDifferentialMatrix
     /** @ORM\Column(type="string", nullable=true)*/
     protected $bracket;
 
-    /** @ORM\Column(type="decimal", precision=10, scale=2) */
-    protected $hrs_from;
+    /** @ORM\Column(type="datetime", nullable=true) */
+    protected $time_from;
 
-    /** @ORM\Column(type="decimal", precision=10, scale=2) */
-    protected $hrs_to;
+    /** @ORM\Column(type="datetime", nullable=true) */
+    protected $time_to;
 
     /** @ORM\Column(type="decimal", precision=10, scale=2) */
     protected $rate;
@@ -39,31 +40,45 @@ class NightDifferentialMatrix
         return $this;
     }
 
+    public function setTimeFrom(DateTime $time_from)
+    {
+        $this->time_from = $time_from;
+        return $this;
+    }
+
+    public function getTimeFrom()
+    {
+        if ($this->time_from == null)
+        {
+            return $this->time_from;
+        }
+        else
+        {
+            return $this->time_from->format('g:i A');
+        }
+    }
+
+    public function setTimeTo(DateTime $time_to)
+    {
+        $this->time_to = $time_to;
+        return $this;
+    }
+
+    public function getTimeTo()
+    {
+        if ($this->time_to == null)
+        {
+            return $this->time_to;
+        }
+        else
+        {
+            return $this->time_to->format('g:i A');
+        }
+    }
+
     public function getBracket()
     {
         return $this->bracket;
-    }
-
-    public function setMinimum($amt_from)
-    {
-        $this->hrs_from = $amt_from;
-        return $this;
-    }
-
-    public function getMinimum()
-    {
-        return $this->hrs_from;
-    }
-
-    public function setMaximum($amt_to)
-    {
-        $this->hrs_to = $amt_to;
-        return $this;
-    }
-
-    public function getMaximum()
-    {
-        return $this->hrs_to;
     }
 
     public function setRate($rate)
