@@ -40,6 +40,14 @@ class Benefit
     const NAME_PARENTAL = "Parental Leave";
     const NAME_CASHBOND = "Savings";
 
+    /** @ORM\Column(type="boolean") */
+    protected $paid_by;
+
+    /** @ORM\Column(type="decimal", length=80, precision=5, scale=2, nullable=true) */
+    protected $employee_share;
+
+    /** @ORM\Column(type="decimal", length=80, precision=5, scale=2, nullable=true) */
+    protected $employer_share;
 
     /** @ORM\Column(type="text", nullable=true) */
     protected $emp_status;
@@ -69,6 +77,50 @@ class Benefit
         $data->type = $this->type;
 
         return $data;
+    }
+
+    public function setPaidBy($paid_by)
+    {
+        $this->paid_by = $paid_by;
+
+        return $this;
+    }
+
+    public function getPaidBy()
+    {
+        return $this->paid_by;
+    }
+
+    public function setEmployeeShare($employee_share)
+    {
+        $this->employee_share = $employee_share;
+        return $this;
+    }
+
+    public function getEmployeeShare()
+    {
+        return $this->employee_share;
+    }
+
+    public function getEmployeeShareFormatted()
+    {
+        return $this->employee_share . '%';
+    }
+
+    public function setEmployerShare($employer_share)
+    {
+        $this->employer_share = $employer_share;
+        return $this;
+    }
+
+    public function getEmployerShare()
+    {
+        return $this->employer_share;
+    }
+
+    public function getEmployerShareFormatted()
+    {
+        return $this->employer_share . '%';
     }
 
     public function setEmpStatus($empStatus)

@@ -56,14 +56,17 @@ class BenefitController extends CrudController
         $params['checked'] = $o->getEmpStatus();
         $params['gender_opts'] = array(0 => 'Male', 1=> 'Female');
         $params['dept_opts'] = $settings->getDepartmentOptions();
+        $params['paidby_opts'] = array(0 => 'Employer', 1=> 'Employee');
         return $params;
     }
 
     protected function update($o, $data, $is_new = false)
     {
-
         $o->setName($data['name']);
         $o->setNotes($data['notes']);
+        $o->setPaidBy($data['paid_by']);
+        $o->setEmployeeShare($data['employee_share']);
+        $o->setEmployerShare($data['employer_share']);
         //$o->setDepartment($data['department']);
         unset($foo);
         $foo = array();
