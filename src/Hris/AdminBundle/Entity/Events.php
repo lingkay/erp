@@ -36,6 +36,9 @@ class Events
     /** @ORM\Column(type="decimal", length=80, nullable=true) */
     protected $rate;
 
+    /** @ORM\Column(type="boolean") */
+    protected $is_paid;
+
     public function __construct()
     {
         $this->initTrackCreate();
@@ -51,6 +54,18 @@ class Events
     public function getRate()
     {
         return $this->rate;
+    }
+
+    public function setIsPaid($is_paid)
+    {
+        $this->is_paid = $is_paid;
+
+        return $this;
+    }
+
+    public function getIsPaid()
+    {
+        return $this->is_paid;
     }
 
     public function getRateFormatted()

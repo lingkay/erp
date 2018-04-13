@@ -34,6 +34,8 @@ class EventsController extends CrudController
         $em = $this->getDoctrine()->getManager();
 
         $o->setRate($data['rate']);
+        $o->setIsPaid($data['is_paid']);
+
         if (isset($data['allday']))
         {
             $start = new DateTime($data['event_date'].'12:00 AM');
@@ -62,7 +64,7 @@ class EventsController extends CrudController
     {
         $em = $this->getDoctrine()->getManager();
         $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
-
+        $params['ispaid_opts'] = array(0 => 'Paid', 1=> 'Unpaid');
         return $params;
     }
 
