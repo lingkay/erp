@@ -18,7 +18,7 @@
                             {{form.group_number('Target', 'target', object.getTarget|default(''), 3, 4, readonly)}}
                             {{form.group_number('Daily Sales', 'daily_sales', object.getDailySales|default(''), 3, 4, readonly)}}
                             <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin=0">Add Item</a>
-                            <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                            <table class="table table-striped table-bordered table-hover ignore" style="margin-top: 20px;" id="list_table">
                                 <thead>
                                 <tr>
                                     <th width="40px">From</th>
@@ -30,10 +30,10 @@
                                 <tbody id="matrix_tbody">
                                 {% for e in object.getEntries %}
                                     <tr>
-                                        <td><input type="number" name="from[]" class="form-control from text-right" value="{{ e.getAmountFrom }}" min="1"></td>
-                                        <td><input type="number" name="to[]" class="form-control to text-right" value="{{ e.getAmountTo }}" min="1"></td>
-                                        <td><input type="number" name="percent[]" class="form-control percent text-right" value="{{ e.getPercentAmount }}" min="1"></td>
-                                        <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>
+                                        <td><input type="number" name="from[]" class="form-control from text-right ignore" value="{{ e.getAmountFrom }}" min="1"></td>
+                                        <td><input type="number" name="to[]" class="form-control to text-right ignore" value="{{ e.getAmountTo }}" min="1"></td>
+                                        <td><input type="number" name="percent[]" class="form-control percent text-right ignore" value="{{ e.getPercentAmount }}" min="1"></td>
+                                        <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -129,6 +129,7 @@
                 onfocusout: function(element) {
                     this.element(element);
                 },
+                ignore: ".ignore",
                 rules: {
                     name: "required",
                     tax: "required",
