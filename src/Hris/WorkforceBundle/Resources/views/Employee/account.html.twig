@@ -18,7 +18,7 @@
             {% if not readonly %}
             <button type="submit" class="btn blue">Submit</button>
             {% endif %}
-            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+            <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
             {% set id = object.getId %}
             <a href="{{ path('hris_workforce_employee_resend_email', { 'id': id }) }}" class="btn green pull-right">Resend Account Details</a>
         </div>

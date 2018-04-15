@@ -4,6 +4,7 @@ namespace Hris\AdminBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\ValidationException;
+use Hris\AdminBundle\Entity\TaxMatrixTable;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
@@ -28,14 +29,44 @@ class TaxMatrixController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setTax($data['tax']);
+        //        echo "<pre>";
+//        var_dump($data);
+//        echo "</pre>";
+//        die();
+        $em = $this->getDoctrine()->getManager();
+        $o->setIsAmountPercent($data['amt_type']);
         $o->setName($data['name']);
+
+        $em->persist($o);
+        $em->flush();
+
+        $taxMatrixTable = $em->getRepository('HrisAdminBundle:TaxMatrixTable')->findBy(array('tax'=>$o->getID()));
+        foreach ($taxMatrixTable as $entry) {
+            $em->remove($entry);
+            $em->flush();
+        }
+
+        if (isset($data['to'])) {
+            foreach ($data['to'] as $i => $amountTo) {
+                //if (trim($data['from'][$i]) != '' && trim($data['to'][$i]) != '' && trim($data['amount'][$i]) != '') {
+                    $matrixEntry = new TaxMatrixTable();
+                    $matrixEntry->setTaxMatrix($o);
+                    $matrixEntry->setAmountFrom($data['from'][$i]);
+                    $matrixEntry->setAmountTo($data['to'][$i]);
+                    $matrixEntry->setTaxAmount($data['amount'][$i]);
+                    $em->persist($matrixEntry);
+                    $em->flush();
+                //}
+            }
+        }
+
+
     }
 
     protected function padFormParams(&$params, $o = null)
     {
         $em = $this->getDoctrine()->getManager();
-        $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
+        $params['amt_opts'] = array('0' => 'Number', '1' => 'Percentage');
 
         return $params;
     }
@@ -73,7 +104,6 @@ class TaxMatrixController extends CrudController
 
         return array(
             $grid->newColumn('Name','getName','name'),
-            $grid->newColumn('Tax Rate','getTaxFormatted','amount_tax'),
         );
     }
 }

@@ -62,3 +62,20 @@ menu_items:
       acl: hris_admin_tax_matrix.menu
       label: Tax Matrix
       parent: menu_hr
+
+    - id: hris_payroll_settings_bonus_index
+      acl: hris_payroll_settings_bonus.menu
+      label: Bonus
+      parent: menu_hr
+    - id: hris_payroll_settings_fines_index
+      acl: hris_payroll_settings_fines.menu
+      label: Fines
+      parent: menu_hr
+    - id: hris_payroll_settings_deposit_index
+      acl: hris_payroll_settings_deposit.menu
+      label: Deposit
+      parent: menu_hr
+    - id: hris_payroll_settings_incentive_index
+      acl: hris_payroll_settings_incentive.menu
+      label: Incentives
+      parent: menu_hr

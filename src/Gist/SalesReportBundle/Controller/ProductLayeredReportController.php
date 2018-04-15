@@ -147,6 +147,7 @@ class ProductLayeredReportController extends Controller
 
     protected function getBrandsData($date_from, $date_to)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         //get all brands
         $allBrands = $em->getRepository('GistInventoryBundle:Brand')->findAll();
@@ -198,7 +199,11 @@ class ProductLayeredReportController extends Controller
             }
         }
 
-        return $list_opts;
+        if (count($allBrands) > 0) {
+            return $list_opts;
+        } else {
+            return null;
+        }
     }
     //END BRANDS/L2
 
@@ -415,6 +420,208 @@ class ProductLayeredReportController extends Controller
             return null;
         }
     }
+
+    //LAST NEW LAYER
+    public function transactionsIndexAction($date_from = null, $date_to = null, $brand = null, $category = null, $product_id = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+        try {
+            $data = $this->getRequest()->request->all();
+            $this->route_prefix = 'gist_layered_sales_report_product';
+            $params = $this->getViewParams('List');
+            $this->getControllerBase();
+
+            $params['product_id'] = $product_id ;
+            if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+                $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+                $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+                $params['date_from'] = $date_from->format("m/d/Y");
+                $params['date_to'] = $date_to->format("m/d/Y");
+                $params['data'] = $this->getProductTransactionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $brand, $category, $product_id);
+                $params['date_from_url'] = $date_from->format("m-d-Y");
+                $params['date_to_url'] = $date_to->format("m-d-Y");
+                $productObject = $em->getRepository('GistInventoryBundle:Product')->findOneById($product_id);
+                $params['product_id'] = $productObject->getID();
+                $params['product_name'] = $productObject->getName();
+
+                $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
+                $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
+
+                $params['brand_id'] = $brandObject->getID();
+                $params['brand_name'] = $brandObject->getName();
+                $params['category_id'] = $categoryObject->getID();
+                $params['category_name'] = $categoryObject->getName();
+                return $this->render('GistSalesReportBundle:ProductLayered:transactions.html.twig', $params);
+
+            } else {
+                return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+            }
+
+
+        } catch (Exception $e) {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
+    }
+
+    protected function getProductTransactionsData($date_from, $date_to, $brand, $category, $product_id)
+    {
+        $list_opts = [];
+        $em = $this->getDoctrine()->getManager();
+        $layeredReportService = $this->get('gist_layered_report_service');
+        $allTransactions = $layeredReportService->getTransactions($date_from, $date_to, null, null);//$em->getRepository('GistPOSERPBundle:POSTransaction')->findBy(['customer'=>$customer_id]);
+        $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
+        $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
+        foreach ($allTransactions as $transaction) {
+            if (!$transaction->hasChildLayeredReport()) {
+
+//                foreach ($transaction->getItems()) {
+//                    if ()
+//                }
+
+                $transactionId = $transaction->getTransDisplayIdFormatted();
+                $totalSales = 0;
+                $totalCost = 0;
+                $transactionItems = $transaction->getItems();
+
+                //loop items and check if item's brand is the current loop's brand then add the cost
+                foreach ($transactionItems as $transactionItem) {
+                    if (!$transactionItem->getReturned()) {
+                        $totalSales += $transactionItem->getTotalAmount();
+                    }
+                }
+
+
+                $brandTotalProfit = $totalSales - $totalCost;
+                $productObject = $em->getRepository('GistInventoryBundle:Product')->findOneById($product_id);
+                if ($totalSales > 0) {
+                    $list_opts[] = array(
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+                        'transaction_pos_name' => $transaction->getPOSLocation()->getName(),
+                        'transaction_date' => $transaction->getDateCreate()->format('F d, Y h:i A'),
+                        'transaction_id' => $transactionId,
+                        'transaction_system_id' => $transaction->getID(),
+                        'product_name' => $productObject->getName(),
+                        'product_id' => $productObject->getID(),
+                        'total_sales' => number_format($totalSales, 2, '.', ','),
+                        'total_cost' => number_format($totalCost, 2, '.', ','),
+                        'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                        'brand_id' => $brandObject->getID(),
+                        'category_id' => $categoryObject->getID()
+                    );
+                }
+            }
+        }
+
+        if (count($allTransactions) > 0) {
+            return $list_opts;
+        } else {
+            return null;
+        }
+    }
+
+    public function viewTransactionDetailsAction($date_from, $date_to, $id, $brand, $category, $product_id)
+    {
+        //$this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+        // $params = $this->getViewParams('List');
+        $obj = $em->getRepository('GistPOSERPBundle:POSTransaction')->find($id);
+
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['customer_name'] = $obj->getCustomer()->getNameFormatted();
+        $params['customer_creator'] = $obj->getCustomer()->getUserCreate()->getName();
+        $params['customer'] = $obj->getCustomer();
+        $params['readonly'] = true;
+
+        if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+            $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+            $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+            $params['date_from'] = $date_from->format("m/d/Y");
+            $params['date_to'] = $date_to->format("m/d/Y");
+            $params['data'] = $this->getProductTransactionsData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $brand, $category, $product_id);
+            $params['date_from_url'] = $date_from->format("m-d-Y");
+            $params['date_to_url'] = $date_to->format("m-d-Y");
+
+            $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
+            $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
+            $productObject = $em->getRepository('GistInventoryBundle:Product')->findOneById($product_id);
+            $params['product_id'] = $productObject->getID();
+            $params['product_name'] = $productObject->getName();
+            $params['brand_id'] = $brandObject->getID();
+            $params['brand_name'] = $brandObject->getName();
+            $params['category_id'] = $categoryObject->getID();
+            $params['category_name'] = $categoryObject->getName();
+
+            return $this->render('GistSalesReportBundle:ProductLayered:transaction_details.html.twig', $params);
+
+        } else {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
+    }
+
+    protected function getPOSData($date_from, $date_to, $region, $area)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $regionObject = $em->getRepository('GistLocationBundle:Regions')->findOneById($region);
+
+        $allPOS = $em->getRepository('GistLocationBundle:POSLocations')->findBy([
+            'area' => $area,
+            'region' => $region
+        ]);
+
+        //$regionObject = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($region);
+        $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
+
+        foreach ($allPOS as $POSObject) {
+            $productId = $POSObject->getID();
+            $totalSales = 0;
+            $totalCost = 0;
+
+            //get all transaction items based on date filter
+            $layeredReportService = $this->get('gist_layered_report_service');
+            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
+
+            //loop items and check if item's brand is the current loop's brand then add the cost
+            foreach ($transactionItems as $transactionItem) {
+                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                    $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
+                    if ($pos_loc->getRegion()->getID() == $region && $pos_loc->getArea()->getID() == $area) {
+                        $totalSales += $transactionItem->getTotalAmount();
+                    }
+                }
+            }
+
+            $totalProfit = $totalSales - $totalCost;
+
+            if ($totalSales > 0) {
+                $list_opts[] = array(
+                    'date_from' => $date_from,
+                    'date_to' => $date_to,
+                    'pos_loc_id' => $POSObject->getID(),
+                    'region_id' => $region,
+                    'area_id' => $area,
+                    'pos_name' => $POSObject->getName(),
+                    'region_name' => $regionObject->getName(),
+                    'area_name' => $areaObject->getName(),
+                    'total_sales' => number_format($totalSales, 2, '.', ','),
+                    'total_cost' => number_format($totalCost, 2, '.', ','),
+                    'total_profit' => number_format($totalProfit, 2, '.', ','),
+                );
+            }
+        }
+
+        if (count($allPOS) > 0) {
+            return $list_opts;
+        } else {
+            return null;
+        }
+
+    }
+    //END LAST NEW LAYER
 
     protected function getRouteGen()
     {

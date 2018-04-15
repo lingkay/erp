@@ -37,7 +37,7 @@
                             {% if object.getAdjustmentStatus == null or object.getAdjustmentStatus == constant('\\Hris\\WorkforceBundle\\Entity\\Attendance::STATUS_DRAFT') %}
                             <button type="submit" class="btn blue">Submit</button>
                             {% endif %}
-                            <a href="{{ path(route_list) }}" class="btn default">Cancel</a>
+                            <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
                         </div>
                     </div>
                 </form>                

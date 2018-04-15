@@ -19,92 +19,33 @@ class TaxMatrix
     use HasGeneratedID;
     use HasName;
 
-    /** @ORM\Column(type="string", nullable=true)*/
-    protected $bracket;
+    /**
+     * @ORM\OneToMany(targetEntity="TaxMatrixTable", mappedBy="tax", cascade={"persist"})
+     */
+    protected $entries;
 
-    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
-    protected $amount_from;
-
-    /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
-    protected $amount_to;
-
-    /** @ORM\Column(type="decimal", precision=10, scale=2) */
-    protected $amount_tax;
+    /** @ORM\Column(type="boolean", nullable=true) */
+    protected $is_amt_percent;
 
     public function __construct()
     {
         $this->initHasName();
     }
 
-    public function setBracket($bracket)
+    public function setIsAmountPercent($val)
     {
-        $this->bracket = $bracket;
+        $this->is_amt_percent = $val;
         return $this;
     }
 
-    public function getBracket()
+    public function getIsAmountPercent()
     {
-        return $this->bracket;
+        return $this->is_amt_percent;
     }
 
-    public function setMinimum($amt_from)
+    public function getEntries()
     {
-        $this->amount_from = $amt_from;
-        return $this;
-    }
-
-    public function getMinimum()
-    {
-        return $this->amount_from;
-    }
-
-    public function setMaximum($amt_to)
-    {
-        $this->amount_to = $amt_to;
-        return $this;
-    }
-
-    public function getMaximum()
-    {
-        return $this->amount_to;
-    }
-
-    public function setTax($amt_tax)
-    {
-        $this->amount_tax = $amt_tax;
-        return $this;
-    }
-
-    public function getTax()
-    {
-        return $this->amount_tax;
-    }
-
-    public function getTaxFormatted()
-    {
-        return $this->amount_tax. '%';
-    }
-
-    public function setPeriod(\Hris\PayrollBundle\Entity\PayPeriod $period)
-    {
-        $this->period = $period;
-        return $this;
-    }
-
-    public function getPeriod()
-    {
-        return $this->period;
-    }
-
-    public function setTaxStatus(\Hris\PayrollBundle\Entity\PayTaxStatus $status)
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    public function getTaxStatus()
-    {
-        return $this->status;
+        return $this->entries;
     }
 
     public function toData()

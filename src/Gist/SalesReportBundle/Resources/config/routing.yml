@@ -76,6 +76,16 @@ gist_layered_sales_report_product_index_categorized:
     methods:  [GET]
     defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:categorizedIndex, date_from: null, date_to: null, brand: null, category: null }
 
+gist_layered_sales_report_product_index_transactions:
+    path: /layered-sales-report/product_transactions/{date_from}/{date_to}/{brand}/{category}/{product_id}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:transactionsIndex, date_from: null, date_to: null, brand: null, category: null, product_id: null }
+
+gist_layered_sales_report_product_index_transaction_details:
+    path: /layered-sales-report/product_transactions/details/{date_from}/{date_to}/{id}/{brand}/{category}/{product_id}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:ProductLayeredReport:viewTransactionDetails, date_from: null, date_to: null, id: null, brand: null, category: null, product_id: null }
+
 # LOCATION
 gist_layered_sales_report_location_index:
     path: /layered-sales-report/location/{date_from}/{date_to}
