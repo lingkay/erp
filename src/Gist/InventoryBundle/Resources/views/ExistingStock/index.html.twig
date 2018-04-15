@@ -9,91 +9,209 @@
                     <div class="caption">Existing Stock</div>
                 </div>
                 <div class="portlet-body">
-                    <!-- BEGIN FORM-->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="portlet box blue">
-                                <div class="portlet-title">
-                                    <div class="caption">
-                                        <i class="fa fa-filter"></i>Filters
-                                    </div>
-                                </div>
-                                <div class="portlet-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-horizontal">
-                                                {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, selected_loc|default(-20),4,7) }}
-                                                <br>
-                                                {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, selected_inv_type, 4, 7, false) }}
+                    <!-- asdada -->
+                    <div class="tabbable tabbable-custom tabbable-full-width">
+                        {% if tab == "prod" %}
+                            {% set by_loc_status = null %}
+                            {% set by_prod_status = "active" %}
+                        {% else %}
+                            {% set by_loc_status = "active" %}
+                            {% set by_prod_status = null %}
+                        {% endif %}
+
+                        <ul class="nav nav-tabs">
+                            <li class="{{ by_loc_status }}">
+                                <a href="#tab_location" data-toggle="tab">
+                                    By Location </a>
+                            </li>
+                            <li class="{{ by_prod_status }}">
+                                <a href="#tab_product" data-toggle="tab">
+                                    By Product </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane {{ by_loc_status }}" id="tab_location">
+                                <!-- BEGIN FORM-->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="portlet box blue">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="fa fa-filter"></i>Filters
+                                                </div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-horizontal">
+                                                            {{ form_tools.group_select_no_default('POS Location','pos_location', pos_loc_opts, selected_loc|default(-20),4,7) }}
+                                                            <br>
+                                                            {{ form_tools.group_select_no_default('Inventory Type', 'inv_type', wh_type_opts, selected_inv_type, 4, 7, false) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-horizontal">
+                                                            {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', date_from, date_to, 4, 7) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-horizontal">
-                                                {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', date_from, date_to, 4, 7) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12" style="margin-bottom: 10px;">
+                                        <button class="btn blue pull-left" id="filter_button" style="margin-right: 10px;">Apply Filters</button>
+                                        <button class="btn red" id="clear_filter">Clear Filters</button>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-hover" id="list_table">
+                                    <thead>
+                                    <tr>
+                                        {% for col in grid_cols %}
+                                            {% if (loop.last) %}
+                                                <th style="width: 165px">{{ col.getLabel }}</th>
+                                            {% else %}
+                                                <th>{{ col.getLabel }}</th>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {#<th style="width: 30px;"></th>#}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for d in es_data %}
+                                        <tr>
+                                            <input type="hidden" class="row_prod_id" value="{{ d.prod_id }}">
+                                            <input type="hidden" class="row_inv_id" value="{{ d.inv_acct_id.getID|default(0) }}">
+                                            <td>{{ d.item_code }}</td>
+                                            <td>{{ d.prod_name }}</td>
+                                            {% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}
+                                                <td class="text-right">
+                                                    {{ d.quantity }}
+                                                </td>
+                                            {% else %}
+                                                {% if d.thresholdAlert %}
+                                                    <td class="text-right" style="color: #ff0000;">
+                                                {% else %}
+                                                    <td class="text-right">
+                                                {% endif %}
+                                                    {{ d.quantity }}
+                                                </td>
+                                                {#&nbsp;&nbsp;<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i></a>#}
+                                            {% endif %}
+                                            <td class="text-right">{{ d.cost }}</td>
+                                            <td class="text-right">{{ d.total_cost }}</td>
+                                            <td class="text-right">{{ d.piece_per_package }}</td>
+                                            <td class="text-right">{{ d.avg_consumption }}</td>
+                                            <td class="text-right">{{ d.days_with_stock }}</td>
+                                            {#<td>#}
+                                            {#{% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}#}
+
+                                             {#{% else %}#}
+                                            {#<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i> Change Threshold</a>#}
+                                            {#{% endif %}#}
+                                            {#</td>#}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <!-- END FORM-->
+                            </div>
+                            <div class="tab-pane {{ by_prod_status }}" id="tab_product">
+                                <!-- BEGIN FORM-->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="portlet box blue">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="fa fa-filter"></i>Filters
+                                                </div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-horizontal">
+                                                            {{ form_tools.group_select_no_default('POS Location','prod_pos_location', pos_loc_opts, selected_prod_loc|default(-20),4,7) }}
+                                                            <br>
+                                                            {{ form_tools.group_select_no_default('Inventory Type', 'prod_inv_type', wh_type_opts, selected_prod_inv_type, 4, 7, false) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-horizontal">
+                                                            {{ form_tools.group_date_range('prod_daterange', 'Date Range', 'prod_date_from', 'prod_date_to', prod_date_from, prod_date_to, 4, 7) }}
+                                                            <br>
+                                                            {{ form.group_text('Product Name','product_name',product_name|default('') ,4 , 7) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12" style="margin-bottom: 10px;">
+                                        <button class="btn blue pull-left" id="prod_filter_button" style="margin-right: 10px;">Apply Filters</button>
+                                        <button class="btn red" id="prod_clear_filter">Clear Filters</button>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-hover" id="prod_list_table">
+                                    <thead>
+                                    <tr>
+                                        {% for col in grid_cols_by_prod %}
+                                            {% if (loop.last) %}
+                                                <th style="width: 165px">{{ col.getLabel }}</th>
+                                            {% else %}
+                                                <th>{{ col.getLabel }}</th>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {#<th style="width: 30px;"></th>#}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for d in prod_es_data %}
+                                        <tr>
+                                            <input type="hidden" class="row_prod_id" value="{{ d.prod_id }}">
+                                            <input type="hidden" class="row_inv_id" value="{{ d.inv_acct_id.getID|default(0) }}">
+                                            <td>{{ d.loc_name }}</td>
+                                            <td>{{ d.item_code }}</td>
+                                            <td>{{ d.prod_name }}</td>
+                                            {% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}
+                                                <td class="text-right">
+                                                    {{ d.quantity }}
+                                                </td>
+                                            {% else %}
+                                                {% if d.thresholdAlert %}
+                                                    <td class="text-right" style="color: #ff0000;">
+                                                {% else %}
+                                                    <td class="text-right">
+                                                {% endif %}
+                                                {{ d.quantity }}
+                                                </td>
+                                                {#&nbsp;&nbsp;<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i></a>#}
+                                            {% endif %}
+                                            <td class="text-right">{{ d.cost }}</td>
+                                            <td class="text-right">{{ d.total_cost }}</td>
+                                            <td class="text-right">{{ d.piece_per_package }}</td>
+                                            <td class="text-right">{{ d.avg_consumption }}</td>
+                                            <td class="text-right">{{ d.days_with_stock }}</td>
+                                            {#<td>#}
+                                            {#{% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}#}
+
+                                            {#{% else %}#}
+                                            {#<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i> Change Threshold</a>#}
+                                            {#{% endif %}#}
+                                            {#</td>#}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <!-- END FORM-->
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12" style="margin-bottom: 10px;">
-                            <button class="btn blue pull-left" id="filter_button" style="margin-right: 10px;">Apply Filters</button>
-                            <button class="btn red" id="clear_filter">Clear Filters</button>
-                        </div>
-                    </div>
-                    <table class="table table-bordered table-hover" id="list_table">
-                        <thead>
-                        <tr>
-                            {% for col in grid_cols %}
-                                {% if (loop.last) %}
-                                    <th style="width: 165px">{{ col.getLabel }}</th>
-                                {% else %}
-                                    <th>{{ col.getLabel }}</th>
-                                {% endif %}
-                            {% endfor %}
-                            {#<th style="width: 30px;"></th>#}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for d in es_data %}
-                            <tr>
-                                <input type="hidden" class="row_prod_id" value="{{ d.prod_id }}">
-                                <input type="hidden" class="row_inv_id" value="{{ d.inv_acct_id.getID|default(0) }}">
-                                <td>{{ d.item_code }}</td>
-                                <td>{{ d.prod_name }}</td>
-                                {% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}
-                                    <td class="text-right">
-                                        {{ d.quantity }}
-                                    </td>
-                                {% else %}
-                                    {% if d.thresholdAlert %}
-                                        <td class="text-right" style="color: #ff0000;">
-                                    {% else %}
-                                        <td class="text-right">
-                                    {% endif %}
-                                        {{ d.quantity }}
-                                    </td>
-                                    {#&nbsp;&nbsp;<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i></a>#}
-                                {% endif %}
-                                <td class="text-right">{{ d.cost }}</td>
-                                <td class="text-right">{{ d.total_cost }}</td>
-                                <td class="text-right">{{ d.piece_per_package }}</td>
-                                <td class="text-right">{{ d.avg_consumption }}</td>
-                                <td class="text-right">{{ d.days_with_stock }}</td>
-                                {#<td>#}
-                                {#{% if d.sel_inv_acct_id == '0' or d.sel_inv_acct_id == '-20' or d.sel_inv_acct_id == '-1' or d.sel_inv_acct_id is null %}#}
 
-                                 {#{% else %}#}
-                                {#<a style="text-decoration: none;" href="javascript:void(0)" class="change_threshold_btn btn blue btn-xs"><i class="fa fa-pencil"></i> Change Threshold</a>#}
-                                {#{% endif %}#}
-                                {#</td>#}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                    <!-- END FORM-->
+
+                    
                 </div>
             </div>
         </div>
@@ -149,24 +267,35 @@
             $('#inv_id_to_edit').val('0');
         }
 
-        function generatePath() {
+        function generatePath(tab) {
             var pos_loc_id = $('#cform-pos_location').val();
             var inv_type = $('#cform-inv_type').val();
             var date_to = $('#cform-date_to').val();
             var date_from = $('#cform-date_from').val();
+            var prod_pos_loc_id = $('#cform-prod_pos_location').val();
+            var prod_inv_type = $('#cform-prod_inv_type').val();
+            var prod_date_to = $('#cform-prod_date_to').val();
+            var prod_date_from = $('#cform-prod_date_from').val();
+            var product_name = $('#cform-product_name').val();
 
             var path = "{{ path('gist_inv_existing_stock_index', {
+                'tab' : 'TAB',
                 'pos_loc_id' : 'POS_LOC_ID',
                 'inv_type' : 'INV_TYPE',
                 'date_from' : 'DFROM',
                 'date_to' : 'DTO',
+                'prod_pos_loc_id' : 'PROD_POS_LOC_ID',
+                'prod_inv_type' : 'PROD_INV_TYPE',
+                'prod_date_from' : 'PROD_DFROM',
+                'prod_date_to' : 'PROD_DTO',
+                'product_name' : 'PROD_NAME',
             }
             ) }}";
 
-
-
             path = path.replace('POS_LOC_ID', pos_loc_id);
             path = path.replace('INV_TYPE', inv_type);
+            path = path.replace('PROD_POS_LOC_ID', prod_pos_loc_id);
+            path = path.replace('PROD_INV_TYPE', prod_inv_type);
 
             if (date_from == null || date_from == '' || date_to == null || date_to == '') {
                 path = path.replace('DFROM', null);
@@ -175,6 +304,25 @@
                 path = path.replace('DFROM', date_from);
                 path = path.replace('DTO', date_to);
             };
+            if (prod_date_from == null || prod_date_from == '' || prod_date_to == null || prod_date_to == '') {
+                path = path.replace('PROD_DFROM', null);
+                path = path.replace('PROD_DTO', null);
+            } else {
+                path = path.replace('PROD_DFROM', prod_date_from);
+                path = path.replace('PROD_DTO', prod_date_to);
+            };
+
+            if (product_name != '') {
+                path = path.replace('PROD_NAME', product_name);
+            } else {
+                path = path.replace('PROD_NAME', null);
+            }
+
+            if (tab != '') {
+                path = path.replace('TAB', tab);
+            } else {
+                path = path.replace('TAB', 'loc');
+            }
 
             return path;
         }
@@ -204,6 +352,29 @@
                 "aaSorting": [[2,'desc']]
             });
 
+            var prod_dTable;
+            prod_dTable = $('#prod_list_table').dataTable({
+                "bProcessing": false,
+                "bServerSide": false,
+                //"sAjaxSource": "{{ path('gist_inv_existing_stock_grid') }}",
+                "iDisplayLength": 10,
+                "sPaginationType": "bootstrap",
+                "bFilter" : false,
+                "bInfo" : false,
+                "bLengthChange": false,
+                "oLanguage": {
+                    "sLengthMenu": "_MENU_ records",
+                    "oPaginate": {
+                        "sPrevious": "Prev",
+                        "sNext": "Next"
+                    }
+                },
+                "aoColumnDefs": [
+                    { "bSortable": false, "aTargets": [3,4,5,6,8] },
+                ],
+                "aaSorting": [[0,'desc']]
+            });
+
             $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
             $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
             $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
@@ -228,11 +399,37 @@
                     $('#cform-date_to').val(end.format('YYYYMMDD'));
                 }
             );
-            $('#clear_filter').click(function (){
+            $('#prod_daterange').daterangepicker(
+                {
+                    ranges: {
+                        'Today': [new Date(), new Date()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), new Date()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), new Date()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month')],
+                        'Last 3 Months' : [moment().subtract(3, 'month'), moment()]
+                    },
+                    opens: 'left',
+                    format: 'MM/DD/YYYY',
+                },
+                function(start, end) {
+                    $('#prod_daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+                    $('#cform-prod_date_from').val(start.format('YYYYMMDD'));
+                    $('#cform-prod_date_to').val(end.format('YYYYMMDD'));
+                }
+            );
+            $('#clear_filter, #prod_clear_filter').click(function (){
                 location.reload();
             });
             $('#filter_button').click(function (){
-                path = generatePath();
+                var tab = "loc"
+                path = generatePath(tab);
+                location.replace(path);
+            });
+            $('#prod_filter_button').click(function (){
+                var tab = "prod"
+                path = generatePath(tab);
                 location.replace(path);
             });
 

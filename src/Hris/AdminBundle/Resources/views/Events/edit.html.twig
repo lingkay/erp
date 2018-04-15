@@ -15,6 +15,12 @@
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                         {{ form.group_text('Name', 'event_name', object.getName|default(''), 3, 4, readonly) }}
                         {{form.group_number('Rate (%)', 'rate', object.getRate|default(''), 3, 4, readonly)}}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Type</label>
+                            <div class="col-md-4">
+                                {{ form.radio_set('is_paid', ispaid_opts, object.getIsPaid|default(0)) }}
+                            </div>
+                        </div>
                         {{ form.group_date('Start Date','date_from', object.getDateFrom|date('m/d/Y'),3,4) }}
                         <div class="form-group">
                                 <label class="col-md-3 control-label">Start Time</label>

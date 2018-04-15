@@ -10,11 +10,19 @@
             </div>
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <form method="post" class="form-horizontal">
+                <form method="post" class="form-horizontal" id="form">
                     <div class="form-body">
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                         {{ form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly) }}
                         {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Paid By</label>
+                            <div class="col-md-4">
+                                {{ form.radio_set('paid_by', paidby_opts, object.getPaidBy|default(0)) }}
+                            </div>
+                        </div>
+                        {{ form.group_number('Employee Share', 'employee_share', object.getEmployeeShare|default(''), 3, 4, readonly) }}
+                        {{ form.group_number('Employer Share', 'employer_share', object.getEmployerShare|default(''), 3, 4, readonly) }}
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Employment Availability</label>
@@ -138,9 +146,29 @@ $(document).ready( function() {
             'emp_opts[]': "Please select 1.",
             'gender[]': "Please select 1."
         },
-        submitHandler: function(form) {
-            form.submit();
+        // submitHandler: function(form) {
+        //     form.submit();
+        // }
+    });
+
+    $('form').submit(function(e) {
+        if (parseFloat($('[name=employee_share]').val()) || parseFloat($('[name=employer_share]').val())){
+            if (parseFloat($('[name=employee_share]').val()) > 100 || parseFloat($('[name=employee_share]').val()) < 0){
+                alert('Invalid Employee Share number range. Please enter value from 0-100.');
+                e.preventDefault();
+            } else if (parseFloat($('[name=employer_share]').val()) > 100 || parseFloat($('[name=employer_share]').val()) < 0){
+                alert('Invalid Employer Share number range. Please enter value from 0-100.');
+                e.preventDefault();
+            } else {
+                var share_total = parseFloat($('[name=employee_share]').val()) + parseFloat($('[name=employer_share]').val());
+                if (share_total != 100){
+                    alert('Employee Share and Employer Share must have a total of 100%');
+                    e.preventDefault();
+                }
+            }
         }
+        
+        
     });
 });
 </script>

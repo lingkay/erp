@@ -1,8 +1,8 @@
 
 gist_inv_existing_stock_index:
-    pattern: /list/{pos_loc_id}/{inv_type}/{date_from}/{date_to}
+    pattern: /list/{tab}/{pos_loc_id}/{inv_type}/{date_from}/{date_to}/{prod_pos_loc_id}/{prod_inv_type}/{prod_date_from}/{prod_date_to}/{product_name}
     methods: [GET]
-    defaults: { _controller: GistInventoryBundle:ExistingStock:index, pos_loc_id: null, inv_type: null, date_from: null, date_to: null }
+    defaults: { _controller: GistInventoryBundle:ExistingStock:index, tab: null, pos_loc_id: null, inv_type: null, date_from: null, date_to: null, prod_pos_loc_id: null, prod_inv_type: null, prod_date_from: null, prod_date_to: null, product_name: null }
 
 gist_inv_existing_stock_grid:
     pattern: /grid

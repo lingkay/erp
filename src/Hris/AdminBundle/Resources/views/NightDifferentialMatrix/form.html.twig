@@ -13,7 +13,8 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-                            {{form.group_number('# of Hours', 'amountTo', object.getMaximum|default(''), 3, 4, readonly)}}
+                            {{ form.group_time('From', 'time_from', object.getTimeFrom|date('g:i A'), 3, 4)}}
+                            {{ form.group_time('To', 'time_to', object.getTimeTo|date('g:i A'), 3,4)}}
                             {{form.group_number('Rate (%)', 'rate', object.getRate|default(''), 3, 4, readonly)}}
                         </div>
 

@@ -14,7 +14,14 @@
                     <div class="form-body">
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                         {{ form.group_text('Name', 'event_name', object.getName|default(''), 3, 4, readonly) }}
-                        {{form.group_number('Rate (%)', 'rate', object.getRate|default(''), 3, 4, readonly)}}
+                        {{ form.group_number('Rate (%)', 'rate', object.getRate|default(''), 3, 4, readonly) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Type</label>
+                            <div class="col-md-4">
+                                {{ form.radio_set('is_paid', ispaid_opts, object.getIsPaid|default(0)) }}
+                            </div>
+                        </div>
+                        
                         {# ADD SELECTOR IF ALL DAY #}
                         <div class="form-group">
                             <label class="col-md-3 control-label">All-day event</label>
@@ -79,18 +86,18 @@
 <script>
 $(document).ready( function() {
 
-    $("#cform-allday").change(function() {
-    if(this.checked) {
-        $('#scheduled').hide();
-        $('#all_day').show();
+    $("#cnvtocash").click(function() {
+        if(this.checked) {
+            $('#scheduled').hide();
+            $('#all_day').show();
 
-    }
-    else
-    {
-        $('#scheduled').show();
-        $('#all_day').hide();
-    }
-});
+        }
+        else
+        {
+            $('#scheduled').show();
+            $('#all_day').hide();
+        }
+    });
 
 
     $('#all_day').hide();

@@ -68,6 +68,9 @@ class LeaveType
     /** @ORM\Column(type="text", nullable=true) */
     protected $addtl_requirements;
 
+    /** @ORM\Column(type="decimal", length=80, nullable=true) */
+    protected $payment_percentage;
+
     public function __construct()
     {
         $this->initTrackCreate();
@@ -104,6 +107,22 @@ class LeaveType
     public function getConvertibleToCash()
     {
         return $this->convertible_to_cash;
+    }
+
+    public function setPaymentPercentage($payment_percentage)
+    {
+        $this->payment_percentage = $payment_percentage;
+        return $this;
+    }
+
+    public function getPaymentPercentage()
+    {
+        return $this->payment_percentage;
+    }
+
+    public function getPaymentPercentageFormatted()
+    {
+        return $this->payment_percentage . '%';
     }
 
     /**

@@ -29,9 +29,9 @@ class NightDifferentialMatrixController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        $o->setTimeFrom(new DateTime($data['time_from']));
+        $o->setTimeTo(new DateTime($data['time_to']));
         $o->setRate($data['rate']);
-        $o->setMinimum(0);
-        $o->setMaximum($data['amountTo']);
     }
 
     protected function padFormParams(&$params, $o = null)
@@ -73,7 +73,8 @@ class NightDifferentialMatrixController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('# of Hours','getMaximum','amount_to'),
+            $grid->newColumn('From','getTimeFrom','time_from'),
+            $grid->newColumn('To','getTimeTo','time_to'),
             $grid->newColumn('Rate','getRateFormatted','rate'),
         );
     }

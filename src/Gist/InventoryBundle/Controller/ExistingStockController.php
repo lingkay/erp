@@ -25,29 +25,43 @@ class ExistingStockController extends Controller
     protected $date_from;
     protected $inv_account;
     protected $date_to;
+    protected $prod_date_from;
+    protected $prod_date_to;
 
     public function __construct()
     {
         $date_from = new DateTime('-3 month');
         $date_to = new DateTime();
 
+        $prod_date_from = new DateTime('-3 month');
+        $prod_date_to = new DateTime();
+
         $this->date_from = $date_from->format('Ymd');
         $this->date_to = $date_to->format('Ymd');
+        $this->prod_date_from = $prod_date_from->format('Ymd');
+        $this->prod_date_to = $prod_date_to->format('Ymd');
         $this->inv_account = '0';
     }
 
-    public function indexAction($pos_loc_id = null, $inv_type = null, $date_from = null, $date_to = null)
+    public function indexAction($tab = null, $pos_loc_id = null, $inv_type = null, $date_from = null, $date_to = null, $prod_pos_loc_id = null, $prod_inv_type = null, $prod_date_from = null, $prod_date_to = null, $product_name = null)
     {
+        if ($product_name == 'null') {
+            $product_name = null;
+        }
+
         $inv = $this->get('gist_inventory');
         $this->route_prefix = 'gist_inv_existing_stock';
         $this->title = 'Existing Stock';
         $params = $this->getViewParams('List');
         $params['selected_loc'] = $pos_loc_id;
+        $params['selected_prod_loc'] = $prod_pos_loc_id;
         $this->getControllerBase();
         $gl = $this->setupGridLoader();
+        $gl_by_prod = $this->setupGridLoaderByProd();
 
         $params['main_warehouse'] = 0;
         $params['grid_cols'] = $gl->getColumns();
+        $params['grid_cols_by_prod'] = $gl_by_prod->getColumns();
         $params['wh_type_opts'] = array('all'=>'All') + array('sales'=>'Sales', 'damaged'=>'Damaged','missing'=>'Missing','tester'=>'Tester');
 
         $params['computation_opts'] = array(
@@ -67,14 +81,29 @@ class ExistingStockController extends Controller
             $date_from_twig = $date_from->format("m/d/Y");
             $date_to_twig = $date_to->format("m/d/Y");
         }
+        if ($prod_date_from != null) {
+            $prod_date_from = DateTime::createFromFormat('Ymd', $prod_date_from);
+            $prod_date_to = DateTime::createFromFormat('Ymd', $prod_date_to);
+            $prod_date_from_twig = $prod_date_from->format("m/d/Y");
+            $prod_date_to_twig = $prod_date_to->format("m/d/Y");
+        } else {
+            $prod_date_from = new DateTime('-3 month');
+            $prod_date_to = new DateTime();
+            $prod_date_from_twig = $prod_date_from->format("m/d/Y");
+            $prod_date_to_twig = $prod_date_to->format("m/d/Y");
+        }
 
         $params['pos_loc_opts'] = array('-20'=>'All') + array('0'=>'Main Warehouse') + $inv->getPOSLocationTransferOptionsOnly();
         $params['date_from'] = $date_from_twig;
         $params['date_to'] = $date_to_twig;
-        $params['grid_cols'] = $gl->getColumns();
+        $params['prod_date_from'] = $prod_date_from_twig;
+        $params['prod_date_to'] = $prod_date_to_twig;
         $params['es_data'] = $this->getExistingStockData($pos_loc_id, $inv_type, $date_from, $date_to);
+        $params['prod_es_data'] = $this->getExistingStockDataByProduct($prod_pos_loc_id, $prod_inv_type, $prod_date_from, $prod_date_to, $product_name);
         $params['selected_inv_type'] = $inv_type;
-
+        $params['selected_prod_inv_type'] = $prod_inv_type;
+        $params['product_name'] = $product_name;
+        $params['tab'] = $tab;
 
         $twig_file = 'GistInventoryBundle:ExistingStock:index.html.twig';
         return $this->render($twig_file, $params);
@@ -282,6 +311,236 @@ class ExistingStockController extends Controller
         return $processedData;
     }
 
+    //THIS METHOD WILL BE REFACTORED (as well as the entire class)
+    protected function getExistingStockDataByProduct($pos_loc_id, $inv_type, $date_from, $date_to, $product_name)
+    {
+        if ($inv_type == null) {
+            $inv_type = 'all';
+        }
+
+        $config = $this->get('gist_configuration');
+        $inv = $this->get('gist_inventory');
+
+        //GET UNIQUE PRODUCTS FROM STOCK TABLE (JOINED TO PRODUCTS)
+        //APPLY SEARCHING BY PRODUCT
+        $sql = " 
+                    SELECT  
+                    s.product_id, 
+                    p.name,
+                    p.item_code,
+                    p.cost,
+                    p.piece_per_package
+                    FROM inv_stock s
+                    JOIN inv_product p
+                    ON s.product_id = p.id
+                    JOIN inv_account i
+                    ON s.inv_account_id = i.id
+                    WHERE p.name LIKE '%".$product_name."%'
+                    GROUP BY s.product_id
+
+
+        ";
+
+        //EXECUTE RAW SQL COMMAND
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        //GET THE RESULT
+        $uniqueProducts = $stmt->fetchAll();
+
+        //THIS WILL HOLD THE DATA THAT WE WILL PASS TO THE TWIG
+        $processedData = [];
+
+        //LOOP THE PRODUCT RESULTS
+        foreach ($uniqueProducts as $product) {
+            //THIS SQL WILL GET STOCK, PRODUCT, INV ACCOUNT DATA
+            $sql = " 
+                    SELECT 
+                    a.name, 
+                    p.item_code,
+                    s.product_id, 
+                    p.name,
+                    s.max_stock,
+                    s.min_stock,
+                    a.id AS 'inv_acct_id',
+                    s.quantity, 
+                    CASE 
+                        WHEN upper(a.name) LIKE '%DMG%'
+                        OR upper(a.name) LIKE '%TEST%'
+                        OR upper(a.name) LIKE '%ADJ%'
+                        THEN 'less'
+                        ELSE 'add'
+                    END 'quantity_operation',
+                    CASE 
+                        WHEN upper(a.name) LIKE '%LOST%'
+                        THEN 'missing'
+                        WHEN upper(a.name) LIKE '%DMG%'
+                        THEN 'damaged'
+                        WHEN upper(a.name) LIKE '%TEST%'
+                        THEN 'tester'
+                        WHEN upper(a.name) LIKE '%ADJ%'
+                        THEN 'adjustment'
+                        WHEN upper(a.name) LIKE '%MAIN%'
+                        THEN 'main wh'
+                        WHEN upper(a.name) LIKE '%POS%'
+                        THEN 'sales'
+                        ELSE 'sales'
+                    END 'inv_type'
+                    FROM inv_stock s
+                    JOIN inv_product p
+                    ON s.product_id = p.id
+                    JOIN inv_account a
+                    ON s.inv_account_id = a.id
+                    WHERE inv_account_id NOT IN (SELECT id FROM inv_account WHERE name LIKE '%adjustment%')
+                    AND s.product_id = ".$product['product_id'];
+
+            //EXECUTE THE RAW SQL COMMAND
+            $em = $this->getDoctrine()->getManager();
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->execute();
+            //GET THE RESULT
+            $stockData = $stmt->fetchAll();
+
+
+            $main_warehouse = null;
+            $selected_inv_account = null;
+            $selected_loc = null;
+
+
+            if($pos_loc_id === '0') {
+                $selected_loc = $inv->findWarehouse($config->get('gist_main_warehouse'));
+
+                if ($inv_type == 'sales') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
+                } elseif ($inv_type == 'damaged') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getDamagedContainer();
+                } elseif ($inv_type == 'tester') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getTesterContainer();
+                } elseif ($inv_type == 'missing') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getMissingContainer();
+                } else {
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
+                }
+            } elseif ($pos_loc_id === '-20' || $pos_loc_id == null) {
+
+            } else {
+
+                $selected_loc = $inv->findPOSLocation($pos_loc_id);
+                //$selected_inv_account = $selected_loc->getInventoryAccount()->getID();
+                if ($inv_type == 'sales') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
+                } elseif ($inv_type == 'damaged') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getDamagedContainer();
+                } elseif ($inv_type == 'tester') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getTesterContainer();
+                } elseif ($inv_type == 'missing') {
+                    $selected_inv_account = $selected_loc->getInventoryAccount()->getMissingContainer();
+                } else {
+                    $selected_inv_account = $selected_loc->getInventoryAccount();
+                }
+
+                if ($selected_loc->getInventoryAccount() == null) {
+                    return $processedData;
+                }
+            }
+
+            //LOOP STOCK DATA RESULTS
+            foreach ($stockData as $sd) {
+                //INITIALIZE COUNTERS
+                $totalStock = 0;
+                $totalCost = 0;
+                $totalAvgCons = 0;
+                $totalDaysWithStock = 0;
+
+                if ($selected_inv_account == null) {
+                    //IF THERES NO LOCATION APPLIED
+                    //INVENTORY ACCOUNT == POS LOCATION's INVENTORY ACCOUNT OR WAREHOUSE's INVENTORY ACCOUNT
+                    if ($inv_type == 'all') {
+                        if ($sd['quantity_operation'] == 'add') {
+                            //$sd['quantity_operation'] == FROM THE SQL's CASE
+                            //WE TREAT SALES STOCKS AS POSITIVE STOCK COUNT AND THE REST AS NEGATIVE
+                            $totalStock += $sd['quantity'];
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons = $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                            $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        } else {
+                            //WE DONT NEED NEGATIVE STOCK COUNTS
+                        }
+                    } else {
+                        //IF THERES AN INVENTORY ACCOUNT/LOCATION SELECTED
+                        if ($sd['inv_type'] == $inv_type) {
+                            $totalStock += $sd['quantity'];
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                            $totalDaysWithStock += $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        }
+                    }
+
+                    //GET THE SELECTED LOCATION's INVENTORY ACCOUNT OBJECT
+                    $em = $this->getDoctrine()->getManager();
+                    $invAcct = $em->getRepository('GistInventoryBundle:Account')->findOneById($sd['inv_acct_id']);
+
+                    //STORE THE DATA
+                    $processedData[] = array(
+                        'loc_name' => $invAcct->getName(),
+                        'sel_inv_acct_id' => $selected_inv_account,
+                        'inv_acct_id' => ($selected_loc == null ? null : $selected_loc->getInventoryAccount()),
+                        'prod_id' => $sd['product_id'],
+                        'prod_name' => $product['name'],
+                        'thresholdAlert' => false,//(($totalStock > $max || $totalStock < $min) ? true : false),
+                        'item_code' => $product['item_code'],
+                        'quantity' => $totalStock,
+                        'cost' => number_format($product['cost'], 2),
+                        'total_cost' => number_format($totalCost, 2),
+                        'piece_per_package' => $product['piece_per_package'],
+                        'avg_consumption' => number_format($totalAvgCons,3),
+                        'days_with_stock' => number_format($totalDaysWithStock,2)
+                    );
+
+                } elseif ($selected_inv_account->getID() == $sd['inv_acct_id']) {
+                    if ($inv_type == 'all') {
+                        if ($sd['quantity_operation'] == 'add') {
+                            $totalStock += $sd['quantity'];
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                            $totalDaysWithStock+= $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        } else {
+                            //$totalStock -= $sd['quantity'];
+                        }
+                    } else {
+                        if ($sd['inv_type'] == $inv_type) {
+                            $totalStock += $sd['quantity'];
+                            $totalCost += $this->calcTotalCost($product['product_id'], $sd['inv_acct_id']);
+                            $totalAvgCons += $this->calcAvgConsumption($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                            $totalDaysWithStock += $this->calcDaysWithStock($product['product_id'], $sd['inv_acct_id'], $date_from, $date_to);
+                        }
+                    }
+
+                    $em = $this->getDoctrine()->getManager();
+                    $invAcct = $em->getRepository('GistInventoryBundle:Account')->findOneById($sd['inv_acct_id']);
+
+                    $processedData[] = array(
+                        'loc_name' => $invAcct->getName(),
+                        'sel_inv_acct_id' => $selected_inv_account,
+                        'inv_acct_id' => ($selected_loc == null ? null : $selected_loc->getInventoryAccount()),
+                        'prod_id' => $sd['product_id'],
+                        'prod_name' => $product['name'],
+                        'thresholdAlert' => false,//(($totalStock > $max || $totalStock < $min) ? true : false),
+                        'item_code' => $product['item_code'],
+                        'quantity' => $totalStock,
+                        'cost' => number_format($product['cost'], 2),
+                        'total_cost' => number_format($totalCost, 2),
+                        'piece_per_package' => $product['piece_per_package'],
+                        'avg_consumption' => number_format($totalAvgCons,3),
+                        'days_with_stock' => number_format($totalDaysWithStock,2)
+                    );
+                }
+            }
+        }
+
+        return $processedData;
+    }
+
     public function calcDaysWithStock($prodId, $invAcctId, $date_from, $date_to)
     {
         $config = $this->get('gist_configuration');
@@ -441,6 +700,45 @@ class ExistingStockController extends Controller
     {
         $grid = $this->get('gist_grid');
         return array(
+            $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
+            $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
+            $grid->newColumn('Current Stock','getQuantity','quantity', 'o', [$this, 'formatNumeric']),
+            $grid->newColumn('Cost Per Unit','getCost','cost', 'prod', [$this, 'formatNumeric']),
+            $grid->newColumn('Total Cost','getID','id', 'prod', [$this, 'formatTotalCost']),
+            $grid->newColumn('Piece per package','getPiecePerPackage','piece_per_package', 'prod', [$this, 'formatNumeric']),
+            $grid->newColumn('Daily avg. consumption','getID','id', 'prod', [$this, 'formatAvgConsumption']),
+            $grid->newColumn('Days w/ Stock','getID','id', 'prod', [$this, 'formatDaysWithStock'])
+        );
+    }
+
+    protected function setupGridLoaderByProd($pos_loc_id = null)
+    {
+        $this->repo = "GistInventoryBundle:Stock";
+        $data = $this->getRequest()->query->all();
+        $grid = $this->get('gist_grid');
+
+        $gloader = $grid->newLoader();
+        $gloader->processParams($data)
+            ->setRepository($this->repo);
+
+        $gjoins = $this->getGridJoins();
+        foreach ($gjoins as $gj)
+            $gloader->addJoin($gj);
+
+        $gcols = $this->getGridColumnsByProd($pos_loc_id);
+
+        foreach ($gcols as $gc)
+            $gloader->addColumn($gc);
+
+        return $gloader;
+    }
+
+
+    protected function getGridColumnsByProd($pos_loc_id = null)
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newColumn('Location','getItemCode','item_code', 'prod'),
             $grid->newColumn('Item Code','getItemCode','item_code', 'prod'),
             $grid->newColumn('Item Name','getID','name', 'prod', array($this,'formatProductLink')),
             $grid->newColumn('Current Stock','getQuantity','quantity', 'o', [$this, 'formatNumeric']),

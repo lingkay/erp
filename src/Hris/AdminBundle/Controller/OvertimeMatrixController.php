@@ -74,7 +74,7 @@ class OvertimeMatrixController extends CrudController
 
         return array(
             $grid->newColumn('# of Hours','getMaximum','amount_to'),
-            $grid->newColumn('Rate','getRate','rate'),
+            $grid->newColumn('Rate','getRateFormatted','rate'),
         );
     }
 }

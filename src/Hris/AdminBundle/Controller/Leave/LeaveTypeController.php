@@ -50,6 +50,11 @@ class LeaveTypeController extends CrudController
         $o->setCollectible($data['collectible']);
         $o->setConvertibleToCash($data['convertible_to_cash']);
         $o->setServiceMonths($data['service_months']);
+        if ($data['convertible_to_cash'] == "1"){
+            $o->setPaymentPercentage($data['payment_percentage']);
+        } else{
+            $o->setPaymentPercentage(null);
+        }
 
         $em->persist($o);
         $em->flush();
