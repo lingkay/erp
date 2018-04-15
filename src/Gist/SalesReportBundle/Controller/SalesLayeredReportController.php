@@ -135,6 +135,7 @@ class SalesLayeredReportController extends Controller
 
     protected function getModesData($date_from, $date_to)
     {
+        $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         $allModes = ModesOfPayment::getModesOptions();
 

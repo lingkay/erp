@@ -6,7 +6,7 @@
     <div class="col-md-12">
         <div class="portlet box blue-hoki">
             <div class="portlet-title">
-                <div class="caption">{{ list_title }} - Products</div>
+                <div class="caption">{{ list_title }}</div>
                 <div class="actions">
                 </div>
             </div>
@@ -16,7 +16,8 @@
                     <li><a href="{{ path('gist_layered_sales_report_product_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
                     <li><a href="{{ path('gist_layered_sales_report_product_index_brands', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Brands</a></li>
                     <li><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id}) }}">{{ brand_name }}</a></li>
-                    <li>{{ category_name }}</li>
+                    <li><a href="{{ path('gist_layered_sales_report_product_index_categorized', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id, 'category' : category_id}) }}">{{ category_name }}</a></li>
+                    <li>{{ product_name }} - Transaction(s)</li>
                 </ul>
                 <br>
                 <div class="table-toolbar">
@@ -28,24 +29,22 @@
                     <tr><th colspan="7">Date Range: {{ date_from }} - {{ date_to }}</th></tr>
                     <tr>
                         <th>Product</th>
-                        <th>Quantity Sold</th>
-                        <th>Total Sales</th>
-                        <th>Total Cost</th>
-                        <th>Total Profit</th>
-                        <th>% of Profit</th>
-                        <th style="width: 13px;"></th>
+                        <th>Transaction ID</th>
+                        <th>Transaction POS</th>
+                        <th>Transaction Date</th>
+                        <th>Total Purchase</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for bd in products_data %}
+                    {% for bd in data %}
                         <tr>
                             <td>{{ bd['product_name'] }}</td>
-                            <td class="text-right">{{ bd['quantity_sold'] }}</td>
+                            <td class="text-center">{{ bd['transaction_id'] }}</td>
+                            <td>{{ bd['transaction_pos_name'] }}</td>
+                            <td>{{ bd['transaction_date'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td class="text-right">{{ bd['total_cost'] }}</td>
-                            <td class="text-right">{{ bd['total_profit'] }}</td>
-                            <td class="text-right">{{ bd['profit_percentage'] }}%</td>
-                            <td><a href="{{ path('gist_layered_sales_report_product_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : bd['brand_id'], 'category' : bd['category_id'], 'product_id' : bd['product_id'],}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
+                            <td><a href="{{ path('gist_layered_sales_report_product_index_transaction_details', {'date_from' : date_from_url, 'date_to' : date_to_url, 'id' : bd['transaction_system_id'], 'brand' : bd['brand_id'], 'category' : bd['category_id'], 'product_id' : bd['product_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -83,7 +82,9 @@
                             "sNext": "Next"
                         }
                     },
-                    "aaSorting": [[2,'desc']]
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [5] },
+                    ]
                 });
 
                 $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
