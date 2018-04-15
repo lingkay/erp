@@ -17,7 +17,7 @@
                             {{ form.group_select('Position', 'position', position_opts, object.getGroup.getID|default('0'), 3, 4, readonly) }}
                             {{form.group_number('Target', 'target', object.getTarget|default(''), 3, 4, readonly)}}
                             {{form.group_number('Daily Sales', 'daily_sales', object.getDailySales|default(''), 3, 4, readonly)}}
-                            <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin=0">Add Item</a>
+                            <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin=0">Add Entry</a>
                             <table class="table table-striped table-bordered table-hover ignore" style="margin-top: 20px;" id="list_table">
                                 <thead>
                                 <tr>
@@ -61,10 +61,10 @@
         function appendRowFields()
         {
             var field = '<tr>';
-            field += '<td><input type="number" name="from[]" class="form-control from text-right" min="1"></td>';
-            field += '<td><input type="number" name="to[]" class="form-control to text-right" min="1"></td>';
-            field += '<td><input type="number" name="percent[]" class="form-control percent text-right" min="1"></td>';
-            field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>';
+            field += '<td><input type="number" name="from[]" class="form-control from text-right ignore" min="1"></td>';
+            field += '<td><input type="number" name="to[]" class="form-control to text-right ignore" min="1"></td>';
+            field += '<td><input type="number" name="percent[]" class="form-control percent text-right ignore" min="1"></td>';
+            field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
             field += '</tr>';
 
             $('#matrix_tbody').append(field);

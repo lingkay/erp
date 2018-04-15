@@ -53,13 +53,15 @@ class IncentiveController extends CrudController
 
         if (isset($data['to'])) {
             foreach ($data['to'] as $i => $amountTo) {
-                $matrixEntry = new IncentiveMatrix();
-                $matrixEntry->setIncentive($o);
-                $matrixEntry->setAmountFrom($data['from'][$i]);
-                $matrixEntry->setAmountTo($data['to'][$i]);
-                $matrixEntry->setPercentAmount($data['percent'][$i]);
-                $em->persist($matrixEntry);
-                $em->flush();
+                if (trim($data['from'][$i]) != '' && trim($data['to'][$i]) != '' && trim($data['percent'][$i]) != '') {
+                    $matrixEntry = new IncentiveMatrix();
+                    $matrixEntry->setIncentive($o);
+                    $matrixEntry->setAmountFrom($data['from'][$i]);
+                    $matrixEntry->setAmountTo($data['to'][$i]);
+                    $matrixEntry->setPercentAmount($data['percent'][$i]);
+                    $em->persist($matrixEntry);
+                    $em->flush();
+                }
             }
         }
 
