@@ -356,7 +356,7 @@ class ProductLayeredReportController extends Controller
     protected function getProductsData($date_from, $date_to, $brand, $category)
     {
         $em = $this->getDoctrine()->getManager();
-        //get all categories
+
         $allProducts = $em->getRepository('GistInventoryBundle:Product')->findBy([
             'category' => $category,
             'brand' => $brand
@@ -366,13 +366,10 @@ class ProductLayeredReportController extends Controller
         $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
 
         foreach ($allProducts as $productObject) {
-            //initiate totals
             $productId = $productObject->getID();
             $totalSales = 0;
             $totalCost = 0;
             $quantitySold = 0;
-
-            //get all transaction items based on date filter
             $layeredReportService = $this->get('gist_layered_report_service');
             $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
@@ -443,10 +440,8 @@ class ProductLayeredReportController extends Controller
                 $productObject = $em->getRepository('GistInventoryBundle:Product')->findOneById($product_id);
                 $params['product_id'] = $productObject->getID();
                 $params['product_name'] = $productObject->getName();
-
                 $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
                 $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
-
                 $params['brand_id'] = $brandObject->getID();
                 $params['brand_name'] = $brandObject->getName();
                 $params['category_id'] = $categoryObject->getID();
@@ -468,47 +463,56 @@ class ProductLayeredReportController extends Controller
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         $layeredReportService = $this->get('gist_layered_report_service');
-        $allTransactions = $layeredReportService->getTransactions($date_from, $date_to, null, null);//$em->getRepository('GistPOSERPBundle:POSTransaction')->findBy(['customer'=>$customer_id]);
+        $allTransactions = $layeredReportService->getTransactions($date_from, $date_to, null, null);
         $brandObject = $em->getRepository('GistInventoryBundle:Brand')->findOneById($brand);
         $categoryObject = $em->getRepository('GistInventoryBundle:ProductCategory')->findOneById($category);
-        foreach ($allTransactions as $transaction) {
-            if (!$transaction->hasChildLayeredReport()) {
+        $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
-//                foreach ($transaction->getItems()) {
-//                    if ()
-//                }
-
-                $transactionId = $transaction->getTransDisplayIdFormatted();
-                $totalSales = 0;
-                $totalCost = 0;
-                $transactionItems = $transaction->getItems();
-
-                //loop items and check if item's brand is the current loop's brand then add the cost
-                foreach ($transactionItems as $transactionItem) {
-                    if (!$transactionItem->getReturned()) {
-                        $totalSales += $transactionItem->getTotalAmount();
-                    }
+        $transIds = [];
+        foreach ($transactionItems as $transactionItem) {
+            if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                $product = $em->getRepository('GistInventoryBundle:Product')->findOneById($transactionItem->getProductId());
+                if ($product->getCategory()->getID() == $category && $product->getBrand()->getID() == $brand && $product->getID() == $product_id) {
+                    array_push($transIds, $transactionItem->getTransaction()->getID());
                 }
+            }
+        }
 
+        $transIds = array_unique($transIds);
+        foreach ($allTransactions as $transaction) {
+            if (in_array($transaction->getID(), $transIds)) {
+                if (!$transaction->hasChildLayeredReport()) {
+                    $transactionId = $transaction->getTransDisplayIdFormatted();
+                    $totalSales = 0;
+                    $totalCost = 0;
+                    $transactionItems = $transaction->getItems();
 
-                $brandTotalProfit = $totalSales - $totalCost;
-                $productObject = $em->getRepository('GistInventoryBundle:Product')->findOneById($product_id);
-                if ($totalSales > 0) {
-                    $list_opts[] = array(
-                        'date_from' => $date_from,
-                        'date_to' => $date_to,
-                        'transaction_pos_name' => $transaction->getPOSLocation()->getName(),
-                        'transaction_date' => $transaction->getDateCreate()->format('F d, Y h:i A'),
-                        'transaction_id' => $transactionId,
-                        'transaction_system_id' => $transaction->getID(),
-                        'product_name' => $productObject->getName(),
-                        'product_id' => $productObject->getID(),
-                        'total_sales' => number_format($totalSales, 2, '.', ','),
-                        'total_cost' => number_format($totalCost, 2, '.', ','),
-                        'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
-                        'brand_id' => $brandObject->getID(),
-                        'category_id' => $categoryObject->getID()
-                    );
+                    //loop items and check if item's brand is the current loop's brand then add the cost
+                    foreach ($transactionItems as $transactionItem) {
+                        if (!$transactionItem->getReturned()) {
+                            $totalSales += $transactionItem->getTotalAmount();
+                        }
+                    }
+
+                    $brandTotalProfit = $totalSales - $totalCost;
+                    $productObject = $em->getRepository('GistInventoryBundle:Product')->findOneById($product_id);
+                    if ($totalSales > 0) {
+                        $list_opts[] = array(
+                            'date_from' => $date_from,
+                            'date_to' => $date_to,
+                            'transaction_pos_name' => $transaction->getPOSLocation()->getName(),
+                            'transaction_date' => $transaction->getDateCreate()->format('F d, Y h:i A'),
+                            'transaction_id' => $transactionId,
+                            'transaction_system_id' => $transaction->getID(),
+                            'product_name' => $productObject->getName(),
+                            'product_id' => $productObject->getID(),
+                            'total_sales' => number_format($totalSales, 2, '.', ','),
+                            'total_cost' => number_format($totalCost, 2, '.', ','),
+                            'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                            'brand_id' => $brandObject->getID(),
+                            'category_id' => $categoryObject->getID()
+                        );
+                    }
                 }
             }
         }
@@ -522,14 +526,10 @@ class ProductLayeredReportController extends Controller
 
     public function viewTransactionDetailsAction($date_from, $date_to, $id, $brand, $category, $product_id)
     {
-        //$this->hookPreAction();
         $em = $this->getDoctrine()->getManager();
-        // $params = $this->getViewParams('List');
         $obj = $em->getRepository('GistPOSERPBundle:POSTransaction')->find($id);
-
         $session = $this->getRequest()->getSession();
         $session->set('csrf_token', md5(uniqid()));
-
         $params = $this->getViewParams('Edit');
         $params['object'] = $obj;
         $params['customer_name'] = $obj->getCustomer()->getNameFormatted();
@@ -573,19 +573,15 @@ class ProductLayeredReportController extends Controller
             'region' => $region
         ]);
 
-        //$regionObject = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($region);
         $areaObject = $em->getRepository('GistLocationBundle:Areas')->findOneById($area);
 
         foreach ($allPOS as $POSObject) {
             $productId = $POSObject->getID();
             $totalSales = 0;
             $totalCost = 0;
-
-            //get all transaction items based on date filter
             $layeredReportService = $this->get('gist_layered_report_service');
             $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
-            //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
