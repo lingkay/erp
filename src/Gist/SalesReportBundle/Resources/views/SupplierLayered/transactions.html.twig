@@ -6,17 +6,18 @@
     <div class="col-md-12">
         <div class="portlet box blue-hoki">
             <div class="portlet-title">
-                <div class="caption">{{ list_title }} - POS Locations</div>
+                <div class="caption">{{ list_title }}</div>
                 <div class="actions">
                 </div>
             </div>
             <div class="portlet-body">
                 <br>
                 <ul class="breadcrumbs2">
-                    <li><a href="{{ path('gist_layered_sales_report_location_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_location_index_regions', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Regions</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_location_index_areas', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : region_id}) }}">{{  region_name }}</a></li>
-                    <li>{{ area_name }}</li>
+                    <li><a href="{{ path('gist_layered_sales_report_product_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_product_index_brands', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Brands</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id}) }}">{{ brand_name }}</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_product_index_categorized', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id, 'category' : category_id}) }}">{{ category_name }}</a></li>
+                    <li>{{ product_name }} - Transaction(s)</li>
                 </ul>
                 <br>
                 <div class="table-toolbar">
@@ -25,19 +26,25 @@
                 </div>
                 <table class="table table-striped table-bordered table-hover" id="list_table">
                     <thead>
-                    <tr><th colspan="3">Date Range: {{ date_from }} - {{ date_to }}</th></tr>
+                    <tr><th colspan="7">Date Range: {{ date_from }} - {{ date_to }}</th></tr>
                     <tr>
-                        <th>Location</th>
-                        <th>Income</th>
-                        <th style="width: 13px;"></th>
+                        <th>Product</th>
+                        <th>Transaction ID</th>
+                        <th>Transaction POS</th>
+                        <th>Transaction Date</th>
+                        <th>Total Purchase</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for bd in pos_data %}
+                    {% for bd in data %}
                         <tr>
-                            <td>{{ bd['pos_name'] }}</td>
+                            <td>{{ bd['product_name'] }}</td>
+                            <td class="text-center">{{ bd['transaction_id'] }}</td>
+                            <td>{{ bd['transaction_pos_name'] }}</td>
+                            <td>{{ bd['transaction_date'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td><a href="{{ path('gist_layered_sales_report_location_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : bd['region_id'], 'area' : bd['area_id'], 'pos_id' : bd['pos_loc_id'],}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
+                            <td><a href="{{ path('gist_layered_sales_report_product_index_transaction_details', {'date_from' : date_from_url, 'date_to' : date_to_url, 'id' : bd['transaction_system_id'], 'brand' : bd['brand_id'], 'category' : bd['category_id'], 'product_id' : bd['product_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -74,7 +81,10 @@
                             "sPrevious": "Prev",
                             "sNext": "Next"
                         }
-                    }
+                    },
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [5] },
+                    ]
                 });
 
                 $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input

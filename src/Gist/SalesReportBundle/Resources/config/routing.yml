@@ -112,6 +112,16 @@ gist_layered_sales_report_location_index_locations:
     methods:  [GET]
     defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:posIndex, date_from: null, date_to: null, region: null, area: null }
 
+gist_layered_sales_report_location_index_transactions:
+    path: /layered-sales-report/location/{date_from}/{date_to}/{region}/{area}/{pos_id}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:transactionsIndex, date_from: null, date_to: null, region: null, area: null, pos_id: null }
+
+gist_layered_sales_report_location_index_transaction_details:
+    path: /layered-sales-report/location/details/{date_from}/{date_to}/{id}/{region}/{area}/{pos_id}
+    methods:  [GET]
+    defaults: { _controller: GistSalesReportBundle:LocationLayeredReport:viewTransactionDetails, date_from: null, date_to: null, id: null, region: null, area: null, pos_id: null }
+
 # EMPLOYEE
 gist_layered_sales_report_employee_index:
     path: /layered-sales-report/employee/{date_from}/{date_to}/{position}
