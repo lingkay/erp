@@ -17,7 +17,6 @@ use stdClass;
 class IncentiveMatrix
 {
     use HasGeneratedID;
-    use HasName;
 
     /** @ORM\Column(type="string", nullable=true)*/
     protected $bracket;
@@ -40,14 +39,13 @@ class IncentiveMatrix
 
     public function __construct()
     {
-        $this->initHasName();
+
     }
 
     public function toData()
     {
         $data = new \stdClass();
         $this->dataHasGeneratedID($data);
-        $this->dataHasName($data);
         return $data;
     }
 

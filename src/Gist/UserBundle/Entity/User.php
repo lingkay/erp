@@ -641,7 +641,7 @@ class User extends BaseUser
         return $this->employee;
     }
 
-     public function setGroup($group)
+    public function setGroup($group)
     {
         $this->group = $group;
         return $this;

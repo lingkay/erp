@@ -33,6 +33,12 @@ class Incentive
     /** @ORM\Column(type="string", length=200, nullable=true) */
     protected $color;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\UserBundle\Entity\Group")
+     * @ORM\JoinColumn(name="position_id", referencedColumnName="id", unique=true)
+     */
+    protected $position;
+
     public function __construct()
     {
         $this->initHasName();
@@ -44,6 +50,22 @@ class Incentive
         $this->dataHasGeneratedID($data);
         $this->dataHasName($data);
         return $data;
+    }
+
+    public function setGroup($group)
+    {
+        $this->position = $group;
+        return $this;
+    }
+
+    public function getGroup()
+    {
+        return $this->position;
+    }
+
+    public function getPositionName()
+    {
+        return $this->position->getName();
     }
 
     /**

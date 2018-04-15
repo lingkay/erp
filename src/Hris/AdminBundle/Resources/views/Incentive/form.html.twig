@@ -14,7 +14,30 @@
                         <div class="form-body">
                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                             {{form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly)}}
-                            {{form.group_number('Tax Rate (%)', 'tax', object.getTax|default(''), 3, 4, readonly)}}
+                            {{ form.group_select('Position', 'position', position_opts, object.getGroup.getID|default('0'), 3, 4, readonly) }}
+                            {{form.group_number('Target', 'target', object.getTarget|default(''), 3, 4, readonly)}}
+                            {{form.group_number('Daily Sales', 'daily_sales', object.getDailySales|default(''), 3, 4, readonly)}}
+                            <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin=0">Add Item</a>
+                            <table class="table table-striped table-bordered table-hover" style="margin-top: 20px;" id="list_table">
+                                <thead>
+                                <tr>
+                                    <th width="40px">From</th>
+                                    <th width="40px">To</th>
+                                    <th width="40px">Percent</th>
+                                    <th width="40px"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="matrix_tbody">
+                                {% for e in object.getEntries %}
+                                    <tr>
+                                        <td><input type="number" name="from[]" class="form-control from text-right" value="{{ e.getAmountFrom }}" min="1"></td>
+                                        <td><input type="number" name="to[]" class="form-control to text-right" value="{{ e.getAmountTo }}" min="1"></td>
+                                        <td><input type="number" name="percent[]" class="form-control percent text-right" value="{{ e.getPercentAmount }}" min="1"></td>
+                                        <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="form-actions fluid">
@@ -35,6 +58,19 @@
 
 {% block js %}
     <script>
+        function appendRowFields()
+        {
+            var field = '<tr>';
+            field += '<td><input type="number" name="from[]" class="form-control from text-right" min="1"></td>';
+            field += '<td><input type="number" name="to[]" class="form-control to text-right" min="1"></td>';
+            field += '<td><input type="number" name="percent[]" class="form-control percent text-right" min="1"></td>';
+            field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>';
+            field += '</tr>';
+
+            $('#matrix_tbody').append(field);
+
+        }
+
         $(document).ready( function() {
             //set default error and success elements
             jQuery.validator.setDefaults({
@@ -104,6 +140,18 @@
                 submitHandler: function(form) {
                     form.submit();
                 }
+            });
+
+            var add_button = $(".add-matrix-field");
+            $(add_button).on('click',function(){
+                appendRowFields();
+            });
+
+            $(document).on("click",".remove_row", function(e){
+                e.preventDefault();
+                var tr = $(this).closest('tr');
+                tr.remove();
+                return false;
             });
         });
     </script>

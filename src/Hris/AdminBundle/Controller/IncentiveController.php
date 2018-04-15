@@ -4,6 +4,8 @@ namespace Hris\AdminBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\ValidationException;
+use Hris\AdminBundle\Entity\Incentive;
+use Hris\AdminBundle\Entity\IncentiveMatrix;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
@@ -23,38 +25,52 @@ class IncentiveController extends CrudController
 
     protected function newBaseClass()
     {
-        return new TaxMatrix();
+        return new Incentive();
     }
 
     protected function update($o, $data, $is_new = false)
     {
-        $o->setTax($data['tax']);
+//        echo "<pre>";
+//        var_dump($data);
+//        echo "</pre>";
+//        die();
+        $em = $this->getDoctrine()->getManager();
+        $o->setTarget($data['target']);
+        $o->setDailySales($data['daily_sales']);
         $o->setName($data['name']);
 
-        /*
-         *
-         * if (isset($data['item_id'])) {
-             $items_given = [];
-            foreach ($data['item_id'] as $i => $item_id) {
-                $items_given[] = array($item_id, $data['qty'][$i]);
-            }
+        $position = $em->getRepository('GistUserBundle:Group')->find($data['position']);
+        $o->setGroup($position);
 
-            $items_given_formatted = implode("&",array_map(function($a) {return implode("~",$a);},$items_given));
+        $em->persist($o);
+        $em->flush();
 
-
-            $o->setProductCompositions($items_given_formatted);
-        } else {
-            $o->setProductCompositions(null);
+        $incentiveMatrix = $em->getRepository('HrisAdminBundle:IncentiveMatrix')->findBy(array('incentive'=>$o->getID()));
+        foreach ($incentiveMatrix as $entry) {
+            $em->remove($entry);
+            $em->flush();
         }
-         *
-         */
+
+        if (isset($data['to'])) {
+            foreach ($data['to'] as $i => $amountTo) {
+                $matrixEntry = new IncentiveMatrix();
+                $matrixEntry->setIncentive($o);
+                $matrixEntry->setAmountFrom($data['from'][$i]);
+                $matrixEntry->setAmountTo($data['to'][$i]);
+                $matrixEntry->setPercentAmount($data['percent'][$i]);
+                $em->persist($matrixEntry);
+                $em->flush();
+            }
+        }
+
     }
 
     protected function padFormParams(&$params, $o = null)
     {
         $em = $this->getDoctrine()->getManager();
+        $um = $this->get('gist_user');
         $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
-
+        $params['position_opts'] = $um->getGroupOptions();
         return $params;
     }
 
@@ -91,7 +107,7 @@ class IncentiveController extends CrudController
 
         return array(
             $grid->newColumn('Name','getName','name'),
-            $grid->newColumn('Tax Rate','getTaxFormatted','amount_tax'),
+            $grid->newColumn('Position','getPositionName','position'),
         );
     }
 }
