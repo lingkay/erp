@@ -148,7 +148,8 @@ class EmployeeLayeredReportController extends Controller
         $em = $this->getDoctrine()->getManager();
         //get all positions
         $salesDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Sales']);
-        $allPositions = $em->getRepository('GistUserBundle:Group')->findBy(['department'=>$salesDept->getID()]);
+        $adminDept = $em->getRepository('GistUserBundle:Department')->findOneBy(['department_name'=>'Administrative']);
+        $allPositions = $em->getRepository('GistUserBundle:Group')->findBy(['department'=>[$salesDept->getID(),$adminDept->getID()]]);
 
 
         foreach ($allPositions as $position) {
@@ -193,7 +194,6 @@ class EmployeeLayeredReportController extends Controller
         }
     }
     //END POSITIONS/L2
-
     //FOR EMPLOYEES/L3 / SHOW EMPLOYEES
     public function employeesIndexAction($date_from = null, $date_to = null, $position = null)
     {
@@ -204,8 +204,6 @@ class EmployeeLayeredReportController extends Controller
             $this->route_prefix = 'gist_layered_sales_report_employee';
             $params = $this->getViewParams('List');
             $this->getControllerBase();
-
-            //PARAMS
             $params['position '] = $position ;
 
             if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
@@ -216,10 +214,7 @@ class EmployeeLayeredReportController extends Controller
                 $params['employees_data'] = $this->getEmployeesData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'), $position);
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
-
-
                 $positionObject = $em->getRepository('GistUserBundle:Group')->findOneById($position);
-
                 $params['position_id'] = $positionObject->getID();
                 $params['position_name'] = $positionObject->getName();
 
@@ -239,21 +234,15 @@ class EmployeeLayeredReportController extends Controller
     {
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        //get all brands
         $allEmployees = $em->getRepository('GistUserBundle:User')->findBy(['group'=>$position]);
 
         foreach ($allEmployees as $employee) {
-            //initiate totals
             $employeeId = $employee->getID();
             $totalSales = 0;
             $totalCost = 0;
-            $transactionIds = array();
-
-            //get all transaction items based on date filter
             $layeredReportService = $this->get('gist_layered_report_service');
             $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
 
-            //loop items and check if item's brand is the current loop's brand then add the cost
             foreach ($transactionItems as $transactionItem) {
                 if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
                     $employeex = $em->getRepository('GistUserBundle:User')->findOneById($transactionItem->getTransaction()->getUserCreate()->getID());
@@ -264,7 +253,6 @@ class EmployeeLayeredReportController extends Controller
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-
 
             if ($totalSales > 0) {
                 $list_opts[] = array(
@@ -286,7 +274,6 @@ class EmployeeLayeredReportController extends Controller
         }
     }
     //END AREAS/L3
-
     //FOR POS LOCS/L4 / SHOW POS LOCATIONS
     public function posIndexAction($date_from = null, $date_to = null, $position = null)
     {
@@ -297,10 +284,6 @@ class EmployeeLayeredReportController extends Controller
             $this->route_prefix = 'gist_layered_sales_report_employee';
             $params = $this->getViewParams('List');
             $this->getControllerBase();
-
-            //PARAMS
-            $params['region '] = $region ;
-            $params['area'] = $area;
 
             if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);

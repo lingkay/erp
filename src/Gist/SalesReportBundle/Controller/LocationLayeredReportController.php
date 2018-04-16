@@ -28,47 +28,51 @@ class LocationLayeredReportController extends Controller
     // FOR TOP LAYER
     public function indexAction($date_from = null, $date_to = null, $brand = null, $category = null)
     {
-        $data = $this->getRequest()->request->all();
-        $this->route_prefix = 'gist_layered_sales_report_location';
-        $params = $this->getViewParams('List');
-        $this->getControllerBase();
-        $params['brand'] = $brand;
-        $params['category'] = $category;
+        try {
+            $data = $this->getRequest()->request->all();
+            $this->route_prefix = 'gist_layered_sales_report_location';
+            $params = $this->getViewParams('List');
+            $this->getControllerBase();
+            $params['brand'] = $brand;
+            $params['category'] = $category;
 
-        if (isset($data['date_from']) && isset($data['date_to'])) {
-            $date_from = DateTime::createFromFormat('Ymd', $data['date_from']);
-            $date_to = DateTime::createFromFormat('Ymd', $data['date_to']);
-            $params['date_from'] = $date_from->format("m/d/Y");
-            $params['date_to'] = $date_to->format("m/d/Y");
-            $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
-            $params['date_from_url'] = $date_from->format("m-d-Y");
-            $params['date_to_url'] = $date_to->format("m-d-Y");
-            $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
-        } else {
-            if ($date_from != null) {
-                $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
-                $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
-                $date_from_twig = $date_from->format("m/d/Y");
-                $date_to_twig = $date_to->format("m/d/Y");
+            if (isset($data['date_from']) && isset($data['date_to'])) {
+                $date_from = DateTime::createFromFormat('Ymd', $data['date_from']);
+                $date_to = DateTime::createFromFormat('Ymd', $data['date_to']);
+                $params['date_from'] = $date_from->format("m/d/Y");
+                $params['date_to'] = $date_to->format("m/d/Y");
+                $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
                 $params['date_from_url'] = $date_from->format("m-d-Y");
                 $params['date_to_url'] = $date_to->format("m-d-Y");
                 $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
             } else {
-                $date_from = new DateTime();
-                $date_to = new DateTime();
-                $date_from_twig = $date_from->format("m/01/Y");
-                $date_to_twig = $date_to->format("m/t/Y");
-                $params['date_from_url'] = $date_from->format("m-01-Y");
-                $params['date_to_url'] = $date_to->format("m-t-Y");
-                $params['all_data'] = $this->getAllData($date_from->format('Y-m-01'), $date_to->format('Y-m-t'));
+                if ($date_from != null) {
+                    $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+                    $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+                    $date_from_twig = $date_from->format("m/d/Y");
+                    $date_to_twig = $date_to->format("m/d/Y");
+                    $params['date_from_url'] = $date_from->format("m-d-Y");
+                    $params['date_to_url'] = $date_to->format("m-d-Y");
+                    $params['all_data'] = $this->getAllData($date_from->format('Y-m-d'), $date_to->format('Y-m-d'));
+                } else {
+                    $date_from = new DateTime();
+                    $date_to = new DateTime();
+                    $date_from_twig = $date_from->format("m/01/Y");
+                    $date_to_twig = $date_to->format("m/t/Y");
+                    $params['date_from_url'] = $date_from->format("m-01-Y");
+                    $params['date_to_url'] = $date_to->format("m-t-Y");
+                    $params['all_data'] = $this->getAllData($date_from->format('Y-m-01'), $date_to->format('Y-m-t'));
+                }
+
+                $params['date_from'] = $date_from_twig;
+                $params['date_to'] = $date_to_twig;
+
             }
 
-            $params['date_from'] = $date_from_twig;
-            $params['date_to'] = $date_to_twig;
-
+            return $this->render('GistSalesReportBundle:LocationLayered:index.html.twig', $params);
+        } catch (\Exception $e) {
+            return $this->redirect($this->generateUrl('hris_dashboard_index'));
         }
-
-        return $this->render('GistSalesReportBundle:LocationLayered:index.html.twig', $params);
     }
 
     protected function getAllData($date_from, $date_to)
@@ -133,43 +137,47 @@ class LocationLayeredReportController extends Controller
 
     protected function getRegionsData($date_from, $date_to)
     {
-        $list_opts = [];
-        $em = $this->getDoctrine()->getManager();
-        $allRegions = $em->getRepository('GistLocationBundle:Regions')->findAll();
+        try {
+            $list_opts = [];
+            $em = $this->getDoctrine()->getManager();
+            $allRegions = $em->getRepository('GistLocationBundle:Regions')->findAll();
 
-        foreach ($allRegions as $region) {
-            $regionId = $region->getID();
-            $totalSales = 0;
-            $totalCost = 0;
-            $layeredReportService = $this->get('gist_layered_report_service');
-            $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
-            foreach ($transactionItems as $transactionItem) {
-                if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
-                    $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
-                    if ($pos_loc->getArea()->getRegion()->getID() == $regionId) {
-                        $totalSales += $transactionItem->getTotalAmount();
+            foreach ($allRegions as $region) {
+                $regionId = $region->getID();
+                $totalSales = 0;
+                $totalCost = 0;
+                $layeredReportService = $this->get('gist_layered_report_service');
+                $transactionItems = $layeredReportService->getTransactionItems($date_from, $date_to, null, null);
+                foreach ($transactionItems as $transactionItem) {
+                    if (!$transactionItem->getTransaction()->hasChildLayeredReport() && !$transactionItem->getReturned()) {
+                        $pos_loc = $em->getRepository('GistLocationBundle:POSLocations')->findOneById($transactionItem->getTransaction()->getPOSLocation());
+                        if ($pos_loc->getArea()->getRegion()->getID() == $regionId) {
+                            $totalSales += $transactionItem->getTotalAmount();
+                        }
                     }
+                }
+
+                $brandTotalProfit = $totalSales - $totalCost;
+                if ($totalSales > 0) {
+                    $list_opts[] = array(
+                        'date_from' => $date_from,
+                        'date_to' => $date_to,
+                        'region_id' => $regionId,
+                        'region_name' => $region->getName(),
+                        'total_sales' => number_format($totalSales, 2, '.', ','),
+                        'total_cost' => number_format($totalCost, 2, '.', ','),
+                        'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                    );
                 }
             }
 
-            $brandTotalProfit = $totalSales - $totalCost;
-            if ($totalSales > 0) {
-                $list_opts[] = array(
-                    'date_from' => $date_from,
-                    'date_to' => $date_to,
-                    'region_id' => $regionId,
-                    'region_name' => $region->getName(),
-                    'total_sales' => number_format($totalSales, 2, '.', ','),
-                    'total_cost' => number_format($totalCost, 2, '.', ','),
-                    'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
-                );
+            if (count($allRegions) > 0) {
+                return $list_opts;
+            } else {
+                return null;
             }
-        }
-
-        if (count($allRegions) > 0) {
-            return $list_opts;
-        } else {
-            return null;
+        } catch (Exception $e) {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
         }
     }
     //END REGIONS/L2
