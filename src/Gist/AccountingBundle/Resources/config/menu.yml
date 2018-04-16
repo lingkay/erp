@@ -3,14 +3,19 @@ menu_items:
       acl: gist_accounting.menu
       label: Accounting
       icon: fa-money
-    - id: gist_accounting_banks_index
-      acl: gist_accounting_banks.menu
+
+    - id: gist_banks_menu
+      acl: gist_banks.menu
       label: Banks
       parent: gist_accounting_menu
+    - id: gist_accounting_banks_index
+      acl: gist_accounting_banks.menu
+      label: Bank
+      parent: gist_banks_menu
     - id: gist_accounting_bank_accounts_index
       acl: gist_accounting_bank_accounts.menu
       label: Bank Accounts
-      parent: gist_accounting_menu
+      parent: gist_banks_menu
 
 
     - id: gist_terminals_menu

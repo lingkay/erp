@@ -21,8 +21,8 @@
                                 {{ form.radio_set('paid_by', paidby_opts, object.getPaidBy|default(0)) }}
                             </div>
                         </div>
-                        {{ form.group_number('Employee Share', 'employee_share', object.getEmployeeShare|default(''), 3, 4, readonly) }}
-                        {{ form.group_number('Employer Share', 'employer_share', object.getEmployerShare|default(''), 3, 4, readonly) }}
+                        {{ form.group_number('Employee Share (%)', 'employee_share', object.getEmployeeShare|default(''), 3, 4, readonly) }}
+                        {{ form.group_number('Employer Share (%)', 'employer_share', object.getEmployerShare|default(''), 3, 4, readonly) }}
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Employment Availability</label>
