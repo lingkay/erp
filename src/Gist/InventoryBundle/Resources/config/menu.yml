@@ -23,10 +23,10 @@ menu_items:
       acl: gist_inv_existing_stock.menu
       label: Existing Stock
       parent: menu_inventory
-    - id: gist_inv_existing_stock_by_product_index
-      acl: gist_inv_existing_stock_by_product.menu
-      label: Existing Stock (Product)
-      parent: menu_inventory
+#    - id: gist_inv_existing_stock_by_product_index
+#      acl: gist_inv_existing_stock_by_product.menu
+#      label: Existing Stock (Product)
+#      parent: menu_inventory
     - id: gist_inv_counting_index
       acl: gist_inv_counting.menu
       label: Counting Submissions
