@@ -11,7 +11,7 @@
                     <li><a href="{{ path('gist_layered_sales_report_employee_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
                     <li><a href="{{ path('gist_layered_sales_report_employee_index_positions', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Positions</a></li>
                     <li><a href="{{ path('gist_layered_sales_report_employee_index_employees', {'date_from' : date_from_url, 'date_to' : date_to_url, 'position': position_id}) }}">{{ position_name }}</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_employee_index_employees', {'date_from' : date_from_url, 'date_to' : date_to_url, 'position': position_id, 'employee': employee_id}) }}">{{ employee_name }} - Transactions</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_employee_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'position': position_id, 'employee': employee_id}) }}">{{ employee_name }} - Transactions</a></li>
                     <li>{{  object.getTransDisplayId }}</li>
                 </ul>
                 <br>
