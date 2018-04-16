@@ -27,10 +27,11 @@
                     <thead>
                     <tr><th colspan="7">Date Range: {{ date_from }} - {{ date_to }}</th></tr>
                     <tr>
-                        <th>Sales</th>
+                        <th>Transaction ID</th>
                         <th>POS</th>
                         <th>Transaction Date</th>
                         <th>Total Income</th>
+                        <th style="width: 13px;"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -40,6 +41,7 @@
                             <td>{{ bd['pos_name'] }}</td>
                             <td>{{ bd['trans_date'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
+                            <td><a href="{{ path('gist_layered_sales_report_sales_index_check_transaction_details', {'date_from' : date_from_url, 'date_to' : date_to_url, 'id' : bd['transaction_system_id'], 'check_type' : bd['check_type']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>

@@ -242,6 +242,8 @@ class SalesLayeredReportController extends Controller
                     'transaction_id' => $transaction->getID(),
                     'pos_name' => $transaction->getPOSLocation()->getName(),
                     'trans_date' => $transaction->getDateCreateFormattedPOS(),
+                    'transaction_system_id' => $transaction->getID(),
+                    'mode' => $mode,
                     'total_sales' => number_format($totalSales, 2, '.', ',')
                 );
             }
@@ -402,7 +404,8 @@ class SalesLayeredReportController extends Controller
             $this->getControllerBase();
 
             //PARAMS
-            $params['terminal'] = $terminal ;
+            $params['terminal'] = $terminal;
+//            $params['terminal_id'] = $terminal;
 
             if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
                 $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
@@ -451,7 +454,9 @@ class SalesLayeredReportController extends Controller
                 $list_opts[] = array(
                     'date_from' => $date_from,
                     'date_to' => $date_to,
+                    'terminal' => $terminal,
                     'transaction_display_id' => $transaction->getTransDisplayId(),
+                    'transaction_system_id' => $transaction->getID(),
                     'pos_name' => $transaction->getPOSLocation()->getName(),
                     'trans_date' => $transaction->getDateCreateFormattedPOS(),
                     'transaction_id' => $transaction->getID(),
@@ -518,7 +523,9 @@ class SalesLayeredReportController extends Controller
                 $list_opts[] = array(
                     'date_from' => $date_from,
                     'date_to' => $date_to,
+                    'check_type' => $check_type,
                     'transaction_display_id' => $transaction->getTransDisplayId(),
+                    'transaction_system_id' => $transaction->getID(),
                     'pos_name' => $transaction->getPOSLocation()->getName(),
                     'trans_date' => $transaction->getDateCreateFormattedPOS(),
                     'transaction_id' => $transaction->getID(),
@@ -577,5 +584,96 @@ class SalesLayeredReportController extends Controller
         $this->base_view = $base;
 
         return $base;
+    }
+
+    //LAST NEW LAYER
+    public function viewCashTransactionDetailsAction($date_from, $date_to, $id, $mode)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository('GistPOSERPBundle:POSTransaction')->find($id);
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['customer_name'] = $obj->getCustomer()->getNameFormatted();
+        $params['customer_creator'] = $obj->getCustomer()->getUserCreate()->getName();
+        $params['customer'] = $obj->getCustomer();
+        $params['readonly'] = true;
+
+        $params['mode'] = $mode;
+
+        if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+            $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+            $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+            $params['date_from'] = $date_from->format("m/d/Y");
+            $params['date_to'] = $date_to->format("m/d/Y");
+            $params['date_from_url'] = $date_from->format("m-d-Y");
+            $params['date_to_url'] = $date_to->format("m-d-Y");
+
+            return $this->render('GistSalesReportBundle:SalesLayered:cash_transaction_details.html.twig', $params);
+
+        } else {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
+    }
+
+    public function viewCardTransactionDetailsAction($date_from, $date_to, $id, $terminal)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository('GistPOSERPBundle:POSTransaction')->find($id);
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['customer_name'] = $obj->getCustomer()->getNameFormatted();
+        $params['customer_creator'] = $obj->getCustomer()->getUserCreate()->getName();
+        $params['customer'] = $obj->getCustomer();
+        $params['readonly'] = true;
+
+        $params['terminal'] = $terminal;
+
+        if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+            $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+            $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+            $params['date_from'] = $date_from->format("m/d/Y");
+            $params['date_to'] = $date_to->format("m/d/Y");
+            $params['date_from_url'] = $date_from->format("m-d-Y");
+            $params['date_to_url'] = $date_to->format("m-d-Y");
+
+            return $this->render('GistSalesReportBundle:SalesLayered:card_transaction_details.html.twig', $params);
+
+        } else {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
+    }
+
+    public function viewCheckTransactionDetailsAction($date_from, $date_to, $id, $check_type)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $obj = $em->getRepository('GistPOSERPBundle:POSTransaction')->find($id);
+        $session = $this->getRequest()->getSession();
+        $session->set('csrf_token', md5(uniqid()));
+        $params = $this->getViewParams('Edit');
+        $params['object'] = $obj;
+        $params['customer_name'] = $obj->getCustomer()->getNameFormatted();
+        $params['customer_creator'] = $obj->getCustomer()->getUserCreate()->getName();
+        $params['customer'] = $obj->getCustomer();
+        $params['readonly'] = true;
+
+        $params['check_type'] = $check_type;
+
+        if (DateTime::createFromFormat('m-d-Y', $date_from) !== false && DateTime::createFromFormat('m-d-Y', $date_to) !== false) {
+            $date_from = DateTime::createFromFormat('m-d-Y', $date_from);
+            $date_to = DateTime::createFromFormat('m-d-Y', $date_to);
+            $params['date_from'] = $date_from->format("m/d/Y");
+            $params['date_to'] = $date_to->format("m/d/Y");
+            $params['date_from_url'] = $date_from->format("m-d-Y");
+            $params['date_to_url'] = $date_to->format("m-d-Y");
+
+            return $this->render('GistSalesReportBundle:SalesLayered:check_transaction_details.html.twig', $params);
+
+        } else {
+            return $this->redirect($this->generateUrl('gist_layered_sales_report_product_index'));
+        }
     }
 }

@@ -8,11 +8,10 @@
             <div class="col-md-12">
                 <hr>
                 <ul class="breadcrumbs2">
-                    <li><a href="{{ path('gist_layered_sales_report_product_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_brands', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Brands</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_branded', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id}) }}">{{ brand_name }}</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_categorized', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id, 'category' : category_id}) }}">{{ category_name }}</a></li>
-                    <li><a href="{{ path('gist_layered_sales_report_product_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'brand' : brand_id, 'category' : category_id, 'product_id' : product_id}) }}">{{ product_name }} - Transaction(s)</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_sales_index', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">All</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_sales_index_modes', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Modes of Payment</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_sales_index_check_types', {'date_from' : date_from_url, 'date_to' : date_to_url}) }}">Check Types</a></li>
+                    <li><a href="{{ path('gist_layered_sales_report_sales_index_check_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'check_type': check_type}) }}">Check Transactions - Check Type: {{ check_type }}</a></li>
                     <li>{{  object.getTransDisplayId }}</li>
                 </ul>
                 <br>

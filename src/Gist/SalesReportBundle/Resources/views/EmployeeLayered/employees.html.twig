@@ -28,6 +28,7 @@
                     <tr>
                         <th>Employee</th>
                         <th>Income</th>
+                        <th style="width: 13px;"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -35,6 +36,7 @@
                         <tr>
                             <td>{{ bd['employee_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
+                            <td><a href="{{ path('gist_layered_sales_report_employee_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'position' : bd['position_id'], 'employee' : bd['employee_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>

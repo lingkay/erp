@@ -126,7 +126,6 @@ class SupplierLayeredReportController extends Controller
         $em = $this->getDoctrine()->getManager();
         $allSuppliers = $em->getRepository('GistInventoryBundle:Supplier')->findAll();
 
-
         foreach ($allSuppliers as $supplier) {
             $supplierId = $supplier->getID();
             $totalSales = 0;

@@ -37,7 +37,7 @@
                         <tr>
                             <td>{{ bd['pos_name'] }}</td>
                             <td class="text-right">{{ bd['total_sales'] }}</td>
-                            <td><a href="{{ path('gist_layered_sales_report_location_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : bd['region_id'], 'area' : bd['area_id'], 'pos_id' : bd['pos_loc_id'],}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
+                            <td><a href="{{ path('gist_layered_sales_report_location_index_transactions', {'date_from' : date_from_url, 'date_to' : date_to_url, 'region' : bd['region_id'], 'area' : bd['area_id'], 'pos_id' : bd['pos_loc_id']}) }}" class="btn default btn-xs blue-madison"><i class="fa fa-level-down"></i> Next Level</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
