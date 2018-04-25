@@ -30,8 +30,22 @@ class NightDifferentialMatrix
     /** @ORM\Column(type="decimal", precision=10, scale=2) */
     protected $rate;
 
+    /** @ORM\Column(type="string", nullable=true)*/
+    protected $displayId;
+
     public function __construct()
     {
+    }
+
+    public function setDisplayId($displayId)
+    {
+        $this->displayId = $displayId;
+        return $this;
+    }
+
+    public function getDisplayId()
+    {
+        return $this->displayId;
     }
 
     public function setBracket($bracket)

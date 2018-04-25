@@ -30,8 +30,11 @@ class OvertimeMatrixController extends CrudController
     protected function update($o, $data, $is_new = false)
     {
         $o->setRate($data['rate']);
-        $o->setMinimum(0);
+        $o->setMinimum($data['amountFrom']);
         $o->setMaximum($data['amountTo']);
+
+        $bracket = number_format($data['amountFrom'],2).' - '.number_format($data['amountTo'],2);
+        $o->setBracket($bracket);
     }
 
     protected function padFormParams(&$params, $o = null)
@@ -73,7 +76,7 @@ class OvertimeMatrixController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('# of Hours','getMaximum','amount_to'),
+            $grid->newColumn('Hour Bracket','getBracket','bracket'),
             $grid->newColumn('Rate','getRateFormatted','rate'),
         );
     }

@@ -14,15 +14,15 @@
                         <div class="form-body">
                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                             {{form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly)}}
-                            {{ form.group_select('Matrix Amount Type', 'amt_type', amt_opts, object.getIsAmountPercent|default('0'), 3, 4, readonly) }}
-
-                            <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin=0">Add Entry</a>
+                            {{ form.group_select('Matrix Value Type', 'amt_type', amt_opts, object.getIsAmountPercent|default('0'), 3, 4, readonly) }}
+                            {{ form.group_checkbox('Retroactive','flag_retroactive', 'flag_retroactive', '',object.getIsRetroActive|default(false),3,4, false) }}
+                            <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin: 0">Add Entry</a>
                             <table class="table table-striped table-bordered table-hover ignore" style="margin-top: 20px;" id="list_table">
                                 <thead>
                                 <tr>
                                     <th width="40px">From</th>
                                     <th width="40px">To</th>
-                                    <th width="40px">Amount</th>
+                                    <th width="40px">Value</th>
                                     <th width="40px"></th>
                                 </tr>
                                 </thead>

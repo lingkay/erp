@@ -27,6 +27,9 @@ class TaxMatrix
     /** @ORM\Column(type="boolean", nullable=true) */
     protected $is_amt_percent;
 
+    /** @ORM\Column(type="boolean", nullable=true) */
+    protected $is_retroactive;
+
     public function __construct()
     {
         $this->initHasName();
@@ -41,6 +44,17 @@ class TaxMatrix
     public function getIsAmountPercent()
     {
         return $this->is_amt_percent;
+    }
+
+    public function setIsRetroActive($val)
+    {
+        $this->is_retroactive = $val;
+        return $this;
+    }
+
+    public function getIsRetroActive()
+    {
+        return $this->is_retroactive;
     }
 
     public function getEntries()

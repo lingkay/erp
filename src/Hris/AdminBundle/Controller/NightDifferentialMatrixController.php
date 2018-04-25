@@ -34,6 +34,14 @@ class NightDifferentialMatrixController extends CrudController
         $o->setRate($data['rate']);
     }
 
+    protected function hookPostSave($obj, $is_new = false)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $obj->setDisplayId(str_pad($obj->getID(), 8, '0', STR_PAD_LEFT));
+        $em->persist($obj);
+        $em->flush();
+    }
+
     protected function padFormParams(&$params, $o = null)
     {
         return $params;
@@ -73,6 +81,7 @@ class NightDifferentialMatrixController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
+            $grid->newColumn('ID','getDisplayId','displayId'),
             $grid->newColumn('From','getTimeFrom','time_from'),
             $grid->newColumn('To','getTimeTo','time_to'),
             $grid->newColumn('Rate','getRateFormatted','rate'),

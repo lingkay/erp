@@ -29,10 +29,6 @@ class TaxMatrixController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
-        //        echo "<pre>";
-//        var_dump($data);
-//        echo "</pre>";
-//        die();
         $em = $this->getDoctrine()->getManager();
         $o->setIsAmountPercent($data['amt_type']);
         $o->setName($data['name']);
@@ -60,14 +56,19 @@ class TaxMatrixController extends CrudController
             }
         }
 
+        $o->setIsRetroActive(false);
+        if (isset($data['flag_retroactive'])) {
+            $o->setIsRetroActive(true);
+        }
+
 
     }
 
     protected function padFormParams(&$params, $o = null)
     {
         $em = $this->getDoctrine()->getManager();
-        $params['amt_opts'] = array('0' => 'Number', '1' => 'Percentage');
-
+        $params['amt_opts'] = array('0' => 'Amount', '1' => 'Percentage');
+        $params['retro_opts'] = array('1' => 'Yes');
         return $params;
     }
 
