@@ -36,11 +36,16 @@ class FinesController extends CrudController
         $em = $this->getDoctrine()->getManager();
         $type = $em->getRepository('HrisAdminBundle:FineTypes')->findOneById($data['type']);
         $o->setType($type);
+
+        $type = $em->getRepository('HrisAdminBundle:FineValueTypes')->findOneById($data['value_type']);
+        $o->setValueType($type);
     }
 
     protected function padFormParams(&$params, $o = null)
     {
+        $settings = $this->get('hris_settings');
         $params['type_options'] = $this->getTypeOptions();
+        $params['value_type_opts'] = $settings->getFinesValueTypeOptions();
         return $params;
     }
 

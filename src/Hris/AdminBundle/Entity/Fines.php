@@ -25,6 +25,12 @@ class Fines
      */
     protected $type;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="FineValueTypes")
+     * @ORM\JoinColumn(name="value_type", referencedColumnName="id")
+     */
+    protected $valueType;
+
     /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
     protected $amount;
 
@@ -34,6 +40,30 @@ class Fines
     public function __construct()
     {
         $this->initHasName();
+    }
+
+    /**
+     * Set type
+     *
+     * @param \Hris\AdminBundle\Entity\FineValueTypes $type
+     *
+     * @return Fines
+     */
+    public function setValueType(\Hris\AdminBundle\Entity\FineValueTypes $type = null)
+    {
+        $this->valueType = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \Hris\AdminBundle\Entity\FineValueTypes
+     */
+    public function getValueType()
+    {
+        return $this->valueType;
     }
 
     public function toData()
