@@ -16,7 +16,8 @@
                             {{form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly)}}
                             {{ form.group_select('Position', 'position', position_opts, object.getGroup.getID|default('0'), 3, 4, readonly) }}
                             {{form.group_number('Target', 'target', object.getTarget|default(''), 3, 4, readonly)}}
-                            {{form.group_number('Daily Sales', 'daily_sales', object.getDailySales|default(''), 3, 4, readonly)}}
+                            {{ form.group_select('Period', 'period', period_opts, object.getPeriod.getID|default('0'), 3, 4, readonly) }}
+                            {{form.group_number('Sales', 'daily_sales', object.getDailySales|default(''), 3, 4, readonly)}}
                             <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin=0">Add Entry</a>
                             <table class="table table-striped table-bordered table-hover ignore" style="margin-top: 20px;" id="list_table">
                                 <thead>

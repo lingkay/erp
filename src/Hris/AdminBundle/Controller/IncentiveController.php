@@ -51,6 +51,9 @@ class IncentiveController extends CrudController
             $em->flush();
         }
 
+        $period = $em->getRepository('HrisAdminBundle:IncentivePeriod')->findOneById($data['period']);
+        $o->setPeriod($period);
+
         if (isset($data['to'])) {
             foreach ($data['to'] as $i => $amountTo) {
                 if (trim($data['from'][$i]) != '' && trim($data['to'][$i]) != '' && trim($data['percent'][$i]) != '') {
@@ -73,6 +76,9 @@ class IncentiveController extends CrudController
         $um = $this->get('gist_user');
         $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
         $params['position_opts'] = $um->getGroupOptions();
+
+        $settings = $this->get('hris_settings');
+        $params['period_opts'] = $settings->getIncentivePeriodOptions();
         return $params;
     }
 

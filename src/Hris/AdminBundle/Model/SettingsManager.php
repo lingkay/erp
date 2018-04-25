@@ -302,11 +302,11 @@ class SettingsManager
                 array('id' => 'ASC')
             );
 
-        $bonusTypeOptions = array();
+        $valueTypeOptions = array();
         foreach ($whs as $wh)
-            $bonusTypeOptions[$wh->getID()] = $wh->getName();
+            $valueTypeOptions[$wh->getID()] = $wh->getName();
 
-        return $bonusTypeOptions;
+        return $valueTypeOptions;
     }
 
     public function getFinesValueTypeOptions($filter = array())
@@ -319,10 +319,27 @@ class SettingsManager
                 array('id' => 'ASC')
             );
 
-        $bonusTypeOptions = array();
+        $finesValueTypeOptions = array();
         foreach ($whs as $wh)
-            $bonusTypeOptions[$wh->getID()] = $wh->getName();
+            $finesValueTypeOptions[$wh->getID()] = $wh->getName();
 
-        return $bonusTypeOptions;
+        return $finesValueTypeOptions;
+    }
+
+    public function getIncentivePeriodOptions($filter = array())
+    {
+        $em = $this->em;
+        $whs = $em
+            ->getRepository('HrisAdminBundle:IncentivePeriod')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $incentivePeriods = array();
+        foreach ($whs as $wh)
+            $incentivePeriods[$wh->getID()] = $wh->getName();
+
+        return $incentivePeriods;
     }
 }

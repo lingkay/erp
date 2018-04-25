@@ -39,9 +39,39 @@ class Incentive
      */
     protected $position;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="IncentivePeriod")
+     * @ORM\JoinColumn(name="period", referencedColumnName="id")
+     */
+    protected $period;
+
     public function __construct()
     {
         $this->initHasName();
+    }
+
+    /**
+     * Set type
+     *
+     * @param \Hris\AdminBundle\Entity\IncentivePeriod $type
+     *
+     * @return Incentive
+     */
+    public function setPeriod(\Hris\AdminBundle\Entity\IncentivePeriod $type = null)
+    {
+        $this->period = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \Hris\AdminBundle\Entity\IncentivePeriod
+     */
+    public function getPeriod()
+    {
+        return $this->period;
     }
 
     public function toData()
