@@ -14,7 +14,13 @@
                     <div class="form-body">
                         {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                         {{ form.group_text('Name', 'event_name', object.getName|default(''), 3, 4, readonly) }}
-                        {{ form.group_number('Rate (%)', 'rate', object.getRate|default(''), 3, 4, readonly) }}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Rate Type</label>
+                            <div class="col-md-5">
+                                {{ form.radio_set('rate_type', value_type_opts, object.getType.getID|default('')) }}
+                            </div>
+                        </div>
+                        {{ form.group_number('Rate', 'rate', object.getRate|default(''), 3, 4, readonly) }}
                         <div class="form-group">
                             <label class="col-md-3 control-label">Type</label>
                             <div class="col-md-4">

@@ -291,4 +291,21 @@ class SettingsManager
 
         return $entry->getValue();
     }
+
+    public function getValueTypeOptions($filter = array())
+    {
+        $em = $this->em;
+        $whs = $em
+            ->getRepository('HrisAdminBundle:ValueTypes')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $bonusTypeOptions = array();
+        foreach ($whs as $wh)
+            $bonusTypeOptions[$wh->getID()] = $wh->getName();
+
+        return $bonusTypeOptions;
+    }
 }

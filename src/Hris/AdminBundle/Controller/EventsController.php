@@ -58,13 +58,19 @@ class EventsController extends CrudController
             $o->setHolidayType($data['holiday_type']);
             $this->updateTrackCreate($o,$data,$is_new);
         }
+
+        $type = $em->getRepository('HrisAdminBundle:ValueTypes')->findOneById($data['rate_type']);
+        $o->setType($type);
     }
 
     protected function padFormParams(&$params, $o = null)
     {
         $em = $this->getDoctrine()->getManager();
+        $settings = $this->get('hris_settings');
         $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
         $params['ispaid_opts'] = array(0 => 'Paid', 1=> 'Unpaid');
+        $params['value_type_opts'] = $settings->getValueTypeOptions();
+
         return $params;
     }
 

@@ -24,6 +24,12 @@ class Events
     use HasName;
     use TrackCreate;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="ValueTypes")
+     * @ORM\JoinColumn(name="type", referencedColumnName="id")
+     */
+    protected $type;
+
     /** @ORM\Column(type="datetime") */
     protected $date_from;
 
@@ -43,6 +49,30 @@ class Events
     {
         $this->initTrackCreate();
         $this->initHasName();
+    }
+
+    /**
+     * Set type
+     *
+     * @param \Hris\AdminBundle\Entity\ValueTypes $type
+     *
+     * @return Events
+     */
+    public function setType(\Hris\AdminBundle\Entity\ValueTypes $type = null)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \Hris\AdminBundle\Entity\ValueTypes
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     public function setRate($rate)
