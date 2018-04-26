@@ -196,6 +196,15 @@ class POSTransaction
         return round((($this->transaction_total/$this->cart_orig_total)*100),2)."%";
     }
 
+    public function getCartTotalFormatted()
+    {
+        if ($this->cart_new_total != 0) {
+            return $this->cart_new_total;
+        } else {
+            return $this->cart_orig_total;
+        }
+    }
+
     public function hasItems()
     {
         if (count($this->items) > 0) {
