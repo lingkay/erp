@@ -140,7 +140,28 @@
                     tax: "Tax cannot be blank.",
                 },
                 submitHandler: function(form) {
-                    form.submit();
+                    var contents = {};
+                    var duplicates = false;
+                    $("#list_table tbody td [name^=amount]").each(function() {
+                        var tdContent = $(this).val() * 1.00;
+                        if (contents[tdContent.toFixed(2)]) {
+                            duplicates = true;
+                            return false;
+                        }
+                        contents[tdContent.toFixed(2)] = true;
+                    });
+
+                    if (duplicates)
+                    {
+                        toastr['error']('Check matrix table. Duplicate value entry!', 'Error');
+                        return false;
+                    }
+                    else
+                    {
+                        form.submit();
+                    }
+
+
                 }
             });
 
