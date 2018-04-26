@@ -32,7 +32,7 @@ class TaxMatrixTable
 
     /**
      * @ORM\ManyToOne(targetEntity="TaxMatrix")
-     * @ORM\JoinColumn(name="tax_matrix_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="tax_matrix_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $tax;
 
