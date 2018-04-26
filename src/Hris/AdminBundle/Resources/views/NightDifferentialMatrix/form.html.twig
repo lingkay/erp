@@ -13,8 +13,8 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-                            {{ form.group_time('From', 'time_from', object.getTimeFrom|date('g:i A'), 3, 4)}}
-                            {{ form.group_time('To', 'time_to', object.getTimeTo|date('g:i A'), 3,4)}}
+                            {{ form.group_time_no_step('From', 'time_from', object.getTimeFrom|date('g:i A'), 3, 4)}}
+                            {{ form.group_time_no_step('To', 'time_to', object.getTimeTo|date('g:i A'), 3,4)}}
                             {{form.group_number('Rate (%)', 'rate', object.getRate|default(''), 3, 4, readonly)}}
                         </div>
 
@@ -37,6 +37,11 @@
 {% block js %}
     <script>
         $(document).ready( function() {
+            $('.timepicker-no-seconds_step').timepicker({
+                autoclose: true,
+                minuteStep: 1
+            });
+
             //set default error and success elements
             jQuery.validator.setDefaults({
                 errorClass: 'help-block',

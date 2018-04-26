@@ -55,7 +55,7 @@ var Template = function () {
 	var initTimepicker = function(){
 		 $('.timepicker-no-seconds').timepicker({
             autoclose: true,
-            minuteStep: 5
+            minuteStep: 1
         });
 	}
 

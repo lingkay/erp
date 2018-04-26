@@ -2,6 +2,7 @@
 
 namespace Hris\AdminBundle\Controller;
 
+use Gist\GridBundle\Model\Grid\Exception;
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,30 @@ class NightDifferentialMatrixController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        //validate if time range doesnt exist
+        $em = $this->getDoctrine()->getManager();
+        $existingData = $em->getRepository('HrisAdminBundle:NightDifferentialMatrix')->findAll();
+        $flagValidRange = true;
+        $inputStartTime = $data['time_from'];
+        $inputEndTime   = $data['time_to'];
+        $inputStartTime = strtotime($inputStartTime);
+        $inputEndTime   = strtotime($inputEndTime);
+        foreach ($existingData as $eData) {
+            if ($o->getID() == $eData->getID()) {
+                continue;
+            }
+
+            if ($inputStartTime >= strtotime($eData->getTimeFrom()) && $inputStartTime <= strtotime($eData->getTimeTo())) {
+                $flagValidRange = false;
+            } elseif ($inputEndTime <= strtotime($eData->getTimeTo()) && $inputEndTime >= strtotime($eData->getTimeFrom())) {
+                $flagValidRange = false;
+            }
+        }
+
+        if (!$flagValidRange) {
+            throw new \Exception('Conflict in existing time range(s)');
+        }
+
         $o->setTimeFrom(new DateTime($data['time_from']));
         $o->setTimeTo(new DateTime($data['time_to']));
         $o->setRate($data['rate']);

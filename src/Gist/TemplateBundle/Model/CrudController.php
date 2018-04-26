@@ -334,6 +334,10 @@ abstract class CrudController extends BaseController
             error_log($e->getMessage());
             return $this->addError($obj);
         }
+        catch (\Exception $e) {
+            $this->addFlash('error',$e->getMessage());
+            return $this->addError($obj);
+        }
     }
 
     public function editFormAction($id)
@@ -398,16 +402,18 @@ abstract class CrudController extends BaseController
 
             return $this->redirect($this->generateUrl($this->getRouteGen()->getEdit(), array('id' => $id)).$this->url_append);
         }
-        catch (ValidationException $e)
-        {
+        catch (ValidationException $e) {
             $this->addFlash('Database error occured. Possible duplicate.');
             return $this->editError($object, $id);
         }
-        catch (DBALException $e)
-        {
+        catch (DBALException $e) {
             $this->addFlash('Database error occured. Possible duplicate.');
             error_log($e->getMessage());
 
+            return $this->editError($object, $id);
+        }
+        catch (\Exception $e) {
+            $this->addFlash('error',$e->getMessage());
             return $this->editError($object, $id);
         }
     }

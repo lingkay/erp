@@ -22,7 +22,7 @@ var ComponentsPickers = function () {
 
             $('.timepicker-no-seconds').timepicker({
                 autoclose: true,
-                minuteStep: 5
+                minuteStep: 1
             });
 
             $('.timepicker-24').timepicker({
