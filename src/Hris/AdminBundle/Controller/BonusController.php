@@ -35,9 +35,10 @@ class BonusController extends CrudController
 
         $em = $this->getDoctrine()->getManager();
         $type = $em->getRepository('HrisAdminBundle:BonusTypes')->findOneById($data['type']);
-        $giver = $em->getRepository('GistUserBundle:User')->findOneById($data['giver']);
+        if (isset($data['position'])) {
+            $o->setAuthorizedGiver(implode(",", $data['position']));
+        }
 
-        $o->setAuthorizedGiver($giver);
         $o->setType($type);
     }
 
@@ -47,6 +48,8 @@ class BonusController extends CrudController
         $params['holiday_opts'] = array('Company Event' => 'Company Event', 'Regular Holiday' => 'Regular Holiday', 'Special Non-Working' => 'Special Non-Working', 'Others' => 'Others');
         $params['type_options'] = $this->getTypeOptions();
         $params['giver_options'] = $this->getGiverOptions();
+        $um = $this->get('gist_user');
+        $params['position_opts'] = $um->getGroupOptions();
         return $params;
     }
 
@@ -94,14 +97,10 @@ class BonusController extends CrudController
         $this->hookPreAction();
         $em = $this->getDoctrine()->getManager();
         $obj = $em->getRepository($this->repo)->find($id);
-
         $params = $this->getViewParams('Edit');
         $params['object'] = $obj;
         $params['o_label'] = $this->getObjectLabel($obj);
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.edit');
-
-
-
         $this->padFormParams($params, $obj);
 
         return $this->render('HrisAdminBundle:Bonus:form.html.twig', $params);

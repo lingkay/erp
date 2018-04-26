@@ -9,13 +9,13 @@
                     <div class="caption">Bonus Form</div>
                 </div>
                 <div class="portlet-body form">
-                    <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
+                            <input type="hidden" id="sourceValues" value="{{object.getAuthorizedGiver|default('')}}">
                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
                             {{form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly)}}
                             {{ form.group_select('Type','type',type_options, object.getType.getID|default('') ,3,4, readonly) }}
-                            {{ form.group_select('Authorized Giver','giver',giver_options, object.getAuthorizedGiver.getID|default('') ,3,4, readonly) }}
+                            {{ form.group_select_multiple('Authorized Giver(s)', 'position[]', position_opts, '', 3, 4, readonly) }}
                         </div>
 
                         <div class="form-actions fluid">
@@ -27,7 +27,6 @@
                             </div>
                         </div>
                     </form>
-                    <!-- END FORM-->
                 </div>
             </div>
         </div>
@@ -37,6 +36,9 @@
 {% block js %}
     <script>
         $(document).ready( function() {
+            var selectedValues = $("#sourceValues").val().split(',');
+            $(".select_2-multi").val(selectedValues).trigger("change");
+
             //set default error and success elements
             jQuery.validator.setDefaults({
                 errorClass: 'help-block',

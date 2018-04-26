@@ -25,10 +25,7 @@ class Bonus
      */
     protected $type;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_authorized_giver", referencedColumnName="id")
-     */
+    /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $authorized_giver;
 
     /** @ORM\Column(type="decimal", precision=10, scale=2, nullable=true) */
@@ -71,25 +68,13 @@ class Bonus
         return $this->amount;
     }
 
-    /**
-     * Set authorizedGiver
-     *
-     * @param \Gist\UserBundle\Entity\User $authorizedGiver
-     *
-     * @return Bonus
-     */
-    public function setAuthorizedGiver(\Gist\UserBundle\Entity\User $authorizedGiver = null)
+    public function setAuthorizedGiver($authorizedGiver = null)
     {
         $this->authorized_giver = $authorizedGiver;
 
         return $this;
     }
 
-    /**
-     * Get authorizedGiver
-     *
-     * @return \Gist\UserBundle\Entity\User
-     */
     public function getAuthorizedGiver()
     {
         return $this->authorized_giver;
