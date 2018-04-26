@@ -17,7 +17,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Rate Type</label>
                             <div class="col-md-5">
-                                {{ form.radio_set('rate_type', value_type_opts, object.getType.getID) }}
+                                {{ form.radio_set('rate_type', value_type_opts, object.getType.getID|default('')) }}
                             </div>
                         </div>
                         {{form.group_number('Rate', 'rate', object.getRate|default(''), 3, 4, readonly)}}
