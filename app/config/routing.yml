@@ -114,6 +114,10 @@ gist_contact:
     resource: "@GistContactBundle/Resources/config/routing.yml"
     prefix:   /contact
 
+hris_tools:
+    resource: "@HrisToolsBundle/Resources/config/routing.yml"
+    prefix: /report
+
 # GIST ERP
 gist_manufacturing:
     resource: "@GistManufacturingBundle/Resources/config/routing.yml"

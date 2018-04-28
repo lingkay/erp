@@ -1,0 +1,11 @@
+acl:
+    - category: Tools
+      entries:
+        - id: hris_tools.menu
+          label: "Menu"
+    - category: Schedule
+      entries:
+        - id: hris_tools_schedule.menu
+          label: "Menu"
+        - id: hris_tools_schedule.view
+          label: "View"

@@ -71,6 +71,7 @@ class AppKernel extends Kernel
             new Hris\MemoBundle\HrisMemoBundle(),
             new Hris\RemunerationBundle\HrisRemunerationBundle(),
             new Hris\BiometricsBundle\HrisBiometricsBundle(),
+            new Hris\ToolsBundle\HrisToolsBundle(),
         );
  
 

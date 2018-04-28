@@ -6,7 +6,7 @@ gist_menu:
         - GistCustomerBundle
         - GistAccountingBundle
         - GistConfigurationBundle
-
+        - HrisToolsBundle
 gist_user:
     acl_entries:
         - id: HrisDashboardBundle
@@ -33,6 +33,8 @@ gist_user:
           label: Company
         - id: HrisAdminBundle
           label: HRIS
+        - id: HrisToolsBundle
+          label: Tools
 
 gist_configuration:
     bundles:

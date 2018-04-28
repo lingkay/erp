@@ -1,0 +1,13 @@
+menu_items:
+    - id: menu_report
+      acl: hris_tools.menu
+      label: Tools
+      icon: fa-file-o
+    # - id: hris_report_form_index
+    #   acl: hris_report_leaves.menu
+    #   label: Leaves
+    #   parent: menu_report
+    - id: hris_tools_schedule_index
+      acl: hris_tools_schedule.menu
+      label: Schedule
+      parent: menu_report

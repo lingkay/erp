@@ -1,0 +1,3 @@
+hris_tools_schedule_index:
+    path:     /schedule
+    defaults: { _controller: HrisToolsBundle:Schedule:index }
