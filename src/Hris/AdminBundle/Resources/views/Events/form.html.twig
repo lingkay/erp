@@ -6,7 +6,7 @@
     <div class="col-md-12">
         <div class="portlet box blue-hoki">
             <div class="portlet-title">
-                <div class="caption">{% block form_header %}{% endblock %}</div>
+                <div class="caption">Event Form</div>
             </div>
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
@@ -40,30 +40,30 @@
                         <div id="scheduled">
                             {{ form.group_date('Start Date','date_from', object.getDateFrom|date('m/d/Y'),3,4) }}
                              {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-                            <div class="form-group">
-                                    <label class="col-md-3 control-label">Start Time</label>
-                                    <div class ="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker timepicker-no-seconds" name="start" placeholder="Start" value="" readonly>
-                                            <span class="input-group-btn">
-                                                <button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                            {#<div class="form-group">#}
+                                    {#<label class="col-md-3 control-label">Start Time</label>#}
+                                    {#<div class ="col-md-4">#}
+                                        {#<div class="input-group">#}
+                                            {#<input id="start_time" type="text" class="form-control timepicker timepicker-no-seconds start_time" name="start" placeholder="Start" value="" readonly>#}
+                                            {#<span class="input-group-btn">#}
+                                                {#<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>#}
+                                            {#</span>#}
+                                        {#</div>#}
+                                    {#</div>#}
+                                {#</div>#}
 
                             {{ form.group_date('End Date','date_to', object.getDateTo|date('m/d/Y'),3,4) }}
-                             <div class="form-group">
-                                    <label class="col-md-3 control-label">End Time</label>
-                                    <div class ="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker timepicker-no-seconds" name="end" placeholder="End" value="" readonly>
-                                            <span class="input-group-btn">
-                                                <button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                             {#<div class="form-group">#}
+                                    {#<label class="col-md-3 control-label">End Time</label>#}
+                                    {#<div class ="col-md-4">#}
+                                        {#<div class="input-group">#}
+                                            {#<input id="end_time" type="text" class="form-control timepicker timepicker-no-seconds end_time" name="end" placeholder="End" value="" readonly>#}
+                                            {#<span class="input-group-btn">#}
+                                                {#<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>#}
+                                            {#</span>#}
+                                        {#</div>#}
+                                    {#</div>#}
+                                {#</div>#}
                             {{ form.group_select('Event Type', 'holiday_type', holiday_opts, '', 3, 4) }}
                         </div>
                         <div id="all_day">
@@ -91,6 +91,10 @@
 {% block js %}
 <script>
 $(document).ready( function() {
+    $('.timepicker-no-seconds').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
 
     $("#cform-allday").click(function() {
         if(this.checked) {
@@ -109,22 +113,27 @@ $(document).ready( function() {
     $('#all_day').hide();
     $('.calendar').prop('disabled', true);
 
-    // $('#cform-date_to').datepicker({
-    //         todayHighlight: true,
-    //         startDate: $('#cform-date_from').val(),
-    //         });
+    $('#cform-date_from').datepicker({
+        autoclose: true,
+        startDate: new Date(),
+    });
 
      $('#cform-date_from').datepicker().on('changeDate', function (ev) {
-            $('#cform-date_to').datepicker({
-            todayHighlight: true,
+         $('#cform-date_to').val($('#cform-date_from').val());
+         $('#cform-date_to').datepicker({
+            todayHighlight: false,
             startDate: $('#cform-date_from').val(),
-            });
+        });
     });
 
- $('.timepicker-no-seconds').timepicker({
-        autoclose: true,
-        minuteStep: 1
+    $('#start_time').on('change', function () {
+        $('#end_time').val($('#start_time').val());
+        var min = '10:15:12 am';
+        $('#end_time').timepicker({'min': min});
     });
+
+
+
     //set default error and success elements
     jQuery.validator.setDefaults({
         errorClass: 'help-block',
@@ -184,6 +193,11 @@ $(document).ready( function() {
         },
         rules: {
             event_name: "required",
+            rate: "required",
+            rate_type: "required",
+            is_paid: "required",
+            date_from: "required",
+            date_to: "required",
         },
         messages: {
             event_name: "Event name cannot be blank.",

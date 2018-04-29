@@ -49,8 +49,8 @@ class EventsController extends CrudController
         }
         else
         {
-            $start = new DateTime($data['date_from'].$data['start']);
-            $end = new DateTime($data['date_to'].$data['end']);
+            $start = new DateTime($data['date_from'].'12:00 AM');//data[start]
+            $end = new DateTime($data['date_to'].'11:59 PM');
 
             $o->setDateFrom($start);
             $o->setDateTo($end);
@@ -91,7 +91,7 @@ class EventsController extends CrudController
 
         $this->padFormParams($params, $obj);
 
-        return $this->render('HrisAdminBundle:Events:edit.html.twig', $params);
+        return $this->render('HrisAdminBundle:Events:form.html.twig', $params);
     }
 
 
