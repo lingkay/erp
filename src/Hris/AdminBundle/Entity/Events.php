@@ -100,7 +100,10 @@ class Events
 
     public function getRateFormatted()
     {
-        return $this->rate . '%';
+        if ($this->type->getID() == \Hris\AdminBundle\Utility\ValueTypes::PERCENT) {
+            return $this->rate . '%';
+        }
+        return $this->rate;
     }
 
     public function setDateFrom($date_from)
