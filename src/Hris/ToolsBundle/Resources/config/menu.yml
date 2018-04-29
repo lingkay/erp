@@ -1,5 +1,5 @@
 menu_items:
-    - id: menu_report
+    - id: menu_tools
       acl: hris_tools.menu
       label: Tools
       icon: fa-file-o
@@ -7,7 +7,35 @@ menu_items:
     #   acl: hris_report_leaves.menu
     #   label: Leaves
     #   parent: menu_report
+    - id: hris_tools_manager
+      acl: hris_tools_schedule.menu
+      label: Manager
+      parent: menu_tools
+    - id: hris_tools_office
+      acl: hris_tools_schedule.menu
+      label: Office
+      parent: menu_tools
     - id: hris_tools_schedule_index
       acl: hris_tools_schedule.menu
       label: Schedule
-      parent: menu_report
+      parent: hris_tools_manager
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: Bonus
+      parent: hris_tools_manager
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: Fines
+      parent: hris_tools_manager
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: X/Z Reports
+      parent: hris_tools_manager
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: Attendance Today
+      parent: hris_tools_manager
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: Resolution Center
+      parent: hris_tools_manager
