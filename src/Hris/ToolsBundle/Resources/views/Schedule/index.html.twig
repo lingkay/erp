@@ -63,6 +63,11 @@
                 });
 
                 $('#cform-date').datepicker().on('changeDate', function (ev) {
+                    if (ev.dates && !ev.date)
+                    {
+                        $(this).datepicker('setDate',new Date());
+                    }
+
                     var path = "{{ path('hris_tools_schedule_index', {
                         'date' : 'DATE'}
                     ) }}";
