@@ -1,3 +1,4 @@
 hris_tools_schedule_index:
-    path:     /schedule
-    defaults: { _controller: HrisToolsBundle:Schedule:index }
+    path:     /schedule/{date}
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:Schedule:index,date: null }
