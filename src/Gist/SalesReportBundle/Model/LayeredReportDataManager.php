@@ -36,6 +36,8 @@ class LayeredReportDataManager
         $query->from('GistPOSERPBundle:POSTransaction', 'o')
             ->where('o.date_create <= :date_to')
             ->andWhere('o.date_create >= :date_from')
+            ->andWhere('o.trans_display_id NOT LIKE \'F%\'')
+            ->andWhere('o.trans_display_id NOT LIKE \'Q%\'')
             ->setParameter('date_from', $dateFrom. ' 00:00:00')
             ->setParameter('date_to', $dateTo.' 23:59:59');
 
@@ -53,6 +55,8 @@ class LayeredReportDataManager
             ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
             ->where('t.date_create <= :date_to')
             ->andWhere('t.date_create >= :date_from')
+            ->andWhere('t.trans_display_id NOT LIKE \'F%\'')
+            ->andWhere('t.trans_display_id NOT LIKE \'Q%\'')
             ->setParameter('date_from', $dateFrom. ' 00:00:00')
             ->setParameter('date_to', $dateTo.' 23:59:59');
 
@@ -70,6 +74,8 @@ class LayeredReportDataManager
             ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 't.id= o.transaction')
             ->where('t.date_create <= :date_to')
             ->andWhere('t.date_create >= :date_from')
+            ->andWhere('t.trans_display_id NOT LIKE \'F%\'')
+            ->andWhere('t.trans_display_id NOT LIKE \'Q%\'')
             ->setParameter('date_from', $dateFrom. ' 00:00:00')
             ->setParameter('date_to', $dateTo.' 23:59:59');
 
