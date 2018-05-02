@@ -55,6 +55,7 @@ class POSLocationsController extends CrudController
         return array(
             $grid->newColumn('POS Location', 'getName', 'name'),
             $grid->newColumn('Area', 'getName', 'name','a'),
+            $grid->newColumn('# of employee(s)', 'getNumberOfEmployees', 'number_of_employees'),
             $grid->newColumn('Contact No.', 'getContactNumber', 'contact_number'),
             $grid->newColumn('Landmark', 'getLocatorDesc', 'locator_desc'),
         );
@@ -140,6 +141,7 @@ class POSLocationsController extends CrudController
         $o->setStatus($data['status']);
 
         $o->setCountingRule($data['counting_rule']);
+        $o->setNumberOfEmployees($data['number_of_employees']);
         $o->setOtherLocStockVisible($data['other_stocks_visible']);
 
 
