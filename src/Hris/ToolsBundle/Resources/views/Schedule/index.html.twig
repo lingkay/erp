@@ -11,94 +11,110 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <div class="table-toolbar">
-                    {% if app.user.hasAccess(prefix ~ '.add') %}
-                    {% endif %}
-                </div>
+                {#PORTLET BODY#}
                 <div class="row">
-                    <div class="col-md-2" style="margin-bottom: 10px;">
+                    <div class="col-md-2" style="margin-bottom: 11px;">
                     </div>
-                    <div class="col-md-6" style="margin-bottom: 10px;">
+                    <div class="col-md-6" style="margin-bottom: 11px;">
                         <br>
                         <form method="get" id="filterForm">
                             {{ form.group_date_pos('Filter Date','date', filterDate|default(''),4,6) }}
                         </form>
                     </div>
-                    <div class="col-md-2" style="margin-bottom: 10px;">
+                    <div class="col-md-2" style="margin-bottom: 11px;">
                     </div>
                 </div>
-                <table class="table table-striped table-bordered table-hover" id="list_table">
-                    <thead>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Position</th>
-                        <th>Location Yesterday</th>
-                        <th>Sales Yesterday</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for bd in employees_data %}
-                        <tr>
-                            <td>{{ bd['employee_name'] }}</td>
-                            <td>{{  bd['position'] }}</td>
-                            <td class="text-center">{{  bd['location_yesterday'] }}</td>
-                            <td class="text-right">{{ bd['total_sales'] }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="table-toolbar">
+                            {% if app.user.hasAccess(prefix ~ '.add') %}
+                            {% endif %}
+                        </div>
+                        <table class="table table-striped table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                            <thead>
+                            <tr style="font-size: 11px !important;">
+                                <th style="font-size: 11px !important;">Employee</th>
+                                <th style="font-size: 11px !important;">Position</th>
+                                <th style="font-size: 11px !important;">Location Yesterday</th>
+                                <th style="font-size: 11px !important;">Sales Yesterday</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for bd in employees_data %}
+                                <tr>
+                                    <td>{{ bd['employee_name'] }}</td>
+                                    <td>{{  bd['position'] }}</td>
+                                    <td class="text-center">{{  bd['location_yesterday'] }}</td>
+                                    <td class="text-right">{{ bd['total_sales'] }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
 
+                    </div>
+                    <div class="col-md-4">
+
+                    </div>
+                </div>
+                {#END PORTLET BODY#}
             </div>
         </div>
     </div>
-    {% endblock %}
-    {% block js %}
-        <script>
-            $(document).ready(function() {
-                var dTable;
-                $('.calendar').prop('disabled', true);
-                $('#cform-date').datepicker({
-                    autoclose: true,
-                    maxDate: new Date()
-                });
-
-                $('#cform-date').datepicker().on('changeDate', function (ev) {
-                    if (ev.dates && !ev.date)
-                    {
-                        $(this).datepicker('setDate',new Date());
-                    }
-
-                    var path = "{{ path('hris_tools_schedule_index', {
-                        'date' : 'DATE'}
-                    ) }}";
-
-                    path = path.replace('DATE', $('#cform-date').val().replace('/','-').replace('/','-'));
-                    location.replace(path);
-                });
-
-                dTable = $('#list_table').dataTable({
-                    "bProcessing": true,
-                    "bServerSide": false,
-                    "iDisplayLength": 10,
-                    "sPaginationType": "bootstrap",
-                    "oLanguage": {
-                        "sLengthMenu": "_MENU_ records",
-                        "oPaginate": {
-                            "sPrevious": "Prev",
-                            "sNext": "Next"
-                        }
-                    },
-                    "aoColumnDefs": [
-                        {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
-                    ]
-                });
-
-                $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
-                $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-                $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            var dTable;
+            $('.calendar').prop('disabled', true);
+            $('#cform-date').datepicker({
+                autoclose: true,
+                maxDate: new Date()
             });
-        </script>
-    {% endblock %}
 
-    {% block css %}
-    {% endblock %}
+            $('.sidebar-toggler').click();
+
+            $('#cform-date').datepicker().on('changeDate', function (ev) {
+                if (ev.dates && !ev.date)
+                {
+                    $(this).datepicker('setDate',new Date());
+                }
+
+                var path = "{{ path('hris_tools_schedule_index', {
+                    'date' : 'DATE'}
+                ) }}";
+
+                path = path.replace('DATE', $('#cform-date').val().replace('/','-').replace('/','-'));
+                location.replace(path);
+            });
+
+            dTable = $('#list_table').dataTable({
+                "bProcessing": true,
+                "bServerSide": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "iDisplayLength": 10,
+                "sPaginationType": "bootstrap",
+                "oLanguage": {
+                    "sLengthMenu": "_MENU_ records",
+                    "oPaginate": {
+                        "sPrevious": "Prev",
+                        "sNext": "Next"
+                    }
+                },
+                "aoColumnDefs": [
+                    {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
+                ]
+            });
+
+            $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+            $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+            $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+        });
+    </script>
+{% endblock %}
+
+{% block css %}
+{% endblock %}
