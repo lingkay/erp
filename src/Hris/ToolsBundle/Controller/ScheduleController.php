@@ -3,6 +3,7 @@
 namespace Hris\ToolsBundle\Controller;
 
 use Gist\TemplateBundle\Model\CrudController;
+use Gist\UserBundle\Utility\ManagerGroupName;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
 use Gist\TemplateBundle\Model\BaseController as Controller;
@@ -28,14 +29,23 @@ class ScheduleController extends Controller
 
     public function indexAction($date = null)
     {
+        $em = $this->getDoctrine()->getManager();
         try {
             $this->checkAccess($this->route_prefix . '.view');
-
-            $settings = $this->get('hris_settings');
-
-
             $params = $this->getViewParams('List', 'hris_tools_schedule_index');
             $this->padFormParams($params);
+            $settings = $this->get('hris_settings');
+
+            //check if logged-in user is an area manager -- if not disable page
+            $user = $this->getUser();
+            $params['is_manager'] = false;
+            if ($user->getGroup()->getName() == ManagerGroupName::MANAGER_GROUP_NAME) {
+                $params['is_manager'] = true;
+            }
+
+            //get locations where user's area == pos loc area
+            $params['locations'] = $em->getRepository('GistLocationBundle:POSLocations')->findBy(array('area'=>$user->getArea()->getID()));
+
 
             if ($date == null) {
                 $date = new DateTime();
