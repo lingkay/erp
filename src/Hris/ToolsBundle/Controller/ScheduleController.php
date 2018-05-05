@@ -45,12 +45,20 @@ class ScheduleController extends Controller
 
             //get locations where user's area == pos loc area
             $params['locations'] = $em->getRepository('GistLocationBundle:POSLocations')->findBy(array('area'=>$user->getArea()->getID()));
+            $users = $em->getRepository('GistUserBundle:User')->findBy(array('area'=>$user->getArea()->getID()));
 
 
             if ($date == null) {
                 $date = new DateTime();
                 $date = $date->format('m-d-Y');
             }
+
+            $user_opts = array();
+            foreach ($users as $u)
+            {
+                $user_opts[$u->getID()] = $u->getDisplayName();
+            }
+            $params['user_opts'] = array('0' => '-- Select Employee --') + $user_opts;
 
             $dateFMTD = DateTime::createFromFormat('m-d-Y', $date);
             $params['date_to_url'] = $dateFMTD->format("m-d-Y");
@@ -65,9 +73,8 @@ class ScheduleController extends Controller
             $twig_file = 'HrisToolsBundle:Schedule:index.html.twig';
             return $this->render($twig_file, $params);
         } catch (\Exception $e) {
-            return $this->redirect('/');
-        } catch (DateT $e) {
-
+           //return $this->redirect('/');
+            echo $e->getMessage();
         }
     }
 
@@ -97,7 +104,7 @@ class ScheduleController extends Controller
 
             $brandTotalProfit = $totalSales - $totalCost;
 
-            if ($totalSales > 0) {
+//            if ($totalSales > 0) {
                 $list_opts[] = array(
                     'date' => $date->format('Y-m-d'),
                     'employee_id' => $employeeId,
@@ -108,7 +115,7 @@ class ScheduleController extends Controller
                     'total_cost' => number_format($totalCost, 2, '.', ','),
                     'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
                 );
-            }
+//            }
         }
 
         if (count($allEmployees) > 0) {

@@ -30,7 +30,7 @@
                             {% if app.user.hasAccess(prefix ~ '.add') %}
                             {% endif %}
                         </div>
-                        <table class="table table-striped table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                        <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
                             <thead>
                             <tr style="font-size: 11px !important;">
                                 <th style="font-size: 11px !important;">Employee</th>
@@ -51,10 +51,33 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-4">
-
+                    <div class="col-md-2" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;">
+                        <br>
+                        {% for l in locations%}
+                            <div id="location_{{ l.getID|default(0) }}">
+                                <input type="hidden" class="location_id[]" value="{{ l.getID|default(0) }}">
+                                <span style="font-size: 16px;">{{ l.getName|default('N/A') }}</span>
+                                <br>
+                                <hr style="border-top: 1px solid #000 !important;">
+                                <br>
+                                {% set k = l.getNumberOfEmployees|default(0) %}
+                                {% if k > 0 %}
+                                    {% for i in 1..k %}
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="hidden" id="user_id[]" value="0">
+                                                {{ form_tools.group_select_only("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
+                                                <div style="margin-top: 35px;"></div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <br>
+                                <br>
+                            </div>
+                        {% endfor %}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
 
                     </div>
                 </div>
@@ -73,8 +96,6 @@
                 autoclose: true,
                 maxDate: new Date()
             });
-
-            $('.sidebar-toggler').click();
 
             $('#cform-date').datepicker().on('changeDate', function (ev) {
                 if (ev.dates && !ev.date)
@@ -113,7 +134,7 @@
             $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
             $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
         });
-    </script>
+</script>
 {% endblock %}
 
 {% block css %}
