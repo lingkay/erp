@@ -170,7 +170,17 @@
                                 </tr>
                                 </thead>
                                 <tbody id="t_tbody">
-
+                                {% for se in schedule.getEntries|default('') %}
+                                    {% if se.getType == 'Training' %}
+                                        <tr class="row_emp">
+                                            <td>
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                            </td>
+                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
                                 </tbody>
                             </table>
                             <br>
@@ -192,7 +202,17 @@
                                 </tr>
                                 </thead>
                                 <tbody id="do_tbody">
-
+                                {% for se in schedule.getEntries|default('') %}
+                                    {% if se.getType == 'Day-off' %}
+                                        <tr class="row_emp">
+                                            <td>
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                            </td>
+                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
                                 </tbody>
                             </table>
                             <br>
