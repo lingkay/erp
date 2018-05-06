@@ -51,7 +51,8 @@ class ScheduleController extends Controller
             if ($user->getGroup()->getName() == ManagerGroupName::MANAGER_GROUP_NAME) {
                 $params['is_manager'] = true;
             } else {
-                //return $this->redirect('/');//redirect with warning
+                $this->addFlash('error', 'You need to be an Area Manager to view and manage schedules!');
+                return $this->redirect('/');//redirect with warning
             }
 
             //get locations where user's area == pos loc area
@@ -62,13 +63,7 @@ class ScheduleController extends Controller
             //find or create schedule entry
             $schedule = $em->getRepository('HrisToolsBundle:Schedule')->findOneBy(array('area' => $user->getArea()->getID(), 'date' => $dateFMTD));
 
-            $existingEmployees = [];
 
-            foreach ($schedule->getEntries() as $ee) {
-                array_push($existingEmployees, $ee->getEmployee()->getID());
-            }
-
-            $params['existing_employees'] = $existingEmployees;
 
             if (!$schedule) {
                 $schedule = new Schedule();
@@ -77,6 +72,16 @@ class ScheduleController extends Controller
                 $em->persist($schedule);
                 $em->flush();
             }
+
+            $existingEmployees = [];
+
+            if (count($schedule->getEntries()) > 0) {
+                foreach ($schedule->getEntries() as $ee) {
+                    array_push($existingEmployees, $ee->getEmployee()->getID());
+                }
+            }
+
+            $params['existing_employees'] = $existingEmployees;
 
             $params['schedule'] = $schedule;
 
