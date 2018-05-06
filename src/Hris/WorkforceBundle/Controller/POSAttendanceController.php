@@ -32,11 +32,12 @@ class POSAttendanceController extends CrudController
 
     }
 
-    public function receiveAttendanceAction($employee_id, $pos_loc_id, $status, $date_time)
+    public function receiveAttendanceAction($employee_id, $pos_loc_id, $status, $type, $date_time)
     {
+        header("Access-Control-Allow-Origin: *");
         try {
             $em = $this->getDoctrine()->getManager();
-            $dateFMTD = DateTime::createFromFormat('m-d-Y H:i:s', $date_time);
+            $dateFMTD = DateTime::createFromFormat('Y-m-d H:i:s', $date_time);
             $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$employee_id));
             $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
 
@@ -44,6 +45,7 @@ class POSAttendanceController extends CrudController
             $att->setEmployee($user);
             $att->setDate($dateFMTD);
             $att->setStatus($status);
+            $att->setType($type);
             $att->setPOSLocation($pos_location);
             $em->persist($att);
             $em->flush();
@@ -61,10 +63,11 @@ class POSAttendanceController extends CrudController
 
     public function getLastEntryAction($employee_id, $date_time)
     {
+        header("Access-Control-Allow-Origin: *");
         try {
             $em = $this->getDoctrine()->getManager();
             $query = $em->createQueryBuilder();
-            $dateFMTD = DateTime::createFromFormat('m-d-Y', $date_time);
+            $dateFMTD = DateTime::createFromFormat('Y-m-d', $date_time);
             $query->from('HrisWorkforceBundle:Attendance', 'o')
                 ->where('o.date LIKE :date')
                 ->andWhere('o.employee >= :employee_id')
@@ -83,7 +86,8 @@ class POSAttendanceController extends CrudController
                     'user_name' => $posAttendance->getEmployee()->getDisplayName(),
                     'entry_id' => $posAttendance->getID(),
                     'datetime' => $posAttendance->getDateDisplay(),
-                    'status' => $posAttendance->getStatus()
+                    'status' => $posAttendance->getStatus(),
+                    'type' => $posAttendance->getType()
                 );
             }
 
@@ -95,11 +99,12 @@ class POSAttendanceController extends CrudController
 
     public function getAllByDateAction($employee_id, $date_time)
     {
+        header("Access-Control-Allow-Origin: *");
         try {
             $em = $this->getDoctrine()->getManager();
             $query = $em->createQueryBuilder();
 
-            $dateFMTD = DateTime::createFromFormat('m-d-Y', $date_time);
+            $dateFMTD = DateTime::createFromFormat('Y-m-d', $date_time);
             $query->from('HrisWorkforceBundle:Attendance', 'o')
                 ->where('o.date LIKE :date')
                 ->andWhere('o.employee >= :employee_id')
@@ -113,11 +118,13 @@ class POSAttendanceController extends CrudController
             $list_opts = [];
             foreach ($posAttendances as $posAttendance) {
                 $list_opts[] = array(
+                    'id' => $posAttendance->getID(),
                     'user_id' => $posAttendance->getEmployee()->getID(),
                     'user_name' => $posAttendance->getEmployee()->getDisplayName(),
                     'entry_id' => $posAttendance->getID(),
                     'datetime' => $posAttendance->getDateDisplay(),
-                    'status' => $posAttendance->getStatus()
+                    'status' => $posAttendance->getStatus(),
+                    'type' => $posAttendance->getType()
                 );
             }
 

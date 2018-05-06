@@ -554,9 +554,9 @@ hris_workforce_201_ajax_get:
 #     defaults: { _controller: HrisWorkforceBundle:Employee201:ajaxAdd }
 
 hris_workforce_pos_attendance_receive:
-    path:     /pos_attendance/receive_pos/{employee_id}/{pos_loc_id}/{status}/{date_time}
+    path:     /pos_attendance/receive_pos/{employee_id}/{pos_loc_id}/{status}/{type}/{date_time}
     methods:  [GET]
-    defaults: { _controller: HrisWorkforceBundle:POSAttendance:receiveAttendance, employee_id: null, pos_loc_id: null, status: null, date_time: null }
+    defaults: { _controller: HrisWorkforceBundle:POSAttendance:receiveAttendance, employee_id: null, pos_loc_id: null, status: null, type: null, date_time: null }
 
 hris_workforce_pos_attendance_get_last:
     path:     /pos_attendance/get_last/{employee_id}/{date_time}

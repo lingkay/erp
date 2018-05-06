@@ -57,7 +57,7 @@ class Attendance
     const STATUS_REVIEW = "Review";
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="GIst\UserBundle\Entity\User", inversedBy="attendance")
+	 * @ORM\ManyToOne(targetEntity="Gist\UserBundle\Entity\User", inversedBy="attendance")
 	 * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
 	 */
 	protected $employee;
@@ -73,6 +73,9 @@ class Attendance
      * @ORM\JoinColumn(name="approver_id", referencedColumnName="id")
      */
     protected $approved_by;
+
+    /** @ORM\Column(type="string", length=40) */
+    protected $type;
 
     /** @ORM\Column(type="string", length=40) */
     protected $status;
@@ -269,6 +272,17 @@ class Attendance
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 
     public function setAdjustTimeIn(DateTime $time_in)
