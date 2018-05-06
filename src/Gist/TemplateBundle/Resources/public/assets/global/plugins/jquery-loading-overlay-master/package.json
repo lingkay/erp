@@ -1,0 +1,37 @@
+{
+    "name": "gasparesganga-jquery-loading-overlay",
+    "version": "2.1.3",
+    "description": "A flexible loading overlay jQuery plugin",
+    "homepage": "https://gasparesganga.com/labs/jquery-loading-overlay/",
+    "author": "Gaspare Sganga <contact@gasparesganga.com> (https://gasparesganga.com)",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gasparesganga/jquery-loading-overlay.git"
+    },
+    "bugs": {
+        "url": "https://github.com/gasparesganga/jquery-loading-overlay/issues"
+    },
+    "main": "dist/loadingoverlay.min.js",
+    "keywords": [
+        "ecosystem:jquery",
+        "jquery-plugin",
+        "jquery",
+        "plugin",
+        "loading",
+        "overlay"
+    ],
+    "dependencies": {
+        "jquery": ">=1.7.0"
+    },
+    "devDependencies": {
+        "del": "^3.0.0",
+        "gulp": "^4.0.0",
+        "gulp-header": "^2.0.5",
+        "gulp-rename": "^1.2.2",
+        "gulp-replace": "^0.6.1",
+        "gulp-sourcemaps": "^2.6.4",
+        "gulp-uglify": "^3.0.0",
+        "inquirer": "^5.2.0"
+    }
+}

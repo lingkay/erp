@@ -196,7 +196,7 @@ class ScheduleController extends Controller
         }
     }
 
-    public function assignEmployeeAction($user_id, $date, $schedule_id, $location_id, $mode = 'assign')
+    public function assignEmployeeAction($user_id, $date, $schedule_id, $location_id, $type = ScheduleEntry::TYPE_WORK)
     {
         $em = $this->getDoctrine()->getManager();
         $list_opts = [];
@@ -228,6 +228,8 @@ class ScheduleController extends Controller
             $scheduleEntry->setEmployee($user);
             $scheduleEntry->setSchedule($schedule);
             $scheduleEntry->setPOSLocation($pos_location);
+            $scheduleEntry->setType($type);
+
             $em->persist($scheduleEntry);
             $em->flush();
 

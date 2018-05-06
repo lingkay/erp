@@ -16,6 +16,12 @@ use stdClass;
  */
 class ScheduleEntry
 {
+    const TYPE_WORK = 'Work';
+    const TYPE_VACATION_LEAVE = 'Vacation Leave';
+    const TYPE_SICK_LEAVE = 'Sick Leave';
+    const TYPE_DAY_OFF = 'Day-off';
+    const TYPE_TRAINING = 'Training';
+
     use HasGeneratedID;
 
     /**
@@ -36,9 +42,23 @@ class ScheduleEntry
      */
     protected $employee;
 
+    /** @ORM\Column(type="string", length=50) */
+    protected $type;
+
     public function __construct()
     {
 
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 
     public function toData()

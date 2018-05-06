@@ -52,7 +52,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-3" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;">
+                    <div class="col-md-3" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;" id="scheduler_div">
                         <br>
                         {% for l in locations%}
                             <div class="row_location" id="location_{{ l.getID|default(0) }}">
@@ -80,8 +80,52 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-5" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px; width: 500px !important; margin-left: 40px;">
+                        <br>
+                        <div class="row_sick_leaves">
+                            <span style="font-size: 16px;">Sick Leave</span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <br>
 
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row_vacation_leaves">
+                            <span style="font-size: 16px;">Vacation Leave</span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <br>
+
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row_trainings">
+                            <span style="font-size: 16px;">Training</span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <br>
+
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row_day_off">
+                            <span style="font-size: 16px;">Day-off</span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <br>
+
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
                     </div>
                 </div>
                 {#END PORTLET BODY#}
@@ -94,6 +138,13 @@
     <script>
         function assignEmployee(user_id, date, schedule_id, location_id, el)
         {
+            $("#scheduler_div").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#scheduler_div").LoadingOverlay("show");
+
+
+
             var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id' }) }}";
             url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id);
             $.getJSON(url, function(json){
@@ -108,11 +159,17 @@
                     $(el).val('0');
                     $(el).trigger('change');
                 }
+                // Here we might call the "hide" action 2 times, or simply set the "force" parameter to true:
+                $("#scheduler_div").LoadingOverlay("hide", true);
             });
         }
 
         function unassignEmployee(entry_id, el)
         {
+            $("#scheduler_div").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#scheduler_div").LoadingOverlay("show");
             var url = "{{ path('hris_tools_schedule_unassign_employee', { entry_id: ':entry_id' }) }}";
             url = url.replace(":entry_id", entry_id);
             $.getJSON(url, function(json){
@@ -125,6 +182,7 @@
                 } else {
                     toastr['error'](json[0].message, 'Error');
                 }
+                $("#scheduler_div").LoadingOverlay("hide", true);
             });
         }
 
@@ -161,6 +219,14 @@
         $(document).ready(function() {
             var dTable;
             var schedule_id = $('#schedule_id').val();
+
+            // Show full page LoadingOverlay
+            $.LoadingOverlay("show");
+
+            // Hide it after 3 seconds
+            setTimeout(function(){
+                $.LoadingOverlay("hide");
+            }, 2400);
 
             $('.employee_selector').on('select2:select', function() {
                 if (this.value != 0) {
