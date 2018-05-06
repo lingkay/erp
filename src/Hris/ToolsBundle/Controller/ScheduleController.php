@@ -93,7 +93,7 @@ class ScheduleController extends Controller
             return $this->render($twig_file, $params);
         } catch (\Exception $e) {
             //return $this->redirect('/');
-            echo $e->getMessage();
+            return $e->getMessage();
         }
     }
 
@@ -142,6 +142,23 @@ class ScheduleController extends Controller
         } else {
             return null;
         }
+    }
+
+    public function getLocationEntriesAction($schedule_id, $location_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $scheduleEntryExists = $em->getRepository('HrisToolsBundle:ScheduleEntry')->findBy(array('schedule' => $schedule_id, 'pos_location' => $location_id));
+        $list_opts = [];
+
+        foreach ($scheduleEntryExists as $se) {
+            $list_opts[] = array(
+                'user_id' => $se->getEmployee()->getID(),
+                'user_name' => $se->getEmployee()->getDisplayName(),
+                'entry_id' => $se->getID()
+            );
+        }
+
+        return new JsonResponse($list_opts);
     }
 
     public function unassignEmployeeAction($entry_id)

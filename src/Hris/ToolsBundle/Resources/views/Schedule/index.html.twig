@@ -62,15 +62,17 @@
                                 <hr style="border-top: 1px solid #000 !important;">
                                 <br>
                                 {% set k = l.getNumberOfEmployees|default(0) %}
+                                {% set counter = 1 %}
                                 {% if k > 0 %}
                                     {% for i in 1..k %}
-                                        <div class="row row_emp">
+                                        <div class="row row_emp" id="row_emp_{{ l.getID|default(0) }}_{{ counter }}">
                                             <div class="col-md-12">
                                                 <input type="hidden" class="entry_id" value="0">
                                                 {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
                                                 <div style="margin-top: 35px;"></div>
                                             </div>
                                         </div>
+                                        {% set counter = counter + 1 %}
                                     {% endfor %}
                                 {% endif %}
                                 <br>
@@ -126,11 +128,41 @@
             });
         }
 
+        function populateSchedules()
+        {
+            var schedule_id = $('#schedule_id').val();
+            $('.row_location').each(function(i, obj) {
+                var row = $(obj);
+                var location_id = row.find('.location_id').val();
+
+                var url = "{{ path('hris_tools_schedule_get_location_entries', { schedule_id: ':schedule_id', location_id: ':location_id' }) }}";
+                url = url.replace(":schedule_id", schedule_id).replace(":location_id", location_id);
+
+                var counter = 1;
+                $.getJSON(url, function(json){
+                    $.each(json, function(k, v) {
+                        console.log('row_emp_'+location_id+'_'+counter);
+                        var emp_row = $('#row_emp_'+location_id+'_'+counter);
+                        var emp_selector = emp_row.find('.employee_selector');
+                        var entry_id = emp_row.find('.entry_id');
+                        $(entry_id).val(v.entry_id);
+
+                        $(emp_selector).val(v.user_id);
+                        $(emp_selector).trigger('change');
+
+                        $('#row_emoployee_id_'+v.user_id).css("background-color","#ff5959");
+                        counter++;
+                    });
+
+                });
+            });
+        }
+
         $(document).ready(function() {
             var dTable;
             var schedule_id = $('#schedule_id').val();
 
-            $('.employee_selector').on('change', function() {
+            $('.employee_selector').on('select2:select', function() {
                 if (this.value != 0) {
                     var row = $(this).closest('.row_location');
                     var location_id = row.find('.location_id').val();
@@ -143,6 +175,8 @@
                     unassignEmployee(entry_id, this);
                 }
             });
+
+            populateSchedules();
 
             $('.calendar').prop('disabled', true);
             $('#cform-date').datepicker({
