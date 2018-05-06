@@ -108,7 +108,10 @@ security:
         - { path: ^/inventory/counting_form/pos/form_fields, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/counting_form/pos/submit, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inventory/counting/pos/grid_data, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
         - { path: ^/workforce/pos_attendance/receive_pos, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/workforce/pos_attendance/get_last, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/workforce/pos_attendance/get_all_by_date, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
         - { path: ^/customer/fields/get_visible, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }

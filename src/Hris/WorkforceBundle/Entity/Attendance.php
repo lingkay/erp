@@ -161,7 +161,7 @@ class Attendance
 
     public function getDateDisplay()
     {
-        return $this->date->format('m/d/Y');
+        return $this->date->format('m/d/Y h:i A');
     }
 
     public function setPOSLocation($pos_location)

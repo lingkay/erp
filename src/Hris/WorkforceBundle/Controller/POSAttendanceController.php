@@ -49,13 +49,81 @@ class POSAttendanceController extends CrudController
             $em->flush();
 
             if ($att) {
-                return JsonResponse(['success'=>true]);
+                return new JsonResponse(['success'=>true]);
             }
 
-            return JsonResponse(['success'=>false]);
+            return new JsonResponse(['success'=>false]);
 
         } catch (\Exception $e) {
-            return JsonResponse(['success'=>false]);
+            return  new JsonResponse(['success'=>false]);
+        }
+    }
+
+    public function getLastEntryAction($employee_id, $date_time)
+    {
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $query = $em->createQueryBuilder();
+            $dateFMTD = DateTime::createFromFormat('m-d-Y', $date_time);
+            $query->from('HrisWorkforceBundle:Attendance', 'o')
+                ->where('o.date LIKE :date')
+                ->andWhere('o.employee >= :employee_id')
+                ->orderBy('o.date', 'DESC')
+                ->setParameter('date', '%'.$dateFMTD->format('Y-m-d').'%')
+                ->setParameter('employee_id', $employee_id);
+
+            $posAttendances = $query->select('o')
+                ->getQuery()
+                ->setMaxResults( 1 )
+                ->getResult();
+            $list_opts = [];
+            foreach ($posAttendances as $posAttendance) {
+                $list_opts[] = array(
+                    'user_id' => $posAttendance->getEmployee()->getID(),
+                    'user_name' => $posAttendance->getEmployee()->getDisplayName(),
+                    'entry_id' => $posAttendance->getID(),
+                    'datetime' => $posAttendance->getDateDisplay(),
+                    'status' => $posAttendance->getStatus()
+                );
+            }
+
+            return new JsonResponse($list_opts);
+        } catch (\Exception $e) {
+            return new JsonResponse(['success'=>false]);
+        }
+    }
+
+    public function getAllByDateAction($employee_id, $date_time)
+    {
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $query = $em->createQueryBuilder();
+
+            $dateFMTD = DateTime::createFromFormat('m-d-Y', $date_time);
+            $query->from('HrisWorkforceBundle:Attendance', 'o')
+                ->where('o.date LIKE :date')
+                ->andWhere('o.employee >= :employee_id')
+                ->setParameter('date', '%'.$dateFMTD->format('Y-m-d').'%')
+                ->setParameter('employee_id', $employee_id);
+
+            $posAttendances = $query->select('o')
+                ->getQuery()
+                ->getResult();
+
+            $list_opts = [];
+            foreach ($posAttendances as $posAttendance) {
+                $list_opts[] = array(
+                    'user_id' => $posAttendance->getEmployee()->getID(),
+                    'user_name' => $posAttendance->getEmployee()->getDisplayName(),
+                    'entry_id' => $posAttendance->getID(),
+                    'datetime' => $posAttendance->getDateDisplay(),
+                    'status' => $posAttendance->getStatus()
+                );
+            }
+
+            return new JsonResponse($list_opts);
+        } catch (\Exception $e) {
+            return new JsonResponse(['success'=>$e->getMessage()]);
         }
     }
 

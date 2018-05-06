@@ -557,3 +557,13 @@ hris_workforce_pos_attendance_receive:
     path:     /pos_attendance/receive_pos/{employee_id}/{pos_loc_id}/{status}/{date_time}
     methods:  [GET]
     defaults: { _controller: HrisWorkforceBundle:POSAttendance:receiveAttendance, employee_id: null, pos_loc_id: null, status: null, date_time: null }
+
+hris_workforce_pos_attendance_get_last:
+    path:     /pos_attendance/get_last/{employee_id}/{date_time}
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:POSAttendance:getLastEntry, employee_id: null, date_time: null }
+
+hris_workforce_pos_attendance_get_all_by_date:
+    path:     /pos_attendance/get_all_by_date/{employee_id}/{date_time}
+    methods:  [GET]
+    defaults: { _controller: HrisWorkforceBundle:POSAttendance:getAllByDate, employee_id: null, date_time: null }
