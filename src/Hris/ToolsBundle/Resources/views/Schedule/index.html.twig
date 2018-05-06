@@ -12,6 +12,7 @@
             </div>
             <div class="portlet-body">
                 {#PORTLET BODY#}
+                <input type="hidden" id="schedule_id" value="{{ schedule.getID }}">
                 <div class="row">
                     <div class="col-md-2" style="margin-bottom: 11px;">
                     </div>
@@ -41,7 +42,7 @@
                             </thead>
                             <tbody>
                             {% for bd in employees_data %}
-                                <tr>
+                                <tr id="row_emoployee_id_{{ bd['employee_id'] }}">
                                     <td>{{ bd['employee_name'] }}</td>
                                     <td>{{  bd['position'] }}</td>
                                     <td class="text-center">{{  bd['location_yesterday'] }}</td>
@@ -54,8 +55,8 @@
                     <div class="col-md-2" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;">
                         <br>
                         {% for l in locations%}
-                            <div id="location_{{ l.getID|default(0) }}">
-                                <input type="hidden" class="location_id[]" value="{{ l.getID|default(0) }}">
+                            <div class="row_location" id="location_{{ l.getID|default(0) }}">
+                                <input type="hidden" class="location_id" value="{{ l.getID|default(0) }}">
                                 <span style="font-size: 16px;">{{ l.getName|default('N/A') }}</span>
                                 <br>
                                 <hr style="border-top: 1px solid #000 !important;">
@@ -65,8 +66,8 @@
                                     {% for i in 1..k %}
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input type="hidden" id="user_id[]" value="0">
-                                                {{ form_tools.group_select_only("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
+                                                <input type="hidden" class="entry_id" value="0">
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
                                                 <div style="margin-top: 35px;"></div>
                                             </div>
                                         </div>
@@ -89,8 +90,60 @@
 {% endblock %}
 {% block js %}
     <script>
+        function assignEmployee(user_id, date, schedule_id, location_id, el)
+        {
+            var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id' }) }}";
+            url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id);
+            $.getJSON(url, function(json){
+                if (json[0].success) {
+                    var row = $(el).closest('.row_location');
+                    var entry_id = row.find('.entry_id');
+                    $(entry_id).val(json[0].entry_id);
+                    $('#row_emoployee_id_'+user_id).css("background-color","#ff5959");
+                    toastr['success']('Employee assigned!', 'Success');
+                } else {
+                    toastr['error'](json[0].message, 'Error');
+                    $(el).val('0');
+                    $(el).trigger('change');
+                }
+            });
+        }
+
+        function unassignEmployee(entry_id, el)
+        {
+            var url = "{{ path('hris_tools_schedule_unassign_employee', { entry_id: ':entry_id' }) }}";
+            url = url.replace(":entry_id", entry_id);
+            $.getJSON(url, function(json){
+                if (json[0].success) {
+                    var row = $(el).closest('.row_location');
+                    var entry_id = row.find('.entry_id');
+                    $(entry_id).val(0);
+                    $('#row_emoployee_id_'+ json[0].user_id).css("background-color","#ffffff");
+                    toastr['success']('Employee un-assigned!', 'Success');
+                } else {
+                    toastr['error'](json[0].message, 'Error');
+                }
+            });
+        }
+
         $(document).ready(function() {
             var dTable;
+            var schedule_id = $('#schedule_id').val();
+
+            $('.employee_selector').on('change', function() {
+                if (this.value != 0) {
+                    var row = $(this).closest('.row_location');
+                    var location_id = row.find('.location_id').val();
+                    var user_id = this.value;
+                    var date = $('#cform-date').val().replace('/','-').replace('/','-');
+                    assignEmployee(user_id, date, schedule_id, location_id, this);
+                } else {
+                    var row = $(this).closest('.row_location');
+                    var entry_id = row.find('.entry_id').val();
+                    unassignEmployee(entry_id, this);
+                }
+            });
+
             $('.calendar').prop('disabled', true);
             $('#cform-date').datepicker({
                 autoclose: true,
@@ -110,6 +163,8 @@
                 path = path.replace('DATE', $('#cform-date').val().replace('/','-').replace('/','-'));
                 location.replace(path);
             });
+
+
 
             dTable = $('#list_table').dataTable({
                 "bProcessing": true,
