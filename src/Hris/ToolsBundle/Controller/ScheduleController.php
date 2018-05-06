@@ -62,6 +62,14 @@ class ScheduleController extends Controller
             //find or create schedule entry
             $schedule = $em->getRepository('HrisToolsBundle:Schedule')->findOneBy(array('area' => $user->getArea()->getID(), 'date' => $dateFMTD));
 
+            $existingEmployees = [];
+
+            foreach ($schedule->getEntries() as $ee) {
+                array_push($existingEmployees, $ee->getEmployee()->getID());
+            }
+
+            $params['existing_employees'] = $existingEmployees;
+
             if (!$schedule) {
                 $schedule = new Schedule();
                 $schedule->setArea($user->getArea());
@@ -215,14 +223,26 @@ class ScheduleController extends Controller
             $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user_id));
             $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$location_id));
 
-            if (!$pos_location || !$schedule || !$user) {
-                $list_opts[] = array(
-                    'success' => false,
-                    'message' => 'Cannot process request!'
-                );
+            if ($type == ScheduleEntry::TYPE_WORK) {
+                if (!$pos_location || !$schedule || !$user) {
+                    $list_opts[] = array(
+                        'success' => false,
+                        'message' => 'Cannot process request!'
+                    );
 
-                return new JsonResponse($list_opts);
+                    return new JsonResponse($list_opts);
+                }
+            } else {
+                if (!$schedule || !$user) {
+                    $list_opts[] = array(
+                        'success' => false,
+                        'message' => 'Cannot process request!'
+                    );
+
+                    return new JsonResponse($list_opts);
+                }
             }
+
 
             $scheduleEntry = new ScheduleEntry();
             $scheduleEntry->setEmployee($user);

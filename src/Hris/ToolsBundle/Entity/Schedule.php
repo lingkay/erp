@@ -27,9 +27,19 @@ class Schedule
     /** @ORM\Column(type="date") */
     protected $date;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ScheduleEntry", mappedBy="schedule", cascade={"persist"})
+     */
+    protected $entries;
+
     public function __construct()
     {
 //        $this->initHasName();
+    }
+
+    public function getEntries()
+    {
+        return $this->entries;
     }
 
     public function setArea($area)
