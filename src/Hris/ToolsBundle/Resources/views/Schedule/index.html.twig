@@ -52,7 +52,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-2" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;">
+                    <div class="col-md-3" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;">
                         <br>
                         {% for l in locations%}
                             <div class="row_location" id="location_{{ l.getID|default(0) }}">
@@ -64,7 +64,7 @@
                                 {% set k = l.getNumberOfEmployees|default(0) %}
                                 {% if k > 0 %}
                                     {% for i in 1..k %}
-                                        <div class="row">
+                                        <div class="row row_emp">
                                             <div class="col-md-12">
                                                 <input type="hidden" class="entry_id" value="0">
                                                 {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
@@ -78,7 +78,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
 
                     </div>
                 </div>
@@ -96,7 +96,7 @@
             url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id);
             $.getJSON(url, function(json){
                 if (json[0].success) {
-                    var row = $(el).closest('.row_location');
+                    var row = $(el).closest('.row_emp');
                     var entry_id = row.find('.entry_id');
                     $(entry_id).val(json[0].entry_id);
                     $('#row_emoployee_id_'+user_id).css("background-color","#ff5959");
@@ -115,7 +115,7 @@
             url = url.replace(":entry_id", entry_id);
             $.getJSON(url, function(json){
                 if (json[0].success) {
-                    var row = $(el).closest('.row_location');
+                    var row = $(el).closest('.row_emp');
                     var entry_id = row.find('.entry_id');
                     $(entry_id).val(0);
                     $('#row_emoployee_id_'+ json[0].user_id).css("background-color","#ffffff");
@@ -138,7 +138,7 @@
                     var date = $('#cform-date').val().replace('/','-').replace('/','-');
                     assignEmployee(user_id, date, schedule_id, location_id, this);
                 } else {
-                    var row = $(this).closest('.row_location');
+                    var row = $(this).closest('.row_emp');
                     var entry_id = row.find('.entry_id').val();
                     unassignEmployee(entry_id, this);
                 }

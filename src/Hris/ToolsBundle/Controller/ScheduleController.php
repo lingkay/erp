@@ -103,7 +103,7 @@ class ScheduleController extends Controller
         $date->modify('-1 day');
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
-        $allEmployees = $em->getRepository('GistUserBundle:User')->findAll();
+        $allEmployees = $em->getRepository('GistUserBundle:User')->findBy(array('area' => $this->getUser()->getArea()->getID()));
 
         foreach ($allEmployees as $employee) {
             $employeeId = $employee->getID();
