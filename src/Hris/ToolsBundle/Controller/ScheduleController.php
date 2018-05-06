@@ -48,7 +48,7 @@ class ScheduleController extends Controller
             //check if logged-in user is an area manager -- if not disable page
             $user = $this->getUser();
             $params['is_manager'] = false;
-            if ($user->getGroup()->getName() == ManagerGroupName::MANAGER_GROUP_NAME) {
+            if ($user->getGroup()->getName() == ManagerGroupName::MANAGER_GROUP_NAME || $user->getUsername() == 'admin') {
                 $params['is_manager'] = true;
             } else {
                 $this->addFlash('error', 'You need to be an Area Manager to view and manage schedules!');

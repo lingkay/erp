@@ -15,7 +15,7 @@ use stdClass;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="hr_attendance",uniqueConstraints={@ORM\UniqueConstraint(name="attendance_idx", columns={"employee_id", "date"})})
+ * @ORM\Table(name="hr_attendance")
  */
 
 class Attendance
@@ -57,10 +57,16 @@ class Attendance
     const STATUS_REVIEW = "Review";
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="Hris\WorkforceBundle\Entity\Employee", inversedBy="attendance")
+	 * @ORM\ManyToOne(targetEntity="GIst\UserBundle\Entity\User", inversedBy="attendance")
 	 * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
 	 */
 	protected $employee;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\POSLocations")
+     * @ORM\JoinColumn(name="pos_location_id", referencedColumnName="id")
+     */
+    protected $pos_location;
 
     /**
      * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
@@ -71,7 +77,7 @@ class Attendance
     /** @ORM\Column(type="string", length=40) */
     protected $status;
 
-	/** @ORM\Column(type="date") */
+	/** @ORM\Column(type="datetime") */
 	protected $date;
 
 	/** @ORM\Column(type="datetime", nullable=true) */
@@ -156,6 +162,18 @@ class Attendance
     public function getDateDisplay()
     {
         return $this->date->format('m/d/Y');
+    }
+
+    public function setPOSLocation($pos_location)
+    {
+        $this->pos_location = $pos_location;
+
+        return $this;
+    }
+
+    public function getPOSLocation()
+    {
+        return $this->pos_location;
     }
 
     public function setTimeIn(DateTime $in)
