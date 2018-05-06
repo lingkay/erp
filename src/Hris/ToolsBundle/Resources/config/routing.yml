@@ -2,3 +2,18 @@ hris_tools_schedule_index:
     path:     /schedule/{date}
     methods:  [GET]
     defaults: { _controller: HrisToolsBundle:Schedule:index,date: null }
+
+hris_tools_schedule_assign_employee:
+    path:     /schedule/assign/{user_id}/{date}/{schedule_id}/{location_id}/{type}
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:Schedule:assignEmployee,user_id: null, date: null, schedule_id: null, location_id: null, type: 'Work' }
+
+hris_tools_schedule_unassign_employee:
+    path:     /schedule/unassign/{entry_id}
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:Schedule:unassignEmployee,entry_id: null }
+
+hris_tools_schedule_get_location_entries:
+    path:     /schedule/get/location_entries/{schedule_id}/{location_id}
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:Schedule:getLocationEntries,schedule_id: null, location_id: null }

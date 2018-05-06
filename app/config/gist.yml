@@ -1,6 +1,7 @@
 gist_menu:
     bundle_menu:
         - GistUserBundle
+        - GistLocationBundle
         - GistInventoryBundle
         - GistPOSERPBundle
         - GistCustomerBundle

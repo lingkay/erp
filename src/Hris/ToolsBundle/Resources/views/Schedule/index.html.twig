@@ -11,94 +11,448 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <div class="table-toolbar">
-                    {% if app.user.hasAccess(prefix ~ '.add') %}
-                    {% endif %}
-                </div>
+                {#PORTLET BODY#}
+                <input type="hidden" id="schedule_id" value="{{ schedule.getID }}">
                 <div class="row">
-                    <div class="col-md-2" style="margin-bottom: 10px;">
+                    <div class="col-md-2" style="margin-bottom: 11px;">
                     </div>
-                    <div class="col-md-6" style="margin-bottom: 10px;">
+                    <div class="col-md-6" style="margin-bottom: 11px;">
                         <br>
                         <form method="get" id="filterForm">
                             {{ form.group_date_pos('Filter Date','date', filterDate|default(''),4,6) }}
                         </form>
                     </div>
-                    <div class="col-md-2" style="margin-bottom: 10px;">
+                    <div class="col-md-2" style="margin-bottom: 11px;">
                     </div>
                 </div>
-                <table class="table table-striped table-bordered table-hover" id="list_table">
-                    <thead>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Position</th>
-                        <th>Location Yesterday</th>
-                        <th>Sales Yesterday</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for bd in employees_data %}
-                        <tr>
-                            <td>{{ bd['employee_name'] }}</td>
-                            <td>{{  bd['position'] }}</td>
-                            <td class="text-center">{{  bd['location_yesterday'] }}</td>
-                            <td class="text-right">{{ bd['total_sales'] }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-md-4" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;">
+                        <div class="table-toolbar">
+                            {% if app.user.hasAccess(prefix ~ '.add') %}
+                            {% endif %}
+                        </div>
+                        <table class="table table-bordered" id="list_table" style="font-size: 11px !important;">
+                            <thead>
+                            <tr style="font-size: 11px !important;">
+                                <th style="font-size: 11px !important;">Employee</th>
+                                <th style="font-size: 11px !important;">Position</th>
+                                <th style="font-size: 11px !important;">Location Yesterday</th>
+                                <th style="font-size: 11px !important;">Sales Yesterday</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for bd in employees_data %}
+                                {% if bd['employee_id'] in existing_employees %}
+                                    <tr id="row_emoployee_id_{{ bd['employee_id'] }}" style="background-color: rgb(255, 89, 89);">
+                                        <td>{{ bd['employee_name'] }}</td>
+                                        <td>{{  bd['position'] }}</td>
+                                        <td class="text-center">{{  bd['location_yesterday'] }}</td>
+                                        <td class="text-right">{{ bd['total_sales'] }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr id="row_emoployee_id_{{ bd['employee_id'] }}">
+                                        <td>{{ bd['employee_name'] }}</td>
+                                        <td>{{  bd['position'] }}</td>
+                                        <td class="text-center">{{  bd['location_yesterday'] }}</td>
+                                        <td class="text-right">{{ bd['total_sales'] }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-3" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;" id="scheduler_div">
+                        <br>
+                        {% for l in locations%}
+                            <div class="row_location" id="location_{{ l.getID|default(0) }}">
+                                <input type="hidden" class="location_id" value="{{ l.getID|default(0) }}">
+                                <input type="hidden" class="type" value="Work">
+                                <span style="font-size: 16px;">{{ l.getName|default('N/A') }}</span>
+                                <br>
+                                <hr style="border-top: 1px solid #000 !important;">
+                                <br>
+                                {% set k = l.getNumberOfEmployees|default(0) %}
+                                {% set counter = 1 %}
+                                {% if k > 0 %}
+                                    {% for i in 1..k %}
+                                        <div class="row row_emp" id="row_emp_{{ l.getID|default(0) }}_{{ counter }}">
+                                            <div class="col-md-12">
+                                                <input type="hidden" class="entry_id" value="0">
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
+                                                <div style="margin-top: 35px;"></div>
+                                            </div>
+                                        </div>
+                                        {% set counter = counter + 1 %}
+                                    {% endfor %}
+                                {% endif %}
+                                <br>
+                                <br>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-5" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px; width: 500px !important; margin-left: 40px;" id="other_scheduler">
+                        <br>
+                        <div class="row_location">
+                            <input type="hidden" class="type" value="Sick Leave">
+                            <input type="hidden" class="location_id" value="0">
+                            <span style="font-size: 16px;">Sick Leave <a href="javascript:void(0)" class="btn btn-xs default green add-sl-field" style="margin=0"><i class="fa fa-plus"></i> Add Employee</a></span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                                <thead>
+                                <tr style="font-size: 11px !important;">
+                                    <th style="font-size: 11px !important;">Employee</th>
+                                    <th style="font-size: 11px !important;" width="25%"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="sl_tbody">
+                                {% for se in schedule.getEntries|default('') %}
+                                    {% if se.getType == 'Sick Leave' %}
+                                        <tr class="row_emp">
+                                            <td>
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                            </td>
+                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row_location">
+                            <input type="hidden" class="type" value="Vacation Leave">
+                            <input type="hidden" class="location_id" value="0">
+                            <span style="font-size: 16px;">Vacation Leave <a href="javascript:void(0)" class="btn btn-xs default green add-vl-field" style="margin=0"><i class="fa fa-plus"></i> Add Employee</a></span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                                <thead>
+                                <tr style="font-size: 11px !important;">
+                                    <th style="font-size: 11px !important;">Employee</th>
+                                    <th style="font-size: 11px !important;" width="25%"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="vl_tbody">
+                                {% for se in schedule.getEntries|default('') %}
+                                    {% if se.getType == 'Vacation Leave' %}
+                                        <tr class="row_emp">
+                                            <td>
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                            </td>
+                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row_location">
+                            <input type="hidden" class="type" value="Training">
+                            <input type="hidden" class="location_id" value="0">
+                            <span style="font-size: 16px;">Training <a href="javascript:void(0)" class="btn btn-xs default green add-t-field" style="margin=0"><i class="fa fa-plus"></i> Add Employee</a></span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                                <thead>
+                                <tr style="font-size: 11px !important;">
+                                    <th style="font-size: 11px !important;">Employee</th>
+                                    <th style="font-size: 11px !important;" width="25%"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="t_tbody">
 
+                                </tbody>
+                            </table>
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row_location">
+                            <input type="hidden" class="type" value="Day-off">
+                            <input type="hidden" class="location_id" value="0">
+                            <span style="font-size: 16px;">Training <a href="javascript:void(0)" class="btn btn-xs default green add-do-field" style="margin=0"><i class="fa fa-plus"></i> Add Employee</a></span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                                <thead>
+                                <tr style="font-size: 11px !important;">
+                                    <th style="font-size: 11px !important;">Employee</th>
+                                    <th style="font-size: 11px !important;" width="25%"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="do_tbody">
+
+                                </tbody>
+                            </table>
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+                {#END PORTLET BODY#}
             </div>
         </div>
     </div>
-    {% endblock %}
-    {% block js %}
-        <script>
-            $(document).ready(function() {
-                var dTable;
-                $('.calendar').prop('disabled', true);
-                $('#cform-date').datepicker({
-                    autoclose: true,
-                    maxDate: new Date()
-                });
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+        function assignEmployee(user_id, date, schedule_id, location_id, el, type)
+        {
+            $("#scheduler_div").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#scheduler_div").LoadingOverlay("show");
 
-                $('#cform-date').datepicker().on('changeDate', function (ev) {
-                    if (ev.dates && !ev.date)
-                    {
-                        $(this).datepicker('setDate',new Date());
+            $("#other_scheduler").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#other_scheduler").LoadingOverlay("show");
+
+            var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type' }) }}";
+            url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type);
+            $.getJSON(url, function(json){
+                if (json[0].success) {
+                    var row = $(el).closest('.row_emp');
+                    var entry_id = row.find('.entry_id');
+                    $(entry_id).val(json[0].entry_id);
+                    $('#row_emoployee_id_'+user_id).css("background-color","#ff5959");
+                    toastr['success']('Employee assigned!', 'Success');
+                } else {
+                    toastr['error'](json[0].message, 'Error');
+                    $(el).val('0');
+                    $(el).trigger('change');
+                }
+                // Here we might call the "hide" action 2 times, or simply set the "force" parameter to true:
+                $("#scheduler_div").LoadingOverlay("hide", true);
+                $("#other_scheduler").LoadingOverlay("hide", true);
+            });
+        }
+
+        function unassignEmployee(entry_id, el)
+        {
+            $("#scheduler_div").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#scheduler_div").LoadingOverlay("show");
+
+            $("#other_scheduler").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#other_scheduler").LoadingOverlay("show");
+            var url = "{{ path('hris_tools_schedule_unassign_employee', { entry_id: ':entry_id' }) }}";
+            url = url.replace(":entry_id", entry_id);
+            $.getJSON(url, function(json){
+                if (json[0].success) {
+                    var row = $(el).closest('.row_emp');
+                    var entry_id = row.find('.entry_id');
+                    $(entry_id).val(0);
+                    $('#row_emoployee_id_'+ json[0].user_id).css("background-color","#ffffff");
+                    toastr['success']('Employee un-assigned!', 'Success');
+                } else {
+                    toastr['error'](json[0].message, 'Error');
+                }
+                $("#scheduler_div").LoadingOverlay("hide", true);
+                $("#other_scheduler").LoadingOverlay("hide", true);
+            });
+        }
+
+        function populateSchedules()
+        {
+            var schedule_id = $('#schedule_id').val();
+            $('.row_location').each(function(i, obj) {
+                var row = $(obj);
+                var location_id = row.find('.location_id').val();
+
+                var url = "{{ path('hris_tools_schedule_get_location_entries', { schedule_id: ':schedule_id', location_id: ':location_id' }) }}";
+                url = url.replace(":schedule_id", schedule_id).replace(":location_id", location_id);
+
+                var counter = 1;
+                $.getJSON(url, function(json){
+                    $.each(json, function(k, v) {
+                        console.log('row_emp_'+location_id+'_'+counter);
+                        var emp_row = $('#row_emp_'+location_id+'_'+counter);
+                        var emp_selector = emp_row.find('.employee_selector');
+                        var entry_id = emp_row.find('.entry_id');
+                        $(entry_id).val(v.entry_id);
+
+                        $(emp_selector).val(v.user_id);
+                        $(emp_selector).trigger('change');
+
+                        $('#row_emoployee_id_'+v.user_id).css("background-color","#ff5959");
+                        counter++;
+                    });
+
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            var dTable;
+            var schedule_id = $('#schedule_id').val();
+
+            $(document).on("click",".remove_row", function(e){
+                e.preventDefault();
+                var tr = $(this).closest('tr');
+
+                var row = $(this).closest('.row_emp');
+                var entry_id = row.find('.entry_id').val();
+
+                if (entry_id != 0) {
+                    unassignEmployee(entry_id, this);
+                }
+
+                tr.remove();
+                return false;
+            });
+
+            // Show full page LoadingOverlay
+            $.LoadingOverlay("show");
+
+            // Hide it after 3 seconds
+            setTimeout(function(){
+                $.LoadingOverlay("hide");
+            }, 10);
+
+
+            $(document).on('select2:select', '.employee_selector', function() {
+                if (this.value != 0) {
+                    var row = $(this).closest('.row_location');
+                    var location_id = row.find('.location_id').val();
+                    var type = row.find('.type').val();
+                    var user_id = this.value;
+                    var date = $('#cform-date').val().replace('/','-').replace('/','-');
+
+                    var row = $(this).closest('.row_emp');
+                    var the_el = this;
+                    var entry_id = row.find('.entry_id').val();
+                    if (entry_id != 0 || entry_id != '0') {
+                        unassignEmployee(entry_id, this);
+
+                        setTimeout(function(){
+                            assignEmployee(user_id, date, schedule_id, location_id, the_el, type);
+                        }, 1200);
+
+                        return 0;
                     }
 
-                    var path = "{{ path('hris_tools_schedule_index', {
-                        'date' : 'DATE'}
-                    ) }}";
-
-                    path = path.replace('DATE', $('#cform-date').val().replace('/','-').replace('/','-'));
-                    location.replace(path);
-                });
-
-                dTable = $('#list_table').dataTable({
-                    "bProcessing": true,
-                    "bServerSide": false,
-                    "iDisplayLength": 10,
-                    "sPaginationType": "bootstrap",
-                    "oLanguage": {
-                        "sLengthMenu": "_MENU_ records",
-                        "oPaginate": {
-                            "sPrevious": "Prev",
-                            "sNext": "Next"
-                        }
-                    },
-                    "aoColumnDefs": [
-                        {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
-                    ]
-                });
-
-                $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
-                $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
-                $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+                    assignEmployee(user_id, date, schedule_id, location_id, this, type);
+                } else {
+                    var row = $(this).closest('.row_emp');
+                    var entry_id = row.find('.entry_id').val();
+                    unassignEmployee(entry_id, this);
+                }
             });
-        </script>
-    {% endblock %}
 
-    {% block css %}
-    {% endblock %}
+            populateSchedules();
+
+            $('.calendar').prop('disabled', true);
+            $('#cform-date').datepicker({
+                autoclose: true,
+                maxDate: new Date()
+            });
+
+            $('#cform-date').datepicker().on('changeDate', function (ev) {
+                if (ev.dates && !ev.date)
+                {
+                    $(this).datepicker('setDate',new Date());
+                }
+
+                var path = "{{ path('hris_tools_schedule_index', {
+                    'date' : 'DATE'}
+                ) }}";
+
+                path = path.replace('DATE', $('#cform-date').val().replace('/','-').replace('/','-'));
+                location.replace(path);
+            });
+
+
+
+            dTable = $('#list_table').dataTable({
+                "bProcessing": true,
+                "bServerSide": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bInfo": false,
+                "bPaginate": false,
+                "iDisplayLength": 100,
+                "sPaginationType": "bootstrap",
+                "oLanguage": {
+                    "sLengthMenu": "_MENU_ records",
+                    "oPaginate": {
+                        "sPrevious": "Prev",
+                        "sNext": "Next"
+                    }
+                },
+                "aoColumnDefs": [
+                    {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
+                ]
+            });
+
+            $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+            $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+            $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+            //FOR ADD EMPLOYEE
+            var add_sl_button = $(".add-sl-field");
+            var add_vl_button = $(".add-vl-field");
+            var add_t_button = $(".add-t-field");
+            var add_do_button = $(".add-do-field");
+            $(add_sl_button).on('click',function(){
+                var field = '<tr class="row_emp">';
+                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
+                field += '</tr>';
+
+                $('#sl_tbody').append(field);
+                $('.employee_selector').select2();
+            });
+
+            $(add_vl_button).on('click',function(){
+                var field = '<tr class="row_emp">';
+                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
+                field += '</tr>';
+
+                $('#vl_tbody').append(field);
+                $('.employee_selector').select2();
+            });
+
+            $(add_t_button).on('click',function(){
+                var field = '<tr class="row_emp">';
+                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
+                field += '</tr>';
+
+                $('#t_tbody').append(field);
+                $('.employee_selector').select2();
+            });
+
+            $(add_do_button).on('click',function(){
+                var field = '<tr class="row_emp">';
+                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
+                field += '</tr>';
+
+                $('#do_tbody').append(field);
+                $('.employee_selector').select2();
+            });
+        });
+</script>
+{% endblock %}
+
+{% block css %}
+{% endblock %}

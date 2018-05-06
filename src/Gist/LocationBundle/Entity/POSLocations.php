@@ -28,7 +28,6 @@ class POSLocations
     use HasInventoryAccount;
 
 
-
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $name;
 
@@ -211,12 +210,26 @@ class POSLocations
      */
     protected $ledger_entries;
 
+    /** @ORM\Column(type="integer") */
+    protected $number_of_employees;
+
     public function __construct()
     {
         $this->initTrackCreate();
         $this->initHasInventoryAccount();
         $this->counting_rule = 'all';
         $this->other_loc_stock_visibility = 'yes';
+    }
+
+    public function setNumberOfEmployees($number)
+    {
+        $this->number_of_employees = $number;
+        return $this;
+    }
+
+    public function getNumberOfEmployees()
+    {
+        return $this->number_of_employees;
     }
 
     public function getLedgerTotal()
