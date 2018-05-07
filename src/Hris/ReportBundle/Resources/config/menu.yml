@@ -11,39 +11,39 @@ menu_items:
       acl: hris_report_attendance.menu
       label: Attendance
       parent: menu_report
-    - id: hris_report_regulars_index
-      acl: hris_report_regulars.menu
-      label: Regular Employees
-      parent: menu_report
-    - id: hris_report_evals_index
-      acl: hris_report_evals.menu
-      label: Employee Evaluations
-      parent: menu_report
-    - id: hris_report_leave_index
-      acl: hris_report_leave.menu
-      label: Leaves Report
-      parent: menu_report
-    - id: hris_report_total_expense_index
-      acl: hris_report_total_expense.menu
-      label: Total Expense
-      parent: menu_report
-    - id: hris_report_loans_index
-      acl: hris_report_loans.menu
-      label: Loans Report
-      parent: menu_report
-    - id: hris_report_incentives_index
-      acl: hris_report_incentives.menu
-      label: Incentives Report
-      parent: menu_report
-    - id: hris_report_reimbursement_index
-      acl: hris_report_reimbursement.menu
-      label: Reimbursement Report
-      parent: menu_report
-    - id: hris_report_turnover_index
-      acl: hris_report_turnover.menu
-      label: Turnover Report
-      parent: menu_report
-    - id: hris_report_payroll_index
-      acl: hris_report_payroll.menu
-      label: Payroll Report
-      parent: menu_report
+#    - id: hris_report_regulars_index
+#      acl: hris_report_regulars.menu
+#      label: Regular Employees
+#      parent: menu_report
+#    - id: hris_report_evals_index
+#      acl: hris_report_evals.menu
+#      label: Employee Evaluations
+#      parent: menu_report
+#    - id: hris_report_leave_index
+#      acl: hris_report_leave.menu
+#      label: Leaves Report
+#      parent: menu_report
+#    - id: hris_report_total_expense_index
+#      acl: hris_report_total_expense.menu
+#      label: Total Expense
+#      parent: menu_report
+#    - id: hris_report_loans_index
+#      acl: hris_report_loans.menu
+#      label: Loans Report
+#      parent: menu_report
+#    - id: hris_report_incentives_index
+#      acl: hris_report_incentives.menu
+#      label: Incentives Report
+#      parent: menu_report
+#    - id: hris_report_reimbursement_index
+#      acl: hris_report_reimbursement.menu
+#      label: Reimbursement Report
+#      parent: menu_report
+#    - id: hris_report_turnover_index
+#      acl: hris_report_turnover.menu
+#      label: Turnover Report
+#      parent: menu_report
+#    - id: hris_report_payroll_index
+#      acl: hris_report_payroll.menu
+#      label: Payroll Report
+#      parent: menu_report

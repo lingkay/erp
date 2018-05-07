@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-horizontal">
-                                    {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', date_from, date_to, 4, 7) }} 
+                                    {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', '', '', 4, 7) }}
                                     {# {{ form_tools.group_checkbox_set('Day of Week','day',day_opts,'',4,7, true) }} #}
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">Late Range</label>
@@ -83,16 +83,29 @@
                         <a href="{{ path('hris_report_attendance_print') }}" id="print_btn" class="btn green pull-right" style="margin-right: 10px;"><i class="fa fa-print"></i> Print</a>
                     </div>
                 </div>
-                <table class="table table-striped table-bordered table-hover" id="list_table">
-                    <thead>
+                <table class="table table-striped table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                    <thead style="font-size: 11px !important;">
+                        <tr style="font-size: 11px !important;">
+                            <th rowspan="2" style="font-size: 11px !important;">Employee</th>
+                            <th rowspan="2">Location</th>
+                            <th rowspan="2">Date</th>
+                            <th colspan="3">WORK</th>
+                            <th colspan="3">BREAK</th>
+                            <th colspan="5">TRANSFER</th>
+                            <th rowspan="2" style="width: 30px;">TOTAL WORKING HOURS</th>
+                        </tr>
                         <tr>
-                        {% for col in grid_cols %}
-                            {% if (loop.last) %}
-                            <th style="width: 165px">{{ col.getLabel }}</th>
-                            {% else %}
-                            <th>{{ col.getLabel }}</th>
-                            {% endif %}
-                        {% endfor %}
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                            <th>TOTAL</th>
+                            <th>Time Out</th>
+                            <th>Time In</th>
+                            <th>TOTAL</th>
+                            <th>Time Out</th>
+                            <th>Location Out</th>
+                            <th>Time In</th>
+                            <th>Location In</th>
+                            <th>TOTAL</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -108,146 +121,11 @@
 {% block js %}
 <script>
 
-function generatePath() {
-    date_to = $('#cform-date_to').val();
-    date_from = $('#cform-date_from').val();
-    department = $('#cform-department').val();
-    locationx = $('#cform-location').val();
-    rank = $('#cform-job_level').val();
-    position = $('#cform-job_title').val();
-    att_status = $('#cform-att_status').val();
-    var gender = [];
-        $(".gender:checked").each(function() {
-            gender.push(this.value);
-        });
-        console.log(gender);
-    var days = [];
-        $(".day:checked").each(function() {
-            days.push(this.value);
-        });
-        
-    id = $('#cemp_id').val();
-    var late = $('#cform-late').val();
-    var late_to = $('#cform-late_to').val();
-    var undertime = $('#cform-undertime').val();
-    var undertime_to = $('#cform-undertime_to').val();
-
-var path = "{{ path('hris_report_attendance_ajax_grid', { 
-    'id' : 'ID', 
-    'department' : 'DEPARTMENT', 
-    'date_from' : 'DFROM', 
-    'date_to' : 'DTO', 
-    'position' : 'POSITION',
-    'rank' : 'RANK',
-    'gender' : 'GENDER',
-    'days' : 'DAYS',
-    'late' : 'LATE',
-    'late_to' : 'LATE_TO',
-    'undertime' : 'UNDERTIME',
-    'undertime_to' : 'UNDERTIME_TO',
-    'status' : 'STATUS',
-    'location' : 'LOCATION'} 
-    ) }}";
-
-    path = path.replace('DAYS', null);
-
-    if (att_status == 0) {
-        path = path.replace('STATUS', null);
-    } else {
-        path = path.replace('STATUS', att_status);
-    };
-
-    if (position == 0) {
-        path = path.replace('POSITION', null);
-    } else {
-        path = path.replace('POSITION', position);
-    };
-
-    if (rank == 0) {
-        path = path.replace('RANK', null);
-    } else {
-        path = path.replace('RANK', rank);
-    };
-
-    if (late == null || late == '') {
-        path = path.replace('LATE', null);
-    } else {
-        path = path.replace('LATE', late);
-    };
-
-    if (late_to == null || late_to == '') {
-        path = path.replace('LATE_TO', null);
-    } else {
-        path = path.replace('LATE_TO', late_to);
-    };
-
-    if (undertime == null || undertime == '') {
-        path = path.replace('UNDERTIME', null);
-    } else {
-        path = path.replace('UNDERTIME', undertime);
-    };
-
-    if (undertime_to == null || undertime_to == '') {
-        path = path.replace('UNDERTIME_TO', null);
-    } else {
-        path = path.replace('UNDERTIME_TO', undertime_to);
-    };
-
-    
-    if (gender == null || gender == '') {
-        path = path.replace('GENDER', null);
-    } else {
-        path = path.replace('GENDER', gender);
-    };
-
-    if (id == null || id == '') {
-        path = path.replace('ID', null);
-    } else {
-        path = path.replace('ID', id);
-    };
-
-    if (date_from == null || date_from == '') {
-        path = path.replace('DFROM', null);
-    } else {
-        path = path.replace('DFROM', date_from);
-    };
-
-    if (department == 0 || department == '') {
-        path = path.replace('DEPARTMENT', null);
-    } else {
-        path = path.replace('DEPARTMENT', department);
-    };
-
-    if (locationx == 0) {
-        path = path.replace('LOCATION', null);
-    } else {
-        path = path.replace('LOCATION', locationx);
-    };
-
-    if (date_to == null || date_to == '') {
-        path = path.replace('DTO', null);
-    } else {
-        path = path.replace('DTO', date_to);
-    }
-    console.log(path);
-    return path;
-}
 
 $(document).ready(function() {
 
-    $('#cemp_typeahead').change(function() {
-        $("#cform-agency").val('');
-        if ($('#cemp_id').val() != '') 
-        {
-            
-        }
-        else
-        {
-            $('#cemp_typeahead').val('');
-        }
-    });
 
-    $("#file_to_upload").change(function(){var l=["csv"];-1==$.inArray($(this).val().split(".").pop().toLowerCase(),l)&&(alert("Only '.csv' formats are allowed."),$("#file_to_upload").replaceWith($("#file_to_upload").clone()))});
+
 
     var dTable;
     var path;
@@ -268,8 +146,9 @@ $(document).ready(function() {
 
     dTable = $('#list_table').dataTable({
         "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": path,
+        "bServerSide": false,
+        // "sAjaxSource": path,
+        "bAutoWidth" : false,
         "iDisplayLength": 10,
         "sPaginationType": "bootstrap",
         "oLanguage": {
@@ -280,7 +159,7 @@ $(document).ready(function() {
             }
         },
         "aoColumnDefs": [
-            { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+            {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
         ]
     });
 
@@ -312,202 +191,7 @@ $(document).ready(function() {
     });
     $('#filter_button').click(function (){
 
-        date_to = $('#cform-date_to').val();
-        date_from = $('#cform-date_from').val();
-        department = $('#cform-department').val();
-        locationx = $('#cform-location').val();
-        rank = $('#cform-job_level').val();
-        position = $('#cform-job_title').val();
-        att_status = $('#cform-att_status').val();
-        var gender = [];
-        $(".gender:checked").each(function() {
-        gender.push(this.value);
-        });
-        var late = $('#cform-late').val();
-        var late_to = $('#cform-late_to').val();
-        var undertime = $('#cform-undertime').val();
-        var undertime_to = $('#cform-undertime_to').val();
-        var days = [];
-        $(".day:checked").each(function() {
-        days.push(this.value);
-        });
 
-        if ($('#cemp_id').val() == '' || $('#cemp_id').val() == null) 
-        {
-            var id = 0;
-        }   
-        else
-        {
-            var id = $('#cemp_id').val();
-        }
-        var date_from = $('#cform-date_from').val();
-        if ($('#cform-department').val() == '' || $('#cform-department').val() == null) 
-        {
-            var department = 0;
-        }   
-        else
-        {
-            var department = $('#cform-department').val();
-        }
-
-        var pathx = "{{ path('hris_report_attendance_print', { 
-
-
-        'id' : 'ID', 
-        'department' : 'DEPARTMENT', 
-        'date_from' : 'DATE_FROM', 
-        'date_to' : 'DATE_TO', 
-        'position' : 'POSITION',
-        'rank' : 'RANK',
-        'gender' : 'GENDER',
-        'days' : 'DAYS',
-        'late' : 'LATE',
-        'late_to' : 'LATE_TO',
-        'undertime' : 'UNDERTIME',
-        'undertime_to' : 'UNDERTIME_TO',
-        'status' : 'STATUS',
-        'location' : 'LOCATION'
-
-
-        } ) }}";
-
-        var pathy = "{{ path('hris_report_attendance_csv', { 
-
-
-        'id' : 'ID', 
-        'department' : 'DEPARTMENT', 
-        'date_from' : 'DATE_FROM', 
-        'date_to' : 'DATE_TO', 
-        'position' : 'POSITION',
-        'rank' : 'RANK',
-        'gender' : 'GENDER',
-        'days' : 'DAYS',
-        'late' : 'LATE',
-        'late_to' : 'LATE_TO',
-        'undertime' : 'UNDERTIME',
-        'undertime_to' : 'UNDERTIME_TO',
-        'status' : 'STATUS',
-        'location' : 'LOCATION'
-
-
-        } ) }}";
-
-        pathx = pathx.replace('DAYS', null);  
-        pathy = pathy.replace('DAYS', null);  
-        var date_to = $('#cform-date_to').val();
-
-        if (locationx == 0) {
-        pathx = pathx.replace('LOCATION', null);
-        pathy = pathy.replace('LOCATION', null);
-        } else {
-        pathx = pathx.replace('LOCATION', locationx);
-        pathy = pathy.replace('LOCATION', locationx);
-        };
-        
-        if (att_status == 0) {
-            pathx = pathx.replace('STATUS', null);
-            pathy = pathy.replace('STATUS', null);
-        } else {
-            pathx = pathx.replace('STATUS', att_status);
-            pathy = pathy.replace('STATUS', att_status);
-        };
-
-        if (position == 0) {
-            pathx = pathx.replace('POSITION', null);
-            pathy = pathy.replace('POSITION', null);
-        } else {
-            pathx = pathx.replace('POSITION', position);
-            pathy = pathy.replace('POSITION', position);
-        };
-
-        if (rank == 0) {
-            pathx = pathx.replace('RANK', null);
-            pathy = pathy.replace('RANK', null);
-        } else {
-            pathx = pathx.replace('RANK', rank);
-            pathy = pathy.replace('RANK', rank);
-        };
-
-        if (late == null || late == '') {
-            pathx = pathx.replace('LATE', null);
-            pathy = pathy.replace('LATE', null);
-        } else {
-            pathx = pathx.replace('LATE', late);
-            pathy = pathy.replace('LATE', late);
-        };
-
-        if (late_to == null || late_to == '') {
-            pathx = pathx.replace('LATE_TO', null);
-            pathy = pathy.replace('LATE_TO', null);
-        } else {
-            pathx = pathx.replace('LATE_TO', late_to);
-            pathy = pathy.replace('LATE_TO', late_to);
-        };
-
-        if (undertime == null || undertime == '') {
-            pathx = pathx.replace('UNDERTIME', null);
-            pathy = pathy.replace('UNDERTIME', null);
-        } else {
-            pathx = pathx.replace('UNDERTIME', undertime);
-            pathy = pathy.replace('UNDERTIME', undertime);
-        };
-
-        if (undertime_to == null || undertime_to == '') {
-            pathx = pathx.replace('UNDERTIME_TO', null);
-            pathy = pathy.replace('UNDERTIME_TO', null);
-        } else {
-            pathx = pathx.replace('UNDERTIME_TO', undertime_to);
-            pathy = pathy.replace('UNDERTIME_TO', undertime_to);
-        };
-
-        
-        if (gender == null || gender == '') {
-            pathx = pathx.replace('GENDER', null);
-            pathy = pathy.replace('GENDER', null);
-        } else {
-            pathx = pathx.replace('GENDER', gender);
-            pathy = pathy.replace('GENDER', gender);
-        };
-
-            
-        if (id == null || id == '') {
-            pathx = pathx.replace('ID', null);
-            pathy = pathy.replace('ID', null);
-        } else {
-            pathx = pathx.replace('ID', id);
-            pathy = pathy.replace('ID', id);
-        };
-
-        if (date_from == null || date_from == '') {
-            pathx = pathx.replace('DATE_FROM', null);
-            pathy = pathy.replace('DATE_FROM', null);
-        } else {
-            pathx = pathx.replace('DATE_FROM', date_from);
-            pathy = pathy.replace('DATE_FROM', date_from);
-        };
-
-        if (department == 0 || department == '') {
-            pathx = pathx.replace('DEPARTMENT', null);
-            pathy = pathy.replace('DEPARTMENT', null);
-        } else {
-            pathx = pathx.replace('DEPARTMENT', department);
-            pathy = pathy.replace('DEPARTMENT', department);
-        };
-
-        if (date_to == null || date_to == '') {
-            pathx = pathx.replace('DATE_TO', null);
-            pathy = pathy.replace('DATE_TO', null);
-        } else {
-            pathx = pathx.replace('DATE_TO', date_to);
-            pathy = pathy.replace('DATE_TO', date_to);
-        }
-
-        
-        $('#print_btn').attr('href',pathx);
-        $('#csv_btn').attr('href',pathy);
-
-        path = generatePath();
-        dTable.fnReloadAjax(path);
     });
 });
 </script>
