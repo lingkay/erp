@@ -70,7 +70,7 @@ class POSAttendanceController extends CrudController
             $dateFMTD = DateTime::createFromFormat('Y-m-d', $date_time);
             $query->from('HrisWorkforceBundle:Attendance', 'o')
                 ->where('o.date LIKE :date')
-                ->andWhere('o.employee >= :employee_id')
+                ->andWhere('o.employee = :employee_id')
                 ->orderBy('o.date', 'DESC')
                 ->setParameter('date', '%'.$dateFMTD->format('Y-m-d').'%')
                 ->setParameter('employee_id', $employee_id);
@@ -107,7 +107,7 @@ class POSAttendanceController extends CrudController
             $dateFMTD = DateTime::createFromFormat('Y-m-d', $date_time);
             $query->from('HrisWorkforceBundle:Attendance', 'o')
                 ->where('o.date LIKE :date')
-                ->andWhere('o.employee >= :employee_id')
+                ->andWhere('o.employee = :employee_id')
                 ->setParameter('date', '%'.$dateFMTD->format('Y-m-d').'%')
                 ->setParameter('employee_id', $employee_id);
 
