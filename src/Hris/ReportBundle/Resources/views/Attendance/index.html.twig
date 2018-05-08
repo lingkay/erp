@@ -92,48 +92,76 @@
                                 <td>{{ data['totals']['grand_total']|default('') }}</td>
                             </tr>
                             {% if data['breaks']|length > 1 or data['transfers']|length > 1 %}
-                                <tr>
-                                {% if data['breaks']|length > 1 %}
-                                    {% set breakctr = 0 %}
+                                {% set main_index = 1 %}
+                                {% set ext_ctr = 0 %}
+                                {% if data['breaks']|length > data['transfers']|length %}
                                     {% for break in data['breaks'] %}
-                                        {% if breakctr > 0 %}
-                                            <td colspan="6"></td>
-                                            <td>{{ break['break_in'] }}</td>
-                                            <td>{{ break['break_out'] }}</td>
-                                            <td>{{ break['total_break'] }}</td>
-                                        {% endif %}    
-                                        {% set breakctr = breakctr + 1 %}
-                                    {% endfor %}
-                                {% else %}
-                                    <td colspan="9"></td>
-                                {% endif %}
+                                        {% if ext_ctr > 0 %}
+                                            <tr>
+                                            {% if data['breaks']|length > 1 %}
+                                                <td colspan="6"></td>
+                                                <td>{{ break['break_in'] }}</td>
+                                                <td>{{ break['break_out'] }}</td>
+                                                <td>{{ break['total_break'] }}</td>    
+                                            {% else %}
+                                                <td colspan="9"></td>
+                                            {% endif %}
+                                            
 
-                                {% if data['transfers']|length > 1 %}
-                                    {% set transferctr = 0 %}
-                                    {% for transfer in data['transfers'] %}
-                                        {% if transferctr > 0 %}
-                                            <td>{{ transfer['transfer_in'] }}</td>
-                                            <td>{{ transfer['location_in'] }}</td>
-                                            <td>{{ transfer['transfer_out'] }}</td>
-                                            <td>{{ transfer['location_out'] }}</td>
-                                            <td>{{ transfer['total_transfer'] }}</td>
-                                        {% endif %}    
-                                        {% set transferctr = transferctr + 1 %}
+                                            {% if data['transfers']|length > 1 and main_index <= data['transfers']|length %}
+                                                <td>{{ data['transfers'][main_index]['transfer_in'] }}</td>
+                                                <td>{{ data['transfers'][main_index]['location_in'] }}</td>
+                                                <td>{{ data['transfers'][main_index]['transfer_out'] }}</td>
+                                                <td>{{ data['transfers'][main_index]['location_out'] }}</td>
+                                                <td>{{ data['transfers'][main_index]['total_transfer'] }}</td>  
+                                            {% else %}
+                                                <td colspan="5"></td>
+                                            {% endif %}
+                                            <td></td>
+                                            </tr>
+                                            {% set main_index = main_index + 1 %}
+                                        {% endif %}
+                                        {% set ext_ctr = ext_ctr + 1 %}
                                     {% endfor %}
                                 {% else %}
-                                    <td colspan="5"></td>
+                                    {% for transfer in data['transfers'] %}
+                                        {% if ext_ctr > 0 %}
+                                            <tr>
+                                            {% if data['breaks']|length > 1 %}
+                                                <td colspan="6"></td>
+                                                <td>{{ data['breaks'][main_index]['break_in'] }}</td>
+                                                <td>{{ data['breaks'][main_index]['break_out'] }}</td>
+                                                <td>{{ data['breaks'][main_index]['total_break'] }}</td>    
+                                            {% else %}
+                                                <td colspan="9"></td>
+                                            {% endif %}
+                                            
+
+                                            {% if data['transfers']|length > 1 and main_index <= data['transfers']|length %}
+                                                <td>{{ transfer['transfer_in'] }}</td>
+                                                <td>{{ transfer['location_in'] }}</td>
+                                                <td>{{ transfer['transfer_out'] }}</td>
+                                                <td>{{ transfer['location_out'] }}</td>
+                                                <td>{{ transfer['total_transfer'] }}</td>  
+                                            {% else %}
+                                                <td colspan="5"></td>
+                                            {% endif %}
+                                            <td></td>
+                                            </tr>
+                                            {% set main_index = main_index + 1 %}
+                                        {% endif %}
+                                        {% set ext_ctr = ext_ctr + 1 %}
+                                    {% endfor %}
                                 {% endif %}
-                                <td></td>
-                                </tr>
                             {% endif %}
-                                <tr>
-                                    <td colspan="6"></td>
-                                    <td colspan="2" class="text-right">TOTAL BREAK</td>
-                                    <td>{{ data['totals']['break'] }}</td>
-                                    <td colspan="4" class="text-right">TOTAL TRANSFER</td>
-                                    <td>{{ data['totals']['transfer'] }}</td>
-                                    <td>
-                                </tr>
+                            <tr>
+                                <td colspan="6"></td>
+                                <td colspan="2" class="text-right">TOTAL BREAK</td>
+                                <td>{{ data['totals']['break'] }}</td>
+                                <td colspan="4" class="text-right">TOTAL TRANSFER</td>
+                                <td>{{ data['totals']['transfer'] }}</td>
+                                <td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
