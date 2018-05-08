@@ -108,7 +108,7 @@
                                             {% endif %}
                                             
 
-                                            {% if data['transfers']|length > 1 and main_index <= data['transfers']|length %}
+                                            {% if data['transfers']|length > 1 and main_index < data['transfers']|length %}
                                                 <td>{{ data['transfers'][main_index]['transfer_in'] }}</td>
                                                 <td>{{ data['transfers'][main_index]['location_in'] }}</td>
                                                 <td>{{ data['transfers'][main_index]['transfer_out'] }}</td>
@@ -137,7 +137,7 @@
                                             {% endif %}
                                             
 
-                                            {% if data['transfers']|length > 1 and main_index <= data['transfers']|length %}
+                                            {% if data['transfers']|length > 1 and main_index < data['transfers']|length %}
                                                 <td>{{ transfer['transfer_in'] }}</td>
                                                 <td>{{ transfer['location_in'] }}</td>
                                                 <td>{{ transfer['transfer_out'] }}</td>
