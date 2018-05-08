@@ -27,47 +27,12 @@
                                 <div class="row">
                                 <div class="col-md-6">
                                      <div class="form-horizontal">
-                                        {{ form_tools.typeahead('Employee Name','emp','','',path('hris_workforce_employee_ajax_get'),4,7)}}
-                                        {{ form_tools.group_select('Department','department',dept_opts, dept_id,4,7)}} 
-                                        {{ form_tools.group_select('Position','job_title', title_opts, '',4,7) }}
-                                        {{ form_tools.group_select('Rank','job_level', level_opts, '',4,7) }}
-                                        {{ form_tools.group_select('Office/Branch','location', location_opts, '',4,7) }}
-                                        {{ form_tools.group_checkbox_set('Gender','gender',gender_opts, '',4,7) }}
+                                        {{ form_tools.group_select('Employee','employee',user_opts, employee_id|default(''),4,7)}} 
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-horizontal">
-                                    {{ form_tools.group_date_range('daterange', 'Date Range', 'date_from', 'date_to', '', '', 4, 7) }}
-                                    {# {{ form_tools.group_checkbox_set('Day of Week','day',day_opts,'',4,7, true) }} #}
-                                        <div class="form-group">
-                                            <label class="col-md-4 control-label">Late Range</label>
-                                            <div class="col-md-7">
-                                                <div class="input-group">
-                                                    <input type="number" id="cform-late" name="late" class="form-control" value="0" min="0" max="600">
-                                                    <span class="input-group-addon">
-                                                    to </span>
-                                                    <input type="number" id="cform-late_to" name="late_to" class="form-control" value="0" min="0" max="600">
-                                                    <span class="input-group-addon">
-                                                    minute(s)</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-md-4 control-label">Undertime Range</label>
-                                        <div class="col-md-7">
-                                            <div class="input-group">
-                                                <input type="number" id="cform-undertime" name="undertime" class="form-control" value="0" min="0" max="600">
-                                                <span class="input-group-addon">
-                                                to </span>
-                                                <input type="number" id="cform-undertime_to" name="undertime_to" class="form-control" value="0" min="0" max="600">
-                                                <span class="input-group-addon">
-                                                minute(s)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{ form_tools.group_select('Attendance Status','att_status', att_status_opts, '',4,7) }}
+                                    {{ form.group_date('Date','date', date|default(''),3,4) }}
                                     </div>
                                 </div>
                                 </div>
@@ -79,20 +44,18 @@
                     <div class="col-md-12" style="margin-bottom: 10px;">
                         <button class="btn blue pull-left" id="filter_button" style="margin-right: 10px;">Apply Filters</button>    
                         <button class="btn red" id="clear_filter">Clear Filters</button> 
-                        <a href="{{ path('hris_report_attendance_csv') }}" id="csv_btn" class="btn green pull-right"><i class="fa fa-files-o"></i> Export CSV</a>
-                        <a href="{{ path('hris_report_attendance_print') }}" id="print_btn" class="btn green pull-right" style="margin-right: 10px;"><i class="fa fa-print"></i> Print</a>
                     </div>
                 </div>
-                <table class="table table-striped table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
                     <thead style="font-size: 11px !important;">
                         <tr style="font-size: 11px !important;">
-                            <th rowspan="2" style="font-size: 11px !important;">Employee</th>
+                            <th rowspan="2">Employee</th>
                             <th rowspan="2">Location</th>
                             <th rowspan="2">Date</th>
                             <th colspan="3">WORK</th>
                             <th colspan="3">BREAK</th>
                             <th colspan="5">TRANSFER</th>
-                            <th rowspan="2" style="width: 30px;">TOTAL WORKING HOURS</th>
+                            <th rowspan="2">TOTAL WORKING HOURS</th>
                         </tr>
                         <tr>
                             <th>Time In</th>
@@ -109,6 +72,69 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for data in data_att %}
+                            {% set ctr = 0 %}
+                            <tr>
+                                <td>{{ data['firstEntry']['employee_name'] }}</td>
+                                <td>{{ data['firstEntry']['location'] }}</td>
+                                <td>{{ data['firstEntry']['date'] }}</td>
+                                <td>{{ data['firstEntry']['time_in'] }}</td>
+                                <td>{{ data['lastEntry']['time_out'] }}</td>
+                                <td>{{ data['lastEntry']['total_work'] }}</td>
+                                <td>{{ data['breaks'][ctr]['break_in']|default('') }}</td>
+                                <td>{{ data['breaks'][ctr]['break_out']|default('') }}</td>
+                                <td>{{ data['breaks'][ctr]['total_break']|default('') }}</td>
+                                <td>{{ data['transfers'][ctr]['transfer_in']|default('') }}</td>
+                                <td>{{ data['transfers'][ctr]['location_in']|default('') }}</td>
+                                <td>{{ data['transfers'][ctr]['transfer_out']|default('') }}</td>
+                                <td>{{ data['transfers'][ctr]['location_out']|default('') }}</td>
+                                <td>{{ data['transfers'][ctr]['total_transfer']|default('') }}</td>
+                                <td>{{ data['totals']['grand_total']|default('') }}</td>
+                            </tr>
+                            {% if data['breaks']|length > 1 or data['transfers']|length > 1 %}
+                                <tr>
+                                {% if data['breaks']|length > 1 %}
+                                    {% set breakctr = 0 %}
+                                    {% for break in data['breaks'] %}
+                                        {% if breakctr > 0 %}
+                                            <td colspan="6"></td>
+                                            <td>{{ break['break_in'] }}</td>
+                                            <td>{{ break['break_out'] }}</td>
+                                            <td>{{ break['total_break'] }}</td>
+                                        {% endif %}    
+                                        {% set breakctr = breakctr + 1 %}
+                                    {% endfor %}
+                                {% else %}
+                                    <td colspan="9"></td>
+                                {% endif %}
+
+                                {% if data['transfers']|length > 1 %}
+                                    {% set transferctr = 0 %}
+                                    {% for transfer in data['transfers'] %}
+                                        {% if transferctr > 0 %}
+                                            <td>{{ transfer['transfer_in'] }}</td>
+                                            <td>{{ transfer['location_in'] }}</td>
+                                            <td>{{ transfer['transfer_out'] }}</td>
+                                            <td>{{ transfer['location_out'] }}</td>
+                                            <td>{{ transfer['total_transfer'] }}</td>
+                                        {% endif %}    
+                                        {% set transferctr = transferctr + 1 %}
+                                    {% endfor %}
+                                {% else %}
+                                    <td colspan="5"></td>
+                                {% endif %}
+                                <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6"></td>
+                                    <td colspan="2" class="text-right">TOTAL BREAK</td>
+                                    <td>{{ data['totals']['break'] }}</td>
+                                    <td colspan="4" class="text-right">TOTAL TRANSFER</td>
+                                    <td>{{ data['totals']['transfer'] }}</td>
+                                    <td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
                     </tbody>
                 </table>
             
@@ -123,10 +149,6 @@
 
 
 $(document).ready(function() {
-
-
-
-
     var dTable;
     var path;
     var id;
@@ -138,30 +160,9 @@ $(document).ready(function() {
     date_from = null;
     id = null;
     department = null;
-    path = "{{ path('hris_report_attendance_ajax_grid', { 'id' : 'ID', 'department' : 'DEPARTMENT', 'date_from' : 'DFROM', 'date_to' : 'DTO'} ) }}";
-    path = path.replace('ID', id);
-    path = path.replace('DEPARTMENT', department)
-    path = path.replace('DFROM', date_from);
-    path = path.replace('DTO', date_to);
 
-    dTable = $('#list_table').dataTable({
-        "bProcessing": true,
-        "bServerSide": false,
-        // "sAjaxSource": path,
-        "bAutoWidth" : false,
-        "iDisplayLength": 10,
-        "sPaginationType": "bootstrap",
-        "oLanguage": {
-            "sLengthMenu": "_MENU_ records",
-            "oPaginate": {
-                "sPrevious": "Prev",
-                "sNext": "Next"
-            }
-        },
-        "aoColumnDefs": [
-            {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
-        ]
-    });
+
+
 
     $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
     $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
@@ -190,7 +191,15 @@ $(document).ready(function() {
         location.reload();
     });
     $('#filter_button').click(function (){
+        var employee_id = $('#cform-employee').val();
+        var pos_loc_id = "0";
+        var date = $('#cform-date').val().replace('/','-').replace('/','-');
+        var area_id = "0";
 
+        var url = "{{ path('hris_report_attendance_index', { employee_id: ':employee_id', area_id: ':area_id', pos_loc_id: ':pos_loc_id', date: ':date' }) }}";
+        url = url.replace(":employee_id", employee_id).replace(':area_id', area_id).replace(':pos_loc_id', pos_loc_id).replace(':date', date);
+            
+        location.replace(url);
 
     });
 });

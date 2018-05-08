@@ -5,39 +5,12 @@ hris_report_homepage:
 
 
 ## Attendace Reports
-
+# ($employee_id = null, $area_id= null, $pos_loc_id= null, $date_from= null, $date_to= null)
+    
 hris_report_attendance_index:
-    path:     /attendance
+    path:     /attendance/{employee_id}/{area_id}/{pos_loc_id}/{date}
     methods:  [GET]
-    defaults: { _controller: HrisReportBundle:AttendanceReport:index }
-
-hris_report_attendance_grid:
-    path:     /attendance/grid
-    methods:  [GET]
-    defaults: { _controller: HrisReportBundle:AttendanceReport:grid }
-
-hris_report_attendance_print:
-    path:     /attendance/print/{id}/{date_from}/{date_to}/{department}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
-    methods:  [GET]
-    defaults: { _controller: HrisReportBundle:AttendanceReport:print, id: null, date_from: null, date_to: null, department: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
-
-hris_report_attendance_csv:
-    path:     /attendance/csv/{id}/{date_from}/{date_to}/{department}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
-    methods:  [GET]
-    defaults: { _controller: HrisReportBundle:AttendanceReport:csv, id: null, date_from: null, date_to: null, department: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
-
-
-hris_report_attendance_view:
-    path:     /attendance/view
-    defaults: { _controller: HrisReportBundle:AttendanceReport:view }
-
-hris_report_attendance_ajax_grid:
-    path:    /attendances/ajax/{id}/{department}/{date_from}/{date_to}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
-    defaults: { _controller: HrisReportBundle:AttendanceReport:gridAttendancesReport,id: null,department: null, date_from: null, date_to: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
-
-hris_report_attendance_ajax:
-    path:    /attendance/{id}/{date_from}/{date_to}/{position}/{rank}/{gender}/{days}/{late}/{late_to}/{undertime}/{undertime_to}/{status}/{location}
-    defaults: { _controller: HrisReportBundle:AttendanceReport:gridAttendanceReport,id: null,department: null, date_from: null, date_to: null, position: null, rank: null, gender: null, days: null, late: null, late_to: null, undertime: null, undertime_to: null, status: null, location: null }
+    defaults: { _controller: HrisReportBundle:AttendanceReport:index, employee_id: null, area_id: null, pos_loc_id: null, date: null }
 
 ## Regular Employees Report
 

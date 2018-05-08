@@ -8,7 +8,7 @@ gist_menu:
         - GistAccountingBundle
         - GistConfigurationBundle
         - HrisToolsBundle
-#        - HrisReportBundle
+        - HrisReportBundle
 gist_user:
     acl_entries:
         - id: HrisDashboardBundle
