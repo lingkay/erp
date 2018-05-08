@@ -1,4 +1,7 @@
+parameters:
+#    hris_workforce_management.example.class: Hris\WorkforceBundle\Example
+
 services:
-#    hris_report.example:
-#        class: Hris\ReportBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+    attendance_report_manager:
+        class: Hris\ReportBundle\Model\AttendanceReportManager
+        arguments: [ "@doctrine.orm.entity_manager" ]
