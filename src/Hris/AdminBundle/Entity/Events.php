@@ -120,7 +120,7 @@ class Events
         }
         else
         {
-            return $this->date_from->format('F d, Y');
+            return $this->date_from->format('F d, Y g:i A');
         }
     }
 
@@ -143,7 +143,7 @@ class Events
         }
         else
         {
-            return $this->date_to->format('F d, Y');
+            return $this->date_to->format('F d, Y g:i A');
         }
     }
 

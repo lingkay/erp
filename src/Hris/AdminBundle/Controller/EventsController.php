@@ -49,8 +49,8 @@ class EventsController extends CrudController
         }
         else
         {
-            $start = new DateTime($data['date_from'].'12:00 AM');//data[start]
-            $end = new DateTime($data['date_to'].'11:59 PM');
+            $start = new DateTime($data['date_from'].$data['start']);//data[start]
+            $end = new DateTime($data['date_to'].$data['end']);
 
             $o->setDateFrom($start);
             $o->setDateTo($end);
