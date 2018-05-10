@@ -39,31 +39,31 @@
                         </div>
                         <div id="scheduled">
                             {{ form.group_date('Start Date','date_from', object.getDateFrom|date('m/d/Y'),3,4) }}
-                             {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
-                            {#<div class="form-group">#}
-                                    {#<label class="col-md-3 control-label">Start Time</label>#}
-                                    {#<div class ="col-md-4">#}
-                                        {#<div class="input-group">#}
-                                            {#<input id="start_time" type="text" class="form-control timepicker timepicker-no-seconds start_time" name="start" placeholder="Start" value="" readonly>#}
-                                            {#<span class="input-group-btn">#}
-                                                {#<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>#}
-                                            {#</span>#}
-                                        {#</div>#}
-                                    {#</div>#}
-                                {#</div>#}
+                            {{ form.hidden('csrf_token',app.session.get('csrf_token')) }}
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Start Time</label>
+                                <div class ="col-md-4">
+                                    <div class="input-group">
+                                        <input id="start" type="text" class="form-control timepicker timepicker-no-seconds" name="start" placeholder="Start" value="{{ object.getDateFrom|date('g:i A') }}" readonly>
+                                        <span class="input-group-btn">
+                                            <button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
 
                             {{ form.group_date('End Date','date_to', object.getDateTo|date('m/d/Y'),3,4) }}
-                             {#<div class="form-group">#}
-                                    {#<label class="col-md-3 control-label">End Time</label>#}
-                                    {#<div class ="col-md-4">#}
-                                        {#<div class="input-group">#}
-                                            {#<input id="end_time" type="text" class="form-control timepicker timepicker-no-seconds end_time" name="end" placeholder="End" value="" readonly>#}
-                                            {#<span class="input-group-btn">#}
-                                                {#<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>#}
-                                            {#</span>#}
-                                        {#</div>#}
-                                    {#</div>#}
-                                {#</div>#}
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">End Time</label>
+                                <div class ="col-md-4">
+                                    <div class="input-group">
+                                        <input id="end" type="text" class="form-control timepicker timepicker-no-seconds" name="end" placeholder="End" value="{{ object.getDateTo|date('g:i A') }}" readonly>
+                                        <span class="input-group-btn">
+                                            <button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                             {{ form.group_select('Event Type', 'holiday_type', holiday_opts, '', 3, 4) }}
                         </div>
                         <div id="all_day">
@@ -115,15 +115,17 @@ $(document).ready( function() {
 
     $('#cform-date_from').datepicker({
         autoclose: true,
-        startDate: new Date(),
+        // startDate: new Date(),
     });
 
-     $('#cform-date_from').datepicker().on('changeDate', function (ev) {
-         $('#cform-date_to').val($('#cform-date_from').val());
-         $('#cform-date_to').datepicker({
-            todayHighlight: false,
-            startDate: $('#cform-date_from').val(),
-        });
+    $('#cform-date_from').datepicker().on('changeDate', function (ev) {
+        if ($('#cform-date_from').val() > $('#cform-date_to').val()){
+            $('#cform-date_to').val($('#cform-date_from').val());
+            $('#cform-date_to').datepicker({
+                todayHighlight: false,
+                startDate: $('#cform-date_from').val(),
+            });
+        }
     });
 
     $('#start_time').on('change', function () {
@@ -186,6 +188,37 @@ $(document).ready( function() {
         }
     });
 
+    jQuery.validator.addMethod("dateGreaterThan", function(value, element, params) {
+        if ($(params[0]).val() != '') {
+            if (value < $(params[0]).val()) {
+                return false;
+            } else{
+                return true;
+            };
+        };
+    },'Must be greater than {2}.');
+
+    jQuery.validator.addMethod("timeGreaterThan", function(value, element, params) {
+        var start = moment($(params[2]).val(), "HH:mm a");
+        var end = moment(value, "HH:mm a");
+        if ($(params[2]).val() != '') {
+            if ($(params[0]).val() == $(params[1]).val()) {
+                if (start >= end) {
+                    return false;
+                } else{
+                    return true;
+                };
+                
+            } else {
+                return true;
+            };
+            // if ($(params[0]).val() == $(params[1]).val()) {
+            //     return value > $(params[2]).val();
+            // }
+        };
+        // return true;
+    },'Must be greater than {3}.');
+
     // validate form elements
     $(".form-horizontal").validate({
         onfocusout: function(element) {
@@ -197,7 +230,15 @@ $(document).ready( function() {
             rate_type: "required",
             is_paid: "required",
             date_from: "required",
-            date_to: "required",
+            date_to: {
+                required: true,
+                dateGreaterThan: ["#cform-date_from", "#cform-date_to", "Start Date"]
+            },
+            start: "required",
+            end: {
+                required: true,
+                timeGreaterThan: ["#cform-date_from", "#cform-date_to", "#start", "Start Time"]
+            }
         },
         messages: {
             event_name: "Event name cannot be blank.",
