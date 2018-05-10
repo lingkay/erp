@@ -16,7 +16,7 @@
                             {{form.group_text('Name', 'name', object.getName|default(''), 3, 4, readonly)}}
                             {{ form.group_select('Matrix Value Type', 'amt_type', amt_opts, object.getIsAmountPercent|default('0'), 3, 4, readonly) }}
                             {{ form.group_checkbox('Retroactive','flag_retroactive', 'flag_retroactive', '',object.getIsRetroActive|default(false),3,4, false) }}
-                            <a href="javascript:void(0)" class="btn default green add-matrix-field" style="margin: 0">Add Entry</a>
+
                             <table class="table table-striped table-bordered table-hover ignore" style="margin-top: 20px;" id="list_table">
                                 <thead>
                                 <tr>
@@ -27,11 +27,20 @@
                                 </tr>
                                 </thead>
                                 <tbody id="matrix_tbody">
+                                <tr>
+                                    <td>{{form.group_number('', 'add_from', '', 3, 12, readonly)}}</td>
+                                    <td>{{form.group_number('', 'add_to', '', 3, 12, readonly)}}</td>
+                                    <td>{{form.group_number('', 'add_amount', '', 3, 12, readonly)}}</td>
+                                    <td><a href="javascript:void(0)" class="btn btn-sm default green  ignore" id="add_entry">Add</a></td>
+                                </tr>
+                                <tr id="require_fields" style="display: none;">
+                                    <td  class="text-center alert alert-danger" colspan="4">All fields are required</td>
+                                </tr>
                                 {% for e in object.getEntries %}
                                     <tr>
-                                        <td><input type="number" name="from[]" class="form-control from text-right ignore" value="{{ e.getAmountFrom }}" min="1"></td>
-                                        <td><input type="number" name="to[]" class="form-control to text-right ignore" value="{{ e.getAmountTo }}" min="1"></td>
-                                        <td><input type="number" name="amount[]" class="form-control amount text-right ignore" value="{{ e.getTaxAmount }}" min="1"></td>
+                                        <td><input type="number" name="from[]" class="form-control from text-right ignore" value="{{ e.getAmountFrom }}" min="1" readonly></td>
+                                        <td><input type="number" name="to[]" class="form-control to text-right ignore" value="{{ e.getAmountTo }}" min="1" readonly></td>
+                                        <td><input type="number" name="amount[]" class="form-control amount text-right ignore" value="{{ e.getTaxAmount }}" min="1" readonly></td>
                                         <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
                                     </tr>
                                 {% endfor %}
@@ -60,10 +69,14 @@
 
         function appendRowFields()
         {
+            var add_from = $('input[name="add_from"]').val();
+            var add_to = $('input[name="add_to"]').val();
+            var add_amount = $('input[name="add_amount"]').val();
+
             var field = '<tr>';
-            field += '<td><input type="number" name="from[]" class="form-control from text-right ignore" min="1"></td>';
-            field += '<td><input type="number" name="to[]" class="form-control to text-right ignore" min="1"></td>';
-            field += '<td><input type="number" name="amount[]" class="form-control amount text-right ignore" min="1"></td>';
+            field += '<td><input type="number" name="from[]" value="'+ add_from +'" class="form-control from text-right ignore" min="1" readonly></td>';
+            field += '<td><input type="number" name="to[]" value="'+ add_to +'" class="form-control to text-right ignore" min="1" readonly></td>';
+            field += '<td><input type="number" name="amount[]" value="'+ add_amount +'" class="form-control amount text-right ignore" min="1" readonly></td>';
             field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row">Remove</a></td>';
             field += '</tr>';
 
@@ -140,34 +153,39 @@
                     tax: "Tax cannot be blank.",
                 },
                 submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+
+            $("#add_entry").on('click',function(){
+                if($('input[name="add_amount"]').val() == '' || $('input[name="add_to"]').val() == '' || $('input[name="add_amount"]').val() == ''){
+                    $('#require_fields td').html("All fields are required");
+                    $('#require_fields').show();
+                } else{
                     var contents = {};
                     var duplicates = false;
                     $("#list_table tbody td [name^=amount]").each(function() {
                         var tdContent = $(this).val() * 1.00;
-                        if (contents[tdContent.toFixed(2)]) {
+                        if (tdContent == $('input[name="add_amount"]').val()) {
                             duplicates = true;
                             return false;
                         }
-                        contents[tdContent.toFixed(2)] = true;
                     });
 
-                    if (duplicates)
-                    {
-                        toastr['error']('Check matrix table. Duplicate value entry!', 'Error');
+                    if (duplicates) {
+                        $('#require_fields td').html("Check matrix table. Duplicate value entry!");
+                        $('#require_fields').show();
                         return false;
                     }
-                    else
-                    {
-                        form.submit();
+                    else {
+                        appendRowFields();
+                        $('#require_fields').hide();
+                        $('input[name="add_from"]').val("");
+                        $('input[name="add_to"]').val("");
+                        $('input[name="add_amount"]').val("");
                     }
-
-
+                    
                 }
-            });
-
-            var add_button = $(".add-matrix-field");
-            $(add_button).on('click',function(){
-                appendRowFields();
             });
 
             $(document).on("click",".remove_row", function(e){
