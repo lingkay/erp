@@ -21,6 +21,8 @@ class ScheduleEntry
     const TYPE_SICK_LEAVE = 'Sick Leave';
     const TYPE_DAY_OFF = 'Day-off';
     const TYPE_TRAINING = 'Training';
+    const TYPE_OFFICE = 'Office';
+    const TYPE_OTHER_AREA = 'Other Area';
 
     use HasGeneratedID;
 
