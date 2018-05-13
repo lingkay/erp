@@ -86,6 +86,7 @@ class POSAttendanceController extends CrudController
                     'user_name' => $posAttendance->getEmployee()->getDisplayName(),
                     'entry_id' => $posAttendance->getID(),
                     'datetime' => $posAttendance->getDateDisplay(),
+                    'datetime_24' => $posAttendance->getDateDisplay24(),
                     'status' => $posAttendance->getStatus(),
                     'type' => $posAttendance->getType()
                 );
@@ -123,6 +124,7 @@ class POSAttendanceController extends CrudController
                     'user_name' => $posAttendance->getEmployee()->getDisplayName(),
                     'entry_id' => $posAttendance->getID(),
                     'datetime' => $posAttendance->getDateDisplay(),
+                    'datetime_24' => $posAttendance->getDateDisplay24(),
                     'status' => $posAttendance->getStatus(),
                     'type' => $posAttendance->getType()
                 );
