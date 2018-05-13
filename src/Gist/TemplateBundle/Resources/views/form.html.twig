@@ -542,6 +542,16 @@
     </div>
 {% endmacro %}
 
+{% macro group_time_no_step_no_label(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
+    <div class="form-group">
+        <div class ="col-md-{{ body_size }}">
+            <div class="input-group">
+                <input id="{{ prefix }}form-{{ name }}" type="text" class="form-control timepicker timepicker-no-seconds_step" name="{{ name }}" placeholder="{{ label }}" value="{{ value }}">
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
 {% macro group_day(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 {% import _self as self %}
 {% if readonly %}

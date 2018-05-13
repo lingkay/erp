@@ -61,7 +61,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-3" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;" id="scheduler_div">
+                    <div class="col-md-4" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px;" id="scheduler_div">
                         <br>
                         {% for l in locations%}
                             <div class="row_location" id="location_{{ l.getID|default(0) }}">
@@ -78,7 +78,9 @@
                                         <div class="row row_emp" id="row_emp_{{ l.getID|default(0) }}_{{ counter }}">
                                             <div class="col-md-12">
                                                 <input type="hidden" class="entry_id" value="0">
-                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 6, false) }}
+                                                {{ form.group_time_no_step_no_label('', 'start[]', '', 0,3)}}
+                                                {{ form.group_time_no_step_no_label('', 'end[]', '', 0,3)}}
                                                 <div style="margin-top: 35px;"></div>
                                             </div>
                                         </div>
@@ -90,7 +92,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="col-md-5" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px; width: 500px !important; margin-left: 40px;" id="other_scheduler">
+                    <div class="col-md-3" style="overflow-y: scroll; min-height: 450px; max-height: 460px !important; margin-top: 20px; margin-left: 40px;" id="other_scheduler">
                         <br>
                         <div class="row_location">
                             <input type="hidden" class="type" value="Sick Leave">
@@ -387,6 +389,11 @@
         $(document).ready(function() {
             var dTable;
             var schedule_id = $('#schedule_id').val();
+
+            $('.timepicker-no-seconds_step').timepicker({
+                autoclose: true,
+                minuteStep: 1
+            });
 
             $(document).on("click",".remove_row", function(e){
                 e.preventDefault();
