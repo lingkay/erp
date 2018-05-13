@@ -320,6 +320,7 @@ class ScheduleController extends Controller
             $scheduleEntry->setSchedule($schedule);
             $scheduleEntry->setPOSLocation($pos_location);
             $scheduleEntry->setType($type);
+            $scheduleEntry->setTime(new DateTime());
 
             $em->persist($scheduleEntry);
             $em->flush();

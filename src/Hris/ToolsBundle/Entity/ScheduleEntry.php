@@ -47,6 +47,9 @@ class ScheduleEntry
     /** @ORM\Column(type="string", length=50) */
     protected $type;
 
+    /** @ORM\Column(type="time", nullable=true) */
+    protected $time;
+
     public function __construct()
     {
 
@@ -103,5 +106,17 @@ class ScheduleEntry
     public function getEmployee()
     {
         return $this->employee;
+    }
+
+    public function setTime($time)
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    public function getTime()
+    {
+        return $this->time;
     }
 }
