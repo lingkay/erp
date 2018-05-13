@@ -78,9 +78,11 @@
                                         <div class="row row_emp" id="row_emp_{{ l.getID|default(0) }}_{{ counter }}">
                                             <div class="col-md-12">
                                                 <input type="hidden" class="entry_id" value="0">
-                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 6, false) }}
-                                                {{ form.group_time_no_step_no_label('', 'start[]', '', 0,3)}}
-                                                {{ form.group_time_no_step_no_label('', 'end[]', '', 0,3)}}
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
+                                                <!-- KRIS UNCOMMENT MO LNG UNG DALAWA SA BABA PERO UPDATE MO CSS PARA PANTAY SILA -->
+                                                {#{{ form.group_time_no_step_no_label('', 'start[]', '', 0,3)}}
+                                                {{ form.group_time_no_step_no_label('', 'end[]', '', 0,3)}}#}
+                                                <!-- ADD A SAVE BUTTON HERE -->
                                                 <div style="margin-top: 35px;"></div>
                                             </div>
                                         </div>
