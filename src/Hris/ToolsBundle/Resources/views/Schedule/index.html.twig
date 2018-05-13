@@ -220,6 +220,70 @@
                         </div>
                         <br>
                         <br>
+                        <div class="row_location">
+                            <input type="hidden" class="type" value="Office">
+                            <input type="hidden" class="location_id" value="0">
+                            <span style="font-size: 16px;">Office <a href="javascript:void(0)" class="btn btn-xs default green add-office-field" style="margin=0"><i class="fa fa-plus"></i> Add Employee</a></span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                                <thead>
+                                <tr style="font-size: 11px !important;">
+                                    <th style="font-size: 11px !important;">Employee</th>
+                                    <th style="font-size: 11px !important;" width="25%"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="office_tbody">
+                                {% for se in schedule.getEntries|default('') %}
+                                    {% if se.getType == 'Office' %}
+                                        <tr class="row_emp">
+                                            <td>
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                            </td>
+                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row_location">
+                            <input type="hidden" class="type" value="Other Area">
+                            <input type="hidden" class="location_id" value="0">
+                            <span style="font-size: 16px;">Other Area <a href="javascript:void(0)" class="btn btn-xs default green add-oa-field" style="margin=0"><i class="fa fa-plus"></i> Add Employee</a></span>
+                            <br>
+                            <hr style="border-top: 1px solid #000 !important;">
+                            <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
+                                <thead>
+                                <tr style="font-size: 11px !important;">
+                                    <th style="font-size: 11px !important;">Employee</th>
+                                    <th style="font-size: 11px !important;" width="25%"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="oa_tbody">
+                                {% for se in schedule.getEntries|default('') %}
+                                    {% if se.getType == 'Other Area' %}
+                                        <tr class="row_emp">
+                                            <td>
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                            </td>
+                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                            <br>
+                        </div>
+                        <br>
+                        <br>
                     </div>
                 </div>
                 {#END PORTLET BODY#}
@@ -391,9 +455,7 @@
                     $(this).datepicker('setDate',new Date());
                 }
 
-                var path = "{{ path('hris_tools_schedule_index', {
-                    'date' : 'DATE'}
-                ) }}";
+                var path = "{{ path('hris_tools_schedule_index', { 'date' : 'DATE'} ) }}";
 
                 path = path.replace('DATE', $('#cform-date').val().replace('/','-').replace('/','-'));
                 location.replace(path);
@@ -431,6 +493,8 @@
             var add_vl_button = $(".add-vl-field");
             var add_t_button = $(".add-t-field");
             var add_do_button = $(".add-do-field");
+            var add_office_button = $(".add-office-field");
+            var add_oa_button = $(".add-oa-field");
             $(add_sl_button).on('click',function(){
                 var field = '<tr class="row_emp">';
                 field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
@@ -468,6 +532,26 @@
                 field += '</tr>';
 
                 $('#do_tbody').append(field);
+                $('.employee_selector').select2();
+            });
+
+            $(add_office_button).on('click',function(){
+                var field = '<tr class="row_emp">';
+                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
+                field += '</tr>';
+
+                $('#office_tbody').append(field);
+                $('.employee_selector').select2();
+            });
+
+            $(add_oa_button).on('click',function(){
+                var field = '<tr class="row_emp">';
+                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
+                field += '</tr>';
+
+                $('#oa_tbody').append(field);
                 $('.employee_selector').select2();
             });
         });
