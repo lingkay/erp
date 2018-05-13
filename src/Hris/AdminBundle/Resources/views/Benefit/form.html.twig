@@ -127,6 +127,40 @@ $(document).ready( function() {
         }
     });
 
+    jQuery.validator.addMethod("checkEmployeeShare", function(value, element) {
+        if (value) {
+            if (value > 100 || value < 0) {
+                return false
+                
+            } else {
+                return true;
+            };
+        };
+    },'Invalid number range. Please enter value from 0-100.');
+
+    jQuery.validator.addMethod("checkEmployerShare", function(value, element) {
+        if (value) {
+            if (value > 100 || value < 0) {
+                return false
+                
+            } else {
+                return true;
+            };
+        };
+    },'Invalid number range. Please enter value from 0-100.');
+
+    jQuery.validator.addMethod("getSum", function(value, element, params) {
+        if ($(params[0]).val() != null && $(params[1]).val() != null) {
+            var total = parseFloat($(params[0]).val()) + parseFloat($(params[1]).val());
+            if (total != 100) {
+                return false
+                
+            } else {
+                return true;
+            };
+        };
+    },'Employee Share and Employer Share must have a total of 100%.');
+
     // var emp_opts = $("input[name='emp_opts']");
 
     // validate form elements
@@ -138,7 +172,17 @@ $(document).ready( function() {
             name: "required",
             characteristics: "required",
             'emp_opts[]': "required",
-            'gender[]': "required"
+            'gender[]': "required",
+            employee_share: {
+                required: true,
+                checkEmployeeShare: true,
+                getSum: ["#cform-employee_share", "#cform-employer_share"]
+            },
+            employer_share: {
+                required: true,
+                checkEmployerShare: true,
+                getSum: ["#cform-employee_share", "#cform-employer_share"]
+            },
         },
         messages: {
             name: "Name cannot be blank.",
@@ -146,30 +190,11 @@ $(document).ready( function() {
             'emp_opts[]': "Please select 1.",
             'gender[]': "Please select 1."
         },
-        // submitHandler: function(form) {
-        //     form.submit();
-        // }
+        submitHandler: function(form) {
+            form.submit();
+        }
     });
 
-    $('form').submit(function(e) {
-        if (parseFloat($('[name=employee_share]').val()) || parseFloat($('[name=employer_share]').val())){
-            if (parseFloat($('[name=employee_share]').val()) > 100 || parseFloat($('[name=employee_share]').val()) < 0){
-                alert('Invalid Employee Share number range. Please enter value from 0-100.');
-                e.preventDefault();
-            } else if (parseFloat($('[name=employer_share]').val()) > 100 || parseFloat($('[name=employer_share]').val()) < 0){
-                alert('Invalid Employer Share number range. Please enter value from 0-100.');
-                e.preventDefault();
-            } else {
-                var share_total = parseFloat($('[name=employee_share]').val()) + parseFloat($('[name=employer_share]').val());
-                if (share_total != 100){
-                    alert('Employee Share and Employer Share must have a total of 100%');
-                    e.preventDefault();
-                }
-            }
-        }
-        
-        
-    });
 });
 </script>
 {% endblock %}

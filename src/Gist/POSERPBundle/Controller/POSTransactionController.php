@@ -47,6 +47,15 @@ class POSTransactionController extends CrudController
         return $obj->getID();
     }
 
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('l', 'pos_location', 'getPOSLocation'),
+            $grid->newJoin('c', 'customer', 'getCustomer'),
+        );
+    }
+
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
@@ -54,7 +63,10 @@ class POSTransactionController extends CrudController
         return array(
             $grid->newColumn('Receipt Number', 'getTransDisplayId', 'trans_display_id'),
             $grid->newColumn('Transaction Date','getDateCreateFormatted','date_create'),
-            $grid->newColumn('Type', 'getTransactionModeFormatted', 'mode')
+            $grid->newColumn('Type', 'getTransactionModeFormatted', 'mode'),
+            $grid->newColumn('Amount', 'getCartOrigTotal', 'cart_orig_total'),
+            $grid->newColumn('Location', 'getName', 'name','l'),
+            $grid->newColumn('Customer', 'getNameFormatted', 'last_name','c'),
         );
     }
 
