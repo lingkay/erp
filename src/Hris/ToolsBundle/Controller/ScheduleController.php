@@ -78,10 +78,7 @@ class ScheduleController extends Controller
             }
 
             $params['existing_employees'] = $existingEmployees;
-
             $params['schedule'] = $schedule;
-
-
             $users = $em->getRepository('GistUserBundle:User')->findBy(array('area' => $user->getArea()->getID()));
             $user_opts = array();
             foreach ($users as $u) {
@@ -103,31 +100,22 @@ class ScheduleController extends Controller
                 }
             }
 
-
             $params['user_opts'] = array('0' => '-- Select Employee --') + $user_opts;
-
-
             $params['date_to_url'] = $dateFMTD->format("m-d-Y");
             $params['filterDate'] = $dateFMTD->format("m/d/Y");
-
             $params['employees_data'] = $this->getData($date, $dateFMTD);
-
             $params['list_title'] = $this->list_title;
             $params['prefix'] = $this->route_prefix;
-
-
             $twig_file = 'HrisToolsBundle:Schedule:index.html.twig';
             return $this->render($twig_file, $params);
         } catch (\Exception $e) {
-            //return $this->redirect('/');
-            return $e->getMessage();
+            return $this->redirect('/');
         }
     }
 
     public function getData($dateSrc, $dateFMTD)
     {
         $date = DateTime::createFromFormat('m-d-Y', $dateSrc);
-        //$date->modify('-1 day');
         $list_opts = [];
         $em = $this->getDoctrine()->getManager();
         $allEmployees = $em->getRepository('GistUserBundle:User')->findBy(array('area' => $this->getUser()->getArea()->getID()));
@@ -149,8 +137,6 @@ class ScheduleController extends Controller
             }
 
             $brandTotalProfit = $totalSales - $totalCost;
-
-//            if ($totalSales > 0) {
             $list_opts[] = array(
                 'date' => $date->format('Y-m-d'),
                 'employee_id' => $employeeId,
@@ -161,7 +147,6 @@ class ScheduleController extends Controller
                 'total_cost' => number_format($totalCost, 2, '.', ','),
                 'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
             );
-//            }
         }
 
         // GET users with "other area"
@@ -185,13 +170,10 @@ class ScheduleController extends Controller
                                 'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
                             );
                         }
-                        //$list_opts[$entry->getID()] = $entry->getEmployee()->getDisplayName();
                     }
                 }
             }
         }
-
-        //array_unique($list_opts);
 
         if (count($allEmployees) > 0 || $entriesToday > 0) {
             return $list_opts;
@@ -252,6 +234,26 @@ class ScheduleController extends Controller
         }
     }
 
+    public function checkIfUserAlreadyAssignedInOtherArea($user_id, $dateFMTD)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
+        $hits = 0;
+        if ($schedulesToday) {
+            foreach ($schedulesToday as $st) {
+                if ($st->getEntries()) {
+                    foreach ($st->getEntries() as $entry) {
+                        if ($entry->getEmployee()->getID() == $user_id && $entry->getType() != 'Other Area') {
+                            $hits++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $hits;
+    }
+
     public function assignEmployeeAction($user_id, $date, $schedule_id, $location_id, $type = ScheduleEntry::TYPE_WORK)
     {
         $dateFMTD = DateTime::createFromFormat('m-d-Y', $date);
@@ -281,19 +283,7 @@ class ScheduleController extends Controller
                     return new JsonResponse($list_opts);
             }
 
-            $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
-            $hits = 0;
-            if ($schedulesToday) {
-                foreach ($schedulesToday as $st) {
-                    if ($st->getEntries()) {
-                        foreach ($st->getEntries() as $entry) {
-                            if ($entry->getEmployee()->getID() == $user->getID() && $entry->getType() == 'Other Area') {
-                                $hits++;
-                            }
-                        }
-                    }
-                }
-            }
+            $hits = $this->checkIfUserAlreadyAssignedInOtherArea($user->getID(), $dateFMTD);
 
             if ($hits > 0) {
                 $list_opts[] = array(
@@ -354,7 +344,7 @@ class ScheduleController extends Controller
             $list_opts = [];
             $list_opts[] = array(
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'Cannot assign employee!'
             );
 
             return new JsonResponse($list_opts);
