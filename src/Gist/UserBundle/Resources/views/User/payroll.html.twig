@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN FORM-->
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Type</label>
+                    <div class="col-md-4">
+                        {{ form.radio_set('payroll_type',payroll_type,object.getPayrollType|default(0)) }}
+                    </div>
+                </div>
+                {% if object.getPayrollType == 1 %}
+                    {% set payroll_type_stat = null %}
+                {% else %}
+                    {% set payroll_type_stat = "hidden" %}
+                {% endif %}
+                <div id="form-constant" {{payroll_type_stat}}>
+                    <table class="table table-bordered" style="margin-top: 20px;" id="payroll_sched_table">
+                        <thead>
+                            <tr>
+                                <th width="40px">Day</th>
+                                <th width="40px">From</th>
+                                <th width="40px">To</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix_tbody">
+                        {# error here #}
+                        {% if object.getPayrollSchedule is not empty %}
+                            {% for e in object.getPayrollSchedule %}
+                                <tr>
+                                    <td>{{ form.group_text('', 'day[]', e.getDayOfWeek|default(''), 3, 12, true) }}</td>
+                                    <td>{{ form.group_time_no_step('', 'from[]', e.getTimeFrom|date('g:i A'), 3, 12)}}</td>
+                                    <td>{{ form.group_time_no_step('', 'to[]', e.getTimeTo|date('g:i A'), 3, 12)}}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>{{ form.group_text('', 'day[]', 'Sunday', 3, 12, true) }}</td>
+                                <td>{{ form.group_time_no_step('', 'from[]', ''|date('g:i A'), 3, 12)}}</td>
+                                <td>{{ form.group_time_no_step('', 'to[]', ''|date('g:i A'), 3, 12)}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form.group_text('', 'day[]', 'Monday', 3, 12, true) }}</td>
+                                <td>{{ form.group_time_no_step('', 'from[]', ''|date('g:i A'), 3, 12)}}</td>
+                                <td>{{ form.group_time_no_step('', 'to[]', ''|date('g:i A'), 3, 12)}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form.group_text('', 'day[]', 'Tuesday', 3, 12, true) }}</td>
+                                <td>{{ form.group_time_no_step('', 'from[]', ''|date('g:i A'), 3, 12)}}</td>
+                                <td>{{ form.group_time_no_step('', 'to[]', ''|date('g:i A'), 3, 12)}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form.group_text('', 'day[]', 'Wednesday', 3, 12, true) }}</td>
+                                <td>{{ form.group_time_no_step('', 'from[]', ''|date('g:i A'), 3, 12)}}</td>
+                                <td>{{ form.group_time_no_step('', 'to[]', ''|date('g:i A'), 3, 12)}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form.group_text('', 'day[]', 'Thursday', 3, 12, true) }}</td>
+                                <td>{{ form.group_time_no_step('', 'from[]', ''|date('g:i A'), 3, 12)}}</td>
+                                <td>{{ form.group_time_no_step('', 'to[]', ''|date('g:i A'), 3, 12)}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form.group_text('', 'day[]', 'Friday', 3, 12, true) }}</td>
+                                <td>{{ form.group_time_no_step('', 'from[]', ''|date('g:i A'), 3, 12)}}</td>
+                                <td>{{ form.group_time_no_step('', 'to[]', ''|date('g:i A'), 3, 12)}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form.group_text('', 'day[]', 'Saturday', 3, 12, true) }}</td>
+                                <td>{{ form.group_time_no_step('', 'from[]', ''|date('g:i A'), 3, 12)}}</td>
+                                <td>{{ form.group_time_no_step('', 'to[]', ''|date('g:i A'), 3, 12)}}</td>
+                            </tr>
+                        {% endif %}
+                            <tr id="notif" style="display: none;">
+                                <td  class="text-center alert alert-danger" colspan="3">End time must not be earlier than start time.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-9">
+                    {% if not readonly %}
+                        <button type="submit" class="btn blue">Save</button>
+                    {% endif %}
+                    <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
+                </div>
+            </div>
+        <!-- END FORM-->
+    </div>
+</div>

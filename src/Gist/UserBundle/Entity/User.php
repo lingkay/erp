@@ -176,6 +176,13 @@ class User extends BaseUser
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $items_given;
 
+    /** @ORM\Column(type="boolean") */
+    protected $payroll_type;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="PayrollTypeTable", mappedBy="user", cascade={"persist"})
+     */
+    protected $payroll_schedule;
 
     public function __construct()
     {
@@ -663,7 +670,22 @@ class User extends BaseUser
         return $this;
     }
 
+    public function setPayrollType($payroll_type)
+    {
+        $this->payroll_type = $payroll_type;
 
+        return $this;
+    }
+
+    public function getPayrollType()
+    {
+        return $this->payroll_type;
+    }
+
+    public function getPayrollSchedule()
+    {
+        return $this->payroll_schedule;
+    }
 
     public function toData()
     {

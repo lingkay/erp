@@ -5,6 +5,7 @@ namespace Gist\UserBundle\Controller;
 use Gist\TemplateBundle\Model\CrudController;
 use Gist\UserBundle\Entity\User;
 use Gist\InventoryBundle\Model\Gallery;
+use Gist\UserBundle\Entity\PayrollTypeTable;
 use Gist\ValidationException;
 use DateTime;
 
@@ -143,7 +144,8 @@ class UserController extends CrudController
             $params['items_given'] = $items_given;
         }
         
-
+        $params['payroll_type'] = array(0 => 'Scheduled', 1=> 'Constant');
+        return $params;
 
         // user groups
         $ug_opts = array();
@@ -307,6 +309,9 @@ class UserController extends CrudController
             $o->setProfilePicture($media->getUpload($data['upl_profile_picture']));
         }
 
+        if (isset($data['payroll_type'])) {
+            $o->setPayrollType($data['payroll_type']);
+        }
 
         //parse items given
         if (isset($data['item_id'])) {
@@ -375,6 +380,32 @@ class UserController extends CrudController
             $um = $this->container->get('fos_user.user_manager');
             $o->setPlainPassword($data['pass1']);
             $um->updatePassword($o);
+        }
+    }
+
+    protected function hookPostSave($obj, $is_new = false)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $data = $this->getRequest()->request->all();
+        
+        $payrollTypeTable = $em->getRepository('GistUserBundle:PayrollTypeTable')->findBy(array('user'=>$obj->getID()));
+        if ($payrollTypeTable){
+            foreach ($payrollTypeTable as $entry) {
+                $em->remove($entry);
+                $em->flush();
+            }
+        }
+        
+        if ($data['payroll_type'] == "1") {
+            foreach ($data['to'] as $i => $timeTo) {
+                $payrollSchedule = new PayrollTypeTable();
+                $payrollSchedule->setUser($obj);
+                $payrollSchedule->setTimeFrom(new DateTime($data['from'][$i]));
+                $payrollSchedule->setTimeTo(new DateTime($data['to'][$i]));
+                $payrollSchedule->setDayOfWeek($data['day'][$i]);
+                $em->persist($payrollSchedule);
+                $em->flush();
+            }
         }
     }
 
