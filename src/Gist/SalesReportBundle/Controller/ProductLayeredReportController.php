@@ -485,12 +485,17 @@ class ProductLayeredReportController extends Controller
                     $transactionId = $transaction->getTransDisplayIdFormatted();
                     $totalSales = 0;
                     $totalCost = 0;
+                    $productTotalProfit = 0;
                     $transactionItems = $transaction->getItems();
 
                     //loop items and check if item's brand is the current loop's brand then add the cost
                     foreach ($transactionItems as $transactionItem) {
                         if (!$transactionItem->getReturned()) {
                             $totalSales += $transactionItem->getTotalAmount();
+
+                            if ($product_id == $transactionItem->getProductId()) {
+                                $productTotalProfit += $transactionItem->getOrigPrice();
+                            }
                         }
                     }
 
@@ -509,6 +514,7 @@ class ProductLayeredReportController extends Controller
                             'total_sales' => number_format($totalSales, 2, '.', ','),
                             'total_cost' => number_format($totalCost, 2, '.', ','),
                             'total_profit' => number_format($brandTotalProfit, 2, '.', ','),
+                            'product_total_profit' => number_format($productTotalProfit, 2, '.', ','),
                             'brand_id' => $brandObject->getID(),
                             'category_id' => $categoryObject->getID()
                         );
