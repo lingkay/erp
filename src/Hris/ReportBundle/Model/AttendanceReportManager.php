@@ -121,8 +121,12 @@ class AttendanceReportManager
                         $breaksArr[$breaksCtr]['break_out'] = $qb->getDate()->format('h:i A');
                         $date2 = $qb->getDate();
                         $diff = $date2->diff($date1);
-                        $breaksArr[$breaksCtr]['total_break'] = $diff->format('%h.%i');
-                        $totalBreakHRS += floatval($diff->format('%h.%i'));
+                        $hour= ($diff->h);
+                        $minutes= round(($diff->i/60),2);
+                        // $breaksArr[$breaksCtr]['total_break'] = $diff->format('%h.%i');
+                        // $totalBreakHRS += floatval($diff->format('%h.%i'));
+                        $breaksArr[$breaksCtr]['total_break'] = $hour+$minutes;
+                        $totalBreakHRS += floatval($hour+$minutes);
                         $breaksCtr++;
                         $date1 = '';
                         $date2 = '';
@@ -173,8 +177,10 @@ class AttendanceReportManager
                         $transferArr[$transferCtr]['location_out'] = $qb->getPOSLocation()->getName();
                         $date2 = $qb->getDate();
                         $diff = $date2->diff($date1);
-                        $transferArr[$transferCtr]['total_transfer'] = $diff->format('%h.%i');
-                        $totalTransferHRS += floatval($diff->format('%h.%i'));
+                        $hour= ($diff->h);
+                        $minutes= round(($diff->i/60),2);
+                        $transferArr[$transferCtr]['total_transfer'] = $hour+$minutes;
+                        $totalTransferHRS += floatval($hour+$minutes);
                         $transferCtr++;
                         $date1 = '';
                         $date2 = '';
@@ -216,8 +222,10 @@ class AttendanceReportManager
                     $mainArray['lastEntry']['time_out'] = $lastEntry[0]->getDate()->format('h:i A');
                     $mainWorkOUT_DATE = $lastEntry[0]->getDate();
                     $diff = $mainWorkOUT_DATE->diff($mainWorkIN_DATE);
-                    $mainArray['lastEntry']['total_work'] = $diff->format('%h.%i');
-                    $gt += floatval($diff->format('%h.%i'));
+                    $hour= ($diff->h);
+                    $minutes= round(($diff->i/60),2);
+                    $mainArray['lastEntry']['total_work'] = $hour+$minutes;
+                    $gt += floatval($hour+$minutes);
                 }   
                 $mainArray['totals']['grand_total'] = $gt;
 
