@@ -37,6 +37,10 @@
                         <a href="#tab_performance" data-toggle="tab">
                             Performance </a>
                     </li>
+                    <li>
+                        <a href="#tab_payroll" data-toggle="tab">
+                            Payroll </a>
+                    </li>
                 </ul>
                 <!-- END MAIN TABS -->
                 <div class="tab-content">
@@ -58,6 +62,9 @@
                     </div>
                     <div class="tab-pane" id="tab_performance">
                         {% include 'GistUserBundle:User:performance.html.twig' %}
+                    </div>
+                    <div class="tab-pane" id="tab_payroll">
+                        {% include 'GistUserBundle:User:payroll.html.twig' %}
                     </div>
     </form>
                     <!-- MORE FILES TAB -->
@@ -204,6 +211,20 @@ $(document).ready(function() {
     {
         updateApproverField();
     });
+
+    $('[name=payroll_type]').change(function() {
+        if($(this).val() == "1") {
+            $('#form-constant').show();
+        }
+        else {
+            $('#form-constant').hide();
+        }
+    });
+
+    $('.timepicker-no-seconds_step').timepicker({
+        autoclose: true,
+        minuteStep: 1
+    });
     
     // set default error and success elements
     jQuery.validator.setDefaults({
@@ -295,7 +316,26 @@ $(document).ready(function() {
                 }
             }
 
-            if(pass1.val() === pass2.val())
+            var invalid = false;
+            $('#payroll_sched_table tbody tr#notif').hide();
+            if ($('input[name=payroll_type]:checked').val() == "1") {
+                var col_num = 0;
+                $("#payroll_sched_table tbody td [name^=from]").each(function() {
+                    var time_from = moment($(this).val(), "HH:mm a");
+                    var time_to = moment($(this).closest('tr').find('input[name="to[]"]').val(), "HH:mm a");
+
+                    if (time_from >= time_to) {
+                        $('#payroll_sched_table tbody tr#notif').show();
+                        $(this).closest('tr').css("background-color", "#ffb2b2");
+                        invalid = true;
+                    } else {
+                        $(this).closest('tr').css("background-color", "#ffffff");
+                    }
+                    col_num++;
+                });
+            }
+
+            if (pass1.val() === pass2.val() && invalid == false)
             {
                 form.submit();
             }
