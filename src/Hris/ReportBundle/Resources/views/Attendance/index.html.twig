@@ -52,12 +52,16 @@
                             <th rowspan="2">Employee</th>
                             <th rowspan="2">Location</th>
                             <th rowspan="2">Date</th>
+                            <th colspan="3">SCHEDULE</th>
                             <th colspan="3">WORK</th>
                             <th colspan="3">BREAK</th>
                             <th colspan="5">TRANSFER</th>
                             <th rowspan="2">TOTAL WORKING HOURS</th>
                         </tr>
                         <tr>
+                            <th>Location</th>
+                            <th>Time In</th>
+                            <th>Time Out</th>
                             <th>Time In</th>
                             <th>Time Out</th>
                             <th>TOTAL</th>
@@ -78,11 +82,22 @@
                                 <td>{{ data['firstEntry']['employee_name'] }}</td>
                                 <td>{{ data['firstEntry']['location'] }}</td>
                                 <td>{{ data['firstEntry']['date'] }}</td>
+                                {% if data['schedEntry'] is defined %}
+                                    {% if data['schedEntry']['sched_type'] == "Work" %}
+                                        <td>{{ data['schedEntry']['sched_location'] }}</td>
+                                    {% else %}
+                                        <td>{{ data['schedEntry']['sched_type'] }}</td>
+                                    {% endif %}
+                                    <td></td>
+                                    <td></td>
+                                {% else %}
+                                    <td colspan="3" class="text-center">No Schedule</td>
+                                {% endif %}
                                 <td>{{ data['firstEntry']['time_in'] }}</td>
                                 <td>{{ data['lastEntry']['time_out'] }}</td>
                                 <td>{{ data['lastEntry']['total_work'] }}</td>
                                 {% if data['breaks']|length > 1 %}
-                                    <td colspan="2" class="text-right">TOTAL BREAK<br><a class="btn show_breakdown">Show</a></td>
+                                    <td colspan="2" class="text-right">TOTAL BREAK<br><a class="btn show_break">Show</a></td>
                                     <td>{{ data['totals']['break'] }}</td>
                                 {% else %}
                                     <td>{{ data['breaks'][ctr]['break_in']|default('') }}</td>
@@ -102,11 +117,10 @@
                                 <td>{{ data['totals']['grand_total']|default('') }}</td>
                             </tr>
                             {% if data['breaks']|length > 1 or data['transfers']|length > 1 %}
-                                {% set main_index = 1 %}
+                                {% set main_index = 0 %}
                                 {% set ext_ctr = 0 %}
-                                {% if data['breaks']|length > data['transfers']|length %}
+                                {% if data['breaks']|length >= data['transfers']|length %}
                                     {% for break in data['breaks'] %}
-                                        {# {% if ext_ctr > 0 %} #}
                                             <tr style="display:none;">
                                             {% if data['breaks']|length > 1 %}
                                                 <td colspan="6"></td>
@@ -116,7 +130,6 @@
                                             {% else %}
                                                 <td colspan="9"></td>
                                             {% endif %}
-                                            
 
                                             {% if data['transfers']|length > 1 and main_index < data['transfers']|length %}
                                                 <td>{{ data['transfers'][main_index]['transfer_in'] }}</td>
@@ -130,12 +143,10 @@
                                             <td></td>
                                             </tr>
                                             {% set main_index = main_index + 1 %}
-                                        {# {% endif %} #}
                                         {% set ext_ctr = ext_ctr + 1 %}
                                     {% endfor %}
                                 {% else %}
                                     {% for transfer in data['transfers'] %}
-                                        {# {% if ext_ctr > 0 %} #}
                                             <tr style="display:none;">
                                             {% if data['breaks']|length > 1 %}
                                                 <td colspan="6"></td>
@@ -145,7 +156,6 @@
                                             {% else %}
                                                 <td colspan="9"></td>
                                             {% endif %}
-                                            
 
                                             {% if data['transfers']|length > 1 and main_index < data['transfers']|length %}
                                                 <td>{{ transfer['transfer_in'] }}</td>
@@ -159,7 +169,6 @@
                                             <td></td>
                                             </tr>
                                             {% set main_index = main_index + 1 %}
-                                        {# {% endif %} #}
                                         {% set ext_ctr = ext_ctr + 1 %}
                                     {% endfor %}
                                 {% endif %}
@@ -241,9 +250,9 @@ $(document).ready(function() {
 
     });
 
-    $('.show_breakdown, .show_transfer').click(function(){
+    $('.show_break, .show_transfer').click(function(){
         $(this).closest('tr').nextUntil('tr.breakdown').slideToggle(1);
-        $(this).closest("tr").find(".show_breakdown").text(function(_, value){return value=='Hide'?'Show':'Hide'});
+        $(this).closest("tr").find(".show_break").text(function(_, value){return value=='Hide'?'Show':'Hide'});
         $(this).closest("tr").find(".show_transfer").text(function(_, value){return value=='Hide'?'Show':'Hide'});
     });
 });
