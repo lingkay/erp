@@ -56,11 +56,25 @@ class AttendanceReportManager
                 ->getQuery()
                 ->getResult();    
 
-
             foreach ($posAttendances as $posAttendance) {
                  $gt = 0;
                 $mainWorkIN_DATE = $posAttendance->getDate();
                 $mainWorkOUT_DATE = '';
+
+                //SCHEDULE
+                $querySchedule = $this->em->createQueryBuilder();
+                $querySchedule->from('HrisToolsBundle:ScheduleEntry', 'o')
+                    ->leftJoin('o.schedule', 's')
+                    ->where('o.employee = :employee')
+                        ->setParameter('employee', $posAttendance->getEmployee()->getID());
+
+                    $querySchedule->andWhere('s.date LIKE :date')
+                        ->setParameter('date', '%'.$date->format('Y-m-d').'%');
+
+                $schedule = $querySchedule->select('o')
+                    ->getQuery()
+                    ->getResult();
+
                 //MAIN ARRAY
                 $mainArray = [
                     'firstEntry' => [
@@ -83,6 +97,15 @@ class AttendanceReportManager
                         'grand_total' => 0
                     ]
                 ];
+
+                if ($schedule != null && $schedule != 'null' && $schedule != 0) {
+                    $mainArray += [
+                        'schedEntry' => [
+                            'sched_location' => $schedule[0]->getPOSLocation()->getName(),
+                            'sched_type' => $schedule[0]->getType(),
+                        ]
+                    ];
+                }
 
                 //BREAKS
                 $queryBreaks = $this->em->createQueryBuilder();
@@ -123,8 +146,6 @@ class AttendanceReportManager
                         $diff = $date2->diff($date1);
                         $hour= ($diff->h);
                         $minutes= round(($diff->i/60),2);
-                        // $breaksArr[$breaksCtr]['total_break'] = $diff->format('%h.%i');
-                        // $totalBreakHRS += floatval($diff->format('%h.%i'));
                         $breaksArr[$breaksCtr]['total_break'] = $hour+$minutes;
                         $totalBreakHRS += floatval($hour+$minutes);
                         $breaksCtr++;
@@ -138,18 +159,15 @@ class AttendanceReportManager
 
                 $mainArray['breaks'] = $breaksArr;    
 
-
                 //TRANSFERS
                 $queryTransfers = $this->em->createQueryBuilder();
                 $queryTransfers->from('HrisWorkforceBundle:Attendance', 'o')
                     ->where('o.type = \'TRANSFER\'')
                     ->andWhere('o.date LIKE :date')
                         ->setParameter('date', '%'.$date->format('Y-m-d').'%');
-                
 
                     $queryTransfers->andWhere('o.employee = :employee')
                         ->setParameter('employee', $posAttendance->getEmployee()->getID());
-                
 
                 if ($pos_loc_id != null && $pos_loc_id != 'null' && $pos_loc_id != 0) {
                     $queryTransfers->andWhere('o.pos_location = :pos_location')
@@ -232,9 +250,7 @@ class AttendanceReportManager
                 $list_opts[] = $mainArray;
             }   
 
-
             return $list_opts;
-            
 
         } catch (\Exception $e) {
             echo $e->getMessage();
