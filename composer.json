@@ -29,17 +29,13 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "sudo chown -R vagrant:vagrant /home/gist_erp2",
-            "sudo chmod -R 777 /home/gist_erp2",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "php app/console assetic:dump",
-            "php app/console cache:clear",
-            "sudo chown -R vagrant:vagrant /home/gist_erp2",
-            "sudo chmod -R 777 /home/gist_erp2"
+            "php app/console cache:clear"
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
