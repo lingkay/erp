@@ -17,3 +17,10 @@ hris_tools_schedule_get_location_entries:
     path:     /schedule/get/location_entries/{schedule_id}/{location_id}
     methods:  [GET]
     defaults: { _controller: HrisToolsBundle:Schedule:getLocationEntries,schedule_id: null, location_id: null }
+
+# WEEKLY SCHEDULE
+
+hris_tools_weekly_schedule_index:
+    path:     /schedule/week/view/{date}
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:WeeklySchedule:index,date: null }

@@ -1,0 +1,301 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form_tools %}
+
+{% block content %}
+<style type="text/css">
+.datepicker-days tr:hover {
+    background-color: #808080;
+}
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                {#PORTLET BODY#}
+                <input type="hidden" id="schedule_id" value="{{ schedule.getID|default('') }}">
+                <div class="row">
+                    <div class="col-md-2" style="margin-bottom: 11px;">
+                    </div>
+                    <div class="col-md-6" style="margin-bottom: 11px;">
+                        <br>
+                        <form method="get" id="filterForm">
+                            {{ form.group_date_pos('Filter Date','date', filterDate|default(''),4,8) }}
+                        </form>
+                    </div>
+                    <div class="col-md-2" style="margin-bottom: 11px;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" style="margin-bottom: 11px">
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>POS Location</th>
+                                        {% if week_dates is defined %}
+                                            {% for wdate in week_dates %}
+                                                <th>{{ wdate.date }}<br>{{ wdate.text }}</th>
+                                            {% endfor %}
+                                        {% else %}
+                                            <th>Week Dates</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if week_schedule is iterable %}
+                                        {% for pos_loc in week_schedule %}
+                                        <tr>
+                                            <td>{{ pos_loc.name }}</td>
+                                            {% if pos_loc.week_dates is iterable %}
+                                                {% for week_dates in pos_loc.week_dates %}
+                                                    <td>
+                                                    {% if week_dates.entries is defined %}
+                                                        {% for entry in week_dates.entries %}
+                                                            <strong>{{ entry.employee_name }}</strong><br>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <span class="label label-sm label-danger"> No Schedule </span>
+                                                    {% endif %}
+                                                    </td>
+                                                {% endfor %}
+                                            {% else %}
+                                                <td>No Data for POS Location</td>
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            No Data Available
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {#END PORTLET BODY#}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+    <script>
+        function assignEmployee(user_id, date, schedule_id, location_id, el, type)
+        {
+            $("#scheduler_div").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#scheduler_div").LoadingOverlay("show");
+
+            $("#other_scheduler").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#other_scheduler").LoadingOverlay("show");
+
+            var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type' }) }}";
+            url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type);
+            $.getJSON(url, function(json){
+                if (json[0].success) {
+                    var row = $(el).closest('.row_emp');
+                    var entry_id = row.find('.entry_id');
+                    $(entry_id).val(json[0].entry_id);
+                    $('#row_emoployee_id_'+user_id).css("background-color","#ff5959");
+                    toastr['success']('Employee assigned!', 'Success');
+                } else {
+                    toastr['error'](json[0].message, 'Error');
+                    $(el).val('0');
+                    $(el).trigger('change');
+                }
+                // Here we might call the "hide" action 2 times, or simply set the "force" parameter to true:
+                $("#scheduler_div").LoadingOverlay("hide", true);
+                $("#other_scheduler").LoadingOverlay("hide", true);
+            });
+        }
+
+        function unassignEmployee(entry_id, el)
+        {
+            $("#scheduler_div").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#scheduler_div").LoadingOverlay("show");
+
+            $("#other_scheduler").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#other_scheduler").LoadingOverlay("show");
+            var url = "{{ path('hris_tools_schedule_unassign_employee', { entry_id: ':entry_id' }) }}";
+            url = url.replace(":entry_id", entry_id);
+            $.getJSON(url, function(json){
+                if (json[0].success) {
+                    var row = $(el).closest('.row_emp');
+                    var entry_id = row.find('.entry_id');
+                    $(entry_id).val(0);
+                    $('#row_emoployee_id_'+ json[0].user_id).css("background-color","#ffffff");
+                    toastr['success']('Employee un-assigned!', 'Success');
+                } else {
+                    toastr['error'](json[0].message, 'Error');
+                }
+                $("#scheduler_div").LoadingOverlay("hide", true);
+                $("#other_scheduler").LoadingOverlay("hide", true);
+            });
+        }
+
+        function populateSchedules()
+        {
+            var schedule_id = $('#schedule_id').val();
+            $('.row_location').each(function(i, obj) {
+                var row = $(obj);
+                var location_id = row.find('.location_id').val();
+
+                var url = "{{ path('hris_tools_schedule_get_location_entries', { schedule_id: ':schedule_id', location_id: ':location_id' }) }}";
+                url = url.replace(":schedule_id", schedule_id).replace(":location_id", location_id);
+
+                var counter = 1;
+                $.getJSON(url, function(json){
+                    $.each(json, function(k, v) {
+                        console.log('row_emp_'+location_id+'_'+counter);
+                        var emp_row = $('#row_emp_'+location_id+'_'+counter);
+                        var emp_selector = emp_row.find('.employee_selector');
+                        var entry_id = emp_row.find('.entry_id');
+                        $(entry_id).val(v.entry_id);
+
+                        $(emp_selector).val(v.user_id);
+                        $(emp_selector).trigger('change');
+
+                        $('#row_emoployee_id_'+v.user_id).css("background-color","#ff5959");
+                        counter++;
+                    });
+
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            var dTable;
+            var schedule_id = $('#schedule_id').val();
+
+            $('.timepicker-no-seconds_step').timepicker({
+                autoclose: true,
+                minuteStep: 1
+            });
+
+            $(document).on("click",".remove_row", function(e){
+                e.preventDefault();
+                var tr = $(this).closest('tr');
+
+                var row = $(this).closest('.row_emp');
+                var entry_id = row.find('.entry_id').val();
+
+                if (entry_id != 0) {
+                    unassignEmployee(entry_id, this);
+                }
+
+                tr.remove();
+                return false;
+            });
+
+            // Show full page LoadingOverlay
+            $.LoadingOverlay("show");
+
+            // Hide it after 3 seconds
+            setTimeout(function(){
+                $.LoadingOverlay("hide");
+            }, 2000);
+
+
+            $(document).on('select2:select', '.employee_selector', function() {
+                if (this.value != 0) {
+                    var row = $(this).closest('.row_location');
+                    var location_id = row.find('.location_id').val();
+                    var type = row.find('.type').val();
+                    var user_id = this.value;
+                    var date = $('#cform-date').val().replace('/','-').replace('/','-');
+
+                    var row = $(this).closest('.row_emp');
+                    var the_el = this;
+                    var entry_id = row.find('.entry_id').val();
+                    if (entry_id != 0 || entry_id != '0') {
+                        unassignEmployee(entry_id, this);
+
+                        setTimeout(function(){
+                            assignEmployee(user_id, date, schedule_id, location_id, the_el, type);
+                        }, 1200);
+
+                        return 0;
+                    }
+
+                    assignEmployee(user_id, date, schedule_id, location_id, this, type);
+                } else {
+                    var row = $(this).closest('.row_emp');
+                    var entry_id = row.find('.entry_id').val();
+                    unassignEmployee(entry_id, this);
+                }
+            });
+
+            populateSchedules();
+
+            $('.calendar').prop('disabled', true);
+            $('#cform-date').datepicker({
+                autoclose: true,
+                maxDate: new Date(),
+            });
+
+            $('#cform-date').datepicker().on('changeDate', function (ev) {
+                if (ev.dates && !ev.date)
+                {
+                    $(this).datepicker('setDate',new Date());
+                }
+
+                var sel_date = $("#cform-date").val();
+
+                var path = "{{ path('hris_tools_weekly_schedule_index', { 'date' : 'DATE'} ) }}";
+                // alert(path);
+
+                var firstDate = moment(sel_date, "MM/DD/YYYY").day(0).format("MM/DD/YYYY");
+                var lastDate =  moment(sel_date, "MM/DD/YYYY").day(6).format("MM/DD/YYYY");
+                var weekNum = moment(sel_date, "MM-DD-YYYY").week();
+                $("#cform-date").val("Week " + weekNum + ", " + firstDate + " - " + lastDate);
+                $("#cform-date").text("Week " + weekNum + ", " + firstDate + " - " + lastDate);
+
+                // path = path.replace('sel_date', $('#cform-date').val().replace('/','-').replace('/','-'));
+                path = path.replace('DATE', sel_date.replace('/','-').replace('/','-'));
+                location.replace(path);
+            });
+
+            dTable = $('#list_table').dataTable({
+                "bProcessing": true,
+                "bServerSide": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bInfo": false,
+                "bPaginate": false,
+                "iDisplayLength": 100,
+                "sPaginationType": "bootstrap",
+                "oLanguage": {
+                    "sLengthMenu": "_MENU_ records",
+                    "oPaginate": {
+                        "sPrevious": "Prev",
+                        "sNext": "Next"
+                    }
+                },
+                "aoColumnDefs": [
+                    {#{ "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },#}
+                ]
+            });
+
+            $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+            $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+            $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+        });
+</script>
+{% endblock %}
+
+{% block css %}
+{% endblock %}
