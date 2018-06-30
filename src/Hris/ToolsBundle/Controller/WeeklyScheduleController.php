@@ -32,8 +32,8 @@ class WeeklyScheduleController extends Controller
 
     public function indexAction($date = null)
     {
-        $em = $this->getDoctrine()->getManager();
         try {
+            $em = $this->getDoctrine()->getManager();
             $this->checkAccess($this->route_prefix . '.view');
             $params = $this->getViewParams('List', 'hris_tools_weekly_schedule_index');
             $this->padFormParams($params);
@@ -44,18 +44,7 @@ class WeeklyScheduleController extends Controller
                 $date = $date->format('m-d-Y');
             } 
             
-            $new_date = str_replace('-', '/', $date);
-            $ts = strtotime($new_date);
-            $dow = date('w', $ts);
-            $ts = $ts - $dow*86400;
-            $week_dates = array();
-            for ($i = 0; $i < 7; $i++, $ts += 86400){
-                $week_dates[$i] = array(
-                    'date' => date('m-d-Y', $ts),
-                    'text' => date('l', $ts),
-                );
-            }
-
+            $week_dates = $this->getWeekDates($date);
             $dateFMTD = DateTime::createFromFormat('m-d-Y', $date);
 
             //check if logged-in user is an area manager -- if not disable page
@@ -103,18 +92,32 @@ class WeeklyScheduleController extends Controller
 
             $params['week_schedule'] = $pos_locations;
 
-            // $params['user_opts'] = array('0' => '-- Select Employee --') + $user_opts;
             $params['date_to_url'] = $dateFMTD->format("m-d-Y");
             $params['filterDate'] = "Week ".$dateFMTD->format("W").", ".str_replace("-", "/", $week_dates[0]['date'])." - ".str_replace("-", "/", $week_dates[6]['date']);
-            // $params['employees_data'] = $this->getData($date, $dateFMTD);
             $params['list_title'] = $this->list_title;
             $params['prefix'] = $this->route_prefix;
             $twig_file = 'HrisToolsBundle:Weekly:index.html.twig';
             return $this->render($twig_file, $params);
         } catch (\Exception $e) {
-            die($e);
             return $this->redirect('/');
         }
+    }
+
+    private function getWeekDates($date)
+    {
+        $new_date = str_replace('-', '/', $date);
+        $ts = strtotime($new_date);
+        $dow = date('w', $ts);
+        $ts = $ts - $dow*86400;
+        $week_dates = array();
+        for ($i = 0; $i < 7; $i++, $ts += 86400){
+            $week_dates[$i] = array(
+                'date' => date('m-d-Y', $ts),
+                'text' => date('l', $ts),
+            );
+        }
+
+        return $week_dates;
     }
 
     protected function getObjectLabel($obj)
