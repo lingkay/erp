@@ -20,7 +20,7 @@ menu_items:
       label: Schedule
       parent: hris_tools_manager
     - id: hris_tools_weekly_schedule_index
-      acl: hris_tools_weekly_schedule_index.menu
+      acl: hris_tools_weekly_schedule.menu
       label: Weekly Schedule
       parent: hris_tools_manager
     - id: hris_tools_schedule_index2
