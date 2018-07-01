@@ -9,3 +9,9 @@ acl:
           label: "Menu"
         - id: hris_tools_schedule.view
           label: "View"
+    - category: Weekly Schedule
+      entries:
+        - id: hris_tools_weekly_schedule.menu
+          label: "Menu"
+        - id: hris_tools_weekly_schedule.view
+          label: "View"
