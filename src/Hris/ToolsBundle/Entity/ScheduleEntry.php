@@ -50,6 +50,12 @@ class ScheduleEntry
     /** @ORM\Column(type="time", nullable=true) */
     protected $time;
 
+    /** @ORM\Column(type="time", nullable=true) */
+    protected $time_in;
+
+    /** @ORM\Column(type="time", nullable=true) */
+    protected $time_out;
+
     public function __construct()
     {
 
@@ -118,5 +124,45 @@ class ScheduleEntry
     public function getTime()
     {
         return $this->time;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTimeIn()
+    {
+        return $this->time_in;
+    }
+
+    /**
+     * @param mixed $time_in
+     *
+     * @return ScheduleEntry
+     */
+    public function setTimeIn($time_in)
+    {
+        $this->time_in = $time_in;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTimeOut()
+    {
+        return $this->time_out;
+    }
+
+    /**
+     * @param mixed $time_out
+     *
+     * @return ScheduleEntry
+     */
+    public function setTimeOut($time_out)
+    {
+        $this->time_out = $time_out;
+
+        return $this;
     }
 }

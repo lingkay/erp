@@ -482,3 +482,18 @@ width: 100% !important;
   margin: 4em auto;
   font-size: 16px;
 }
+
+#scheduler_div .timepicker,
+#scheduler_div .save-schedule,
+#scheduler_div .reset-schedule {
+  font-size: 13px;
+  height: 28px;
+}
+
+.pad-left-0 {
+    padding-left: 0;
+}
+
+.pad-right-0 {
+    padding-right: 0;
+}
