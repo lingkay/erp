@@ -85,6 +85,12 @@ class ScheduleController extends Controller
                 $user_opts[$u->getID()] = $u->getDisplayName();
             }
 
+            $areas = $em->getRepository('GistLocationBundle:Areas')->findAll();
+            $area_opts = array();
+            foreach ($areas as $a) {
+                $area_opts[$a->getID()] = $a->getName();
+            }
+
             // GET users with "other area"
             $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
 
@@ -101,6 +107,7 @@ class ScheduleController extends Controller
             }
 
             $params['user_opts'] = array('0' => '-- Select Employee --') + $user_opts;
+            $params['area_opts'] = array('0' => '-- Select Area --') + $area_opts;
             $params['date_to_url'] = $dateFMTD->format("m-d-Y");
             $params['filterDate'] = $dateFMTD->format("m/d/Y");
             $params['employees_data'] = $this->getData($date, $dateFMTD);
