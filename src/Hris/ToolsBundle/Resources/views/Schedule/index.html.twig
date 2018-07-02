@@ -75,16 +75,28 @@
                                 {% set counter = 1 %}
                                 {% if k > 0 %}
                                     {% for i in 1..k %}
-                                        <div class="row row_emp" id="row_emp_{{ l.getID|default(0) }}_{{ counter }}">
-                                            <div class="col-md-12">
+                                        <div class="row row_emp margin-bottom-5" id="row_emp_{{ l.getID|default(0) }}_{{ counter }}">
+                                            <div class="col-md-5" style="padding: 0;">
                                                 <input type="hidden" class="entry_id" value="0">
-                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false) }}
-                                                <!-- KRIS UNCOMMENT MO LNG UNG DALAWA SA BABA PERO UPDATE MO CSS PARA PANTAY SILA -->
-                                                {#{{ form.group_time_no_step_no_label('', 'start[]', '', 0,3)}}
-                                                {{ form.group_time_no_step_no_label('', 'end[]', '', 0,3)}}#}
-                                                <!-- ADD A SAVE/DELETE BUTTON HERE -->
-                                                <div style="margin-top: 35px;"></div>
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, '', 3, 12, false, 'c', 'employee-select-with-save') }}
                                             </div>
+
+                                            <div class="col-md-2" style="padding: 0;">
+                                                <div class="input-group">
+                                                    <input id="cform-start[]" type="text" class="form-control timepicker timepicker-no-seconds_step" name="start[]" title="Time In">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" style="padding: 0;">
+                                                <div class="input-group">
+                                                    <input id="cform-end[]" type="text" class="form-control timepicker timepicker-no-seconds_step" name="end[]" title="Time Out">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="input-group">
+                                                    <button class="btn green save-schedule"><i class="fa fa-save"></i></button>
+                                                </div>
+                                            </div>
+                                            {#<div style="margin-top: 35px;"></div>#}
                                         </div>
                                         {% set counter = counter + 1 %}
                                     {% endfor %}
@@ -178,10 +190,19 @@
                                     {% if se.getType == 'Training' %}
                                         <tr class="row_emp">
                                             <td>
-                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false, 'c', 'employee-select-with-save') }}
                                                 <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                                <div class="col-sm-6" style="padding-right: 0">
+                                                    <input id="cform-start[]" type="text" class="form-control timepicker timepicker-no-seconds_step" name="start[]" title="Time In" value="{{ se.getTimeIn ? se.getTimeIn.format('g:i A') : '' }}">
+                                                </div>
+                                                <div class="col-sm-6" style="padding-left: 0">
+                                                    <input id="cform-end[]" type="text" class="form-control timepicker timepicker-no-seconds_step" name="end[]" title="Time Out" value="{{ se.getTimeOut ? se.getTimeOut.format('g:i A'): '' }}">
+                                                </div>
                                             </td>
-                                            <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
+                                            <td>
+                                                <a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a>
+                                                <button class="btn green save-schedule">Save</button>
+                                            </td>
                                         </tr>
                                     {% endif %}
                                 {% endfor %}
@@ -298,8 +319,11 @@
 {% endblock %}
 {% block js %}
     <script>
-        function assignEmployee(user_id, date, schedule_id, location_id, el, type)
+        function assignEmployee(user_id, date, schedule_id, location_id, el, type, timeIn, timeOut)
         {
+            timeIn = timeIn !== undefined ? timeIn : 0;
+            timeOut = timeOut !== undefined ? timeOut : 0;
+
             $("#scheduler_div").LoadingOverlay("show", {
                 background  : "rgba(165, 190, 100, 0.5)"
             });
@@ -310,8 +334,18 @@
             });
             $("#other_scheduler").LoadingOverlay("show");
 
-            var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type' }) }}";
-            url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type);
+            if ((timeIn !== '' && timeIn != 0 )&& (timeOut !== '' && timeOut != 0)) {
+                var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type', time_in: ':time_in', time_out: ':time_out' }) }}";
+                url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type).replace(':time_in', timeIn).replace(':time_out', timeOut);
+            } else {
+                var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type'}) }}";
+                url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type);
+
+                var row = $(el).closest('.row_emp');
+
+                row.find('input[id*=cform-start]').val('');
+                row.find('input[id*=cform-end]').val('');
+            }
             $.getJSON(url, function(json){
                 if (json[0].success) {
                     var row = $(el).closest('.row_emp');
@@ -323,6 +357,10 @@
                     toastr['error'](json[0].message, 'Error');
                     $(el).val('0');
                     $(el).trigger('change');
+                    var row = $(el).closest('.row_emp');
+
+                    row.find('input[id*=cform-start]').val('').prop('disabled', true);
+                    row.find('input[id*=cform-end]').val('').prop('disabled', true);
                 }
                 // Here we might call the "hide" action 2 times, or simply set the "force" parameter to true:
                 $("#scheduler_div").LoadingOverlay("hide", true);
@@ -375,10 +413,29 @@
                         var emp_row = $('#row_emp_'+location_id+'_'+counter);
                         var emp_selector = emp_row.find('.employee_selector');
                         var entry_id = emp_row.find('.entry_id');
+                        var timeIn = emp_row.find('input[id*=cform-start]');
+                        var timeOut = emp_row.find('input[id*=cform-end]');
+
                         $(entry_id).val(v.entry_id);
 
                         $(emp_selector).val(v.user_id);
                         $(emp_selector).trigger('change');
+
+                        if (v.time_in) {
+                            var formattedTimeIn = new Date('2000-01-01 ' + v.time_in.hour + ':' + v.time_in.minutes + ' ' + v.time_in.period);
+
+                            timeIn.timepicker('setTime', formattedTimeIn).prop('disabled', false);
+                        } else {
+                            timeIn.val('');
+                        }
+
+                        if (v.time_out) {
+                            var formattedTimeOut = new Date('2000-01-01 ' + v.time_out.hour + ':' + v.time_out.minutes + ' ' + v.time_out.period);
+
+                            timeOut.timepicker('setTime', formattedTimeOut).prop('disabled', false);
+                        } else {
+                            timeOut.val('');
+                        }
 
                         $('#row_emoployee_id_'+v.user_id).css("background-color","#ff5959");
                         counter++;
@@ -388,14 +445,55 @@
             });
         }
 
+        function saveEmployeeSchedule(schedule_id, timeIn, timeOut) {
+            timeIn = timeIn !== undefined ? timeIn : 0;
+            timeOut = timeOut !== undefined ? timeOut : 0;
+
+            if (this.value != 0) {
+                var row = $(this).closest('.row_location');
+                var location_id = row.find('.location_id').val();
+                var type = row.find('.type').val();
+                var user_id = this.value;
+                var date = $('#cform-date').val().replace('/','-').replace('/','-');
+
+                var row = $(this).closest('.row_emp');
+                var the_el = this;
+                var entry_id = row.find('.entry_id').val();
+                if (entry_id != 0 || entry_id != '0') {
+                    unassignEmployee(entry_id, this);
+
+                    setTimeout(function(){
+                        assignEmployee(user_id, date, schedule_id, location_id, the_el, type, timeIn, timeOut);
+                    }, 1200);
+
+                    return 0;
+                }
+
+                assignEmployee(user_id, date, schedule_id, location_id, this, type, timeIn, timeOut);
+            } else {
+                var row = $(this).closest('.row_emp');
+                var entry_id = row.find('.entry_id').val();
+
+                if(entry_id != 0) {
+                    unassignEmployee(entry_id, this);
+                }
+            }
+        }
+
         $(document).ready(function() {
             var dTable;
             var schedule_id = $('#schedule_id').val();
+            var timepicker_no_seconds_step = $('.timepicker-no-seconds_step');
 
-            $('.timepicker-no-seconds_step').timepicker({
+            timepicker_no_seconds_step.timepicker({
                 autoclose: true,
-                minuteStep: 1
-            });
+                minuteStep: 1,
+            }).prop('disabled', true);
+
+            $('#scheduler_div').find(timepicker_no_seconds_step).val('');
+
+            $('#t_tbody, #office_tbody').find(timepicker_no_seconds_step)
+                .prop('disabled', false);
 
             $(document).on("click",".remove_row", function(e){
                 e.preventDefault();
@@ -421,33 +519,29 @@
             }, 2000);
 
 
-            $(document).on('select2:select', '.employee_selector', function() {
-                if (this.value != 0) {
-                    var row = $(this).closest('.row_location');
-                    var location_id = row.find('.location_id').val();
-                    var type = row.find('.type').val();
-                    var user_id = this.value;
-                    var date = $('#cform-date').val().replace('/','-').replace('/','-');
+            $(document).on('select2:select', '.employee_selector:not(.employee-select-with-save)', function() {
+                saveEmployeeSchedule.call(this, schedule_id);
+            });
 
-                    var row = $(this).closest('.row_emp');
-                    var the_el = this;
-                    var entry_id = row.find('.entry_id').val();
-                    if (entry_id != 0 || entry_id != '0') {
-                        unassignEmployee(entry_id, this);
+            $(document).on('select2:select', '.employee-select-with-save', function () {
+                var row = $(this).closest('.row_emp');
+                var timepicker = row.find('input.timepicker');
 
-                        setTimeout(function(){
-                            assignEmployee(user_id, date, schedule_id, location_id, the_el, type);
-                        }, 1200);
-
-                        return 0;
-                    }
-
-                    assignEmployee(user_id, date, schedule_id, location_id, this, type);
-                } else {
-                    var row = $(this).closest('.row_emp');
-                    var entry_id = row.find('.entry_id').val();
-                    unassignEmployee(entry_id, this);
+                if (this.value !== '0') {
+                    timepicker.prop('disabled', false);
+                    return;
                 }
+
+                timepicker.val('').prop('disabled', true);
+            });
+
+            $(document).on('click', '.save-schedule', function () {
+                var $row_emp = $(this).closest('.row_emp');
+                var employeeSelect = $row_emp.find('select.employee-select-with-save');
+                var timeIn = $row_emp.find('input[id*=cform-start]').val();
+                var timeOut = $row_emp.find('input[id*=cform-end]').val();
+
+                saveEmployeeSchedule.call(employeeSelect[0], schedule_id, timeIn, timeOut);
             });
 
             populateSchedules();
@@ -526,12 +620,22 @@
 
             $(add_t_button).on('click',function(){
                 var field = '<tr class="row_emp">';
-                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
-                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
+                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false, 'c', 'employee-select-with-save')|e('js') }}<input type="hidden" class="entry_id" value="0">' +
+                    '<div class="col-sm-6" style="padding-right: 0"><input id="cform-start[]" type="text" class="form-control timepicker timepicker-no-seconds_step" name="start[]" title="Time In" disabled></div>' +
+                    '<div class="col-sm-6" style="padding-left: 0"><input id="cform-end[]" type="text" class="form-control timepicker timepicker-no-seconds_step" name="end[]" title="Time Out" disabled></div>' +
+                    '</td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a>'+
+                    '<button class="btn green save-schedule">Save</button></td>';
                 field += '</tr>';
 
                 $('#t_tbody').append(field);
                 $('.employee_selector').select2();
+                $('.timepicker-no-seconds_step').timepicker({
+                    autoclose: true,
+                    minuteStep: 1,
+                    timeFormat: 'g:ia'
+                }).val('')
+
             });
 
             $(add_do_button).on('click',function(){

@@ -189,14 +189,32 @@ class ScheduleController extends Controller
         $list_opts = [];
 
         foreach ($scheduleEntryExists as $se) {
+            $timeIn = $se->getTimeIn() ? $this->getTimeHourMinutes($se->getTimeIn()) : null;
+            $timeOut = $se->getTimeOut() ? $this->getTimeHourMinutes($se->getTimeOut()) : null;
+
             $list_opts[] = array(
                 'user_id' => $se->getEmployee()->getID(),
                 'user_name' => $se->getEmployee()->getDisplayName(),
-                'entry_id' => $se->getID()
+                'entry_id' => $se->getID(),
+                'time_in' => $timeIn,
+                'time_out' => $timeOut
             );
         }
 
         return new JsonResponse($list_opts);
+    }
+
+    private function getTimeHourMinutes(\DateTime $time)
+    {
+        $hour = $time->format('g');
+        $minutes = $time->format('i');
+        $period = $time->format('A');
+
+        return [
+            'hour' => $hour,
+            'minutes' => $minutes,
+            'period' => $period
+        ];
     }
 
     public function unassignEmployeeAction($entry_id)
@@ -254,8 +272,15 @@ class ScheduleController extends Controller
         return $hits;
     }
 
-    public function assignEmployeeAction($user_id, $date, $schedule_id, $location_id, $type = ScheduleEntry::TYPE_WORK)
-    {
+    public function assignEmployeeAction(
+        $user_id,
+        $date,
+        $schedule_id,
+        $location_id,
+        $type = ScheduleEntry::TYPE_WORK,
+        $time_in,
+        $time_out
+    ) {
         $dateFMTD = DateTime::createFromFormat('m-d-Y', $date);
         $em = $this->getDoctrine()->getManager();
         $list_opts = [];
@@ -321,6 +346,15 @@ class ScheduleController extends Controller
             $scheduleEntry->setPOSLocation($pos_location);
             $scheduleEntry->setType($type);
             $scheduleEntry->setTime(new DateTime());//change this to get time start and end
+
+            if ($time_in !== '0') {
+                $scheduleEntry->setTimeIn(new DateTime($time_in));
+            }
+
+            if ($time_out !== '0') {
+                $scheduleEntry->setTimeOut(new DateTime($time_out));
+            }
+
 
             $em->persist($scheduleEntry);
             $em->flush();
