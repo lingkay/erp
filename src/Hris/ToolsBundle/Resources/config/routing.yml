@@ -4,9 +4,9 @@ hris_tools_schedule_index:
     defaults: { _controller: HrisToolsBundle:Schedule:index,date: null }
 
 hris_tools_schedule_assign_employee:
-    path:     /schedule/assign/{user_id}/{date}/{schedule_id}/{location_id}/{type}/{time_in}/{time_out}
+    path:     /schedule/assign/{user_id}/{date}/{schedule_id}/{location_id}/{type}/{area_id}/{time_in}/{time_out}
     methods:  [GET]
-    defaults: { _controller: HrisToolsBundle:Schedule:assignEmployee,user_id: null, date: null, schedule_id: null, location_id: null, type: 'Work', time_in: null, time_out: null }
+    defaults: { _controller: HrisToolsBundle:Schedule:assignEmployee,user_id: null, date: null, schedule_id: null, location_id: null, type: 'Work', area_id: null, time_in: null, time_out: null }
 
 hris_tools_schedule_unassign_employee:
     path:     /schedule/unassign/{entry_id}

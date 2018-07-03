@@ -56,6 +56,12 @@ class ScheduleEntry
     /** @ORM\Column(type="time", nullable=true) */
     protected $time_out;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
+     * @ORM\JoinColumn(name="other_area_id", referencedColumnName="id")
+     */
+    protected $other_area;
+
     public function __construct()
     {
 
@@ -164,5 +170,16 @@ class ScheduleEntry
         $this->time_out = $time_out;
 
         return $this;
+    }
+
+    public function setOtherArea($other_area)
+    {
+        $this->other_area = $other_area;
+        return $this;
+    }
+
+    public function getOtherArea()
+    {
+        return $this->other_area;
     }
 }
