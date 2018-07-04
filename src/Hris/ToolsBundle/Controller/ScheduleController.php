@@ -40,7 +40,7 @@ class ScheduleController extends Controller
             $settings = $this->get('hris_settings');
 
             if ($date == null) {
-                $date = new DateTime();
+                $date = new DateTime('+1 day');
                 $date = $date->format('m-d-Y');
             }
             $dateFMTD = DateTime::createFromFormat('m-d-Y', $date);
@@ -85,6 +85,12 @@ class ScheduleController extends Controller
                 $user_opts[$u->getID()] = $u->getDisplayName();
             }
 
+            $areas = $em->getRepository('GistLocationBundle:Areas')->findAll();
+            $area_opts = array();
+            foreach ($areas as $a) {
+                $area_opts[$a->getID()] = $a->getName();
+            }
+
             // GET users with "other area"
             $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
 
@@ -101,6 +107,7 @@ class ScheduleController extends Controller
             }
 
             $params['user_opts'] = array('0' => '-- Select Employee --') + $user_opts;
+            $params['area_opts'] = array('0' => '-- Select Area --') + $area_opts;
             $params['date_to_url'] = $dateFMTD->format("m-d-Y");
             $params['filterDate'] = $dateFMTD->format("m/d/Y");
             $params['employees_data'] = $this->getData($date, $dateFMTD);
@@ -153,12 +160,13 @@ class ScheduleController extends Controller
         $date2 = DateTime::createFromFormat('m-d-Y', $dateSrc);
         $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
         $entriesToday = 0;
+
         if ($schedulesToday) {
             foreach ($schedulesToday as $st) {
                 $entriesToday += count($st->getEntries());
                 if ($st->getEntries()) {
                     foreach ($st->getEntries() as $entry) {
-                        if ($entry->getEmployee()->getArea()->getID() != $this->getUser()->getArea()->getID() && $entry->getType() == 'Other Area') {
+                        if ($entry->getEmployee()->getArea()->getID() != $this->getUser()->getArea()->getID() && $entry->getType() == 'Other Area'  && $entry->getOtherArea()->getID() == $this->getUser()->getArea()->getID()) {
                             $list_opts[] = array(
                                 'date' => $date->format('Y-m-d'),
                                 'employee_id' => $entry->getEmployee()->getID(),
@@ -217,12 +225,35 @@ class ScheduleController extends Controller
         ];
     }
 
+    public function removeUserAssignedInOtherAreaLocation($user_id, $dateFMTD)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
+        $hits = 0;
+        if ($schedulesToday) {
+            foreach ($schedulesToday as $st) {
+                if ($st->getEntries()) {
+                    foreach ($st->getEntries() as $entry) {
+                        if ($entry->getEmployee()->getID() == $user_id && $entry->getType() != 'Other Area') {
+                            $em->remove($entry);
+                            $em->flush();
+                        }
+                    }
+                }
+            }
+        }
+        return $hits;
+    }
+
     public function unassignEmployeeAction($entry_id)
     {
         $em = $this->getDoctrine()->getManager();
         $list_opts = [];
         try {
             $scheduleEntryExists = $em->getRepository('HrisToolsBundle:ScheduleEntry')->findOneBy(array('id' => $entry_id));
+
+            $this->removeUserAssignedInOtherAreaLocation($scheduleEntryExists->getEmployee()->getID(), $scheduleEntryExists->getSchedule()->getDate());
+
             $user_id = $scheduleEntryExists->getEmployee()->getID();
             if ($scheduleEntryExists) {
                 $em->remove($scheduleEntryExists);
@@ -278,6 +309,7 @@ class ScheduleController extends Controller
         $schedule_id,
         $location_id,
         $type = ScheduleEntry::TYPE_WORK,
+        $area_id,
         $time_in,
         $time_out
     ) {
@@ -298,6 +330,7 @@ class ScheduleController extends Controller
             $schedule = $em->getRepository('HrisToolsBundle:Schedule')->findOneBy(array('id' => $schedule_id));
             $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user_id));
             $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$location_id));
+            $area = $em->getRepository('GistLocationBundle:Areas')->findOneBy(array('id'=>$area_id));
 
             if ($user->getArea()->getID() != $this->getUser()->getArea()->getID() && $type == 'Other Area') {
                 $list_opts[] = array(
@@ -339,13 +372,16 @@ class ScheduleController extends Controller
                 }
             }
 
-
             $scheduleEntry = new ScheduleEntry();
             $scheduleEntry->setEmployee($user);
             $scheduleEntry->setSchedule($schedule);
             $scheduleEntry->setPOSLocation($pos_location);
             $scheduleEntry->setType($type);
             $scheduleEntry->setTime(new DateTime());//change this to get time start and end
+
+            if($area) {
+                $scheduleEntry->setOtherArea($area);
+            }
 
             if ($time_in !== '0') {
                 $scheduleEntry->setTimeIn(new DateTime($time_in));

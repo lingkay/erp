@@ -376,6 +376,15 @@
 </div>
 {% endmacro %}
 
+{% macro group_select_only_with_class(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
+{% import _self as self %}
+<div class="col-md-{{ body_size }}">
+<select id="{{ prefix }}form-{{ name }}" name="{{ name }}" class="form-control select_2 class-{{ name }}" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --" style="margin=0;">
+{{ self.options(options, value) }}
+</select>
+</div>
+{% endmacro %}
+
 {% macro group_select_schedule(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c', custom_class='') %}
     {% import _self as self %}
     <div class="col-md-{{ body_size }}">

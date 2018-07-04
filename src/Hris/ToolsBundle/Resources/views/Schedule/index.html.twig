@@ -280,23 +280,39 @@
                         <div class="row_location">
                             <input type="hidden" class="type" value="Other Area">
                             <input type="hidden" class="location_id" value="0">
-                            <span style="font-size: 16px;">Other Area <a href="javascript:void(0)" class="btn btn-xs default green add-oa-field" style="margin=0"><i class="fa fa-plus"></i> Add Employee</a></span>
+                            <span style="font-size: 16px;">Other Area</span>
                             <br>
                             <hr style="border-top: 1px solid #000 !important;">
                             <table class="table table-bordered table-hover" id="list_table" style="font-size: 11px !important;">
                                 <thead>
                                 <tr style="font-size: 11px !important;">
                                     <th style="font-size: 11px !important;">Employee</th>
+                                    <th style="font-size: 11px !important;">Area</th>
                                     <th style="font-size: 11px !important;" width="25%"></th>
                                 </tr>
                                 </thead>
-                                <tbody id="oa_tbody">
+                                <tbody id="oa_tbody2">
+                                    <tr class="row_emp">
+                                        <td>
+                                            {{ form_tools.group_select_only_with_class("Employee", "user_selected", user_opts, '', 3, 12, false) }}
+                                            <input type="hidden" class="entry_id" value="0">
+                                            <input type="hidden" class="type" value="Other Area">
+                                            <input type="hidden" class="location_id" value="0">
+                                        </td>
+                                        <td>
+                                            {{ form_tools.group_select_only_with_class("Area", "area_selected", area_opts, '', 3, 12, false) }}
+                                        </td>
+                                        <td><a href="javascript:void(0)" class="btn btn-xs default green add-oa-field" style="margin=0"><i class="fa fa-plus"></i> Add</a></td>
+                                    </tr>
                                 {% for se in schedule.getEntries|default('') %}
                                     {% if se.getType == 'Other Area' %}
                                         <tr class="row_emp">
                                             <td>
-                                                {{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, se.getEmployee.getID, 3, 12, false) }}
+                                                {{ form_tools.group_text("", "user_selected[]", se.getEmployee.getDisplayName, 3, 12, true) }}
                                                 <input type="hidden" class="entry_id" value="{{ se.getID }}">
+                                            </td>
+                                            <td>
+                                                {{ form_tools.group_text("", "area_selected[]", se.getOtherArea.getName, 3, 12, true) }}
                                             </td>
                                             <td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>
                                         </tr>
@@ -335,10 +351,10 @@
             $("#other_scheduler").LoadingOverlay("show");
 
             if ((timeIn !== '' && timeIn != 0 )&& (timeOut !== '' && timeOut != 0)) {
-                var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type', time_in: ':time_in', time_out: ':time_out' }) }}";
+                var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type', area_id: ':area_id', time_in: ':time_in', time_out: ':time_out' }) }}";
                 url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type).replace(':time_in', timeIn).replace(':time_out', timeOut);
             } else {
-                var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type'}) }}";
+                var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type', area_id: ':area_id'}) }}";
                 url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type);
 
                 var row = $(el).closest('.row_emp');
@@ -394,6 +410,52 @@
                 $("#scheduler_div").LoadingOverlay("hide", true);
                 $("#other_scheduler").LoadingOverlay("hide", true);
             });
+        }
+
+
+        function assignEmployeeOA(user_id, user_name, area_id, area_name, date, schedule_id, location_id, type, row_location)
+        {
+            $("#scheduler_div").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#scheduler_div").LoadingOverlay("show");
+
+            $("#other_scheduler").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $("#other_scheduler").LoadingOverlay("show");
+
+            var url = "{{ path('hris_tools_schedule_assign_employee', { user_id: ':user_id', date: ':date', schedule_id: ':schedule_id', location_id: ':location_id', type: ':type', area_id: ':area_id' }) }}";
+            url = url.replace(":user_id", user_id).replace(':date', date).replace(':schedule_id', schedule_id).replace(':location_id', location_id).replace(':type', type).replace(':area_id', area_id);
+
+            $.getJSON(url, function(json){
+                if (json[0].success) {
+                    appendItemsField(user_id, user_name, area_id, area_name, json[0].entry_id);
+
+                    //should be by row
+                    row_location.find('.class-user_selected').val("0").change();
+                    row_location.find('.class-area_selected').val("0").change();
+
+                    $('#row_emoployee_id_'+user_id).css("background-color","#ff5959");
+                    toastr['success']('Employee assigned!', 'Success');
+                } else {
+                    toastr['error'](json[0].message, 'Error');
+                }
+                // Here we might call the "hide" action 2 times, or simply set the "force" parameter to true:
+                $("#scheduler_div").LoadingOverlay("hide", true);
+                $("#other_scheduler").LoadingOverlay("hide", true);
+            });
+        }
+
+        function appendItemsField(user_id, user_name, area_id, area_name, entry_id) {
+            var field = '<tr class="row_emp">';
+                field += '<td><div class="col-md-12"><input type="text" value="'+user_name+'" readonly="true" class="form-control"></div><input type="hidden" class="entry_id" value="'+entry_id+'"></td>';
+                // field += '<td>{{ form_tools.group_text("", "user_selected[]", '+user_name+', 3, 12, true)|e('js') }}<input type="hidden" class="entry_id" value="'+entry_id+'"></td>';
+                field += '<td><div class="col-md-12"><input type="text" value="'+area_name+'" readonly="true" class="form-control"></div></td>';
+                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>'; 
+                field += '</tr>';
+
+                $('#oa_tbody2').append(field);
         }
 
         function populateSchedules()
@@ -495,6 +557,8 @@
             $('#t_tbody, #office_tbody').find(timepicker_no_seconds_step)
                 .prop('disabled', false);
 
+            $('#cform-date').datepicker('setStartDate', '+1d');
+
             $(document).on("click",".remove_row", function(e){
                 e.preventDefault();
                 var tr = $(this).closest('tr');
@@ -543,6 +607,40 @@
 
                 saveEmployeeSchedule.call(employeeSelect[0], schedule_id, timeIn, timeOut);
             });
+
+            //add employee other area v2
+            $(document).on('click', '.add-oa-field', function () {
+                var row_location = $(this).closest('.row_location');
+                var row = $(this).closest('.row_emp');
+                var user_id = row.find('.class-user_selected option:selected').val();
+                var user_name = row.find('.class-user_selected option:selected').text();
+                var area_id = row.find('.class-area_selected option:selected').val();
+                var area_name = row.find('.class-area_selected option:selected').text();
+
+                if (user_id != '0' && area_id != '0') {
+                    // var row = $(this).closest('.row_emp');
+                    var location_id = row.find('.location_id').val();
+                    var type = row.find('.type').val();
+                    var date = $('#cform-date').val().replace('/','-').replace('/','-');
+                    var entry_id = row.find('.entry_id').val();
+
+                    if (user_id != 0 || entry_id != '0') {
+                        unassignEmployee(entry_id, this);
+
+                        setTimeout(function(){
+                            assignEmployeeOA(user_id, user_name, area_id, area_name, date, schedule_id, location_id, type, row_location);
+                        }, 1200);
+
+                        return 0;
+                    }
+                    assignEmployeeOA(user_id, user_name, area_id, area_name, date, schedule_id, location_id, type, row_location);
+                }
+                else
+                {
+                    toastr['error']('Select an employee and area first.', 'Error');
+                }
+            });
+            //end of other area v2
 
             populateSchedules();
 
@@ -597,7 +695,6 @@
             var add_t_button = $(".add-t-field");
             var add_do_button = $(".add-do-field");
             var add_office_button = $(".add-office-field");
-            var add_oa_button = $(".add-oa-field");
             $(add_sl_button).on('click',function(){
                 var field = '<tr class="row_emp">';
                 field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
@@ -655,16 +752,6 @@
                 field += '</tr>';
 
                 $('#office_tbody').append(field);
-                $('.employee_selector').select2();
-            });
-
-            $(add_oa_button).on('click',function(){
-                var field = '<tr class="row_emp">';
-                field += '<td>{{ form_tools.group_select_schedule("Employee", "user_selected[]", user_opts, "", 3, 12, false)|e('js') }}<input type="hidden" class="entry_id" value="0"></td>';
-                field += '<td><a href="javascript:void(0)" class="btn btn-xs default red remove_row ignore">Remove</a></td>';
-                field += '</tr>';
-
-                $('#oa_tbody').append(field);
                 $('.employee_selector').select2();
             });
         });
