@@ -161,15 +161,11 @@ class ScheduleController extends Controller
         $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
         $entriesToday = 0;
 
-        // return new Response(json_encode($schedulesToday));
-        // die();
         if ($schedulesToday) {
             foreach ($schedulesToday as $st) {
                 $entriesToday += count($st->getEntries());
                 if ($st->getEntries()) {
                     foreach ($st->getEntries() as $entry) {
-
-                    // var_dump($st->getEntries());
                         if ($entry->getEmployee()->getArea()->getID() != $this->getUser()->getArea()->getID() && $entry->getType() == 'Other Area'  && $entry->getOtherArea()->getID() == $this->getUser()->getArea()->getID()) {
                             $list_opts[] = array(
                                 'date' => $date->format('Y-m-d'),
@@ -229,12 +225,35 @@ class ScheduleController extends Controller
         ];
     }
 
+    public function removeUserAssignedInOtherAreaLocation($user_id, $dateFMTD)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $schedulesToday = $em->getRepository('HrisToolsBundle:Schedule')->findBy(array('date' => $dateFMTD));
+        $hits = 0;
+        if ($schedulesToday) {
+            foreach ($schedulesToday as $st) {
+                if ($st->getEntries()) {
+                    foreach ($st->getEntries() as $entry) {
+                        if ($entry->getEmployee()->getID() == $user_id && $entry->getType() != 'Other Area') {
+                            $em->remove($entry);
+                            $em->flush();
+                        }
+                    }
+                }
+            }
+        }
+        return $hits;
+    }
+
     public function unassignEmployeeAction($entry_id)
     {
         $em = $this->getDoctrine()->getManager();
         $list_opts = [];
         try {
             $scheduleEntryExists = $em->getRepository('HrisToolsBundle:ScheduleEntry')->findOneBy(array('id' => $entry_id));
+
+            $this->removeUserAssignedInOtherAreaLocation($scheduleEntryExists->getEmployee()->getID(), $scheduleEntryExists->getSchedule()->getDate());
+
             $user_id = $scheduleEntryExists->getEmployee()->getID();
             if ($scheduleEntryExists) {
                 $em->remove($scheduleEntryExists);
@@ -353,7 +372,6 @@ class ScheduleController extends Controller
                 }
             }
 
-
             $scheduleEntry = new ScheduleEntry();
             $scheduleEntry->setEmployee($user);
             $scheduleEntry->setSchedule($schedule);
@@ -361,8 +379,6 @@ class ScheduleController extends Controller
             $scheduleEntry->setType($type);
             $scheduleEntry->setTime(new DateTime());//change this to get time start and end
 
-            // var_dump($area);
-            // die();
             if($area) {
                 $scheduleEntry->setOtherArea($area);
             }
