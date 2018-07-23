@@ -23,18 +23,7 @@ menu_items:
       acl: hris_tools_weekly_schedule.menu
       label: Weekly Schedule
       parent: hris_tools_manager
-    - id: hris_tools_schedule_index2
-      acl: hris_tools_schedule.menu
-      label: Bonus
-      parent: hris_tools_manager
-    - id: hris_tools_schedule_index2
-      acl: hris_tools_schedule.menu
-      label: Fines
-      parent: hris_tools_manager
-    - id: hris_tools_schedule_index2
-      acl: hris_tools_schedule.menu
-      label: X/Z Reports
-      parent: hris_tools_manager
+
     - id: hris_tools_schedule_index2
       acl: hris_tools_schedule.menu
       label: Attendance Today
@@ -43,3 +32,28 @@ menu_items:
       acl: hris_tools_schedule.menu
       label: Resolution Center
       parent: hris_tools_manager
+
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: Bonus
+      parent: menu_tools
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: Fines
+      parent: menu_tools
+    - id: hris_tools_deposit_index
+      acl: hris_tools_deposit.menu
+      label: Deposit
+      parent: menu_tools
+    - id: hris_tools_adjustment_index
+      acl: hris_tools_adjustment.menu
+      label: Adjustment
+      parent: menu_tools
+    - id: hris_tools_advance_index
+      acl: hris_tools_advance.menu
+      label: Cash Advance
+      parent: menu_tools
+    - id: hris_tools_schedule_index2
+      acl: hris_tools_schedule.menu
+      label: X/Z Reports
+      parent: menu_tools
