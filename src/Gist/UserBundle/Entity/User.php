@@ -697,6 +697,10 @@ class User extends BaseUser
         $data->enabled = $this->enabled;
         $data->groups = $groups;
 
+        if($this->area != null ){
+            $data->area = $this->area->toData();
+        }
+
         return $data;
     }
 }

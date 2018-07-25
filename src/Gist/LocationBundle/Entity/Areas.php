@@ -88,6 +88,7 @@ class Areas
         $data = new \stdClass();
         $this->dataHasGeneratedID($data);
         $this->dataTrackCreate($data);
+        $data->name = $this->name;
         return $data;
     }
 

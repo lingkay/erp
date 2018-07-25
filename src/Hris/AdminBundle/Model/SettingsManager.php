@@ -342,4 +342,56 @@ class SettingsManager
 
         return $incentivePeriods;
     }
+
+    public function getBonusOptions($filter = [])
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('HrisAdminBundle:Bonus')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $options = array();
+        foreach ($entries as $entry)
+            $options[$entry->getID()] = $entry->getName();
+
+        return $options;
+    }
+
+      public function getFineOptions($filter = [])
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('HrisAdminBundle:Fines')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $options = array();
+        foreach ($entries as $entry)
+            $options[$entry->getID()] = $entry->getName();
+
+        return $options;
+    }
+
+    public function getDepositOptions($filter = [])
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('HrisAdminBundle:Deposit')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+        $options = array();
+        foreach ($entries as $entry)
+            $options[$entry->getID()] = $entry->getName();
+
+        return $options;
+    }
+
+
 }

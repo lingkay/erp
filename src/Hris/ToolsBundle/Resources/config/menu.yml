@@ -33,13 +33,9 @@ menu_items:
       label: Resolution Center
       parent: hris_tools_manager
 
-    - id: hris_tools_schedule_index2
-      acl: hris_tools_schedule.menu
-      label: Bonus
-      parent: menu_tools
-    - id: hris_tools_schedule_index2
-      acl: hris_tools_schedule.menu
-      label: Fines
+    - id: hris_tools_bonus_index
+      acl: hris_tools_bonus.menu
+      label: Bonus/Fines
       parent: menu_tools
     - id: hris_tools_deposit_index
       acl: hris_tools_deposit.menu

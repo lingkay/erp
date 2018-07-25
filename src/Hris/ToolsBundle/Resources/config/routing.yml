@@ -24,3 +24,20 @@ hris_tools_weekly_schedule_index:
     path:     /schedule/week/view/{date}
     methods:  [GET]
     defaults: { _controller: HrisToolsBundle:WeeklySchedule:index,date: null }
+
+
+hris_tools_bonus:
+    resource: "@HrisToolsBundle/Resources/config/routing_bonus.yml"
+    prefix:   /bonus_fine
+
+hris_tools_deposit:
+    resource: "@HrisToolsBundle/Resources/config/routing_deposit.yml"
+    prefix:   /deposit
+
+hris_tools_advance:
+    resource: "@HrisToolsBundle/Resources/config/routing_advance.yml"
+    prefix:   /advance
+
+hris_tools_adjustment:
+    resource: "@HrisToolsBundle/Resources/config/routing_adjustment.yml"
+    prefix:   /adjustment

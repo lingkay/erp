@@ -34,6 +34,11 @@ cat_user_user_grid:
     defaults: { _controller: GistUserBundle:User:grid }
 
 
+cat_user_user_ajax_get:
+    pattern: /user/ajax/{id}
+    methods: [GET]
+    defaults: { _controller: GistUserBundle:User:ajaxGet }
+
 #DEPARTMENT
 cat_user_department_index:
     pattern: /departments
