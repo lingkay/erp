@@ -15,14 +15,14 @@
                             <h4 class="form-section">Information</h4>
                             {{ form.group_select('Bonus/Fine', 'bf_type',bftype_opts, object.getBFType|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
-                            {{ form.group_select('Employee', 'employee', emp_opts, object.getEmployee|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Employee', 'employee', emp_opts, object.getEmployee != null ? object.getEmployee.getID : "", 3, 4, readonly) }}
                             {{ form.group_text('Team', 'team', object.getTeam, 3, 4, true) }}
-             			    {{ form.group_select('Given By', 'given', emp_opts, object.getGivenBy|default(''), 3, 4, readonly) }}
+             			    {{ form.group_select('Given By', 'given', emp_opts, object.getGivenBy != null ? object.getGivenBy.getID :"", 3, 4, readonly) }}
                  			
-             			    {{ form.group_select('Reason', 'reason_bonus', bonus_opts, object.getReason.getID|default(''), 3, 4, readonly) }}
-                 			{{ form.group_select('Reason', 'reason_fine', fine_opts, object.getReason.getID|default(''), 3, 4, readonly) }}
+             			    {{ form.group_select('Reason', 'reason_bonus', bonus_opts, object.getReason != null ? object.getReason.getID : "", 3, 4, readonly) }}
+                 			{{ form.group_select('Reason', 'reason_fine', fine_opts, object.getReason != null ? object.getReason.getID: "", 3, 4, readonly) }}
                  	        {{ form.group_number('Amount', 'amount', object.getAmount|default(0.00), 3, 2, readonly) }}
-							{{ form.group_date('Date Released', 'date_released', object.getDateReleased|date('m/d/y'), 3, 2, readonly) }}
+							{{ form.group_date('Date Released', 'date_released', object.getDateReleased|date('m/d/Y'), 3, 3, readonly) }}
     		                {{ form.group_select('Cutoff', 'cutoff', cutoff_opts, object.getCutoff|default(''), 3, 2, readonly) }}
 
                         </div>

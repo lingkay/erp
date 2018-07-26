@@ -14,13 +14,12 @@
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
                             {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
-                            {{ form.group_select('Employee', 'employee', emp_opts, object.getEmployee|default(''), 3, 4, readonly) }}
-                            {{ form.group_text('Team', 'team', object.getTeam, 3, 4, true) }}
-                 	        {{ form.group_select('Deposit', 'deposit_type', deposit_opts, object.getDepositType|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Employee', 'employee', emp_opts, object.getEmployee != null ? object.getEmployee.getID: "", 3, 4, readonly) }}
+                            {{ form.group_text('Team', 'team', object.getTeam != null ? object.getTeam.getName : "" , 3, 4, true) }}
+                 	        {{ form.group_select('Adjustment', 'adjustment_type', adjustment_opts, object.getAdjustmentType|default(''), 3, 4, readonly) }}
                             {{ form.group_number('Amount', 'amount', object.getAmount|default(0.00), 3, 2, readonly) }}
 					        {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }}
-                    		{{ form.group_date('Date Deposit', 'date_deposit', object.getDateDeposit|date('m/d/y'), 3, 2, readonly) }}
-                            {{ form.group_date('Date Returned', 'date_return', object.getDateReturned|date('m/d/y'), 3, 2, readonly) }}
+                    		{{ form.group_date('Adjustment Date', 'date_adjustment', object.getDateAdjustment|date('m/d/Y'), 3, 3, readonly) }}
                             {{ form.group_select('Cutoff', 'cutoff', cutoff_opts, object.getCutoff|default(''), 3, 2, readonly) }}
               
                         </div>

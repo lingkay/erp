@@ -325,11 +325,17 @@ abstract class CrudController extends BaseController
         }
         catch (ValidationException $e)
         {
-             $this->addFlash('error', 'Database error occurred. Possible duplicate.');
-            return $this->addError($obj);
+            $this->addFlash('error',$e->getMessage());
+         
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
+         
+            error_log($e->getMessage());
+             return $this->addError($obj);
         }
         catch (DBALException $e)
         {
+             $this->addFlash('error',$e->getMessage());
+         
             $this->addFlash('error', 'Database error occurred. Possible duplicate.');
             error_log($e->getMessage());
             return $this->addError($obj);

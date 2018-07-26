@@ -9,6 +9,7 @@ use Gist\CoreBundle\Template\Entity\HasNotes;
 use Gist\CoreBundle\Template\Entity\HasName;
 use Gist\CoreBundle\Template\Entity\TrackCreate;
 use Gist\CoreBundle\Template\Entity\HasType;
+use Gist\CoreBundle\Template\Entity\HasStatus;
 
 
 use DateTime;
@@ -26,11 +27,14 @@ class EmployeeDeposit
     use HasNotes;
     use TrackCreate;
     use HasType;
+    use HasStatus;
     
 
     const TYPE_RETURN = "Return";
     const TYPE_DEDUCTION = "Deduction";
 
+    const STATUS_DRAFT = "Draft";
+    const STATUS_RETURNED = "Returned";
 
     /** @ORM\Column(type="decimal", precision=15, scale=2, nullable=true) */
     protected $debit;
@@ -43,6 +47,12 @@ class EmployeeDeposit
      * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
      */
     protected $employee;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     */
+    protected $team;
 
 
     /**
@@ -66,7 +76,11 @@ class EmployeeDeposit
     public function __construct()
     {
         $this->initHasName();
+        $this->initTrackCreate();
         $this->flag_given = false;
+        $this->status = self::STATUS_DRAFT;
+        $this->debit = 0.0;
+        $this->credit = 0.0;
     }
 
     public function setDateDeposit($date_deposit)
@@ -120,7 +134,7 @@ class EmployeeDeposit
      *
      * @return IssuedProperty
      */
-    public function setEmployee(\Hris\WorkforceBundle\Entity\Employee $employee = null)
+    public function setEmployee($employee = null)
     {
         $this->employee = $employee;
 
@@ -144,12 +158,15 @@ class EmployeeDeposit
 
     public function getTeam()
     {
-        if($this->employee != null ){
-            return $this->employee->getArea()->getName();
-        }else {
-            return "";
-        }
+       return $this->team;
     }
+
+    public function setTeam($team)
+    {
+        $this->team = $team;
+        return $this;
+    }
+
 
 
       /**
@@ -208,6 +225,14 @@ class EmployeeDeposit
             return $this->getCredit();
             break;
         }
+    }
+
+    public function toData()
+    {
+        $data = new stdClass();
+        $this->dataTrackCreate($data);
+        $this->dataHasGeneratedID($data);
+        return $data;
     }
 
   

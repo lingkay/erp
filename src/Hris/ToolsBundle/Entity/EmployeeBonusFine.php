@@ -63,6 +63,12 @@ class EmployeeBonusFine
     protected $employee;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     */
+    protected $team;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Gist\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="given_id", referencedColumnName="id")
      */
@@ -80,8 +86,11 @@ class EmployeeBonusFine
     public function __construct()
     {
         $this->initHasName();
+        $this->initTrackCreate();
         $this->flag_given = false;
         $this->date_released = new DateTime();
+        $this->debit = 0.0;
+        $this->credit = 0.0;
     }
 
     public function setDateReleased($date_released)
@@ -151,7 +160,7 @@ class EmployeeBonusFine
      *
      * @return IssuedProperty
      */
-    public function setEmployee(\Hris\WorkforceBundle\Entity\Employee $employee = null)
+    public function setEmployee( $employee = null)
     {
         $this->employee = $employee;
 
@@ -173,14 +182,18 @@ class EmployeeBonusFine
         return $this->employee->getDisplayName();
     }
 
+
     public function getTeam()
     {
-    	if($this->employee != null ){
-	    	return $this->employee->getArea()->getName();
-	    }else {
-	    	return "";
-	    }
+       return $this->team;
     }
+
+    public function setTeam($team)
+    {
+        $this->team = $team;
+        return $this;
+    }
+
 
 
       /**
@@ -257,12 +270,16 @@ class EmployeeBonusFine
     {
     	switch($this->bf_type){
     	case self::BFTYPE_BONUS: 
-    		return $this->bonus = $bonus_fine;
+    		 $this->bonus = $bonus_fine;
+    		 $this->fine = null;
     		break;
     	case self::BFTYPE_FINE:
-    		return $this->fine = $bonus_fine;
+    		 $this->fine = $bonus_fine;
+    		 $this->bonus = null;
     		break;
     	}
+
+    	return $this;
     }
 
 
@@ -277,5 +294,13 @@ class EmployeeBonusFine
     		return $this->getCredit();
     		break;
     	}
+    }
+
+    public function toData()
+    {
+        $data = new stdClass();
+        $this->dataTrackCreate($data);
+        $this->dataHasGeneratedID($data);
+        return $data;
     }
 }

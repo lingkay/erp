@@ -44,6 +44,12 @@ class EmployeeAdvance
      */
     protected $employee;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     */
+    protected $team;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="Hris\AdminBundle\Entity\Deposit")
@@ -141,6 +147,18 @@ class EmployeeAdvance
     {
         return $this->employee->getDisplayName();
     }
+
+    public function getTeam()
+    {
+       return $this->team;
+    }
+
+    public function setTeam($team)
+    {
+        $this->team = $team;
+        return $this;
+    }
+
 
 
       /**

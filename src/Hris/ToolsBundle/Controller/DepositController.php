@@ -22,6 +22,8 @@ use LimitIterator;
 
 class DepositController extends CrudController
 {
+    use TrackCreate;
+
     public function __construct()
     {
         $this->route_prefix = 'hris_tools_deposit';
@@ -39,14 +41,17 @@ class DepositController extends CrudController
     
     protected function getObjectLabel($obj)
     {
-        return $obj->getUsername();
+        if ($obj == null){
+            return '';
+        }
+        return $obj->getID();
     }
 
     protected function getGridJoins()
     {
         $grid = $this->get('gist_grid');
         return array(
-            $grid->newJoin('a', 'area', 'getArea'),
+            $grid->newJoin('a', 'team', 'getTeam'),
             // $grid->newJoin('g', 'group', 'getGroup'),
         );
     }
@@ -56,7 +61,7 @@ class DepositController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Employee', 'getEmployeeName', 'last_name'),
+            $grid->newColumn('Employee', 'getEmployeeName', 'employee'),
             $grid->newColumn('Team', 'getName', 'name', 'a'),
             $grid->newColumn('Type', 'getType', 'type'),
             $grid->newColumn('Reason', 'getNotes', 'notes'),
@@ -67,7 +72,7 @@ class DepositController extends CrudController
 
     protected function padFormParams(&$params, $user = null)
     {
-	    $em = $this->getDoctrine()->getManager();
+	    
         $sm = $this->get('hris_settings');
         $um = $this->get('gist_user');
 
@@ -81,6 +86,34 @@ class DepositController extends CrudController
 
     protected function update($o, $data, $is_new = false)
     {
+        $em = $this->getDoctrine()->getManager();
+        $sm = $this->get('hris_settings');
+        $um = $this->get('gist_user');
+
+
+        $employee = $um->findUser($data['employee']);
+        $deposit_type = $sm->findDepositType($data['deposit_type']);
+
+        $o->setEmployee($employee)
+            ->setTeam($employee->getArea())
+            ->setType($data['type'])
+            ->setDepositType($deposit_type)
+            ->setNotes($data['notes'])
+            ->setDateDeposit(new DateTime($data['date_deposit']))
+            ->setCutoff($data['cutoff']);
+
+        switch($o->getType()){
+            case EmployeeDeposit::TYPE_RETURN:
+                $o->setDebit($data['amount']);
+                $o->setCredit(0);
+                break;
+            case EmployeeDeposit::TYPE_DEDUCTION:
+                $o->setCredit($data['amount']);
+                $o->setDebit(0);
+                break;
+        }
+
+        $this->updateTrackCreate($o, $data, $is_new);
     }
 
 

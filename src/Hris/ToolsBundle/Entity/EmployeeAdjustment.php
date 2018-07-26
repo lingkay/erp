@@ -49,6 +49,12 @@ class EmployeeAdjustment
      */
     protected $employee;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     */
+    protected $team;
+
 
   	/** @ORM\Column(type="datetime", nullable=true) */
     protected $date_adjustment;
@@ -64,7 +70,9 @@ class EmployeeAdjustment
     public function __construct()
     {
         $this->initHasName();
-
+        $this->initTrackCreate();
+        $this->debit = 0.0;
+        $this->credit = 0.0;
     }
 
     public function setDateAdjustment($date_adjustment)
@@ -111,14 +119,7 @@ class EmployeeAdjustment
     	return $this->date_adjustment->format('m');
     }
 
-    /**
-     * Set employee
-     *
-     * @param \Hris\WorkforceBundle\Entity\Employee $employee
-     *
-     * @return IssuedProperty
-     */
-    public function setEmployee(\Hris\WorkforceBundle\Entity\Employee $employee = null)
+    public function setEmployee( $employee = null)
     {
         $this->employee = $employee;
 
@@ -139,6 +140,18 @@ class EmployeeAdjustment
     {
         return $this->employee->getDisplayName();
     }
+
+    public function getTeam()
+    {
+       return $this->team;
+    }
+
+    public function setTeam($team)
+    {
+        $this->team = $team;
+        return $this;
+    }
+
 
 
       /**
@@ -176,15 +189,24 @@ class EmployeeAdjustment
     	return $this->credit;
     }
 
-    public function getDepositType()
+    public function getAmount()
     {
-        return $this->deposit_type;
+        switch($this->type){
+        case self::TYPE_ADD: 
+            return $this->getDebit();
+            break;
+        case self::TYPE_DEDUCTION:
+            return $this->getCredit();
+            break;
+        }
     }
 
-    public function setDepositType($deposit_type)
+    public function toData()
     {
-        $this->deposit_type = $deposit_type;
-        return $this;
+        $data = new stdClass();
+        $this->dataTrackCreate($data);
+        $this->dataHasGeneratedID($data);
+        return $data;
     }
 
   

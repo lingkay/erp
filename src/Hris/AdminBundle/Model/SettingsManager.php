@@ -393,5 +393,24 @@ class SettingsManager
         return $options;
     }
 
+    public function findDepositType($id)
+    {
+        return $this->em->getRepository('HrisAdminBundle:Deposit')->find($id);
+    }
+
+    public function findBonus($id)
+    {
+        return $this->em->getRepository('HrisAdminBundle:Bonus')->find($id);
+    }
+
+    
+        public function findFine($id)
+    {
+        return $this->em->getRepository('HrisAdminBundle:Fine')->find($id);
+    }
+
+    
+
+
 
 }
