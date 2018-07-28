@@ -10,7 +10,6 @@ use Gist\CoreBundle\Template\Entity\HasName;
 use Gist\CoreBundle\Template\Entity\TrackCreate;
 use Gist\CoreBundle\Template\Entity\HasType;
 
-use Hris\ToolsBundle\Entity\EmployeeAdvanceEntry;
 
 use DateTime;
 
@@ -18,61 +17,34 @@ use stdClass;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="tools_advance")
+ * @ORM\Table(name="tools_advance_entry")
  */
-class EmployeeAdvance
+class EmployeeAdvanceEntry
 {
     use HasGeneratedID;
-    use HasName;
-    use HasNotes;
     use TrackCreate;
-    use HasType;
-    
-
-    const TYPE_STRAIGHT = "Straight";
-    const TYPE_INSTALLMENT = "Installment";
-
-
 
     /** @ORM\Column(type="decimal", precision=15, scale=2, nullable=true) */
-    protected $total;
+    protected $deduction;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gist\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
-     */
-    protected $employee;
+    /** @ORM\Column(type="decimal", precision=15, scale=2, nullable=true) */
+    protected $balance;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gist\LocationBundle\Entity\Areas")
-     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
-     */
-    protected $team;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Gist\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="given_id", referencedColumnName="id")
-     */
-    protected $given_by;
-
-
-	  /** @ORM\Column(type="datetime", nullable=true) */
-    protected $date_release;
 
     /** @ORM\Column(type="datetime", nullable=true) */
-    protected $date_request;
+    protected $date_deduction;
 
-    /** @ORM\Column(type="boolean") */
-    protected $flag_fulldeduction;
+    /** @ORM\Column(type="string", length=4, nullable=true) */
+    protected $cutoff;
 
     /** @ORM\Column(type="integer") */
-    protected $deduction_no;
-
+    protected $count;
 
     /**
-     * @ORM\OneToMany(targetEntity="EmployeeAdvanceEntry", mappedBy="advance", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="EmployeeAdvance")
+     * @ORM\JoinColumn(name="entries", referencedColumnName="id", onDelete="CASCADE")
      */
-    protected $entries;
+    protected $advance;
 
 
     public function __construct()
@@ -101,6 +73,28 @@ class EmployeeAdvance
     public function getDateRequest()
     {
         return $this->date_request;
+    }
+
+
+    public function setCutoff($cutoff)
+    {
+    	$this->cutoff = $cutoff;
+    	return $this;	
+    }
+
+    public function getCutoff()
+    {
+    	return $this->cutoff;
+    }
+
+    public function getYearRelease()
+    {
+    	return $this->date_release->format('Y');
+    }
+
+    public function getMonthRelease()
+    {
+    	return $this->date_release->format('m');
     }
 
     /**
@@ -154,31 +148,15 @@ class EmployeeAdvance
       return $this->total;
     }
 
-    public function getEntries()
+    public function setAdvance($advance)
     {
-      return $this->entries;
-    }
-
-    public function addEntry(EmployeeAdvanceEntry $entry)
-    {
-        // set purchase order
-        $entry->setAdvance($this);
-
-        // add entry
-        $this->entries->add($entry);
-
+        $this->advance = $advance;
         return $this;
     }
 
-    public function deleteEntry(EmployeeAdvanceEntry $entry)
+    public function getAdvance()
     {
-        $this->entries->removeElement($entry);
-        return $this;
-    }
-
-    public function clearEntries()
-    {
-        $this->entries->clear();
+        return $this->advance;
     }
 
     public function toData()

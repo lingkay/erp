@@ -16,7 +16,7 @@
                             {{ form.group_select('Bonus/Fine', 'bf_type',bftype_opts, object.getBFType|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
                             {{ form.group_select('Employee', 'employee', emp_opts, object.getEmployee != null ? object.getEmployee.getID : "", 3, 4, readonly) }}
-                            {{ form.group_text('Team', 'team', object.getTeam, 3, 4, true) }}
+                            {{ form.group_text('Team', 'team', object.getTeam != null ? object.getTeam.getName : "", 3, 4, true) }}
              			    {{ form.group_select('Given By', 'given', emp_opts, object.getGivenBy != null ? object.getGivenBy.getID :"", 3, 4, readonly) }}
                  			
              			    {{ form.group_select('Reason', 'reason_bonus', bonus_opts, object.getReason != null ? object.getReason.getID : "", 3, 4, readonly) }}

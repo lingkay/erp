@@ -9,36 +9,34 @@ use Hris\ToolsBundle\Entity\ScheduleEntry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
-use Gist\TemplateBundle\Model\BaseController as Controller;
 use Gist\ValidationException;
 use Hris\WorkforceBundle\Entity\Attendance;
 use Gist\NotificationBundle\Model\NotificationEvent;
 use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
-use Hris\ToolsBundle\Entity\EmployeeBonusFine;
+use Hris\ToolsBundle\Entity\EmployeeAdvance;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
 
-class BonusFineController extends CrudController
+class CashAdvanceController extends CrudController
 {
-	use TrackCreate;
+    use TrackCreate;
 
     public function __construct()
     {
-        $this->route_prefix = 'hris_tools_bonus';
-        $this->title = 'Bonus/Fines';
-        $this->list_title = 'Bonus/Fines';
+        $this->route_prefix = 'hris_tools_advance';
+        $this->title = 'Cash Advance';
+        $this->list_title = 'Cash Advance';
         $this->list_type = 'dynamic';
-        $this->repo = "HrisToolsBundle:EmployeeBonusFine";
+        $this->repo = "HrisToolsBundle:EmployeeAdvance";
     }
 
 
     protected function newBaseClass()
     {
-        return new EmployeeBonusFine();
+        return new EmployeeAdvance();
     }
-    
     
     protected function getObjectLabel($obj)
     {
@@ -48,12 +46,11 @@ class BonusFineController extends CrudController
         return $obj->getID();
     }
 
-
     protected function getGridJoins()
     {
         $grid = $this->get('gist_grid');
         return array(
-            $grid->newJoin('a', 'team', 'getTeam')
+            $grid->newJoin('a', 'team', 'getTeam'),
             // $grid->newJoin('g', 'group', 'getGroup'),
         );
     }
@@ -64,11 +61,9 @@ class BonusFineController extends CrudController
 
         return array(
             $grid->newColumn('Employee', 'getEmployeeName', 'employee'),
-            $grid->newColumn('Team', 'getName', 'team', 'a'),
-            $grid->newColumn('Given By', 'getGivenName', 'name','g'),
-            // $grid->newColumn('Roles', 'getGroupsText', 'id', 'o', null, false),
-            $grid->newColumn('Bonus/Fine', 'getBFType', 'bf_type'),
-            $grid->newColumn('Reason', 'getReasonName', 'bf_type'),
+            $grid->newColumn('Team', 'getName', 'name', 'a'),
+            $grid->newColumn('Type', 'getType', 'type'),
+            $grid->newColumn('Adjustment', 'getAdjustmentType', 'adjustment_type'),
             $grid->newColumn('Amount', 'getAmount', 'debit'),
  
         );
@@ -80,16 +75,15 @@ class BonusFineController extends CrudController
         $sm = $this->get('hris_settings');
         $um = $this->get('gist_user');
 
-
-        $params['bonus_opts'] = $sm->getBonusOptions();
-        $params['fine_opts'] = $sm->getFineOptions();
-        $params['type_opts'] = [EmployeeBonusFine::TYPE_SALARY => EmployeeBonusFine::TYPE_SALARY,
-        						EmployeeBonusFine::TYPE_CASH => EmployeeBonusFine::TYPE_CASH];
-        $params['bftype_opts'] = [EmployeeBonusFine::BFTYPE_BONUS => EmployeeBonusFine::BFTYPE_BONUS,
-        						EmployeeBonusFine::BFTYPE_FINE => EmployeeBonusFine::BFTYPE_FINE];	
-
+        $params['adjustment_opts'] = [EmployeeAdjustment::ADJUSTMENT_FINE => EmployeeAdjustment::ADJUSTMENT_FINE,
+                                        EmployeeAdjustment::ADJUSTMENT_BASIC => EmployeeAdjustment::ADJUSTMENT_BASIC,
+                                        EmployeeAdjustment::ADJUSTMENT_13TH => EmployeeAdjustment::ADJUSTMENT_13TH,
+                                        EmployeeAdjustment::ADJUSTMENT_OVERPAID => EmployeeAdjustment::ADJUSTMENT_OVERPAID];
+       
+        $params['type_opts'] = [EmployeeAdjustment::TYPE_ADD => EmployeeAdjustment::TYPE_ADD,
+        						EmployeeAdjustment::TYPE_DEDUCTION => EmployeeAdjustment::TYPE_DEDUCTION];
         $params['emp_opts'] = $um->getUserFullNameOptions();
-	    $params['cutoff_opts'] = ["A"=>"A", "B"=>"B"];
+        $params['cutoff_opts'] = ["A"=>"A", "B"=>"B"];
     }
 
     protected function update($o, $data, $is_new = false)
@@ -100,31 +94,25 @@ class BonusFineController extends CrudController
 
 
         $employee = $um->findUser($data['employee']);
-        $given_by = $um->findUser($data['given']);
-        
-    
+
         $o->setEmployee($employee)
             ->setTeam($employee->getArea())
-            ->setGivenBy($given_by)
             ->setType($data['type'])
-            ->setBFType($data['bf_type'])
-            ->setDateReleased(new DateTime($data['date_released']))
+            ->setAdjustmentType($data['adjustment_type'])
+            ->setNotes($data['notes'])
+            ->setDateAdjustment(new DateTime($data['date_adjustment']))
             ->setCutoff($data['cutoff']);
 
-        switch($o->getBFType()){
-            case EmployeeBonusFine::BFTYPE_BONUS:
+        switch($o->getType()){
+            case EmployeeAdjustment::TYPE_ADD:
                 $o->setDebit($data['amount']);
                 $o->setCredit(0);
-                $reason = $sm->findBonus($data['reason_bonus']);
                 break;
-            case EmployeeBonusFine::BFTYPE_BONUS:
+            case EmployeeAdjustment::TYPE_DEDUCTION:
                 $o->setCredit($data['amount']);
                 $o->setDebit(0);
-                $reason = $sm->findFine($data['reason_fine']);
                 break;
         }
-
-        $o->setReason($reason);
 
         $this->updateTrackCreate($o, $data, $is_new);
     }
