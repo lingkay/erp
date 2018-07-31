@@ -144,3 +144,8 @@ gist_terminals_terminal_operator_grid:
     pattern: /terminal_operators/grid
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:TerminalOperator:grid }
+
+
+gist_accounting_accounts:
+    resource: "@GistAccountingBundle/Resources/config/routing_coa.yml"
+    prefix:   /coa

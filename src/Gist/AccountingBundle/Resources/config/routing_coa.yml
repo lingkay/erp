@@ -1,0 +1,37 @@
+
+gist_accounting_accounts_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:ChartOfAccount:index }
+
+gist_accounting_accounts_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:ChartOfAccount:grid }
+
+gist_accounting_accounts_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:ChartOfAccount:addForm }
+
+gist_accounting_accounts_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:ChartOfAccount:addSubmit }
+
+gist_accounting_accounts_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:ChartOfAccount:editForm }
+
+gist_accounting_accounts_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:ChartOfAccount:editSubmit }
+
+gist_accounting_accounts_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:ChartOfAccount:delete }
+
+
