@@ -149,3 +149,7 @@ gist_terminals_terminal_operator_grid:
 gist_accounting_accounts:
     resource: "@GistAccountingBundle/Resources/config/routing_coa.yml"
     prefix:   /coa
+
+gist_accounting_crj:
+    resource: "@GistAccountingBundle/Resources/config/routing_crj.yml"
+    prefix:   /crj

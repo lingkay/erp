@@ -89,3 +89,20 @@ menu_items:
       acl: hris_payroll_settings_incentive.menu
       label: Incentives
       parent: menu_hr
+
+    - id: gist_accounting_cdj_index
+      acl: gist_accounting_cdj.menu
+      label: CDJ
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_crj_index
+      acl: gist_accounting_crj.menu
+      label: CRJ
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_gj_index
+      acl: gist_accounting_gj.menu
+      label: General Journal
+      parent: gist_accounting_menu
+
+      
