@@ -56,13 +56,23 @@ abstract class JournalEntryAbstract
 
     public function __construct()
     {
-        parent::__construct();
         $this->initTrackCreate();
         $this->initHasType();
         $this->initHasCode();
         $this->credit = 0.0;
         $this->debit = 0.0;
         $this->status = self::STATUS_DRAFT;
+    }
+
+    public function setAccount($account)
+    {
+        $this->chart_of_account = $account;
+        return $this;
+    }
+
+    public function getAccount()
+    {
+        return $this->chart_of_account;
     }
 
     public function setRecordDate(DateTime $record)

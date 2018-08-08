@@ -164,6 +164,27 @@ class AccountingManager
         return $tax;
     }
 
+    public function getChartOfAccountOptions($filter = [])
+    {
+        
+        $objects = $this->em->getRepository('GistAccountingBundle:ChartOfAccount')
+            ->findBy(
+                $filter,
+                ['id' => 'ASC']
+            );
+
+        $opts = array();
+        foreach ($objects as $o)
+            $opts[$o->getID()] = $o->getName()." (".$o->getCode().")";
+
+        return $opts;
+    }
+
+
+    public function findChartOfAccount($id)
+    {
+        return $this->em->getRepository('GistAccountingBundle:ChartOfAccount')->find($id);
+    }
 
 
 }

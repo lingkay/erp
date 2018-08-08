@@ -3,8 +3,11 @@
 namespace Gist\AccountingBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gist\CoreBundle\Template\Entity\JournalEntryAbstract;
+use Gist\AccountingBundle\Entity\JournalEntryAbstract;
 
+/**
+ * @ORM\Entity
+ */
 class CDJJournalEntry extends JournalEntryAbstract
 {
     

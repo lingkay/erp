@@ -6,14 +6,21 @@
         <div class="col-md-12">
             <div class="portlet box blue-hoki">
                 <div class="portlet-title">
-                    <div class="caption">{% block form_header %}Role{% endblock %}</div>
+                    <div class="caption">Add CRJ Entries</div>
                 </div>
                 <div class="portlet-body form">
                     <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
-                            <h4 class="form-section">Information</h4>
-                            {{ form.group_text('Account Name', 'name', object.getName|default(""), 3, 4, readonly) }}
+                            <table>
+                                <thead>
+                                    <th>Record Date</th>
+                                    <th>Account</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                </thead>
+                            </table>
+                            {{ form.group_select('Account Name', 'name', account_opts,object.getName|default(""), 3, 4, readonly) }}
                  	        {{ form.group_text('Code', 'code', object.getCode|default(""), 3, 4, readonly) }}
                             {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }}
                         
