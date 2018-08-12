@@ -172,8 +172,14 @@ abstract class CrudController extends BaseController
         $this->padGridParams($params, $id);
 
         $engine = $this->get('templating');
+
+        $twig_file = 'GistTemplateBundle:Object:action.html.twig';
+        if ($this->get('templating')->exists($this->base_view.':action.html.twig')) {
+          $twig_file = $this->base_view.':action.html.twig';
+        }
+
         return $engine->render(
-            'GistTemplateBundle:Object:action.html.twig',
+            $twig_file,
             $params
         );
     }
@@ -199,9 +205,13 @@ abstract class CrudController extends BaseController
             $twig_file = 'GistTemplateBundle:Object:list.dynamic.html.twig';
         }
 
+        if ($this->get('templating')->exists($this->base_view.':index.html.twig')) {
+            $twig_file = $this->base_view.':index.html.twig';
+        }
+
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
-
+        $this->padListParams($params);
         return $this->render($twig_file, $params);
     }
 

@@ -12,10 +12,9 @@
             <div class="portlet-body">
                 <div class="table-toolbar">
                 {% if app.user.hasAccess(prefix ~ '.add') %}
-                    <a href="{{ path(route_add) }}" class="btn green">Add CDJ Entries</a>
+                    <a href="{{ path(route_add) }}" class="btn green">Add New</a>
                 {% endif %}
                 </div>
-
                 <div class="portlet box blue-hoki">
                     <div class="portlet-body">
                     {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 2,4) }}
@@ -51,7 +50,7 @@ $(document).ready(function() {
     $('#btn_filter').click(function(){
             var from = $('#cform-date_from').val();
             var to = $('#cform-date_to').val();
-             window.location.replace("{{ path('gist_accounting_cdj_index') }}?date_from="+from+"&date_to="+to);
+             window.location.replace("{{ path('hris_tools_adjustment_index') }}?date_from="+from+"&date_to="+to);
 
         });
 

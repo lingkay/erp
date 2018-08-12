@@ -41,6 +41,10 @@ class ChartOfAccount
         $this->initHasCode();
     }
 
+    public function getNameCode()
+    {
+        return $this->name." (".$this->code.")";
+    }
     public function toData()
     {
         $data = new stdClass();

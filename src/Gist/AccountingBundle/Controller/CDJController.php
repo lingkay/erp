@@ -19,6 +19,9 @@ class CDJController extends CrudController
 {
     use TrackCreate;
 
+    protected $date_from;
+    protected $date_to;
+
     public function __construct()
     {
         $this->route_prefix = 'gist_accounting_cdj';
@@ -42,44 +45,35 @@ class CDJController extends CrudController
         return $obj->getCode();
     }
 
-    // protected function getGridJoins()
-    // {
-    //     $grid = $this->get('gist_grid');
-    //     return array(
-    //         $grid->newJoin('a', 'team', 'getTeam'),
-    //         // $grid->newJoin('g', 'group', 'getGroup'),
-    //     );
-    // }
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('a', 'chart_of_account', 'getAccount'),
+            // $grid->newJoin('g', 'group', 'getGroup'),
+        );
+    }
 
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Account Name', 'getName', 'name'),
-            $grid->newColumn('Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
+            $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
+            $grid->newColumn('Record Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
             $grid->newColumn('Particulars', 'getNotes', 'notes'),
      
-            $grid->newColumn('Debit', 'getDebit', 'debit'),
-            $grid->newColumn('Credit', 'getCredit', 'credit'),
+            $grid->newColumn('Debit', 'getDebit', 'debit', 'o', [$this,'formatPrice']),
+            $grid->newColumn('Credit', 'getCredit', 'credit',  'o', [$this,'formatPrice']),
         );
     }
 
-    // protected function padFormParams(&$params, $user = null)
-    // {
-	    
-    //     $sm = $this->get('hris_settings');
-    //     $um = $this->get('gist_user');
-
-    //     $params['deposit_opts'] = $sm->getDepositOptions();
-       
-    //     $params['type_opts'] = [EmployeeDeposit::TYPE_RETURN => EmployeeDeposit::TYPE_RETURN,
-    //     						EmployeeDeposit::TYPE_DEDUCTION => EmployeeDeposit::TYPE_DEDUCTION];
-    //     $params['emp_opts'] = $um->getUserFullNameOptions();
-    //     $params['cutoff_opts'] = ["A"=>"A", "B"=>"B"];
-    // }
-    // 
-    
+    protected function hookPreAction()
+    {
+        $this->getControllerBase();
+        $this->date_from = new DateTime($this->getRequest()->get('date_from'));
+        $this->date_to = new DateTime($this->getRequest()->get('date_to'));
+    }
 
     public function addFormAction()
     {
@@ -158,6 +152,19 @@ class CDJController extends CrudController
         $params['cdate'] = new DateTime();
     }
 
+    protected function padListParams(&$params, $onj = null)
+    {
+        $date_from = new DateTime();
+        $date_from->modify('first day of this month');
+        $date_to = new DateTime();
+        $date_to->modify('last day of this month');
+        $params['date_from'] = $this->date_from != null?$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['date_to'] = $this->date_to != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+        
+        return $params;
+
+    }
+    
     protected function update($data)
     {
         $em = $this->getDoctrine()->getManager();
@@ -178,11 +185,24 @@ class CDJController extends CrudController
             $em->persist($cdj_entry);
             $em->flush();
         }
-        // $o->setName($data['name'])
-        //     ->setCode($data['code'])
-        //     ->setNotes($data['notes']);
+    }
 
-        // $this->updateTrackCreate($o, $data, $is_new);
+    protected function filterGrid()
+    {
+        // $grid = $this->get('quadrant_grid');
+        // $fg = $grid->newFilterGroup();
+        
+        // $date_from = new DateTime($this->date_from);
+        $this->date_from->setTime(0,0);
+        // $date_to = new DateTime($this->date_to);
+        $this->date_to->setTime(23,59);
+
+        $fg = parent::filterGrid();
+        $fg->where('o.record_date between :date_from and :date_to ')
+            ->setParameter("date_from", $this->date_from)
+            ->setParameter("date_to", $this->date_to);
+     
+        return $fg;
     }
 
 

@@ -22,6 +22,8 @@ use LimitIterator;
 class AdjustmentController extends CrudController
 {
     use TrackCreate;
+    protected $date_from;
+    protected $date_to;
 
     public function __construct()
     {
@@ -64,7 +66,7 @@ class AdjustmentController extends CrudController
             $grid->newColumn('Team', 'getName', 'name', 'a'),
             $grid->newColumn('Type', 'getType', 'type'),
             $grid->newColumn('Adjustment', 'getAdjustmentType', 'adjustment_type'),
-            $grid->newColumn('Amount', 'getAmount', 'debit'),
+            $grid->newColumn('Amount(Php)', 'getAmount', 'debit', 'o', [$this, 'formatPrice']),
  
         );
     }
@@ -115,6 +117,40 @@ class AdjustmentController extends CrudController
         }
 
         $this->updateTrackCreate($o, $data, $is_new);
+    }
+
+    protected function padListParams(&$params, $onj = null)
+    {
+        $date_from = new DateTime();
+        $date_from = $date_from->modify('first day of this month');
+        $date_to = new DateTime();
+        $date_to = $date_to->modify('last day of this month');
+        $params['date_from'] = $this->date_from != null?$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['date_to'] = $this->date_to != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+        
+        return $params;
+
+    }
+
+    protected function hookPreAction()
+    {
+        $this->getControllerBase();
+        $this->date_from = new DateTime($this->getRequest()->get('date_from'));
+        $this->date_to = new DateTime($this->getRequest()->get('date_to'));
+    }
+
+
+    protected function filterGrid()
+    {
+        $this->date_from->setTime(0,0);
+        $this->date_to->setTime(23,59);
+
+        $fg = parent::filterGrid();
+        $fg->where('o.date_create between :date_from and :date_to ')
+            ->setParameter("date_from", $this->date_from)
+            ->setParameter("date_to", $this->date_to);
+     
+        return $fg;
     }
 
 
