@@ -120,12 +120,8 @@ class DepositController extends CrudController
 
     protected function padListParams(&$params, $obj = null)
     {
-        $date_from = new DateTime();
-        $date_from = $date_from->modify('first day of this month');
-        $date_to = new DateTime();
-        $date_to = $date_to->modify('last day of this month');
-        $params['date_from'] = $this->date_from != null?$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
-        $params['date_to'] = $this->date_to != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+        $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
         
         return $params;
 
@@ -134,8 +130,21 @@ class DepositController extends CrudController
     protected function hookPreAction()
     {
         $this->getControllerBase();
-        $this->date_from = new DateTime($this->getRequest()->get('date_from'));
-        $this->date_to = new DateTime($this->getRequest()->get('date_to'));
+        if($this->getRequest()->get('date_from') != null){
+            $this->date_from = new DateTime($this->getRequest()->get('date_from'));
+        }else {
+           $date_from = new DateTime();
+           $date_from->modify('first day of this month');
+           $this->date_from = $date_from;
+        }
+
+        if($this->getRequest()->get('date_to') != null){
+            $this->date_to = new DateTime($this->getRequest()->get('date_to'));
+        }else {
+           $date_to = new DateTime();
+           $date_to->modify('last day of this month');
+           $this->date_to = $date_to;
+        }
     }
 
 
