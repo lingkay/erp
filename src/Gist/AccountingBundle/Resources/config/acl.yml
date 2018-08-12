@@ -61,3 +61,43 @@ acl:
           label: "Edit"
         - id: gist_terminals_terminal_operator.delete
           label: "Delete"
+
+    - category: Chart of Accounts
+      entries:
+        - id: gist_accounting_accounts.menu
+          label: "Menu"
+        - id: gist_accounting_accounts.view
+          label: "View"
+        - id: gist_accounting_accounts.add
+          label: "Add"
+        - id: gist_accounting_accounts.edit
+          label: "Edit"
+        - id: gist_accounting_accounts.delete
+          label : "Delete"
+
+    - category: CDJ
+      entries:
+        - id: gist_accounting_cdj.menu
+          label: "Menu"
+        - id: gist_accounting_cdj.view
+          label: "View"
+        - id: gist_accounting_cdj.add
+          label: "Add"
+
+    - category: CRJ
+      entries:
+        - id: gist_accounting_crj.menu
+          label: "Menu"
+        - id: gist_accounting_crj.view
+          label: "View"
+        - id: gist_accounting_crj.add
+          label: "Add"
+
+    - category: General Journal
+      entries:
+        - id: gist_accounting_general.menu
+          label: "Menu"
+        - id: gist_accounting_general.view
+          label: "View"
+        - id: gist_accounting_general.add
+          label: "Add"
