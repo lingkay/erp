@@ -100,8 +100,8 @@ menu_items:
       label: CRJ
       parent: gist_accounting_menu
 
-    - id: gist_accounting_gj_index
-      acl: gist_accounting_gj.menu
+    - id: gist_accounting_general_index
+      acl: gist_accounting_general.menu
       label: General Journal
       parent: gist_accounting_menu
 
