@@ -6,13 +6,26 @@ class Chart
 {
     protected $categories;
     protected $series;
+    protected $yaxis;
 
     public function __construct()
     {
         $this->categories = array();
         $this->series = array();
+        $this->yaxis = "Amount";
     }
 
+    public function setYAxis($yaxis)
+    {
+        $this->yaxis = $yaxis;
+        return $this;
+    }
+
+    public function getYAxis()
+    {
+        return $this->yaxis;
+    }
+    
     public function addCategory($cat)
     {
         $this->categories[] = $cat;

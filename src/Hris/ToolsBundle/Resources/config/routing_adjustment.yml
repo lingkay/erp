@@ -34,4 +34,7 @@ hris_tools_adjustment_delete:
     methods: [GET]
     defaults: { _controller: HrisToolsBundle:Adjustment:delete }
 
-
+hris_tools_adjustment_csv:
+    pattern: /csv
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:Adjustment:csv }

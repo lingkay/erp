@@ -35,3 +35,9 @@ hris_tools_bonus_delete:
     defaults: { _controller: HrisToolsBundle:BonusFine:delete }
 
 
+hris_tools_bonus_csv:
+    pattern: /csv
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:BonusFine:csv }
+
+

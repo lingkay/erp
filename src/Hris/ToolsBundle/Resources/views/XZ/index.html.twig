@@ -1,0 +1,81 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">XZ Reports </div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+            	<div class="col-md-8">
+					 <div id="chart_container">
+					    <div id="sales_chart">
+					    </div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+$(document).ready(function() {
+
+	$('#sales_chart').highcharts({
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: "Daily Sales",
+            x: -20
+        },
+        xAxis: {
+            categories: [
+            {% for p_date in chart.getCategories %}
+                "{{ p_date }}",
+            {% endfor %}
+            ],
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '9px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: "{{ chart.getYAxis}}"
+            },
+            plotlines: [{
+                value: 0,
+                width: 1,
+                color: "#808080"
+            }]
+        },
+        series: [
+            {% for series in chart.getSeriesCollection %}
+            {
+                name: "{{ series.getName }}",
+                data: [
+                {% for value in series.getData %}
+                    {{ value }},
+                {% endfor %}
+                ],
+            },
+            {% endfor %}
+        ]
+    });
+});
+</script>
+
+{% endblock %}

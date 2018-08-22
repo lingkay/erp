@@ -49,7 +49,7 @@ menu_items:
       acl: hris_tools_advance.menu
       label: Cash Advance
       parent: menu_tools
-    - id: hris_tools_schedule_index2
-      acl: hris_tools_schedule.menu
+    - id: hris_tools_xz_index
+      acl: hris_tools_xz.menu
       label: X/Z Reports
       parent: menu_tools
