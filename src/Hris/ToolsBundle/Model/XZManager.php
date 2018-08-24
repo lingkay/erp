@@ -25,10 +25,10 @@ class XZManager
     
     public function getSalesChart($data)
     {
-        $dateFrom = new DateTime();
-        $dateFrom->modify('-7 days');
+        $dateFrom = new DateTime("04/13/2018");
+        // $dateFrom->modify('-7 days');
         $dateFrom->setTime(0,0);
-        $dateTo = new DateTime();
+        $dateTo = new DateTime("04/19/2018");
         $dateTo->setTime(23,59);
         $data['date_from'] = $dateFrom;
         $data['date_to'] = $dateTo;
@@ -100,6 +100,67 @@ class XZManager
                 'report_title' => 'Daily Sales ',
                 'y_axis' => 'Total Sales (PHP)'
             ];
+    }
+
+    public function getSalesPerProduct($data)
+    {
+    	$dateFrom = new DateTime("04/17/2018");
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime("04/17/2018");
+        $dateTo->setTime(23,59);
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+        $result = $this->getSalesPerProductData($data);
+        return $result;
+    }
+
+    protected function getSalesPerProductData($data)
+    {
+	  	$qb = $this->em->createQueryBuilder();
+    	$qb->select([ "count(o) as quantity",
+    				"sum(o.total_amount) as total", 
+    				"o.name",
+    				"sum(o.adjusted_price) as adjusted_price",
+    				"sum(o.discount_value) as discount",
+    				"avg(o.total_amount) as average"])
+            ->from('GistPOSERPBundle:POSTransactionItem', 'o')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->groupby('o.product_id');
+
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+    }
+
+    public function getSalesPerLocation($data)
+    {
+    	$dateFrom = new DateTime("03/24/2018");
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime("05/08/2018");
+        $dateTo->setTime(23,59);
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+        $result = $this->getSalesPerLocationData($data);
+        return $result;
+    }
+
+    protected function getSalesPerLocationData($data)
+    {
+	  	$qb = $this->em->createQueryBuilder();
+    	$qb->select(["sum(o.transaction_total) as total", "l.name as name", "l.id as id"])
+            ->from('GistPOSERPBundle:POSTransaction', 'o')
+            ->leftJoin('o.pos_location','l')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->groupby('o.pos_location')
+            ->orderby('total','desc');
+
+        $result = $qb->getQuery()->getResult();
+     
+        return $result;
     }
 }
 

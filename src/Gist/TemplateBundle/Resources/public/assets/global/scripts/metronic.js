@@ -143,6 +143,27 @@ var Metronic = function () {
                 el.slideDown(200);
             }
         });
+
+        jQuery('body').on('click', '.portlet > .portlet-title > .tools > .fullscreen', function(e) {
+            e.preventDefault();
+            var portlet = $(this).closest(".portlet");
+            if (portlet.hasClass('portlet-fullscreen')) {
+                $(this).removeClass('on');
+                portlet.removeClass('portlet-fullscreen');
+                $('body').removeClass('page-portlet-fullscreen');
+                portlet.children('.portlet-body').css('height', 'auto');
+            } else {
+                var height = Metronic.getViewPort().height -
+                    portlet.children('.portlet-title').outerHeight() -
+                    parseInt(portlet.children('.portlet-body').css('padding-top')) -
+                    parseInt(portlet.children('.portlet-body').css('padding-bottom'));
+
+                $(this).addClass('on');
+                portlet.addClass('portlet-fullscreen');
+                $('body').addClass('page-portlet-fullscreen');
+                portlet.children('.portlet-body').css('height', height);
+            }
+        });
     }
 
     // Handles custom checkboxes & radios using jQuery Uniform plugin

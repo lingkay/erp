@@ -3,6 +3,8 @@
 namespace Hris\ToolsBundle\Controller;
 
 use Gist\TemplateBundle\Model\BaseController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -11,6 +13,8 @@ class XZController extends BaseController
 {
     protected $date_from;
     protected $date_to;
+    protected $xz;
+    protected $data;
 
     public function __construct()
     {
@@ -33,8 +37,8 @@ class XZController extends BaseController
 
         //Sales
         $xz = $this->get('tools_xz');
-        $params['chart'] = $xz->getSalesChart($data);
-        
+        // $params['chart'] = $xz->getSalesPerProduct($data);
+        // print_r($params['chart']);
         return $this->render($twig_file, $params);
     }
 
@@ -43,14 +47,32 @@ class XZController extends BaseController
 
     }
 
-    public function getTotalSalesAction()
+    protected function hookPreAction()
     {
-        $xz = $this->get('tools_xz');
-
-        $params['chart'] = $xz->getChart($data);
+        $this->xz = $this->get('tools_xz');
+        $this->data = $this->getRequest()->query->all();
     }
 
+    public function salesAction()
+    {
+        $this->hookPreAction();
+        $chart = $this->xz->getSalesChart($this->data);
+        return new JsonResponse($chart->toData());
+    }
 
+    public function productAction()
+    {
+        $this->hookPreAction();
+        $response = $this->xz->getSalesPerProduct($this->data);
+        return new JsonResponse($response);
+    }
+  
+    public function locationAction()
+    {
+        $this->hookPreAction();
+        $response = $this->xz->getSalesPerLocation($this->data);
+        return new JsonResponse($response);
+    }
   
     
 

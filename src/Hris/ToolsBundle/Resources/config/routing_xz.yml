@@ -1,0 +1,23 @@
+
+hris_tools_xz_index:
+    path:     /index
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:index }
+
+
+hris_tools_xz_sales:
+    path:     /sales
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:sales }
+
+
+hris_tools_xz_product:
+    path:     /product
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:product }
+
+
+hris_tools_xz_location:
+    path:     /location
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:location }

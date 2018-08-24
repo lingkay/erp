@@ -26,10 +26,9 @@ hris_tools_weekly_schedule_index:
     defaults: { _controller: HrisToolsBundle:WeeklySchedule:index,date: null }
 
 
-hris_tools_xz_index:
-    path:     /xz
-    methods:  [GET]
-    defaults: { _controller: HrisToolsBundle:XZ:index }
+hris_tools_xz:
+    resource: "@HrisToolsBundle/Resources/config/routing_xz.yml"
+    prefix:   /xz
 
 hris_tools_bonus:
     resource: "@HrisToolsBundle/Resources/config/routing_bonus.yml"
