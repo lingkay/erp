@@ -37,7 +37,7 @@ class POSTransactionSplit
      */
     protected $transaction;
 
-    /** @ORM\Column(type="string", length=20) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $amount;
 
     /** @ORM\Column(type="string", length=20) */

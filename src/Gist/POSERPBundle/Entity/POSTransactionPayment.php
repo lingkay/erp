@@ -31,7 +31,7 @@ class POSTransactionPayment
     /** @ORM\Column(type="string", length=250, nullable=true) */
     protected $details;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $amount;
 
     // GENERIC
