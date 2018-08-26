@@ -24,10 +24,10 @@ class POSTransaction
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $trans_display_id;
 
-    /** @ORM\Column(type="float", length=150, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $transaction_total;
 
-    /** @ORM\Column(type="float", length=150, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $transaction_balance;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
@@ -54,28 +54,28 @@ class POSTransaction
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $tax_rate;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $orig_vat_amt;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $new_vat_amt;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $orig_amt_net_vat;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $new_amt_net_vat;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $tax_coverage;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $cart_min;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $cart_orig_total;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $cart_new_total;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -96,16 +96,16 @@ class POSTransaction
     /** @ORM\OneToMany(targetEntity="POSTransactionSplit", mappedBy="transaction") */
     protected $splits;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $deposit_vat_amt;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $deposit_amt_net_vat;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $balance_vat_amt;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $balance_amt_net_vat;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -114,10 +114,10 @@ class POSTransaction
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $deposit_amount;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $gc_credit_amount;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $gc_debit_amount;
 
     /**
@@ -138,7 +138,7 @@ class POSTransaction
      */
     private $child_transaction;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $extra_amount;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -159,7 +159,7 @@ class POSTransaction
     /** @ORM\Column(type="string", length=255, nullable=true) */
     protected $remarks;
 
-    /** @ORM\Column(type="float", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $total_discount;
 
 
