@@ -138,7 +138,7 @@ class POSTransaction
      */
     private $child_transaction;
 
-    /** @ORM\Column(type="float", nullable=true) */
+    /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $extra_amount;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
