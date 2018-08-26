@@ -128,7 +128,10 @@ class POSSyncController extends CrudController
         $transaction->setPOSLocation($pos_location);
 
         //TOTAL DISCOUNT
-        $totalDiscount = bcsub($orig_cart_total, $new_cart_total);
+        $totalDiscount = 0;
+        if ($type != 'reg') {
+            $totalDiscount = bcsub($orig_cart_total, $new_cart_total);
+        }
         $transaction->setTotalDiscount($totalDiscount);
 
         $em->persist($transaction);
