@@ -16,17 +16,50 @@ use Gist\InventoryBundle\Entity\Stock;
 
 class POSSyncController extends CrudController
 {
+    /**
+     * @return POSTransaction
+     */
     protected function newBaseClass()
     {
         return new POSTransaction();
     }
 
+    /**
+     * @param $obj
+     * @return mixed
+     */
     protected function getObjectLabel($obj)
     {
         return $obj->getID();
     }
 
-    public function saveTransactionAction($pos_loc_id, $id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total,$bulk_type,$transaction_mode,$transaction_cc_interest,$transaction_ea, $uid, $parentID)
+    /**
+     * @param $pos_loc_id
+     * @param $id
+     * @param $display_id
+     * @param $total
+     * @param $balance
+     * @param $type
+     * @param $customer_id
+     * @param $status
+     * @param $tax_rate
+     * @param $orig_vat_amt
+     * @param $new_vat_amt
+     * @param $orig_amt_net_vat
+     * @param $new_amt_net_vat
+     * @param $tax_coverage
+     * @param $cart_min
+     * @param $orig_cart_total
+     * @param $new_cart_total
+     * @param $bulk_type
+     * @param $transaction_mode
+     * @param $transaction_cc_interest
+     * @param $transaction_ea
+     * @param $uid
+     * @param $parentID
+     * @return JsonResponse
+     */
+    public function saveTransactionAction($pos_loc_id, $id, $display_id, $total, $balance, $type, $customer_id, $status, $tax_rate, $orig_vat_amt, $new_vat_amt, $orig_amt_net_vat, $new_amt_net_vat, $tax_coverage, $cart_min, $orig_cart_total, $new_cart_total, $bulk_type, $transaction_mode, $transaction_cc_interest, $transaction_ea, $uid, $parentID)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -58,16 +91,12 @@ class POSSyncController extends CrudController
             $em->flush();
         }
 
-
-
-
         $transaction = new POSTransaction();
 
         if (trim($customer_id) != 0 || trim($customer_id) != '') {
             $cust_obj = $em->getRepository('GistCustomerBundle:Customer')->findOneBy(array('id'=>$customer_id));   
             $transaction->setCustomer($cust_obj);
         }
-        
 
         // $transaction->setId($id);
         $transaction->setTransDisplayId($display_id);
@@ -98,6 +127,9 @@ class POSSyncController extends CrudController
         $transaction->setExtraAmount($transaction_ea);
         $transaction->setPOSLocation($pos_location);
 
+        //TOTAL DISCOUNT
+        $totalDiscount = bcsub($orig_cart_total, $new_cart_total);
+        $transaction->setTotalDiscount($totalDiscount);
 
         $em->persist($transaction);
         $em->flush();
@@ -110,6 +142,21 @@ class POSSyncController extends CrudController
         return new JsonResponse($list_opts);
     }
 
+    /**
+     * @param $trans_sys_id
+     * @param $prod_id
+     * @param $prod_name
+     * @param $orig_price
+     * @param $min_price
+     * @param $adjusted_price
+     * @param $total_amount
+     * @param $discount_type
+     * @param $discount_value
+     * @param $isReturned
+     * @param $isNew
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     public function saveTransactionItemsAction($trans_sys_id, $prod_id, $prod_name, $orig_price, $min_price, $adjusted_price, $total_amount, $discount_type, $discount_value, $isReturned, $isNew)
     {
         header("Access-Control-Allow-Origin: *");
@@ -211,6 +258,18 @@ class POSSyncController extends CrudController
         return new JsonResponse($list_opts);
     }
 
+    /**
+     * @param $trans_sys_id
+     * @param $payment_type
+     * @param $amount
+     * @param $bank
+     * @param $terminal_operator
+     * @param $check_type
+     * @param $check_date
+     * @param $control_number
+     * @param $account_number
+     * @return JsonResponse
+     */
     public function saveTransactionPaymentsAction($trans_sys_id, $payment_type, $amount, $bank, $terminal_operator, $check_type, $check_date, $control_number, $account_number)
     {
         header("Access-Control-Allow-Origin: *");
@@ -245,7 +304,13 @@ class POSSyncController extends CrudController
         return new JsonResponse($list_opts);
     }
 
-    //{trans_sys_id}/{user_id}/{amount}/{percent}
+    /**
+     * @param $trans_sys_id
+     * @param $user_id
+     * @param $amount
+     * @param $percent
+     * @return JsonResponse
+     */
     public function saveTransactionSplitsAction($trans_sys_id, $user_id, $amount, $percent)
     {
         header("Access-Control-Allow-Origin: *");
@@ -267,6 +332,10 @@ class POSSyncController extends CrudController
         return new JsonResponse($list_opts);
     }
 
+    /**
+     * @param $area_id
+     * @return JsonResponse
+     */
     public function getUsersAction($area_id)
     {
         header("Access-Control-Allow-Origin: *");
@@ -332,8 +401,6 @@ class POSSyncController extends CrudController
             'commission_type'=> ($admin_user->getCommissionType() == null) ? '':$admin_user->getCommissionType(),
             'contact_number'=> ($admin_user->getContactNumber() == null) ? '':$admin_user->getContactNumber(),
         );
-
-
 
         return new JsonResponse($list_opts);
     }
