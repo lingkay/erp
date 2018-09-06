@@ -469,8 +469,7 @@ function requestStatisticsData(request) {
         	var sum = 0, count = 0;
         	for(i in data){
         		categories.push(data[i].name);
-        		console.log(branch);
-        		if(branch == data[i].id){
+        		if(request.branch == data[i].id){
 	    			dataSet.push({y: parseFloat(data[i].total), color: "#FFD700"} );
 	    		}else {
 	    			dataSet.push({y: parseFloat(data[i].total), color: "#7cb5ec"} );

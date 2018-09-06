@@ -132,7 +132,9 @@ class XZManager
             ->setParameter('date_from', $data['date_from'])
             ->setParameter('date_to', $data['date_to'])
             ->setParameter('branch', $data['branch'])
-            ->groupby('o.product_id');
+            ->groupby('o.product_id')
+            ->orderBy('total','DESC')
+            ->setMaxResults(10);
         $result = $qb->getQuery()->getResult();
 
         return $result;
@@ -159,7 +161,6 @@ class XZManager
             ->where('o.date_create between :date_from and :date_to ')
             ->setParameter('date_from', $data['date_from'])
             ->setParameter('date_to', $data['date_to'])
-            ->setParameter('branch', $data['branch'])
             ->groupby('o.pos_location')
             ->orderby('total','desc');
 
