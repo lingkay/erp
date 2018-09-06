@@ -272,12 +272,12 @@ class EmployeeBonusFine
     	case self::BFTYPE_BONUS: 
     		 $this->bonus = $bonus_fine;
     		 $this->fine = null;
-             $this->notes = $bonus_fine;
+             $this->notes = $bonus_fine->getName();
     		break;
     	case self::BFTYPE_FINE:
     		 $this->fine = $bonus_fine;
     		 $this->bonus = null;
-             $this->notes = $bonus_fine;
+             $this->notes = $bonus_fine->getName();
     		break;
     	}
 
