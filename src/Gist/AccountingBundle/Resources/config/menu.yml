@@ -105,4 +105,8 @@ menu_items:
       label: General Journal
       parent: gist_accounting_menu
 
+    - id: gist_accounting_tb_index
+      acl: gist_accounting_tb.menu
+      label: Trial Balance
+      parent: gist_accounting_menu
       

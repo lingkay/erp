@@ -6,6 +6,8 @@ use Gist\UserBundle\Entity\User;
 use Gist\UserBundle\Entity\Group;
 use Gist\UserBundle\Entity\ItemsList;
 use Doctrine\ORM\EntityManager;
+use Gist\AccountingBundle\Entity\JournalEntryAbstract;
+use Gist\AccountingBundle\Entity\TrialBalance;
 
 class AccountingManager
 {
@@ -184,6 +186,31 @@ class AccountingManager
     public function findChartOfAccount($id)
     {
         return $this->em->getRepository('GistAccountingBundle:ChartOfAccount')->find($id);
+    }
+
+    public function addTrialBalance(JournalEntryAbstract $entry){
+        $month = $entry->getRecordDate()->format('m');
+        $year = $entry->getRecordDate()->format('Y');
+
+        $tb = $this->em->getRepository('GistAccountingBundle:TrialBalance')
+            ->findOneBy(['month' => $month,
+                    'year' => $year,
+                    'chart_of_account' => $entry->getAccount()
+            ]);
+
+        if($tb == null){
+            $tb = new TrialBalance($entry->getAccount());
+            $tb->setMonth($month)
+                ->setYear($year);
+        }
+
+        $credit = $tb->getCredit() + $entry->getCredit();
+        $debit = $tb->getDebit() + $entry->getDebit();
+        $tb->setCredit($credit)
+            ->setDebit($debit);
+
+        $this->em->persist($tb);
+        $this->em->flush();
     }
 
 

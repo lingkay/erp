@@ -101,3 +101,11 @@ acl:
           label: "View"
         - id: gist_accounting_general.add
           label: "Add"
+
+
+    - category: Trial Balance
+      entries:
+        - id: gist_accounting_tb.menu
+          label: "Menu"
+        - id: gist_accounting_tb.view
+          label: "View"

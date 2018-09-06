@@ -106,6 +106,7 @@ class ConfigurationManager
         switch ($data['type'])
         {
             case 'select':
+            case 'select_multi':
                 $method = $data['options_method'];
                 $options = $this->container->get($data['options_service'])->$method();
                 $disp_entry->setOptions($options);

@@ -36,12 +36,19 @@ class Areas
      */
     protected $region;
 
-
-
+    /**
+     * @ORM\OneToMany(targetEntity="\Gist\LocationBundle\Entity\POSLocations", mappedBy="area", cascade={"persist", "remove"})
+     */
+    protected $locations;
 
     public function __construct()
     {
         $this->initTrackCreate();
+    }
+
+    public function getLocations()
+    {
+        return $this->locations;
     }
 
     /**

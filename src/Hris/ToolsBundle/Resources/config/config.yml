@@ -1,0 +1,8 @@
+config:
+  - category: "Tools"
+    entries:
+    - id: tools_area_manager
+      label: "Area Manager Roles"
+      type: select_multi
+      options_service: gist_user
+      options_method: getGroupOptions

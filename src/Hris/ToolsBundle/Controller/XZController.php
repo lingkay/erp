@@ -44,9 +44,35 @@ class XZController extends BaseController
 
     protected function padListParams(&$params)
     {
-
+        $date_from = new DateTime();
+        $date_to = new DateTime();
+        $date_from->modify('-7 Days');
+        $params['area_opts'] =  $this->getUserAreas();
+        $params['date_from'] = $date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['date_to'] = $date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+       
     }
 
+    protected function getUserAreas()
+    {
+        $conf = $this->get('gist_configuration');
+        $am = json_decode($conf->get('tools_area_manager'));
+        // print_r($am); die();
+        $area = $this->getUser()->getArea();
+        // if(in_array($this->getUser()->getGroup()->getID() , $am)){
+        //     $locs = $area->getLocations();
+        // }else{
+        //     $locs = $this->getUser()
+        // }
+
+        $locs = $area->getLocations();
+        // print_r($area->); die();
+        $opts = [];
+        foreach($locs as $entry ){
+            $opts[$entry->getID()] = $entry->getName();
+        }
+        return $opts;
+    }
     protected function hookPreAction()
     {
         $this->xz = $this->get('tools_xz');
@@ -74,6 +100,12 @@ class XZController extends BaseController
         return new JsonResponse($response);
     }
   
+    public function customerAction()
+    {
+        $this->hookPreAction();
+        $response = $this->xz->getCustomerSales($this->data);
+        return new JsonResponse($response);
+    }
     
 
 

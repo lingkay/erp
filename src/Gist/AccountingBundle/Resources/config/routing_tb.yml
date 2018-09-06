@@ -1,0 +1,15 @@
+
+gist_accounting_tb_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TrialBalance:index }
+
+gist_accounting_crj_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TrialBalance:grid }
+
+gist_accounting_tb_csv:
+    pattern: /csv
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TrialBalance:csv }

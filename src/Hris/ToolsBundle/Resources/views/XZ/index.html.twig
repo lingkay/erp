@@ -12,6 +12,10 @@
             </div>
             <div class="portlet-body">
             	<div class="row">
+            	{{ form.group_select('Location','location', area_opts, '', 3,4)}}<br/>
+                {{ form.group_date_range('daterange', "Date Range", 'date_from','date_to', date_from, date_to, 3,4,'m/d/Y','m/d/Y') }}
+                </div>
+            	<div class="row">
             	<div class="col-md-12">
 	            	<div class="portlet box blue-hoki">
 			            <div class="portlet-title">
@@ -51,6 +55,16 @@
 		                    </thead>
 		                    <tbody>
 		                    </tbody>
+		                    <tfoot>
+		                    	<tr>
+		                    		<td>Total</td>
+		                    		<td id="qty_total"></td>
+		                    		<td id="price_total"></td>
+		                    		<td id="discount_total"></td>
+		                    		<td id="adj_total"></td>
+		                    		<td ></td>
+		                    	</tr>
+		                    </tfoot>
 		                </table>
 
 		                	<div id="chart_container">
@@ -182,15 +196,58 @@
 <script>
 $(document).ready(function() {
 
+ function filtersChanged()
+ {
+ 	let data = {'date_from' : $('#cform-date_from').val(),
+ 				'date_to' : $('#cform-date_to').val(),
+ 				'branch': $('#cform-location').val()
+ 			}
+
+ 	console.log(data);
+
+ 	requestSalesData(data);
+ 	requestProductData(data);
+ 	requestStatisticsData(data);
+
+ }
+ $('#daterange').daterangepicker(
+    {
+        ranges: {
+            'Last 7 Days': [moment().subtract('days', 6), new Date()],
+            'Last 30 Days': [moment().subtract('days', 29), new Date()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+        },
+        opens: 'left',
+        format: 'MM/DD/YYYY',
+    },
+    function(start, end) {
+        $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+        $('#cform-date_from').val(start.format('MM/DD/YYYY'));
+        $('#cform-date_to').val(end.format('MM/DD/YYYY'));
+        
+    }
+);
+
+ filtersChanged();
+
+ $('#cform-location').on('change', function(){
+ 	filtersChanged();
+ });
+ $('#daterange').on('apply.daterangepicker', function(ev,picker){
+ 	filtersChanged();
+ });
+
+
 //Sales Portlet
 
     var sales_chart = new Highcharts.Chart({
         chart: {
             renderTo: 'sales_chart',
             type: 'line',
-            events: {
-                load: requestSalesData
-            }
+            // events: {
+            //     load: requestSalesData
+            // }
         },
         title: {
             text: 'Daily Sales',
@@ -233,12 +290,12 @@ $(document).ready(function() {
 // });
 
 
-function requestSalesData() {
+function requestSalesData(request) {
     $.ajax({
         url: "{{ path('hris_tools_xz_sales')}}",
         type: "GET",
         dataType: "json",
-        // data : {username : "demo"},
+        data : request,
         success: function(data) {
         	converted = data.series[0].data.map(function(el){
             		return parseFloat(el);
@@ -260,9 +317,9 @@ var product_chart = new Highcharts.Chart( {
     chart: {
         renderTo: 'product_chart',
         type: 'column',
-        events: {
-            load: requestProductData
-        }
+        // events: {
+        //     load: requestProductData
+        // }
     },
     title: {
         text: 'Sales per Product'
@@ -311,17 +368,19 @@ var product_table = $('#product_table').dataTable({
         }
     });
 
-function requestProductData() {
+function requestProductData(request) {
 	var branch;
     $.ajax({
         url: "{{ path('hris_tools_xz_product')}}",
         type: "GET",
         dataType: "json",
-        data : {branch : branch},
+        data : request,
         success: function(data) {
      
         	var categories = [];
         	var dataSet = [];
+        	var qty_total = 0, price_total = 0,
+        		discount_total = 0, adj_total = 0;
         	for(i in data){
         		product_table.dataTable().fnAddData([data[i].name,
         			data[i].quantity,
@@ -331,8 +390,16 @@ function requestProductData() {
         			data[i].average]);
         		categories.push(data[i].name);
         		dataSet.push(parseFloat(data[i].adjusted_price));
-        		
+        		qty_total+= parseFloat(data[i].quantity);
+        		price_total+= parseFloat(data[i].total);
+        		discount_total+= parseFloat(data[i].discount);
+        		adj_total+= parseFloat(data[i].adjusted_price);
         	}
+
+        	$('#qty_total').html(qty_total);
+        	$('#price_total').html(price_total);
+        	$('#discount_total').html(discount_total);
+        	$('#adj_total').html(adj_total);
 
         	product_chart.xAxis[0].setCategories(categories);
     		product_chart.series[0].setData(dataSet);
@@ -349,9 +416,9 @@ var statistics_chart = new Highcharts.Chart( {
     chart: {
         renderTo: 'statistics_chart',
         type: 'column',
-        events: {
-            load: requestStatisticsData
-        }
+        // events: {
+        //     load: requestStatisticsData
+        // }
     },
     title: {
         text: 'Sales per Location'
@@ -389,16 +456,17 @@ var statistics_chart = new Highcharts.Chart( {
 
 });
 
-function requestStatisticsData() {
+function requestStatisticsData(request) {
     $.ajax({
         url: "{{ path('hris_tools_xz_location')}}",
         type: "GET",
         dataType: "json",
-        data : {branch : branch},
+        data : request,
         success: function(data) {
      		console.log(data);
         	var categories = [];
         	var dataSet = [];
+        	var sum = 0, count = 0;
         	for(i in data){
         		categories.push(data[i].name);
         		console.log(branch);
@@ -407,12 +475,21 @@ function requestStatisticsData() {
 	    		}else {
 	    			dataSet.push({y: parseFloat(data[i].total), color: "#7cb5ec"} );
 	    		}
-        	}
 
+	    		sum += parseFloat(data[i].total); 
+	    		count++;
+        	}
+        	var average = sum / count;
         	// console.log(dataSet);
         	statistics_chart.xAxis[0].setCategories(categories);
     		statistics_chart.series[0].setData(dataSet);
-
+    		statistics_chart.yAxis[0].addPlotLine({
+                value: average,
+                width: 2,
+                color: '#ff0000',
+                zIndex: 3
+            });
+    		
 
         },
         cache: false
@@ -422,4 +499,11 @@ function requestStatisticsData() {
 });
 </script>
 
+{% endblock %}
+{% block css %}
+<style type="text/css">
+#product_table td {
+	text-align: right;
+}
+</style>
 {% endblock %}

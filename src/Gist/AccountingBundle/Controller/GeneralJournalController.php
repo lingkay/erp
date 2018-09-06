@@ -164,6 +164,8 @@ class GeneralJournalController extends CrudController
 
             $em->persist($cdj_entry);
             $em->flush();
+            
+            $am->addTrialBalance($cdj_entry);
         }
     }
 

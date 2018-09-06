@@ -2,7 +2,7 @@
 
 namespace Gist\AccountingBundle\Controller;
 
-use Gist\TemplateBundle\Model\CrudController;
+use Gist\TemplateBundle\Model\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
@@ -10,12 +10,12 @@ use Gist\ValidationException;
 use Gist\NotificationBundle\Model\NotificationEvent;
 use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
-use Gist\AccountingBundle\Entity\CDJJournalEntry;
+use Gist\AccountingBundle\Entity\TrialBalance;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
 
-class CDJController extends CrudController
+class TrialBalanceController extends BaseController
 {
     use TrackCreate;
 
@@ -24,17 +24,32 @@ class CDJController extends CrudController
 
     public function __construct()
     {
-        $this->route_prefix = 'gist_accounting_cdj';
-        $this->title = 'CDJ';
-        $this->list_title = 'CDJ';
+        $this->route_prefix = 'gist_accounting_tb';
+        $this->title = 'Trial Balance';
+        $this->list_title = 'Trial Balance';
         $this->list_type = 'dynamic';
-        $this->repo = "GistAccountingBundle:CDJJournalEntry";
+        $this->repo = "GistAccountingBundle:TrialBalance";
     }
 
+    public function indexAction()
+    {
+        $this->checkAccess($this->route_prefix . '.view');
+
+        $this->hookPreAction();
+
+        $params = $this->getViewParams('List');
+
+        $twig_file = 'GistAccountingBundle:TrialBalance:index.html.twig';
+
+        $params['list_title'] = $this->list_title;
+        // $params['grid_cols'] = $gl->getColumns();
+        $this->padListParams($params);
+        return $this->render($twig_file, $params);
+    }
 
     protected function newBaseClass()
     {
-        return new CDJJournalEntry();
+        return new TrialBalance();
     }
     
     protected function getObjectLabel($obj)
@@ -68,82 +83,7 @@ class CDJController extends CrudController
         );
     }
 
-    public function addFormAction()
-    {
-        $this->checkAccess($this->route_prefix . '.add');
-
-        $this->hookPreAction();
-        // $obj = $this->newBaseClass();
-
-
-        $session = $this->getRequest()->getSession();
-        $session->set('csrf_token', md5(uniqid()));
-
-        $params = $this->getViewParams('Add');
-        // $params['object'] = $obj;
-
-        // check if we have access to form
-        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
-        $this->padFormParams($params, null);
-
-        return $this->render('GistTemplateBundle:Object:add.html.twig', $params);
-    }
-
-
-    public function addSubmitAction()
-    {
-        $this->checkAccess($this->route_prefix . '.add');
-        $data = $this->getRequest()->request->all();
-        $this->hookPreAction();
-        try
-        {
-            $this->update($data);
-            $this->addFlash('success','CDJ Entries added successfully.');
-            return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
-        }
-        catch (ValidationException $e)
-        {
-            $this->addFlash('error',$e->getMessage());
-         
-            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
-         
-            error_log($e->getMessage());
-            return $this->addError(null);
-        }
-        catch (DBALException $e)
-        {
-             $this->addFlash('error',$e->getMessage());
-         
-            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
-            error_log($e->getMessage());
-            return $this->addError(null);
-        }
-        catch (\Exception $e) {
-            $this->addFlash('error',$e->getMessage());
-            return $this->addError(null);
-
-        }
-    }
-
-    protected function addError($obj = null)
-    {
-        $params = $this->getViewParams('Add');
-        // $params['object'] = $obj;
-
-        // check if we have access to form
-        $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');
-
-        $this->padFormParams($params, null);
-
-        return $this->render('GistTemplateBundle:Object:add.html.twig', $params);
-    }
-
-    protected function padFormParams(&$params, $obj = null)
-    {
-        $am = $this->get('gist_accounting');
-        $params['account_opts'] = $am->getChartOfAccountOptions();
-        $params['cdate'] = new DateTime();
-    }
+   
     
     protected function update($data)
     {
@@ -180,7 +120,7 @@ class CDJController extends CrudController
 
     protected function hookPreAction()
     {
-        $this->getControllerBase();
+        // $this->getControllerBase();
         if($this->getRequest()->get('date_from') != null){
             $this->date_from = new DateTime($this->getRequest()->get('date_from'));
         }else {

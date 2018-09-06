@@ -21,3 +21,8 @@ hris_tools_xz_location:
     path:     /location
     methods:  [GET]
     defaults: { _controller: HrisToolsBundle:XZ:location }
+
+hris_tools_xz_customer:
+    path:     /customer
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:customer }

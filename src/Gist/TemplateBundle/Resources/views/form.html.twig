@@ -29,14 +29,15 @@
 
 {% macro multi_options(fields, selected) %}
     <option></option>
-{% for value,display in fields %}
-    {% if (value in selected) %}
-        <option value="{{ value }}" selected="selected">{{ display }}</option>
-    {% else %}
-        <option value="{{ value }}">{{ display }}</option>
-    {% endif %}
-{% endfor %}
+    {% for value,display in fields %}
+        {% if (value in selected) %}
+            <option value="{{ value }}" selected="selected">{{ display }}</option>
+        {% else %}
+            <option value="{{ value }}">{{ display }}</option>
+        {% endif %}
+    {% endfor %}
 {% endmacro %}
+
 
 {% macro group_date_pos(label, name, value, label_size, body_size, readonly = false, prefix = 'c') %}
 {% import _self as self %}
@@ -410,7 +411,7 @@
 
 {% endmacro %}
 
-
+{# 
 {% macro group_selectmulti(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
 {% import _self as self %}
 <div id="{{ prefix }}group-{{ name }}" class="form-group">
@@ -418,6 +419,20 @@
     <div class="col-md-{{ body_size }}">
         <select id="{{ prefix }}form-{{ name }}" multiple="multiple" name="{{ name }}[]" class="form-control select_2" {{ disabled ? 'disabled ' : '' }} data-placeholder="-- Select {{label}} --">
         {{ self.multi_options(options, value) }}
+        </select>
+    </div>
+</div>
+{% endmacro %} #}
+
+{% macro group_selectmulti(label, name, options, value, label_size, body_size, disabled = false, prefix = 'c') %}
+{% import _self as self %}
+<div id="{{ prefix }}group-{{ name }}" class="form-group">
+    <label class="col-md-{{ label_size }} control-label">{{ label }}</label>
+    <div class="col-md-{{ body_size }}">
+        <select id="{{ prefix }}form-{{ name }}" multiple="multiple" name="{{ name }}[]"
+                class="form-control select_2" {{ disabled ? 'disabled ' : '' }}
+                data-placeholder="-- Select {{ label }} --">
+            {{ self.multi_options(options, value) }}
         </select>
     </div>
 </div>
