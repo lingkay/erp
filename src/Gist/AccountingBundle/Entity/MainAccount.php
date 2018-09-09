@@ -21,24 +21,16 @@ use stdClass;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="acct_accounts")
+ * @ORM\Table(name="acct_mainaccounts")
  */
-class ChartOfAccount
+class MainAccount
 {
     use HasGeneratedID;
     use HasName;
     use HasCode;
-    use HasType;
-    use HasNotes;
     use TrackCreate;
     use HasStatus;
   
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Gist\AccountingBundle\Entity\MainAccount")
-     * @ORM\JoinColumn(name="main_Account_id", referencedColumnName="id")
-     */
-    protected $main_account;
 
     public function __construct()
     {
@@ -51,18 +43,6 @@ class ChartOfAccount
     {
         return $this->name." (".$this->code.")";
     }
-
-    public function setMainAccount(MainAccount $main_account)
-    {
-        $this->main_account = $main_account;
-        return $this;
-    }
-
-    public function getMainAccount()
-    {
-        return $this->main_account;
-    }
-
     public function toData()
     {
         $data = new stdClass();

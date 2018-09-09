@@ -65,6 +65,7 @@ class AdjustmentController extends CrudController
             $grid->newColumn('Employee', 'getEmployeeName', 'employee'),
             $grid->newColumn('Team', 'getName', 'name', 'a'),
             $grid->newColumn('Type', 'getType', 'type'),
+            $grid->newColumn('Record Date', 'getDateCreate', 'date_create','o', [$this,'formatDate']),
             $grid->newColumn('Adjustment', 'getAdjustmentType', 'adjustment_type'),
             $grid->newColumn('Amount(Php)', 'getAmount', 'debit', 'o', [$this, 'formatPrice']),
  

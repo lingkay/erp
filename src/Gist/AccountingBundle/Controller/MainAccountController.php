@@ -10,28 +10,28 @@ use Gist\ValidationException;
 use Gist\NotificationBundle\Model\NotificationEvent;
 use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
-use Gist\AccountingBundle\Entity\ChartOfAccount;
+use Gist\AccountingBundle\Entity\MainAccount;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
 
-class ChartOfAccountController extends CrudController
+class MainAccountController extends CrudController
 {
     use TrackCreate;
 
     public function __construct()
     {
-        $this->route_prefix = 'gist_accounting_accounts';
-        $this->title = 'Chart of Accounts';
-        $this->list_title = 'Chart of Accounts';
+        $this->route_prefix = 'gist_accounting_main';
+        $this->title = 'Main Accounts';
+        $this->list_title = 'Main Accounts';
         $this->list_type = 'dynamic';
-        $this->repo = "GistAccountingBundle:ChartOfAccount";
+        $this->repo = "GistAccountingBundle:MainAccount";
     }
 
 
     protected function newBaseClass()
     {
-        return new ChartOfAccount();
+        return new MainAccount();
     }
     
     protected function getObjectLabel($obj)
@@ -42,14 +42,6 @@ class ChartOfAccountController extends CrudController
         return $obj->getCode();
     }
 
-    // protected function getGridJoins()
-    // {
-    //     $grid = $this->get('gist_grid');
-    //     return array(
-    //         $grid->newJoin('a', 'team', 'getTeam'),
-    //         // $grid->newJoin('g', 'group', 'getGroup'),
-    //     );
-    // }
 
     protected function getGridColumns()
     {
@@ -58,30 +50,19 @@ class ChartOfAccountController extends CrudController
         return array(
             $grid->newColumn('Account Name', 'getName', 'name'),
             $grid->newColumn('Code', 'getCode', 'code'),
-            $grid->newColumn('Description', 'getNotes', 'notes'),
+            // $grid->newColumn('Description', 'getNotes', 'notes'),
  
         );
-    }
-
-    protected function padFormParams(&$params, $user = null)
-    {
-	    
-        $am = $this->get('gist_accounting');
-
-        $params['main_opts'] = $am->getMainAccountOptions();
-
     }
 
     protected function update($o, $data, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
-        $am = $this->get('gist_accounting');
 
-        $main = $am->findMainAccount($data['main_account']);
+
         $o->setName($data['name'])
-            ->setCode($data['code'])
-            ->setNotes($data['notes'])
-            ->setMainAccount($main);
+            ->setCode($data['code']);
+            // ->setNotes($data['notes']);
 
         $this->updateTrackCreate($o, $data, $is_new);
     }

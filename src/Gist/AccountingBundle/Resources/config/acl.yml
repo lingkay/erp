@@ -62,6 +62,19 @@ acl:
         - id: gist_terminals_terminal_operator.delete
           label: "Delete"
 
+    - category: Main Accounts
+      entries:
+        - id: gist_accounting_main.menu
+          label: "Menu"
+        - id: gist_accounting_main.view
+          label: "View"
+        - id: gist_accounting_main.add
+          label: "Add"
+        - id: gist_accounting_main.edit
+          label: "Edit"
+        - id: gist_accounting_main.delete
+          label : "Delete"
+
     - category: Chart of Accounts
       entries:
         - id: gist_accounting_accounts.menu

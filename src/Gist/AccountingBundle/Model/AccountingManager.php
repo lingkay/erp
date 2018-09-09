@@ -182,10 +182,31 @@ class AccountingManager
         return $opts;
     }
 
+    public function getMainAccountOptions($filter = [])
+    {
+        
+        $objects = $this->em->getRepository('GistAccountingBundle:MainAccount')
+            ->findBy(
+                $filter,
+                ['id' => 'ASC']
+            );
+
+        $opts = array();
+        foreach ($objects as $o)
+            $opts[$o->getID()] = $o->getName()." (".$o->getCode().")";
+
+        return $opts;
+    }
+
 
     public function findChartOfAccount($id)
     {
         return $this->em->getRepository('GistAccountingBundle:ChartOfAccount')->find($id);
+    }
+
+    public function findMainAccount($id)
+    {
+        return $this->em->getRepository('GistAccountingBundle:MainAccount')->find($id);
     }
 
     public function addTrialBalance(JournalEntryAbstract $entry){

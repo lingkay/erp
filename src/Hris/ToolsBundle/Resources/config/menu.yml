@@ -7,14 +7,13 @@ menu_items:
     #   acl: hris_report_leaves.menu
     #   label: Leaves
     #   parent: menu_report
+
     - id: hris_tools_manager
       acl: hris_tools_schedule.menu
       label: Manager
       parent: menu_tools
-    - id: hris_tools_office
-      acl: hris_tools_schedule.menu
-      label: Office
-      parent: menu_tools
+
+ 
     - id: hris_tools_schedule_index
       acl: hris_tools_schedule.menu
       label: Schedule
@@ -36,20 +35,35 @@ menu_items:
     - id: hris_tools_bonus_index
       acl: hris_tools_bonus.menu
       label: Bonus/Fines
-      parent: menu_tools
-    - id: hris_tools_deposit_index
-      acl: hris_tools_deposit.menu
-      label: Deposit
-      parent: menu_tools
-    - id: hris_tools_adjustment_index
-      acl: hris_tools_adjustment.menu
-      label: Adjustment
-      parent: menu_tools
-    - id: hris_tools_advance_index
-      acl: hris_tools_advance.menu
-      label: Cash Advance
-      parent: menu_tools
+      parent: hris_tools_manager
     - id: hris_tools_xz_index
       acl: hris_tools_xz.menu
       label: X/Z Reports
+      parent: hris_tools_manager
+
+    - id: hris_tools_office
+      acl: hris_tools_schedule.menu
+      label: Office
       parent: menu_tools
+
+    - id: hris_tools_bonus_index
+      acl: hris_tools_bonus.menu
+      label: Bonus/Fines
+      parent: hris_tools_office
+    - id: hris_tools_deposit_index
+      acl: hris_tools_deposit.menu
+      label: Deposit
+      parent: hris_tools_office
+    - id: hris_tools_adjustment_index
+      acl: hris_tools_adjustment.menu
+      label: Adjustment
+      parent: hris_tools_office
+    - id: hris_tools_advance_index
+      acl: hris_tools_advance.menu
+      label: Cash Advance
+      parent: hris_tools_office
+    - id: hris_tools_xz_index
+      acl: hris_tools_xz.menu
+      label: X/Z Reports
+      parent: hris_tools_office
+      
