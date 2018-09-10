@@ -10,7 +10,24 @@ use Gist\AccountingBundle\Entity\JournalEntryAbstract;
  */
 class CDJJournalEntry extends JournalEntryAbstract
 {
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CDJTransaction")
+     * @ORM\JoinColumn(name="transaction_id", referencedColumnName="id")
+     */
+    protected $transaction;
     
+    public function setTransaction(CDJTransaction $transaction)
+    {
+    	$this->transaction = $transaction;
+    	return $this;
+    }
+
+    public function getTransaction()
+    {
+    	return $this->transaction;
+    }
+
     public function toData()
     {
         $data = parent::toData();
