@@ -79,11 +79,27 @@ class ChartOfAccountController extends CrudController
 
         $main = $am->findMainAccount($data['main_account']);
         $o->setName($data['name'])
-            ->setCode($data['code'])
+            ->setCode($this->setCode($o, $main, $is_new))
             ->setNotes($data['notes'])
             ->setMainAccount($main);
 
         $this->updateTrackCreate($o, $data, $is_new);
+    }
+
+    protected function setCode($o, $main, $is_new)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if($is_new){
+            $last_code = (integer)$main->getLastCode();
+            $last_code++;
+            $main->setLastCode($last_code);
+            $em->persist($main);
+            $em->flush();
+            return $main->getCode()."-".str_pad($last_code, 4,"0",STR_PAD_LEFT);
+        }else {
+            return $o->getCode();
+        }
     }
 
 

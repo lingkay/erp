@@ -30,13 +30,28 @@ class MainAccount
     use HasCode;
     use TrackCreate;
     use HasStatus;
-  
+
+    /** @ORM\Column(type="string", length=80, nullable=true) */
+    protected $last_code;
 
     public function __construct()
     {
         $this->initHasName();
         $this->initTrackCreate();
         $this->initHasCode();
+        $this->last_code = "0000";
+    }
+
+
+    public function setLastCode($last_code)
+    {
+        $this->last_code = $last_code;
+        return $this;
+    }
+
+    public function getLastCode()
+    {
+        return $this->last_code;
     }
 
     public function getNameCode()
