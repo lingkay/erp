@@ -34,4 +34,7 @@ hris_tools_advance_delete:
     methods: [GET]
     defaults: { _controller: HrisToolsBundle:CashAdvance:delete }
 
-
+hris_tools_advance_csv:
+    pattern: /csv
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:CashAdvance:csv }
