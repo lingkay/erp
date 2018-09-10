@@ -13,11 +13,9 @@
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
-                              {{ form.group_select('Main Account', 'main_account', main_opts, object.getMainAccount != null ?object.getMainAccount.getID :"", 3, 4, readonly) }}
-                      
                             {{ form.group_text('Account Name', 'name', object.getName|default(""), 3, 4, readonly) }}
-                 	        {{ form.group_text('Code', 'code', object.getCode|default(""), 3, 4, true) }}
-                            {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }}
+                 	        {{ form.group_text('Code', 'code', object.getCode|default(""), 3, 4, readonly) }}
+                           {# {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }} #}
                         
                         </div>
                         <div class="form-actions fluid">
@@ -105,6 +103,9 @@
                 },
                 rules: {
                     name: {
+                        required: true
+                    },
+                    code: {
                         required: true
                     }
                 },

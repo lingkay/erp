@@ -11,6 +11,7 @@ use Gist\NotificationBundle\Model\NotificationEvent;
 use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Gist\AccountingBundle\Entity\CDJJournalEntry;
+use Gist\AccountingBundle\Entity\CDJTransaction;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -50,6 +51,7 @@ class CDJController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('a', 'chart_of_account', 'getAccount'),
+            $grid->newJoin('t', 'transaction', 'getTransaction'),
             // $grid->newJoin('g', 'group', 'getGroup'),
         );
     }
@@ -60,6 +62,7 @@ class CDJController extends CrudController
 
         return array(
             $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
+            $grid->newColumn('Transaction Code', 'getCode', 'code', 't'),
             $grid->newColumn('Record Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
             $grid->newColumn('Particulars', 'getNotes', 'notes'),
      
@@ -151,6 +154,13 @@ class CDJController extends CrudController
         $am = $this->get('gist_accounting');
 
         $record_date = new DateTime($data['record_date']);
+        $transaction = new CDJTransaction($record_date);
+        $transaction->setUserCreate($this->getUser());
+
+        $em->persist($transaction);
+        $em->flush();
+        $transaction->setCDJCode($record_date);
+        $em->persist($transaction);
 
         foreach ($data['account'] as $key => $account_id) {
             $cdj_entry = new CDJJournalEntry();
@@ -160,7 +170,8 @@ class CDJController extends CrudController
                 ->setCredit($data['credit'][$key])
                 ->setNotes($data['notes'][$key])
                 ->setUserCreate($this->getUser())
-                ->setRecordDate($record_date);
+                ->setRecordDate($record_date)
+                ->setTransaction($transaction);
 
             $em->persist($cdj_entry);
             $em->flush();

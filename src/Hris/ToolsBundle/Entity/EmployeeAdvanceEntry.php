@@ -49,32 +49,45 @@ class EmployeeAdvanceEntry
 
     public function __construct()
     {
-        $this->initHasName();
-        $this->flag_given = false;
+        $this->balance= 0;
+        $this->count = 1;
+        $this->date_deduction = new DateTime();
+        $this->initTrackCreate();
     }
 
-    public function setDateRelease($date_release)
+    public function setDateDeduction($date_deduction)
     {
-    	$this->date_release = $date_release;
+    	$this->date_deduction = $date_deduction;
     	return $this;
     }
 
-    public function getDateRelease()
+    public function getDateDeduction()
     {
-    	return $this->date_release;
+    	return $this->date_deduction;
     }
 
-    public function setDateRequest($date_request)
+    public function setAdvance($advance)
     {
-        $this->date_request = $date_request;
+        $this->advance = $advance;
         return $this;
     }
 
-    public function getDateRequest()
+    public function getAdvance()
     {
-        return $this->date_request;
+        return $this->advance;
     }
 
+
+    public function setCount($count)
+    {
+        $this->count = $count;
+        return $this;
+    }
+
+    public function getCount()
+    {
+        return $this->count;
+    }
 
     public function setCutoff($cutoff)
     {
@@ -87,76 +100,36 @@ class EmployeeAdvanceEntry
     	return $this->cutoff;
     }
 
-    public function getYearRelease()
+    public function getYearDeduction()
     {
-    	return $this->date_release->format('Y');
+    	return $this->date_deduction->format('Y');
     }
 
-    public function getMonthRelease()
+    public function getMonthDeduction()
     {
-    	return $this->date_release->format('m');
+    	return $this->date_deduction->format('m');
     }
 
-    /**
-     * Set employee
-     *
-     * @param \Hris\WorkforceBundle\Entity\Employee $employee
-     *
-     * @return IssuedProperty
-     */
-    public function setEmployee( $employee = null)
+    public function setDeduction($deduction)
     {
-        $this->employee = $employee;
-
+        $this->deduction = $deduction;
         return $this;
     }
 
-    /**
-     * Get employee
-     *
-     * @return \Hris\WorkforceBundle\Entity\Employee
-     */
-    public function getEmployee()
+    public function getDeduction()
     {
-        return $this->employee;
+        return $this->deduction;
     }
 
-    public function getEmployeeName()
+    public function setBalance($balance)
     {
-        return $this->employee->getDisplayName();
-    }
-
-    public function getTeam()
-    {
-       return $this->team;
-    }
-
-    public function setTeam($team)
-    {
-        $this->team = $team;
+        $this->balance = $balance;
         return $this;
     }
 
-    public function setTotal($total)
+    public function getBalance()
     {
-      $this->total = $total;
-      return $this;
-    }
-
-    public function getTotal()
-    {
-      return $this->total;
-    }
-
-    public function setAdvance($advance)
-    {
-        $this->advance = $advance;
-        return $this;
-    }
-
-    public function getAdvance()
-    {
-        return $this->advance;
+        return $this->balance;
     }
 
     public function toData()

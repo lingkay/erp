@@ -21,48 +21,43 @@ use stdClass;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="acct_accounts")
+ * @ORM\Table(name="acct_mainaccounts")
  */
-class ChartOfAccount
+class MainAccount
 {
     use HasGeneratedID;
     use HasName;
     use HasCode;
-    use HasType;
-    use HasNotes;
     use TrackCreate;
     use HasStatus;
-  
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Gist\AccountingBundle\Entity\MainAccount")
-     * @ORM\JoinColumn(name="main_Account_id", referencedColumnName="id")
-     */
-    protected $main_account;
+    /** @ORM\Column(type="string", length=80, nullable=true) */
+    protected $last_code;
 
     public function __construct()
     {
         $this->initHasName();
         $this->initTrackCreate();
         $this->initHasCode();
+        $this->last_code = "0000";
+    }
+
+
+    public function setLastCode($last_code)
+    {
+        $this->last_code = $last_code;
+        return $this;
+    }
+
+    public function getLastCode()
+    {
+        return $this->last_code;
     }
 
     public function getNameCode()
     {
         return $this->name." (".$this->code.")";
     }
-
-    public function setMainAccount(MainAccount $main_account)
-    {
-        $this->main_account = $main_account;
-        return $this;
-    }
-
-    public function getMainAccount()
-    {
-        return $this->main_account;
-    }
-
     public function toData()
     {
         $data = new stdClass();

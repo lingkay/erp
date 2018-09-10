@@ -56,16 +56,18 @@ class XZController extends BaseController
     protected function getUserAreas()
     {
         $conf = $this->get('gist_configuration');
+        $settings = $this->get('hris_settings');
         $am = json_decode($conf->get('tools_area_manager'));
-        // print_r($am); die();
+        $admin = json_decode($conf->get('tools_admin'));
+        $am = $am==null?[]:$am;
+        $admin = $admin==null?[]:$admin;
         $area = $this->getUser()->getArea();
-        // if(in_array($this->getUser()->getGroup()->getID() , $am)){
-        //     $locs = $area->getLocations();
-        // }else{
-        //     $locs = $this->getUser()
-        // }
-
         $locs = $area->getLocations();
+       
+        if(in_array($this->getUser()->getGroup()->getID() , $admin)){
+            $locs = $area->getLocations();
+        }
+
         // print_r($area->); die();
         $opts = [];
         foreach($locs as $entry ){

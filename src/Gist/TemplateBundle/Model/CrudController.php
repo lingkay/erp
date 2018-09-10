@@ -529,7 +529,7 @@ abstract class CrudController extends BaseController
     protected function logAdd($data)
     {
         $log = $this->get('gist_log');
-        error_log(print_r($data, true));
+        // error_log(print_r($data, true));
         $desc = 'added ' . $this->title . ' ' . $data->id . '.';
         $log->log($this->route_prefix . '_add', $desc, $data);
     }

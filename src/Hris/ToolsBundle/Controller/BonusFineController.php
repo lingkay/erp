@@ -67,6 +67,7 @@ class BonusFineController extends CrudController
             $grid->newColumn('Employee', 'getEmployeeName', 'employee'),
             $grid->newColumn('Team', 'getName', 'team', 'a'),
             $grid->newColumn('Given By', 'getGivenName', 'name','g'),
+            $grid->newColumn('Record Date', 'getDateCreate', 'date_create','o', [$this,'formatDate']),
             // $grid->newColumn('Roles', 'getGroupsText', 'id', 'o', null, false),
             $grid->newColumn('Bonus/Fine', 'getBFType', 'bf_type'),
             $grid->newColumn('Reason', 'getReasonName', 'bf_type'),

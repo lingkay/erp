@@ -404,9 +404,24 @@ class SettingsManager
     }
 
     
-        public function findFine($id)
+    public function findFine($id)
     {
-        return $this->em->getRepository('HrisAdminBundle:Fine')->find($id);
+        return $this->em->getRepository('HrisAdminBundle:Fines')->find($id);
+    }
+
+
+    public function getPOSLocations()
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('Gist\LocationBundle\Entit:POSLocations')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        return $entries;
+    
     }
 
     

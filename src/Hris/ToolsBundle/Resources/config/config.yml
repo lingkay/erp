@@ -6,3 +6,8 @@ config:
       type: select_multi
       options_service: gist_user
       options_method: getGroupOptions
+    - id: tools_admin
+      label: "Admin Roles"
+      type: select_multi
+      options_service: gist_user
+      options_method: getGroupOptions

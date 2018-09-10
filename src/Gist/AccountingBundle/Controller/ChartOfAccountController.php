@@ -63,30 +63,43 @@ class ChartOfAccountController extends CrudController
         );
     }
 
-    // protected function padFormParams(&$params, $user = null)
-    // {
+    protected function padFormParams(&$params, $user = null)
+    {
 	    
-    //     $sm = $this->get('hris_settings');
-    //     $um = $this->get('gist_user');
+        $am = $this->get('gist_accounting');
 
-    //     $params['deposit_opts'] = $sm->getDepositOptions();
-       
-    //     $params['type_opts'] = [EmployeeDeposit::TYPE_RETURN => EmployeeDeposit::TYPE_RETURN,
-    //     						EmployeeDeposit::TYPE_DEDUCTION => EmployeeDeposit::TYPE_DEDUCTION];
-    //     $params['emp_opts'] = $um->getUserFullNameOptions();
-    //     $params['cutoff_opts'] = ["A"=>"A", "B"=>"B"];
-    // }
+        $params['main_opts'] = $am->getMainAccountOptions();
+
+    }
 
     protected function update($o, $data, $is_new = false)
     {
         $em = $this->getDoctrine()->getManager();
+        $am = $this->get('gist_accounting');
 
-
+        $main = $am->findMainAccount($data['main_account']);
         $o->setName($data['name'])
-            ->setCode($data['code'])
-            ->setNotes($data['notes']);
+            ->setCode($this->setCode($o, $main, $is_new))
+            ->setNotes($data['notes'])
+            ->setMainAccount($main);
 
         $this->updateTrackCreate($o, $data, $is_new);
+    }
+
+    protected function setCode($o, $main, $is_new)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if($is_new){
+            $last_code = (integer)$main->getLastCode();
+            $last_code++;
+            $main->setLastCode($last_code);
+            $em->persist($main);
+            $em->flush();
+            return $main->getCode()."-".str_pad($last_code, 4,"0",STR_PAD_LEFT);
+        }else {
+            return $o->getCode();
+        }
     }
 
 

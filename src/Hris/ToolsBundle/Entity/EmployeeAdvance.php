@@ -37,6 +37,10 @@ class EmployeeAdvance
     /** @ORM\Column(type="decimal", precision=15, scale=2, nullable=true) */
     protected $total;
 
+
+    /** @ORM\Column(type="decimal", precision=15, scale=2, nullable=true) */
+    protected $balance;
+
     /**
      * @ORM\ManyToOne(targetEntity="Gist\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
@@ -78,7 +82,20 @@ class EmployeeAdvance
     public function __construct()
     {
         $this->initHasName();
-        $this->flag_given = false;
+        $this->initTrackCreate();
+        $this->flag_fulldeduction = false;
+        $this->deduction_no = 0;
+    }
+
+    public function setIsFillDeduction($flag_fulldeduction)
+    {
+        $this->flag_fulldeduction = $flag_fulldeduction;
+        return $this;
+    }
+    
+    public function isFullDeduction()
+    {
+      return $this->flag_fulldeduction;
     }
 
     public function setDateRelease($date_release)
@@ -132,6 +149,22 @@ class EmployeeAdvance
         return $this->employee->getDisplayName();
     }
 
+    public function setGivenBy($given_by)
+    {
+      $this->given_by = $given_by;
+      return $this;
+    }
+
+    public function getGivenBy()
+    {
+      return $this->given_by;
+    }
+
+    public function getGivenName()
+    {
+      return $this->given_by->getDisplayName();
+    }
+
     public function getTeam()
     {
        return $this->team;
@@ -152,6 +185,17 @@ class EmployeeAdvance
     public function getTotal()
     {
       return $this->total;
+    }
+
+    public function setBalance($balance)
+    {
+      $this->balance = $balance;
+      return $this;
+    }
+
+    public function getBalance()
+    {
+      return $this->balance;
     }
 
     public function getEntries()
@@ -179,6 +223,11 @@ class EmployeeAdvance
     public function clearEntries()
     {
         $this->entries->clear();
+    }
+
+    public function countEntries()
+    {
+      return $this->entries->count();
     }
 
     public function toData()
