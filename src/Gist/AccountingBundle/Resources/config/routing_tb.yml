@@ -13,3 +13,13 @@ gist_accounting_tb_csv:
     pattern: /csv
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:TrialBalance:csv }
+
+gist_tb_settings_index:
+    pattern: /settings
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TrialBalanceSettings:index }
+
+gist_tb_settings_save:
+    pattern: /settings
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:TrialBalanceSettings:save }
