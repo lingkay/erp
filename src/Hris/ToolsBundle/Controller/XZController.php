@@ -50,6 +50,7 @@ class XZController extends BaseController
         $params['area_opts'] =  $this->getUserAreas();
         $params['date_from'] = $date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
         $params['date_to'] = $date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+        $params['cdate'] = new DateTime();
        
     }
 
@@ -87,6 +88,14 @@ class XZController extends BaseController
         $chart = $this->xz->getSalesChart($this->data);
         return new JsonResponse($chart->toData());
     }
+
+    public function salesTableAction()
+    {
+        $this->hookPreAction();
+        $table = $this->xz->getSalesTableData($this->data);
+        return new JsonResponse($table);
+    }
+
 
     public function productAction()
     {

@@ -13,7 +13,7 @@
             <div class="portlet-body">
             	<div class="row">
             	{{ form.group_select('Location','location', area_opts, '', 3,4)}}<br/>
-                {{ form.group_date_range('daterange', "Date Range", 'date_from','date_to', date_from, date_to, 3,4,'m/d/Y','m/d/Y') }}
+                {{ form.group_date('Date', 'date',cdate|date('m/d/Y'), 3,4)}}
                 </div>
             	<div class="row">
             	<div class="col-md-12">
@@ -21,14 +21,70 @@
 			            <div class="portlet-title">
 			            	<div class="caption">Total Sales </div>
 		                     <div class="tools">
-			                   <a href="javascript:;" class="collapse"></a>
+			                   <a href="javascript:;" class="collapse"></a>S
 			                </div>
 			            </div>
 			              <div class="portlet-body">
 			              	<div id="chart_container">
-							    <div id="sales_chart">
+                                <div id="sales_table_container" class="col-md-3">
+                                    <table id="sales_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="sales_stotal_tr">
+                                                <td width="40%">Sub Total:</td>
+                                                <td id="stotal_value"></td>
+                                            </tr>
+                                            <tr class="sales_tdiscount_tr">
+                                                <td width="40%">Total Discount:</td>
+                                                <td id="tdiscount_value"></td>
+                                            </tr>
+                                            <tr class="sales_dgross_tr">
+                                                <td width="40%">Discounted gross:</td>
+                                                <td id="dgross_value"></td>
+                                            </tr>
+                                            <tr class="sales_vgross_tr">
+                                                <td width="40%">Vatebal gross:</td>
+                                                <td id="vgross_value"></td>
+                                            </tr>
+                                            <tr class="sales_vat_tr">
+                                                <td width="40%">V.A.T</td>
+                                                <td id="vat_value"></td>
+                                            </tr>
+                                            <tr class="sales_gtotal_tr">
+                                                <td width="40%">Grand Total:</td>
+                                                <td id="gtotal_value"></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        </tfoot>
+                                    </table>
+                                    <br>
+                                    <table id="sales_table_2" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="sales_pdiscount_tr">
+                                                <td width="40%">% of Discount</td>
+                                                <td id="pdiscount_value"></td>
+                                            </tr>
+                                            <tr class="sales_nsales_tr">
+                                                <td width="40%"># of Sales</td>
+                                                <td id="nsales_value"></td>
+                                            </tr>
+                                            <tr class="sales_acheck_tr">
+                                                <td width="40%">Avg Check</td>
+                                                <td id="acheck_value"></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        </tfoot>
+                                    </table>
+                                </div>
+							    <div id="sales_chart" class="col-md-9">
 							    </div>
 							</div>
+                            <div class="clearfix"></div>
 			              </div>
 			         </div>
 			     </div>
@@ -573,7 +629,7 @@
 			     </div>
 				 </div>
 				 <div class="row">
-            	<div class="col-md-6">
+            	<div class="col-md-12">
 	            	<div class="portlet box blue-hoki">
 			            <div class="portlet-title">
 			            	<div class="caption">Commissions/Bonus/Fines </div>
@@ -618,7 +674,7 @@
 			         </div>
 			     </div>
 
-			     <div class="col-md-6">
+			     {# <div class="col-md-6">
 	            	<div class="portlet box blue-hoki">
 			            <div class="portlet-title">
 			            	<div class="caption">Targets</div>
@@ -627,7 +683,7 @@
 			              	 Products
 			              </div>
 			         </div>
-			     </div>
+			     </div> #}
 				 </div>
 
 			</div>
@@ -644,14 +700,14 @@ $(document).ready(function() {
 
  function filtersChanged()
  {
- 	let data = {'date_from' : $('#cform-date_from').val(),
- 				'date_to' : $('#cform-date_to').val(),
- 				'branch': $('#cform-location').val()
- 			}
+    let data = {'date' : $('#cform-date').val(),
+                'branch': $('#cform-location').val()
+            }
 
  	console.log(data);
 
- 	requestSalesData(data);
+    requestSalesData(data);
+ 	requestSalesTableData(data);
  	requestProductData(data);
  	requestStatisticsData(data);
     requestEmployeeData(data);
@@ -660,37 +716,21 @@ $(document).ready(function() {
     requestTransactionData(data);
     requestCommissionData(data);
  }
- $('#daterange').daterangepicker(
-    {
-        ranges: {
-            'Last 7 Days': [moment().subtract('days', 6), new Date()],
-            'Last 30 Days': [moment().subtract('days', 29), new Date()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-        },
-        opens: 'left',
-        format: 'MM/DD/YYYY',
-    },
-    function(start, end) {
-        $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
-        $('#cform-date_from').val(start.format('MM/DD/YYYY'));
-        $('#cform-date_to').val(end.format('MM/DD/YYYY'));
-        
-    }
-);
 
  filtersChanged();
 
  $('#cform-location').on('change', function(){
  	filtersChanged();
  });
- $('#daterange').on('apply.daterangepicker', function(ev,picker){
- 	filtersChanged();
+
+ $("#cform-date").datepicker({
+    todayBtn:  1,
+    autoclose: true,
+ }).on('changeDate', function (selected) {
+    filtersChanged();
  });
 
-
 //Sales Portlet
-
     var sales_chart = new Highcharts.Chart({
         chart: {
             renderTo: 'sales_chart',
@@ -737,8 +777,6 @@ $(document).ready(function() {
           }
         ]
     });
-// });
-
 
 function requestSalesData(request) {
     $.ajax({
@@ -752,6 +790,39 @@ function requestSalesData(request) {
             });
             sales_chart.xAxis[0].setCategories(data.categories);
             sales_chart.series[0].setData(converted);
+        },
+        cache: false
+    });
+}
+
+function requestSalesTableData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_sales_table')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            var stotal = 0;
+            var tdiscount = 0;
+            var tsales = 0;
+
+            if(data[0].sub_total != null)
+                stotal = data[0].sub_total;
+            if(data[0].total_discount != null)
+                tdiscount = data[0].total_discount;
+            if(data[0].total_sales != null)
+                tsales = data[0].total_sales;
+
+
+            $('#stotal_value').html(stotal);
+            $('#tdiscount_value').html(tdiscount);
+            $('#dgross_value').html((stotal - tdiscount));
+            $('#vgross_value').html(((stotal - tdiscount)/1.12).toFixed(2));
+            $('#vat_value').html(((stotal - tdiscount) - ((stotal - tdiscount)/1.12)).toFixed(2));
+            $('#gtotal_value').html((stotal - tdiscount));
+            $('#pdiscount_value').html(tdiscount/stotal)
+            $('#nsales_value').html(tsales);
+            $('#acheck_value').html(((stotal - tdiscount)/tsales).toFixed(2));
         },
         cache: false
     });
@@ -1182,21 +1253,30 @@ function requestCustomerData(request) {
         dataType: "json",
         data : request,
         success: function(data) {
-            console.log(data,"customer_Data");
             var total_tnx = 0,
-                total_amount = 0;
+                total_amount = 0,
+                is_new_count = 0,
+                not_new_count = 0;
             for(i in data){
-                    customer_table.dataTable().fnAddData([data[i].name,
-                        data[i].id,
-                        data[i].sales,
-                        data[i].amount,
-                        data[i].arrival,
-                        data[i].is_new]);
-                    total_tnx += parseFloat(data[i].sales);
-                    total_amount+= parseFloat(data[i].amount);
+                if(data[i].is_new == 'X'){
+                    not_new_count += 1;
+                }else{
+                    is_new_count += 1;
+                }
+
+                customer_table.dataTable().fnAddData([data[i].name,
+                    data[i].id,
+                    data[i].sales,
+                    data[i].amount,
+                    data[i].arrival,
+                    data[i].is_new]);
+                total_tnx += parseFloat(data[i].sales);
+                total_amount+= parseFloat(data[i].amount);
             }
             $('#cust_tnx_total').html(total_tnx);
             $('#cust_tnx_amount_total').html(total_amount);
+
+            customer_pie_chart.series[0].setData([["NEW CUST",is_new_count],["EXIST CUST",not_new_count]]);
         },
         cache: false
     });
@@ -1322,7 +1402,6 @@ function requestCommissionData(request) {
         dataType: "json",
         data : request,
         success: function(data) {
-            console.log(data,"mode_data");
             for(i in data){
                 commisions_table.dataTable().fnAddData([data[i].employee_pic,
                     data[i].employee_id,

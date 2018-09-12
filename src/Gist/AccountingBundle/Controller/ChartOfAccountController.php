@@ -80,9 +80,12 @@ class ChartOfAccountController extends CrudController
         $main = $am->findMainAccount($data['main_account']);
         $o->setName($data['name'])
             ->setCode($this->setCode($o, $main, $is_new))
-            ->setNotes($data['notes'])
-            ->setMainAccount($main);
+            ->setNotes($data['notes']);
+        $em->persist($o);
 
+        $main->addChartOfAccount($o);
+        $em->persist($main);
+        
         $this->updateTrackCreate($o, $data, $is_new);
     }
 

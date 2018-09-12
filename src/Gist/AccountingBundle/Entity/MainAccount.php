@@ -11,6 +11,7 @@ use Gist\CoreBundle\Template\Entity\TrackCreate;
 use Gist\CoreBundle\Template\Entity\HasType;
 use Gist\CoreBundle\Template\Entity\HasCode;
 use Gist\CoreBundle\Template\Entity\HasStatus;
+use Gist\AccountingBundle\Entity\ChartOfAccount;
 
 
 // use Hris\ToolsBundle\Entity\EmployeeAdvanceEntry;
@@ -33,6 +34,11 @@ class MainAccount
 
     /** @ORM\Column(type="string", length=80, nullable=true) */
     protected $last_code;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Gist\AccountingBundle\Entity\ChartOfAccount", mappedBy="main_account", cascade={"persist"})
+     */
+    protected $coa;
 
     public function __construct()
     {
@@ -58,6 +64,30 @@ class MainAccount
     {
         return $this->name." (".$this->code.")";
     }
+
+    public function getChartOfAccounts()
+    {
+        return $this->coa;
+    }
+
+    public function addChartOfAccount(ChartOfAccount $chart_of_account)
+    {
+        $chart_of_account->setMainAccount($this);
+        $this->coa->add($chart_of_account);
+        return $this;
+    }
+
+    public function setPack($pack)
+    {
+        $this->coa = $pack;
+        return $this;
+    }
+
+    public function getPack()
+    {
+        return $this->pack;
+    }
+    
     public function toData()
     {
         $data = new stdClass();
