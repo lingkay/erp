@@ -23,12 +23,25 @@ class XZManager
     }
 
     
+    // public function getSalesChart($data)
+    // {
+    //     $dateFrom = new DateTime($data['date_from']);
+    //     // $dateFrom->modify('-7 days');
+    //     $dateFrom->setTime(0,0);
+    //     $dateTo = new DateTime($data['date_to']);
+    //     $dateTo->setTime(23,59);
+    //     $data['date_from'] = $dateFrom;
+    //     $data['date_to'] = $dateTo;
+    //     $chart = $this->processAggregate($data);
+    //     return $chart;
+    // }
+
     public function getSalesChart($data)
     {
-        $dateFrom = new DateTime($data['date_from']);
-        // $dateFrom->modify('-7 days');
+        $dateFrom = new DateTime($data['date']);
+        $dateFrom->modify('-7 day');
         $dateFrom->setTime(0,0);
-        $dateTo = new DateTime($data['date_to']);
+        $dateTo = new DateTime($data['date']);
         $dateTo->setTime(23,59);
         $data['date_from'] = $dateFrom;
         $data['date_to'] = $dateTo;
@@ -40,15 +53,49 @@ class XZManager
     {
     	$qb = $this->em->createQueryBuilder();
     	$qb->select(["o.date_create as date_create",
-    		"o.transaction_total as transaction_total"])
+            "o.transaction_total as transaction_total",
+            "SUM(o.cart_orig_total) as sub_total",
+    		"SUM(o.total_discount) as total_discount",])
             ->from('GistPOSERPBundle:POSTransaction', 'o')
             ->where('o.date_create between :date_from and :date_to ')
             ->andWhere('o.pos_location = :branch ')
+            ->andWhere('o.transaction_mode = :normal or o.transaction_mode = :upsell')
+            ->setParameter('normal', 'normal')
+            ->setParameter('upsell', 'upsell')
             ->setParameter('date_from', $data['date_from'])
             ->setParameter('date_to', $data['date_to'])
             ->setParameter('branch', $data['branch']);
 
         $result = $qb->getQuery()->getResult();
+        return $result;
+    }
+
+    public function getSalesTableData($data)
+    {
+        $dateFrom = new DateTime($data['date']);
+        $dateFrom->modify('-7 day');
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($data['date']);
+        $dateTo->setTime(23,59);
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select(["COUNT(o.id) as total_sales",
+                    "SUM(o.cart_orig_total) as sub_total",
+                    "SUM(o.total_discount) as total_discount",])
+            ->from('GistPOSERPBundle:POSTransaction', 'o')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->andWhere('o.pos_location = :branch ')
+            ->andWhere('o.transaction_mode = :normal or o.transaction_mode = :upsell')
+            ->setParameter('normal', 'normal')
+            ->setParameter('upsell', 'upsell')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->setParameter('branch', $data['branch']);
+
+        $result = $qb->getQuery()->getResult();
+
         return $result;
     }
 
@@ -106,9 +153,9 @@ class XZManager
 
     public function getSalesPerProduct($data)
     {
-    	$dateFrom = new DateTime($data['date_from']);
+    	$dateFrom = new DateTime($data['date']);
         $dateFrom->setTime(0,0);
-        $dateTo = new DateTime($data['date_to']);
+        $dateTo = new DateTime($data['date']);
         $dateTo->setTime(23,59);
         $data['date_from'] = $dateFrom;
         $data['date_to'] = $dateTo;
@@ -129,6 +176,9 @@ class XZManager
             ->leftJoin('GistPOSERPBundle:POSTransaction', 't', 'WITH', 'o.transaction = t.id')
             ->where('o.date_create between :date_from and :date_to ')
             ->andWhere('t.pos_location = :branch ')
+            ->andWhere('t.transaction_mode = :normal or t.transaction_mode = :upsell')
+            ->setParameter('normal', 'normal')
+            ->setParameter('upsell', 'upsell')
             ->setParameter('date_from', $data['date_from'])
             ->setParameter('date_to', $data['date_to'])
             ->setParameter('branch', $data['branch'])
@@ -142,9 +192,9 @@ class XZManager
 
     public function getSalesPerLocation($data)
     {
-    	$dateFrom = new DateTime($data['date_from']);
+    	$dateFrom = new DateTime($data['date']);
         $dateFrom->setTime(0,0);
-        $dateTo = new DateTime($data['date_to']);
+        $dateTo = new DateTime($data['date']);
         $dateTo->setTime(23,59);
         $data['date_from'] = $dateFrom;
         $data['date_to'] = $dateTo;
@@ -159,6 +209,9 @@ class XZManager
             ->from('GistPOSERPBundle:POSTransaction', 'o')
             ->leftJoin('o.pos_location','l')
             ->where('o.date_create between :date_from and :date_to ')
+            ->andWhere('o.transaction_mode = :normal or o.transaction_mode = :upsell')
+            ->setParameter('normal', 'normal')
+            ->setParameter('upsell', 'upsell')
             ->setParameter('date_from', $data['date_from'])
             ->setParameter('date_to', $data['date_to'])
             ->groupby('o.pos_location')
@@ -192,6 +245,9 @@ class XZManager
             ->from('GistPOSERPBundle:POSTransaction', 'o')
             ->leftJoin('o.customer','c')
             ->where('o.date_create between :date_from and :date_to ')
+            ->andWhere('o.transaction_mode = :normal or o.transaction_mode = :upsell')
+            ->setParameter('normal', 'normal')
+            ->setParameter('upsell', 'upsell')
             ->setParameter('date_from', $data['date_from'])
             ->setParameter('date_to', $data['date_to'])
             ->groupby('o.customer')
@@ -204,9 +260,35 @@ class XZManager
 
     protected function getTransaction($data)
     {
-        $dateFrom = new DateTime($data['date_from']);
+        $dateFrom = new DateTime($data['date']);
         $dateFrom->setTime(0,0);
-        $dateTo = new DateTime($data['date_to']);
+        $dateTo = new DateTime($data['date']);
+        $dateTo->setTime(23,59);
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistPOSERPBundle:POSTransaction', 'o')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->andWhere('o.pos_location = :branch ')
+            ->andWhere('o.transaction_mode = :normal or o.transaction_mode = :upsell')
+            ->setParameter('normal', 'normal')
+            ->setParameter('upsell', 'upsell')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->setParameter('branch', $data['branch']);
+
+        $result = $qb->getQuery()->getResult();
+     
+        return $result;
+    }
+
+    protected function getAllTransaction($data)
+    {
+        $dateFrom = new DateTime($data['date']);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($data['date']);
         $dateTo->setTime(23,59);
         $data['date_from'] = $dateFrom;
         $data['date_to'] = $dateTo;
@@ -225,20 +307,60 @@ class XZManager
         return $result;
     }
 
+    protected function getEmployeeAttendance($data)
+    {
+        $dateFrom = new DateTime($data['date']);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($data['date']);
+        $dateTo->setTime(23,59);
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select(["u.id as user_id",
+                     "min(o.date) as time_in",
+                     "max(o.date) as time_out"])    
+            ->from('HrisWorkforceBundle:Attendance', 'o')
+            ->join('GistUserBundle:User', 'u', 'WITH', 'o.employee = u.id')
+            ->where('o.date between :date_from and :date_to ')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->groupby('u.id');
+
+        $result = $qb->getQuery()->getResult();
+
+        $array = [];
+        foreach ($result as $res) {
+            $date = new DateTime($res['time_in']);
+            $date = $date->format('mdy');
+            $array[$res['user_id']][$date] = $res;
+        }
+     
+        return $array;
+    }
+
     public function getEmployeeChart($data)
     {
         $result = $this->getTransaction($data);
-
+        $attendance = $this->getEmployeeAttendance($data);
+        
         $array = [];
         foreach ($result as $key => $res) {
+            $in = '';
+            $out = '';
+            $total = '';
+            if(isset($attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')])) {
+                $in = $attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')]['time_in'];
+                $out = $attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')]['time_out'];
+            }
             if(isset($array[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')])) {
                 $arr = $array[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')];
                 $array[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')] = [
                     'employee' => $res->getUserCreate()->getName(),
-                    'employee_id' => $res->getUserCreate()->getID(),
+                    'employee_id' => $res->getUserCreate()->getUsername(),
                     'employee_pic' => $res->getUserCreate()->getProfilePicture() != null ? $res->getUserCreate()->getProfilePicture()->getURL() : '',
-                    'in' => '',
-                    'out' => '',
+                    'in' => $in,
+                    'out' => $out,
                     'total' => '',
                     'sales' => ($arr['sales'] + 1),
                     'amount' => $arr['amount'] + $res->getCartOrigTotal(),
@@ -246,10 +368,10 @@ class XZManager
             }else{
                 $array[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')] = [
                     'employee' => $res->getUserCreate()->getName(),
-                    'employee_id' => $res->getUserCreate()->getID(),
+                    'employee_id' => $res->getUserCreate()->getUsername(),
                     'employee_pic' => $res->getUserCreate()->getProfilePicture() != null ? $res->getUserCreate()->getProfilePicture()->getURL() : '',
-                    'in' => '',
-                    'out' => '',
+                    'in' => $in,
+                    'out' => $out,
                     'total' => '',
                     'sales' => 1,
                     'amount' => $res->getCartOrigTotal() != null ?  $res->getCartOrigTotal() : 0,
@@ -267,6 +389,12 @@ class XZManager
         $array = [];
         foreach ($result as $key => $res) {
             if ($res->getCustomer() != null) {
+                $is_new = 'X';
+                $cdate_created = $res->getCustomer()->getDateCreateFormatted();
+                $tdate_created = $res->getDateCreateFormatted();
+                if($cdate_created == $tdate_created)
+                    $is_new = 'V';
+
                 if(isset($array[$res->getCustomer()->getID()])) {
                     $arr = $array[$res->getCustomer()->getID()];
                     $array[$res->getCustomer()->getID()] = [
@@ -275,7 +403,7 @@ class XZManager
                         'sales' => ($arr['sales'] + 1),
                         'amount' => $arr['amount'] + $res->getCartOrigTotal(),
                         'arrival' => '',
-                        'is_new' => '',
+                        'is_new' => $is_new,
                     ];
                 }else{
                     $array[$res->getCustomer()->getID()] = [
@@ -284,7 +412,7 @@ class XZManager
                         'sales' => 1,
                         'amount' => $res->getCartOrigTotal() != null ?  $res->getCartOrigTotal() : 0,
                         'arrival' => '',
-                        'is_new' => '',
+                        'is_new' => $is_new,
                     ];
                 }
             }
@@ -355,7 +483,7 @@ class XZManager
 
     public function getTransactionsData($data)
     {
-        $result = $this->getTransaction($data);
+        $result = $this->getAllTransaction($data);
 
         $array = [];
         //amount
@@ -431,7 +559,7 @@ class XZManager
             if ($res->getTransactionTotal() != 0 && $res->getCartOrigTotal()) {
                 $array[$res->getID()] = [
                     'employee' => $res->getUserCreate()->getName(),
-                    'employee_id' => $res->getUserCreate()->getID(),
+                    'employee_id' => $res->getUserCreate()->getUsername(),
                     'employee_pic' => $res->getUserCreate()->getProfilePicture() != null ? $res->getUserCreate()->getProfilePicture()->getURL() : '',
                     'percent' => $res->getPercentOfSale(),
                     'commission' => $res->getTransactionTotal(),

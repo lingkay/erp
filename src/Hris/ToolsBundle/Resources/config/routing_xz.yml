@@ -11,6 +11,12 @@ hris_tools_xz_sales:
     defaults: { _controller: HrisToolsBundle:XZ:sales }
 
 
+hris_tools_xz_sales_table:
+    path:     /sales_table
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:salesTable }
+
+
 hris_tools_xz_product:
     path:     /product
     methods:  [GET]
