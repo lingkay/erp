@@ -63,7 +63,7 @@ class POSTransactionPayment
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $card_class;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $interest;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -100,6 +100,7 @@ class POSTransactionPayment
     public function __construct()
     {
         $this->initTrackCreate();
+        $this->interest = 0.0;
     }
 
     /**
