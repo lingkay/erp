@@ -317,15 +317,21 @@ class POSSyncController extends CrudController
     public function saveTransactionSplitsAction($trans_sys_id, $user_id, $amount, $percent)
     {
         header("Access-Control-Allow-Origin: *");
-
+        $conf = $this->get('gist_configuration');
         $em = $this->getDoctrine()->getManager();
         $transaction = $em->getRepository('GistPOSERPBundle:POSTransaction')->findOneBy(array('trans_display_id'=>$trans_sys_id));
         $user = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$user_id));
 
+        $commission = 0;
+        if($conf->get('commission_percentage') != null ){
+            $commission = ($conf->get('commission_percentage')/100) * ($percent/100) * $amount;
+        }
+        
         $split_entry = new POSTransactionSplit();
         $split_entry->setConsultant($user);
         $split_entry->setTransaction($transaction);
         $split_entry->setAmount($amount);
+        $split_entry->setCommission($commission);
         $split_entry->setPercent($percent);
 
         $em->persist($split_entry);

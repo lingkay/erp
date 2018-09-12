@@ -11,3 +11,6 @@ config:
       type: select_multi
       options_service: gist_user
       options_method: getGroupOptions
+    - id: commission_percentage
+      label: "Commission Percentage"
+      type: number
