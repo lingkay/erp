@@ -234,5 +234,18 @@ class AccountingManager
         $this->em->flush();
     }
 
+    public function findTBSettingsByType($type){
 
+        $tbs = $this->em->getRepository('GistAccountingBundle:TrialBalanceSettings')
+            ->findBy(['type' => $type]);
+
+        $array = [];
+        if($tbs != null){
+            foreach ($tbs as $key => $t) {
+                $array[$t->getID()] = $t->getID();
+            }
+        }
+
+        return $array;
+    }
 }

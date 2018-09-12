@@ -1,0 +1,57 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+
+                </div>
+
+                <div class="portlet box blue-hoki">
+                    <div class="portlet-body form">
+                        <form method="post" class="form-horizontal">
+                            <div class="form-body">
+                                {{ form.group_selectmulti('Asset', 'assets', coa_opts, asset_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Liability', 'liability', coa_opts, liablity_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Capital', 'capital', coa_opts, capital_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Net Sales', 'net_sales', coa_opts, netsales_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Cos', 'cos', coa_opts, cos_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Opex', 'opex', coa_opts, opex_opts_selected , 3, 4) }}
+                            </div>
+
+                            <div class="form-actions fluid">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn blue mobile-button-full">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+$(document).ready(function() {
+    
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

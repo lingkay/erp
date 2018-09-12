@@ -26,3 +26,28 @@ hris_tools_xz_customer:
     path:     /customer
     methods:  [GET]
     defaults: { _controller: HrisToolsBundle:XZ:customer }
+
+hris_tools_xz_employee:
+    path:     /employee
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:employee }
+
+hris_tools_xz_customer_portlet:
+    path:     /customer_portlet
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:customerPortlet }
+
+hris_tools_xz_mode:
+    path:     /mode
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:mode }
+
+hris_tools_xz_transactions:
+    path:     /transactions
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:transactions }
+
+hris_tools_xz_commission:
+    path:     /commission
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:commission }

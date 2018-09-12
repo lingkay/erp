@@ -14,6 +14,11 @@ menu_items:
       label: Chart of Accounts
       parent: gist_accounting_menu
 
+    - id: gist_tb_settings_index
+      acl: gist_tb_settings.menu
+      label: Trial Balance Settings
+      parent: gist_accounting_menu
+
     - id: gist_banks_menu
       acl: gist_banks.menu
       label: Banks

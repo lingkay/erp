@@ -109,6 +109,43 @@ class XZController extends BaseController
         return new JsonResponse($response);
     }
     
+    public function employeeAction()
+    {
+        $this->hookPreAction();
+        $chart = $this->xz->getEmployeeChart($this->data);
+      
+        return new JsonResponse($chart);
+    }
 
+    public function customerPortletAction()
+    {
+        $this->hookPreAction();
+        $chart = $this->xz->getCustomerChart($this->data);
+      
+        return new JsonResponse($chart);
+    }
 
+    public function modeAction()
+    {
+        $this->hookPreAction();
+        $chart = $this->xz->getModeChart($this->data);
+      
+        return new JsonResponse($chart);
+    }
+
+    public function transactionsAction()
+    {
+        $this->hookPreAction();
+        $chart = $this->xz->getTransactionsData($this->data);
+      
+        return new JsonResponse($chart);
+    }
+
+    public function commissionAction()
+    {
+        $this->hookPreAction();
+        $chart = $this->xz->getCommissionData($this->data);
+      
+        return new JsonResponse($chart);
+    }
 }
