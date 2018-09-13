@@ -273,7 +273,7 @@ class POSSyncController extends CrudController
      * @param $account_number
      * @return JsonResponse
      */
-    public function saveTransactionPaymentsAction($trans_sys_id, $payment_type, $amount, $bank, $terminal_operator, $check_type, $check_date, $control_number, $account_number)
+    public function saveTransactionPaymentsAction($trans_sys_id, $payment_type, $amount, $bank, $terminal_operator, $check_type, $check_date, $control_number, $account_number, $terms)
     {
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
@@ -326,7 +326,7 @@ class POSSyncController extends CrudController
         if($conf->get('commission_percentage') != null ){
             $commission = ($conf->get('commission_percentage')/100) * ($percent/100) * $amount;
         }
-        
+
         $split_entry = new POSTransactionSplit();
         $split_entry->setConsultant($user);
         $split_entry->setTransaction($transaction);

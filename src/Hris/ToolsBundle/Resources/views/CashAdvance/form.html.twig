@@ -10,7 +10,7 @@
                 </div>
                 <div class="portlet-body form">
                     <!-- BEGIN FORM-->
-                    <form method="post" class="form-horizontal">
+                    <form method="post" class="form-horizontal" id="advance_form">
                         <div class="form-body">
                             <h4 class="form-section">Information</h4>
                             {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
@@ -189,6 +189,9 @@ $(document).ready(function() {
                     break;
             }
 
+            $('#list_table tbody').html('');
+            addDeduction();
+
 
         }
 
@@ -212,7 +215,9 @@ $(document).ready(function() {
 
         updateCount();
     	switchEmployee();
-        switchType();
+        {% if object.getID == null %}
+            switchType();
+        {% endif %}
       // $('#list_table tbody').html('');
       //               addDeduction();
               
@@ -240,54 +245,87 @@ $(document).ready(function() {
             computeBalance();
         });
 
-        FormValidation.init(); // init form validation
 
-        // set default error and success elements
-        jQuery.validator.setDefaults({
-            errorClass: 'help-block',
-            errorElement: 'span',
-            errorPlacement: function(error, element) {
-                if(element.parent().parent().hasClass('form-group'))
-                {
-                    error.appendTo(element.parent().last());
-                    element.parent().parent().addClass('has-error');
-                }
-                else
-                {
-                    error.appendTo(element.parent().parent().last());
-                    element.parent().parent().parent().addClass('has-error');
-                }
-            },
-            success: function(element) {
-                if(element.parent().parent().hasClass('form-group'))
-                {
-                    element.parent().parent().removeClass('has-error');
-                    element.parent().parent().addClass('has-success');
-                }
-                else
-                {
-                    element.parent().parent().parent().removeClass('has-error');
-                    element.parent().parent().parent().addClass('has-success');
+         $('#advance_form').submit(function(e) {
+
+            let invalid_deduction = false;
+            let invalid_date = false;
+            $('#list_table > tbody > tr:visible').each(function() {
+                let  deduction = $(this).find('.deduction_input').val();
+                
+                if(deduction <= 0 ){
+                    invalid_deduction = true;
                 }
 
-                element.remove();
-            }
+                 let  date_picker = $(this).find('.date-picker input').val();
+                if(date_picker == '' ){
+                    invalid_date = true;
+                }
+
+            });
+
+            if(invalid_deduction){
+                 e.preventDefault();
+                 toastr['error']('Deduction Cannot be 0.');
+                 return;
+             }
+
+             if(invalid_date){
+                 e.preventDefault();
+                 toastr['error']('Date Cannot be blank.');
+                 return;
+             }
         });
 
-        // validate form elements
-        $(".form-horizontal").validate({
-            onfocusout: function(element) {
-                this.element(element);
-            },
-            rules: {
-                name: {
-                    required: true
-                }
-            },
-            submitHandler: function(form) {
-                form.submit();
-            }
-        });
+
+        // FormValidation.init(); // init form validation
+
+        // // set default error and success elements
+        // jQuery.validator.setDefaults({
+        //     errorClass: 'help-block',
+        //     errorElement: 'span',
+        //     errorPlacement: function(error, element) {
+        //         if(element.parent().parent().hasClass('form-group'))
+        //         {
+        //             error.appendTo(element.parent().last());
+        //             element.parent().parent().addClass('has-error');
+        //         }
+        //         else
+        //         {
+        //             error.appendTo(element.parent().parent().last());
+        //             element.parent().parent().parent().addClass('has-error');
+        //         }
+        //     },
+        //     success: function(element) {
+        //         if(element.parent().parent().hasClass('form-group'))
+        //         {
+        //             element.parent().parent().removeClass('has-error');
+        //             element.parent().parent().addClass('has-success');
+        //         }
+        //         else
+        //         {
+        //             element.parent().parent().parent().removeClass('has-error');
+        //             element.parent().parent().parent().addClass('has-success');
+        //         }
+
+        //         element.remove();
+        //     }
+        // });
+
+        // // validate form elements
+        // $(".form-horizontal").validate({
+        //     onfocusout: function(element) {
+        //         this.element(element);
+        //     },
+        //     rules: {
+        //         name: {
+        //             required: true
+        //         }
+        //     },
+        //     submitHandler: function(form) {
+        //         form.submit();
+        //     }
+        // });
     });
     </script>
 {% endblock %}
