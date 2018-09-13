@@ -18,3 +18,15 @@ gist_accounting_crj_add_submit:
     pattern: /add
     methods: [POST]
     defaults: { _controller: GistAccountingBundle:CRJ:addSubmit }
+
+
+gist_crj_settings_index:
+    pattern: /settings
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CRJ:settingsForm }
+
+
+gist_crj_settings_index:
+    pattern: /settings
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:CRJ:settingsSubmit }

@@ -160,6 +160,21 @@ class CRJController extends CrudController
     }
 
 
+    public function settingsFormAction()
+    {
+        $this->checkAccess('gist_accounting_settings.view');
+        $this->hookPreAction();
+
+        $params = $this->getViewParams('Add');
+
+        $twig_file = 'GistAccountingBundle:CRJ:settings.html.twig';
+        
+        $params['list_title'] = $this->list_title;
+        $this->padFormParams($params);
+        return $this->render($twig_file, $params);
+ 
+    }
+
 
 
 }
