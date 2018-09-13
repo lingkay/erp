@@ -436,9 +436,16 @@ class XZManager
         $credit_card = 0;
         $check = 0;
         $gift_card = 0;
+
+        //Credit Card Interest
+        $cc_interests = 0;
         foreach ($result as $key => $res) {
             if ($res->hasPayments()) {
                 foreach ($res->getPayments() as $k => $pay) {
+                    $interest = 0;
+                    if($pay->getInterest() != '') {
+                        $interest = $pay->getInterest();  
+                    }
                     switch ($pay->getType()) {
                         case 'Cash':
                             $cash += $pay->getAmount();
@@ -447,6 +454,7 @@ class XZManager
                         case 'Credit Card':
                             $credit_card += $pay->getAmount();
                             $credit_card_count++;
+                            $cc_interests += $interest;
                             break;
                         case 'Check':
                             $check += $pay->getAmount();
@@ -476,6 +484,7 @@ class XZManager
             'gift_card' => $gift_card,
             'count_total' => $count_total,
             'amount_total' => $amount_total,
+            'cc_interests' => $cc_interests,
         ]; 
 
         return $array;
@@ -544,7 +553,6 @@ class XZManager
             'quotation_count' => $quotation_count,
             'frozen_count' => $frozen_count,
             'deposit_outof' => $deposit_outof,
-            'deposit_balance' => $deposit_balance,
         ];
 
         return $array;

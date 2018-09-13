@@ -299,37 +299,20 @@
                                             </tr>
                                         </tfoot>
                                     </table>
-{# 
-                                    <table id="mode_dc_table" class="table table-striped table-bordered table-hover" id="list_table">
-                                        <tbody>
-                                            <tr class="mode_debit_tr">
-                                                <td width="40%">Debit</td>
-                                                <td class="debit_value"></td>
-                                            </tr>
-                                            <tr class="mode_credit_tr">
-                                                <td width="40%">Credit</td>
-                                                <td class="credit_value"></td>
-                                            </tr>
-                                            <tr class="mode_dc_total_tr">
-                                                <td width="40%">&nbsp;</td>
-                                                <td class="dc_total_value"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
 
                                     <table id="mode_interest_table" class="table table-striped table-bordered table-hover" id="list_table">
                                         <tbody>
                                             <tr class="mode_zero_tr">
                                                 <td width="40%">0 interest</td>
-                                                <td class="zero_value"></td>
+                                                <td id="zero_value"></td>
                                             </tr>
                                             <tr class="mode_interest_tr">
                                                 <td width="40%">W/ interest</td>
-                                                <td class="interest_value"></td>
+                                                <td id="interest_value"></td>
                                             </tr>
                                             <tr class="mode_interest_total_tr">
                                                 <td width="40%">&nbsp;</td>
-                                                <td class="interest_total_value"></td>
+                                                <td id="interest_total_value"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -337,43 +320,43 @@
                                     <table id="mode_list_table" class="table table-striped table-bordered table-hover" id="list_table">
                                         <tbody>
                                             <tr class="mode_0_tr">
-                                                <td width="30%">0</td>
+                                                <td width="40%">0</td>
                                                 <td class="list_0_value"></td>
                                             </tr>
                                             <tr class="mode_3_tr">
-                                                <td width="30%">3</td>
+                                                <td width="40%">3</td>
                                                 <td class="list_3_value"></td>
                                             </tr>
                                             <tr class="mode_6_tr">
-                                                <td width="30%">6</td>
+                                                <td width="40%">6</td>
                                                 <td class="list_6_value"></td>
                                             </tr>
                                             <tr class="mode_9_tr">
-                                                <td width="30%">9</td>
+                                                <td width="40%">9</td>
                                                 <td class="list_9_value"></td>
                                             </tr>
                                             <tr class="mode_12_tr">
-                                                <td width="30%">12</td>
+                                                <td width="40%">12</td>
                                                 <td class="list_12_value"></td>
                                             </tr>
                                             <tr class="mode_18_tr">
-                                                <td width="30%">18</td>
+                                                <td width="40%">18</td>
                                                 <td class="list_18_value"></td>
                                             </tr>
                                             <tr class="mode_24_tr">
-                                                <td width="30%">24</td>
+                                                <td width="40%">24</td>
                                                 <td class="list_24_value"></td>
                                             </tr>
                                             <tr class="mode_36_tr">
-                                                <td width="30%">36</td>
+                                                <td width="40%">36</td>
                                                 <td class="list_36_value"></td>
                                             </tr>
                                             <tr class="mode_list_total_tr">
-                                                <td width="30%"></td>
+                                                <td width="40%"></td>
                                                 <td class="list_total_value"></td>
                                             </tr>
                                         </tbody>
-                                    </table> #}
+                                    </table>
                                 </div>
                                 <div class="col-md-6">
     							    <div id="mode_chart">
@@ -806,23 +789,30 @@ function requestSalesTableData(request) {
             var tdiscount = 0;
             var tsales = 0;
 
-            if(data[0].sub_total != null)
+            if(data[0].sub_total != null && data[0].sub_total != '')
                 stotal = data[0].sub_total;
-            if(data[0].total_discount != null)
+            if(data[0].total_discount != null && data[0].total_discount != '')
                 tdiscount = data[0].total_discount;
-            if(data[0].total_sales != null)
+            if(data[0].total_sales != null && data[0].total_sales != '')
                 tsales = data[0].total_sales;
 
-
+            var avg = (stotal - tdiscount);
+            if(avg == '0' || stotal == '0'){
+                avg = 0;
+            }else{
+                avg = ((stotal - tdiscount)/tsales);
+            }
+                
+            console.log(stotal, "total");
             $('#stotal_value').html(stotal);
             $('#tdiscount_value').html(tdiscount);
             $('#dgross_value').html((stotal - tdiscount));
             $('#vgross_value').html(((stotal - tdiscount)/1.12).toFixed(2));
             $('#vat_value').html(((stotal - tdiscount) - ((stotal - tdiscount)/1.12)).toFixed(2));
             $('#gtotal_value').html((stotal - tdiscount));
-            $('#pdiscount_value').html(tdiscount/stotal)
+            $('#pdiscount_value').html((tdiscount/stotal));
             $('#nsales_value').html(tsales);
-            $('#acheck_value').html(((stotal - tdiscount)/tsales).toFixed(2));
+            $('#acheck_value').html(avg.toFixed(2));
         },
         cache: false
     });
@@ -1332,6 +1322,10 @@ function requestModeData(request) {
         dataType: "json",
         data : request,
         success: function(data) {
+            var zero_value = 0
+            var interest_value = 0
+            var interest_total_value = 0
+
             //count
             $('#cash_value_count').html(data['cash_count']);
             $('#cc_value_count').html(data['credit_card_count']);
@@ -1346,6 +1340,11 @@ function requestModeData(request) {
             $('#mode_tnx_total').html(data['count_total']);
             $('#mode_amount_total').html(data['amount_total']);
 
+            //Interest
+            $('#zero_value').html(data['credit_card']);
+            $('#interest_value').html(data['cc_interests']);
+            $('#interest_total_value').html((data['credit_card'] - data['cc_interests'] ));
+            
             mode_chart.series[0].setData([["Cash",data['cash']],["Credit Card",data['credit_card']],["Check",data['check']],["Gift Card",data['gift_card']]]);
         },
         cache: false
@@ -1376,6 +1375,11 @@ function requestTransactionData(request) {
             //total
             $('#deposit_outof_value').html(data['deposit_outof']);
             $('#deposit_balance_value').html(data['deposit_balance']);
+
+            //interests
+            $('#frozen_amount_value').html(data['frozen']);
+
+
         },
         cache: false
     });
