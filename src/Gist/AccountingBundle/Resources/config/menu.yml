@@ -4,20 +4,31 @@ menu_items:
       label: Accounting
       icon: fa-money
 
+
+    - id: gist_accounting_settings
+      acl: gist_accounting_settings.menu
+      label: Accounting Settings
+      parent: gist_accounting_menu
+
     - id: gist_accounting_main_index
       acl: gist_accounting_main.menu
       label: Main Accounts
-      parent: gist_accounting_menu
+      parent: gist_accounting_settings
 
     - id: gist_accounting_accounts_index
       acl: gist_accounting_accounts.menu
       label: Chart of Accounts
-      parent: gist_accounting_menu
+      parent: gist_accounting_settings
+
+    - id: gist_crj_settings_index
+      acl: gist_crj_settings.menu
+      label: CRJ Settings
+      parent: gist_accounting_settings
 
     - id: gist_tb_settings_index
       acl: gist_tb_settings.menu
       label: Trial Balance Settings
-      parent: gist_accounting_menu
+      parent: gist_accounting_settings
 
     - id: gist_banks_menu
       acl: gist_banks.menu
