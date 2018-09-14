@@ -42,7 +42,6 @@ class TrialBalanceSettingsController extends BaseController
 
         $twig_file = 'GistAccountingBundle:TrialBalanceSettings:index.html.twig';
 
-        $params['coa_opts'] = $am->getChartOfAccountOptions();
         $params['list_title'] = $this->list_title;
         // $params['grid_cols'] = $gl->getColumns();
         $this->padListParams($params);
@@ -112,6 +111,7 @@ class TrialBalanceSettingsController extends BaseController
         $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
         $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
         
+        $params['coa_opts'] = $am->getMainAccountOptions();
         $params['asset_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_ASSET);
         $params['liablity_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_LIABILITY);
         $params['capital_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_CAPITAL);
@@ -119,84 +119,116 @@ class TrialBalanceSettingsController extends BaseController
         $params['cos_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_COS);
         $params['opex_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_OPEX);
 
+
         return $params;
 
     }
 
     public function saveAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $am = $this->get('gist_accounting');
-        $data = $this->getRequest()->request->all();
+        try
+        {
+            $em = $this->getDoctrine()->getManager();
+            $am = $this->get('gist_accounting');
+            $data = $this->getRequest()->request->all();
 
-        if(isset($data['assets'])) {
-            foreach ($data['assets'] as $key => $account) {
-                $id = $am->findChartOfAccount($account);
-                $assets = new TrialBalanceSettings();
-                $assets->setAccount($id)
-                       ->setType(TrialBalanceSettings::TYPE_ASSET)
-                       ->setUserCreate($this->getUser());
-                $em->persist($assets);
+            $tbs = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findAll();
+            foreach ($tbs as $tb) {
+                $em->remove($tb);
             }
-        }
+            $em->flush();
 
-        if(isset($data['liability'])) {
-            foreach ($data['liability'] as $key => $account) {
-                $id = $am->findChartOfAccount($account);
-                $liability = new TrialBalanceSettings();
-                $liability->setAccount($id)
-                          ->setType(TrialBalanceSettings::TYPE_LIABILITY)
-                          ->setUserCreate($this->getUser());
-                $em->persist($liability);
+            if(isset($data['assets'])) {
+                foreach ($data['assets'] as $key => $account) {
+                    $id = $am->findMainAccount($account);
+                    $assets = new TrialBalanceSettings();
+                    $assets->setAccount($id)
+                           ->setType(TrialBalanceSettings::TYPE_ASSET)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
             }
-        }
 
-        if(isset($data['capital'])) {
-            foreach ($data['capital'] as $key => $account) {
-                $id = $am->findChartOfAccount($account);
-                $capital = new TrialBalanceSettings();
-                $capital->setAccount($id)
-                        ->setType(TrialBalanceSettings::TYPE_CAPITAL)
+            if(isset($data['liability'])) {
+                foreach ($data['liability'] as $key => $account) {
+                    $id = $am->findMainAccount($account);
+                    $liability = new TrialBalanceSettings();
+                    $liability->setAccount($id)
+                              ->setType(TrialBalanceSettings::TYPE_LIABILITY)
+                              ->setUserCreate($this->getUser());
+                    $em->persist($liability);
+                }
+            }
+
+            if(isset($data['capital'])) {
+                foreach ($data['capital'] as $key => $account) {
+                    $id = $am->findMainAccount($account);
+                    $capital = new TrialBalanceSettings();
+                    $capital->setAccount($id)
+                            ->setType(TrialBalanceSettings::TYPE_CAPITAL)
+                            ->setUserCreate($this->getUser());
+                    $em->persist($capital);
+                }
+            }
+
+            if(isset($data['net_sales'])) {
+                foreach ($data['net_sales'] as $key => $account) {
+                    $id = $am->findMainAccount($account);
+                    $net_sales = new TrialBalanceSettings();
+                    $net_sales->setAccount($id)
+                              ->setType(TrialBalanceSettings::TYPE_NET_STALES)
+                              ->setUserCreate($this->getUser());
+                    $em->persist($net_sales);
+                }
+            }
+
+            if(isset($data['cos'])) {
+                foreach ($data['cos'] as $key => $account) {
+                    $id = $am->findMainAccount($account);
+                    $cos = new TrialBalanceSettings();
+                    $cos->setAccount($id)
+                        ->setType(TrialBalanceSettings::TYPE_COS)
                         ->setUserCreate($this->getUser());
-                $em->persist($capital);
+                    $em->persist($cos);
+                }
             }
+
+            if(isset($data['opex'])) {
+                foreach ($data['opex'] as $key => $account) {
+                    $id = $am->findMainAccount($account);
+                    $opex = new TrialBalanceSettings();
+                    $opex->setAccount($id)
+                         ->setType(TrialBalanceSettings::TYPE_OPEX)
+                         ->setUserCreate($this->getUser());
+                    $em->persist($opex);
+                }
+            }      
+
+            $em->flush();
+
+            $this->addFlash('success', $this->title . ' updated successfully.');
+            return $this->redirect($this->generateUrl('gist_tb_settings_index'));
         }
-
-        if(isset($data['net_sales'])) {
-            foreach ($data['net_sales'] as $key => $account) {
-                $id = $am->findChartOfAccount($account);
-                $net_sales = new TrialBalanceSettings();
-                $net_sales->setAccount($id)
-                          ->setType(TrialBalanceSettings::TYPE_NET_STALES)
-                          ->setUserCreate($this->getUser());
-                $em->persist($net_sales);
-            }
+        catch (ValidationException $e)
+        {
+            $this->addFlash('error',$e->getMessage());
+         
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
+         
+            error_log($e->getMessage());
+             return $this->addError($obj);
         }
-
-        if(isset($data['cos'])) {
-            foreach ($data['cos'] as $key => $account) {
-                $id = $am->findChartOfAccount($account);
-                $cos = new TrialBalanceSettings();
-                $cos->setAccount($id)
-                    ->setType(TrialBalanceSettings::TYPE_COS)
-                    ->setUserCreate($this->getUser());
-                $em->persist($cos);
-            }
+        catch (DBALException $e)
+        {
+             $this->addFlash('error',$e->getMessage());
+         
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
+            error_log($e->getMessage());
+            return $this->addError($obj);
         }
-
-        if(isset($data['opex'])) {
-            foreach ($data['opex'] as $key => $account) {
-                $id = $am->findChartOfAccount($account);
-                $opex = new TrialBalanceSettings();
-                $opex->setAccount($id)
-                     ->setType(TrialBalanceSettings::TYPE_OPEX)
-                     ->setUserCreate($this->getUser());
-                $em->persist($opex);
-            }
-        }      
-
-        $em->flush();
-
-        return new JsonResponse($data);
+        catch (\Exception $e) {
+            $this->addFlash('error',$e->getMessage());
+            return $this->addError($obj);
+        }
     }
 }

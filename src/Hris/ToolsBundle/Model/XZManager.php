@@ -389,11 +389,11 @@ class XZManager
         $array = [];
         foreach ($result as $key => $res) {
             if ($res->getCustomer() != null) {
-                $is_new = 'X';
+                $is_new = 'TRUE';
                 $cdate_created = $res->getCustomer()->getDateCreateFormatted();
                 $tdate_created = $res->getDateCreateFormatted();
                 if($cdate_created == $tdate_created)
-                    $is_new = 'V';
+                    $is_new = 'FALSE';
 
                 if(isset($array[$res->getCustomer()->getID()])) {
                     $arr = $array[$res->getCustomer()->getID()];
@@ -558,27 +558,96 @@ class XZManager
         return $array;
     }
 
-    public function getCommissionData($data)
+    public function getCommissionData($data, $conf)
     {
-        $result = $this->getTransaction($data);
+        $dateFrom = new DateTime($data['date']);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($data['date']);
+        $dateTo->setTime(23,59);
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistPOSERPBundle:POSTransactionSplit', 'o')
+            ->join('GistPOSERPBundle:POSTransaction', 't', 'WITH', 'o.transaction = t.id')
+            ->join('GistUserBundle:User', 'u', 'WITH', 'o.consultant = u.id')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->andWhere('t.pos_location = :branch ')
+            ->andWhere('t.transaction_mode = :normal or t.transaction_mode = :upsell')
+            ->setParameter('normal', 'normal')
+            ->setParameter('upsell', 'upsell')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->setParameter('branch', $data['branch']);
+
+        $result = $qb->getQuery()->getResult();
+       
+        $qb = $this->em->createQueryBuilder();
+        $qb->select(['sum(o.debit) as total_debit',
+                     'sum(o.credit) as total_credit',
+                     'u.id as user_id'])
+            ->from('HrisToolsBundle:EmployeeBonusFine', 'o')
+            ->join('GistUserBundle:User', 'u', 'WITH', 'o.employee = u.id')
+            ->where('o.date_released between :date_from and :date_to ')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->groupby('u.id');
+
+        $bonus_and_fines = $qb->getQuery()->getResult();
+
+        $bnf = [];
+        foreach ($bonus_and_fines as $b) {
+            $bnf[$b['user_id']] = $b;
+        }
 
         $array = [];
         foreach ($result as $key => $res) {
-            if ($res->getTransactionTotal() != 0 && $res->getCartOrigTotal()) {
-                $array[$res->getID()] = [
-                    'employee' => $res->getUserCreate()->getName(),
-                    'employee_id' => $res->getUserCreate()->getUsername(),
-                    'employee_pic' => $res->getUserCreate()->getProfilePicture() != null ? $res->getUserCreate()->getProfilePicture()->getURL() : '',
-                    'percent' => $res->getPercentOfSale(),
-                    'commission' => $res->getTransactionTotal(),
-                    'fine' => '',
-                    'bonus' => '',
-                    'sales' => $res->getCartOrigTotal(),
-                    'total' => $res->getTransactionTotal(),
+            $percentage = 0;
+            $commission = 0;
+            $bonus = 0;
+            $fine  = 0;
+            if($conf->get('commission_percentage') != null ){
+                $percentage = $conf->get('commission_percentage');
+                $commission = ($res->getTransaction()->getCartOrigTotal() * ($conf->get('commission_percentage')/100)) * .88;
+            }
+
+            if (isset($bnf[$res->getConsultant()->getID()])) {
+                $bonus = $bnf[$res->getConsultant()->getID()]['total_debit'];
+                $fine  = $bnf[$res->getConsultant()->getID()]['total_credit'];
+            }
+
+            if(isset($array[$res->getConsultant()->getID()])) {
+                $arr = $array[$res->getConsultant()->getID()];
+                $total = $arr['total'] += $commission;
+
+                $array[$res->getConsultant()->getID()] = [
+                    'employee' => $res->getConsultant()->getName(),
+                    'employee_id' => $res->getConsultant()->getUsername(),
+                    'employee_pic' => $res->getConsultant()->getProfilePicture() != null ? $res->getConsultant()->getProfilePicture()->getURL() : '',
+                    'percent' => $percentage,
+                    'commission' => $arr['commission'] +=$commission,
+                    'fine' => $fine,
+                    'bonus' => $bonus,
+                    'sales' => $arr['sales'] += $res->getTransaction()->getCartOrigTotal(),
+                    'total' => $total + ($bonus - $fine),
+                ];
+            }else{
+                $total = $commission;
+                $array[$res->getConsultant()->getID()] = [
+                    'employee' => $res->getConsultant()->getName(),
+                    'employee_id' => $res->getConsultant()->getUsername(),
+                    'employee_pic' => $res->getConsultant()->getProfilePicture() != null ? $res->getConsultant()->getProfilePicture()->getURL() : '',
+                    'percent' => $percentage,
+                    'commission' => $commission,
+                    'fine' => $fine,
+                    'bonus' => $bonus,
+                    'sales' => $res->getTransaction()->getCartOrigTotal(),
+                    'total' => $total + ($bonus - $fine),
                 ];
             }
         }
-
+        
         return $array;
     }
     

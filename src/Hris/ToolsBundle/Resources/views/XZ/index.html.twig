@@ -618,7 +618,7 @@
 			            	<div class="caption">Commissions/Bonus/Fines </div>
 			            </div>
 			              <div class="portlet-body">
-                            <table id="commisions_table" class="table table-striped table-bordered table-hover" id="list_table">
+                            <table id="commissions_table" class="table table-striped table-bordered table-hover" id="list_table">
                                 <thead>
                                     <tr>
                                         <th colspan="3">Employee</th>
@@ -1387,7 +1387,7 @@ function requestTransactionData(request) {
 
 //Commissions Portlet
 
-var commisions_table = $('#commisions_table').dataTable({
+var commissions_table = $('#commissions_table').dataTable({
         "iDisplayLength": 10,
         "sPaginationType": "bootstrap",
         "oLanguage": {
@@ -1407,15 +1407,15 @@ function requestCommissionData(request) {
         data : request,
         success: function(data) {
             for(i in data){
-                commisions_table.dataTable().fnAddData([data[i].employee_pic,
+                commissions_table.dataTable().fnAddData([data[i].employee_pic,
                     data[i].employee_id,
                     data[i].employee,
                     data[i].percent,
-                    data[i].commission,
+                    data[i].commission.toFixed(2),
                     data[i].fine,
                     data[i].bonus,
-                    data[i].sales,
-                    data[i].total]);
+                    data[i].sales.toFixed(2),
+                    data[i].total.toFixed(2)]);
             }
         },
         cache: false
