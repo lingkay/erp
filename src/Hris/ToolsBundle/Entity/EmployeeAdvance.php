@@ -85,6 +85,7 @@ class EmployeeAdvance
         $this->initTrackCreate();
         $this->flag_fulldeduction = false;
         $this->deduction_no = 0;
+        $this->entries = new ArrayCollection();
     }
 
     public function setIsFillDeduction($flag_fulldeduction)

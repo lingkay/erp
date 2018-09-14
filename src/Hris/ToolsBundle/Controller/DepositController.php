@@ -66,6 +66,7 @@ class DepositController extends CrudController
             $grid->newColumn('Employee', 'getEmployeeName', 'employee'),
             $grid->newColumn('Team', 'getName', 'name', 'a'),
             $grid->newColumn('Type', 'getType', 'type'),
+            $grid->newColumn('Deposit Date', 'getDateDeposit', 'date_deposit','o', [$this,'formatDate']),
             $grid->newColumn('Reason', 'getNotes', 'notes'),
             $grid->newColumn('Amount', 'getAmount', 'debit', 'o', [$this, 'formatPrice']),
  
