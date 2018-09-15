@@ -242,7 +242,7 @@ class AccountingManager
         $array = [];
         if($tbs != null){
             foreach ($tbs as $key => $t) {
-                $array[$t->getID()] = $t->getID();
+                $array[$t->getAccount()->getID()] = $t->getAccount()->getID();
             }
         }
 

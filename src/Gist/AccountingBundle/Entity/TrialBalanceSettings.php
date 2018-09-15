@@ -29,10 +29,10 @@ class TrialBalanceSettings
     const TYPE_OPEX         = "Opex";
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\ChartOfAccount")
-     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\MainAccount")
+     * @ORM\JoinColumn(name="main_account_id", referencedColumnName="id", nullable=true)
      */
-    protected $chart_of_account;
+    protected $main_account;
 
     /** @ORM\Column(type="string", length=150) */
     protected $type;
@@ -44,13 +44,13 @@ class TrialBalanceSettings
 
     public function setAccount($account)
     {
-        $this->chart_of_account = $account;
+        $this->main_account = $account;
         return $this;
     }
 
     public function getAccount()
     {
-        return $this->chart_of_account;
+        return $this->main_account;
     }
 
     public function setType($type)

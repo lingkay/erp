@@ -153,7 +153,9 @@ class XZController extends BaseController
     public function commissionAction()
     {
         $this->hookPreAction();
-        $chart = $this->xz->getCommissionData($this->data);
+        $conf = $this->get('gist_configuration');
+        
+        $chart = $this->xz->getCommissionData($this->data, $conf);
       
         return new JsonResponse($chart);
     }

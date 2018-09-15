@@ -28,7 +28,7 @@
 
                             <div class="form-actions fluid">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn blue mobile-button-full">Save</button>
+                                    <button type="submit" onclick="return check_duplicate()" class="btn blue mobile-button-full">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -43,11 +43,70 @@
 
 {% block js %}
 
-
 <script>
 $(document).ready(function() {
-    
+
 });
+check_duplicate = function(){
+    var check = true;
+    var assets    = $('#cform-assets').val();
+    var liability = $('#cform-liability').val();
+    var capital   = $('#cform-capital').val();
+    var net_sales = $('#cform-net_sales').val();
+    var cos       = $('#cform-cos').val();
+    var opex      = $('#cform-opex').val();
+    var array = [];
+    for(i in assets){
+        if(jQuery.inArray(assets[i], array) == -1){
+            array.push(assets[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Assets!','Error');
+        }
+    }
+    for(i in liability){
+        if(jQuery.inArray(liability[i], array) == -1){
+            array.push(liability[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Liability!','Error');
+        }
+    }
+    for(i in capital){
+        if(jQuery.inArray(capital[i], array) == -1){
+            array.push(capital[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Capital!','Error');
+        }
+    }
+    for(i in net_sales){
+        if(jQuery.inArray(net_sales[i], array) == -1){
+            array.push(net_sales[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Net Sales!','Error');
+        }
+    }
+    for(i in cos){
+        if(jQuery.inArray(cos[i], array) == -1){
+            array.push(cos[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Cos!','Error');
+        }
+    }
+    for(i in opex){
+        if(jQuery.inArray(opex[i], array) == -1){
+            array.push(opex[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Opex!','Error');
+        }
+    }
+
+    return check;
+}
 </script>
 {% endblock %}
 
