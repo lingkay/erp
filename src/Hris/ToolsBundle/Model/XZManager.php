@@ -553,6 +553,7 @@ class XZManager
             'quotation_count' => $quotation_count,
             'frozen_count' => $frozen_count,
             'deposit_outof' => $deposit_outof,
+            'deposit_balance' => $deposit_balance,
         ];
 
         return $array;

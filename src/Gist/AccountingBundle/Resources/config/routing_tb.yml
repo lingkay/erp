@@ -4,6 +4,11 @@ gist_accounting_tb_index:
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:TrialBalance:index }
 
+gist_accounting_tb_generate:
+    pattern: /list
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:TrialBalance:generateCSV }
+
 gist_accounting_crj_grid:
     pattern: /grid
     methods: [GET]

@@ -98,30 +98,46 @@
 			                </div>
 			            </div>
 			              <div class="portlet-body">
-			              	 <table id="product_table" class="table table-striped table-bordered table-hover" id="list_table">
-		                    <thead>
-		                        <tr>
-		                        <th>Item</th>
-		                        <th>Quantity</th>
-		                        <th>Price</th>
-		                        <th>Discount</th>
-		                        <th>Adjusted Price</th>
-		                        <th>Average</th>
-		                        </tr>
-		                    </thead>
-		                    <tbody>
-		                    </tbody>
-		                    <tfoot>
-		                    	<tr>
-		                    		<td>Total</td>
-		                    		<td id="qty_total"></td>
-		                    		<td id="price_total"></td>
-		                    		<td id="discount_total"></td>
-		                    		<td id="adj_total"></td>
-		                    		<td ></td>
-		                    	</tr>
-		                    </tfoot>
-		                </table>
+                            <div class="col-md-10">
+    			              	<table id="product_table" class="table table-striped table-bordered table-hover" id="list_table">
+        		                    <thead>
+        		                        <tr>
+        		                        <th>Item</th>
+        		                        <th>Quantity</th>
+        		                        <th>Price</th>
+        		                        <th>Discount</th>
+        		                        <th>Adjusted Price</th>
+        		                        <th>Average</th>
+        		                        </tr>
+        		                    </thead>
+        		                    <tbody>
+        		                    </tbody>
+        		                    <tfoot>
+        		                    	<tr>
+        		                    		<td>Total</td>
+        		                    		<td id="qty_total"></td>
+        		                    		<td id="price_total"></td>
+        		                    		<td id="discount_total"></td>
+        		                    		<td id="adj_total"></td>
+        		                    		<td ></td>
+        		                    	</tr>
+        		                    </tfoot>
+        		                </table>
+                            </div>
+                            <div class="col-md-2">
+                                <table id="product_avg_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Avg p/Item</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="avg_pitem"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
 		                	<div id="chart_container">
 							    <div id="product_chart">
@@ -745,6 +761,14 @@ $(document).ready(function() {
                 color: '#808080'
             }]
         },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
         legend: {
             layout: 'vertical',
             align: 'right',
@@ -799,20 +823,21 @@ function requestSalesTableData(request) {
             var avg = (stotal - tdiscount);
             if(avg == '0' || stotal == '0'){
                 avg = 0;
+                pdiscount = 0;
             }else{
                 avg = ((stotal - tdiscount)/tsales);
+                pdiscount = (tdiscount/stotal);
             }
                 
-            console.log(stotal, "total");
-            $('#stotal_value').html(stotal);
-            $('#tdiscount_value').html(tdiscount);
-            $('#dgross_value').html((stotal - tdiscount));
-            $('#vgross_value').html(((stotal - tdiscount)/1.12).toFixed(2));
-            $('#vat_value').html(((stotal - tdiscount) - ((stotal - tdiscount)/1.12)).toFixed(2));
-            $('#gtotal_value').html((stotal - tdiscount));
-            $('#pdiscount_value').html((tdiscount/stotal));
+            $('#stotal_value').html(Number(stotal).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#tdiscount_value').html(Number(tdiscount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#dgross_value').html(Number((stotal - tdiscount)).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#vgross_value').html(Number(((stotal - tdiscount)/1.12)).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#vat_value').html(Number((((stotal - tdiscount) - ((stotal - tdiscount)/1.12)))).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#gtotal_value').html(Number((stotal - tdiscount)).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#pdiscount_value').html(pdiscount.toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
             $('#nsales_value').html(tsales);
-            $('#acheck_value').html(avg.toFixed(2));
+            $('#acheck_value').html(Number(avg).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
         },
         cache: false
     });
@@ -862,7 +887,19 @@ var product_chart = new Highcharts.Chart( {
     },
     series: [{
         name: 'Sales',
-        data: []
+        data: [],
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
 
     }]
 
@@ -895,10 +932,10 @@ function requestProductData(request) {
         	for(i in data){
         		product_table.dataTable().fnAddData([data[i].name,
         			data[i].quantity,
-        			data[i].total,
-        			data[i].discount,
-        			data[i].adjusted_price,
-        			data[i].average]);
+        			Number(data[i].total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+        			Number(data[i].discount),
+        			Number(data[i].adjusted_price).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+        			Number(data[i].average).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2})]);
         		categories.push(data[i].name);
         		dataSet.push(parseFloat(data[i].adjusted_price));
         		qty_total+= parseFloat(data[i].quantity);
@@ -907,10 +944,17 @@ function requestProductData(request) {
         		adj_total+= parseFloat(data[i].adjusted_price);
         	}
 
+            if(qty_total == '0' || adj_total == '0'){
+                avg = 0;
+            }else{
+                avg = (adj_total/qty_total);
+            }
         	$('#qty_total').html(qty_total);
-        	$('#price_total').html(price_total);
-        	$('#discount_total').html(discount_total);
-        	$('#adj_total').html(adj_total);
+        	$('#price_total').html(Number(price_total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        	$('#discount_total').html(Number(discount_total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        	$('#adj_total').html(Number(adj_total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+            $('#avg_pitem').html(Number(avg).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
 
         	product_chart.xAxis[0].setCategories(categories);
     		product_chart.series[0].setData(dataSet);
@@ -961,7 +1005,19 @@ var statistics_chart = new Highcharts.Chart( {
     },
     series: [{
         name: 'Sales',
-        data: []
+        data: [],
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
 
     }]
 
@@ -1042,10 +1098,10 @@ var employee_chart = new Highcharts.Chart( {
         }
     },
     tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} PHP</b></td></tr>',
-        footerFormat: '</table>',
+        headerFormat: '<span style="font-size:10px">{point.key}</span>',
+        // pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        //     '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+        // footerFormat: '</table>',
         shared: true,
         useHTML: true
     },
@@ -1057,15 +1113,60 @@ var employee_chart = new Highcharts.Chart( {
     },
     series: [{
         name: '#sales',
-        data: []
+        data: [],
+        tooltip: {
+            valueSuffix: '',
+        },
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
 
     },{
         name: 'Amount',
-        data: []
+        data: [],
+        tooltip: {
+            valueSuffix: ' PHP',
+        },
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
 
     },{
         name: 'Avg',
-        data: []
+        data: [],
+        tooltip: {
+            valueSuffix: ' PHP',
+        },
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
 
     }]
 });
@@ -1093,7 +1194,7 @@ function requestEmployeeData(request) {
                         data[i][j].out,
                         data[i][j].total,
                         data[i][j].sales,
-                        data[i][j].amount]);
+                        Number(data[i][j].amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2})]);
 
                     categories.push(data[i][j].employee);
                     series_sales.push(data[i][j].sales);
@@ -1106,7 +1207,7 @@ function requestEmployeeData(request) {
 
             $('#emp_total').html(total_hours);
             $('#emp_sales_total').html(total_sales);
-            $('#emp_amount_total').html(total_amount);
+            $('#emp_amount_total').html(Number(total_amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
 
             employee_chart.xAxis[0].setCategories(categories);
             employee_chart.series[0].setData(series_sales);
@@ -1147,13 +1248,13 @@ var customer_pie_chart = new Highcharts.Chart({
             allowPointSelect: true,
             cursor: 'pointer',
             dataLabels: {
-                enabled: false,
-                // enabled: true,
-                // formatter: function() {
-                //     return Math.round(this.percentage*100)/100 + ' %';
-                // },
-                // distance: -50,
-                // color:'white'
+                // enabled: false,
+                enabled: true,
+                formatter: function() {
+                    return Math.round(this.percentage*100)/100 + ' %';
+                },
+                distance: -30,
+                color:'white'
             },
             showInLegend: true
         }
@@ -1257,14 +1358,14 @@ function requestCustomerData(request) {
                 customer_table.dataTable().fnAddData([data[i].name,
                     data[i].id,
                     data[i].sales,
-                    data[i].amount,
+                    Number(data[i].amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
                     data[i].arrival,
                     data[i].is_new]);
                 total_tnx += parseFloat(data[i].sales);
                 total_amount+= parseFloat(data[i].amount);
             }
             $('#cust_tnx_total').html(total_tnx);
-            $('#cust_tnx_amount_total').html(total_amount);
+            $('#cust_tnx_amount_total').html(Number(total_amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
 
             customer_pie_chart.series[0].setData([["NEW CUST",is_new_count],["EXIST CUST",not_new_count]]);
         },
@@ -1293,13 +1394,13 @@ var mode_chart = new Highcharts.Chart({
             allowPointSelect: true,
             cursor: 'pointer',
             dataLabels: {
-                enabled: false,
-                // enabled: true,
-                // formatter: function() {
-                //     return Math.round(this.percentage*100)/100 + ' %';
-                // },
-                // distance: -50,
-                // color:'white'
+                // enabled: false,
+                enabled: true,
+                formatter: function() {
+                    return Math.round(this.percentage*100)/100 + ' %';
+                },
+                distance: -30,
+                color:'white'
             },
             showInLegend: true,
         }
@@ -1332,18 +1433,18 @@ function requestModeData(request) {
             $('#check_value_count').html(data['check_count']);
             $('#gc_value_count').html(data['gift_card_count']);
             //amount
-            $('#cash_value').html(data['cash']);
-            $('#cc_value').html(data['credit_card']);
-            $('#check_value').html(data['check']);
-            $('#gc_value').html(data['gift_card']);
+            $('#cash_value').html(Number(data['cash']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#cc_value').html(Number(data['credit_card']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#check_value').html(Number(data['check']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#gc_value').html(Number(data['gift_card']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
             //total
             $('#mode_tnx_total').html(data['count_total']);
-            $('#mode_amount_total').html(data['amount_total']);
+            $('#mode_amount_total').html(Number(data['amount_total']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
 
             //Interest
-            $('#zero_value').html(data['credit_card']);
-            $('#interest_value').html(data['cc_interests']);
-            $('#interest_total_value').html((data['credit_card'] - data['cc_interests'] ));
+            $('#zero_value').html(Number(data['credit_card']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#interest_value').html(Number(data['cc_interests']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#interest_total_value').html(Number((data['credit_card'] - data['cc_interests'] )).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
             
             mode_chart.series[0].setData([["Cash",data['cash']],["Credit Card",data['credit_card']],["Check",data['check']],["Gift Card",data['gift_card']]]);
         },
@@ -1367,19 +1468,14 @@ function requestTransactionData(request) {
             $('#quotation_qty_value').html(data['quotation_count']);
             $('#frozen_qty_value').html(data['frozen_count']);
             //amount
-            $('#normal_amount_value').html(data['normal']);
-            $('#upsale_amount_value').html(data['upsale']);
-            $('#deposit_amount_value').html(data['deposit']);
-            $('#quotation_amount_value').html(data['quotation']);
-            $('#frozen_amount_value').html(data['frozen']);
+            $('#normal_amount_value').html(Number(data['normal']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#upsale_amount_value').html(Number(data['upsale']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#deposit_amount_value').html(Number(data['deposit']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#quotation_amount_value').html(Number(data['quotation']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#frozen_amount_value').html(Number(data['frozen']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
             //total
-            $('#deposit_outof_value').html(data['deposit_outof']);
-            $('#deposit_balance_value').html(data['deposit_balance']);
-
-            //interests
-            $('#frozen_amount_value').html(data['frozen']);
-
-
+            $('#deposit_outof_value').html(Number(data['deposit_outof']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#deposit_balance_value').html(Number(data['deposit_balance']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
         },
         cache: false
     });
@@ -1406,17 +1502,32 @@ function requestCommissionData(request) {
         dataType: "json",
         data : request,
         success: function(data) {
+            var total_fine = 0,
+                total_bonus = 0,
+                total_sales = 0,
+                total = 0;
+
             for(i in data){
                 commissions_table.dataTable().fnAddData([data[i].employee_pic,
                     data[i].employee_id,
                     data[i].employee,
                     data[i].percent,
-                    data[i].commission.toFixed(2),
-                    data[i].fine,
-                    data[i].bonus,
-                    data[i].sales.toFixed(2),
-                    data[i].total.toFixed(2)]);
+                    Number(data[i].commission).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].fine).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].bonus).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].sales).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2})]);
+                    
+                total_fine+= parseFloat(data[i].fine);
+                total_bonus+= parseFloat(data[i].bonus);
+                total_sales+= parseFloat(data[i].sales);
+                total+= parseFloat(data[i].total);
             }
+
+            $('#commissions_fine_total').html(Number(total_fine).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#commissions_bonus_total').html(Number(total_bonus).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#commissions_sales_total').html(Number(total_sales).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#commissions_total').html(Number(total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
         },
         cache: false
     });

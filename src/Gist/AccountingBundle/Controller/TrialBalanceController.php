@@ -114,6 +114,9 @@ class TrialBalanceController extends BaseController
         $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
         $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
         
+        $params['from'] = $this->date_from->format('m-d-Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['to'] = $this->date_to->format('m-d-Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+
         return $params;
 
     }
@@ -151,7 +154,144 @@ class TrialBalanceController extends BaseController
         return $fg;
     }
 
+    public function generateCSVAction()
+    {
+        $data = $this->getRequest()->request->all();
+        $filename = 'trial_balance.csv';
+        $tb = $this->getTrialBalanceData($data['date_from'], $data['date_to']);
+
+        // redirect file to stdout, store in output buffer and place in $csv
+        $file = fopen('php://output', 'w');
+        ob_start();
+
+        fputcsv($file, $this->trialBalanceHeader($data['date_from'], $data['date_to']));
+
+        foreach ($tb as $t)
+            fputcsv($file, $t);
+        fclose($file);
+        $csv = ob_get_contents();
+        ob_end_clean();
 
 
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename=' . $filename);
+        $response->setContent($csv);
 
+        return $response;
+    }
+
+    public function trialBalanceHeader($from, $to)
+    {
+        $month_year = $this->getMonthYearArray($from, $to);
+        // csv headers
+        $headers = [
+            'Account Name',
+            'Account Code',
+        ];
+
+        foreach ($month_year as $m) {
+            $headers[] = 'Debit';
+            $headers[] = 'Credit';
+        }
+
+        return $headers;
+    }
+
+    public function getTrialBalanceData($from, $to)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $month_year = $this->getMonthYearArray($from, $to);
+        $dateFrom = new DateTime($from);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($to);
+        $dateTo->setTime(23,59);
+        $from = $dateFrom;
+        $to = $dateTo;
+
+        //get COA balance per month
+        $qb = $em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistAccountingBundle:TrialBalance', 'o')
+            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->setParameter('date_from', $from)
+            ->setParameter('date_to', $to);
+
+        $coa = $qb->getQuery()->getResult();
+
+        $coa_array = [];
+        foreach ($coa as $c) {
+            if(isset($coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')])) {
+                $coa_arr = $coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')];
+                $coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')] = [
+                    'coa_id' => $c->getAccount()->getID(),
+                    'coa_date' => $c->getDateCreate()->format('mdy'),
+                    'total_debit' => $coa_arr['total_debit'] += $c->getDebit(),
+                    'total_credit' => $coa_arr['total_credit'] += $c->getCredit(),
+                ]; 
+            }else{
+                $coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')] = [
+                    'coa_id' => $c->getAccount()->getID(),
+                    'coa_date' => $c->getDateCreate()->format('mdy'),
+                    'total_debit' => $c->getDebit(),
+                    'total_credit' => $c->getCredit(),
+                ];
+            }
+        }
+
+        $coa_all = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findAll();
+        
+        $coa_list = [];
+        foreach ($coa_all as $c) {
+            $coa_push_list = [];
+            $coa_push_list['name'] = $c->getName();
+            $coa_push_list['code'] = $c->getCode();
+
+            foreach($month_year as $key => $m) {
+                if(isset($coa_array[$c->getID()][$m])) {
+                    $coa_push_list['debit_'.$m.''] = $coa_array[$c->getID()][$m]['total_debit'];
+                    $coa_push_list['credit_'.$m.''] = $coa_array[$c->getID()][$m]['total_credit'];
+                }else{
+                    $coa_push_list['debit_'.$m.''] = 0;
+                    $coa_push_list['credit_'.$m.''] = 0;
+                }
+            }
+            $coa_list[$c->getID()] = $coa_push_list;
+        }        
+        
+        return $coa_list;
+
+    }
+
+    protected function getMonthYearArray($from, $to)
+    {
+        $dateFrom = new DateTime($from);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($to);
+        $dateTo->setTime(23,59);
+        $from = $dateFrom;
+        $to = $dateTo;
+
+        $start = $dateFrom->format('my');
+        $end = $dateTo->format('my');
+
+        $array = [];
+        //1 month before the start month
+        $before_start = $from->modify('-1 month');
+        $before_start = $before_start->format('my');
+        $array[$before_start] = $before_start;
+
+        //loop within the daterange
+        do {
+            $array[$from->format('my')] = $from->format('my');     
+            $from->modify('+1 month');
+            $start = $from->format('my');
+        } while ($start != $end);
+        
+        //push the end
+        $array[$end] = $end;
+ 
+        return $array;
+    }
 }
