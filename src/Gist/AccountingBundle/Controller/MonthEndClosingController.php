@@ -266,7 +266,7 @@ class MonthEndClosingController extends BaseController
         if($last_end == null) {
             // add debit + credit to compute the ending
             foreach ($coa_final as $c) {
-                $ending = $c['debit'] + $c['credit'];
+                $ending = $c['debit'] - $c['credit'];
                 $chart_of_account =  $am->findChartOfAccount($c['id']);
                 $ending_balance = new EndingBalance();
                 $ending_balance->setAccount($chart_of_account)
@@ -296,7 +296,7 @@ class MonthEndClosingController extends BaseController
                     $e = $last_ending->getEnding();
                 }
 
-                $ending = $e + $c['debit'] + $c['credit'];
+                $ending = $e + $c['debit'] - $c['credit'];
                 $chart_of_account =  $am->findChartOfAccount($c['id']);
                 $ending_balance = new EndingBalance();
                 $ending_balance->setAccount($chart_of_account)
