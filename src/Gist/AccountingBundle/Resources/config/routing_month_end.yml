@@ -1,0 +1,10 @@
+
+gist_month_end_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:MonthEndClosing:index }
+
+gist_month_end_save:
+    pattern: /list
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:MonthEndClosing:save }

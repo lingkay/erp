@@ -122,3 +122,10 @@ acl:
           label: "Menu"
         - id: gist_accounting_tb.view
           label: "View"
+
+    - category: Month End Closing
+      entries:
+        - id: gist_month_end.menu
+          label: "Menu"
+        - id: gist_month_end.view
+          label: "View"

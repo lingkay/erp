@@ -16,9 +16,12 @@
 
                 <div class="portlet box blue-hoki">
                     <div class="portlet-body">
-                    {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 2,4,'m/d/Y','m/d/Y') }}
-                        <br/><br/><a id="btn_filter" href="javascript:void(0)" class="btn green">Filter</a>
-                   
+                    <form method="post" class="form-horizontal">
+                        {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 2,4,'m/d/Y','m/d/Y') }}
+                        {# <br/><br/><a id="btn_filter" href="javascript:void(0)" class="btn green">Filter</a> #}
+                        {# <a href="{{ path('gist_accounting_tb_csv', { 'from' : from, 'to' : to }) }}" target="_blank" id="generate_tb" class="btn blue btn-circle">Generate</a> #}
+                        <button type="submit" class="btn blue">Generate</button>
+                    </form>        
                     </div>
                 </div>
                

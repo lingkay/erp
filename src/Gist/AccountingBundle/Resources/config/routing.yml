@@ -166,3 +166,6 @@ gist_accounting_gj:
 gist_accounting_tb:
     resource: "@GistAccountingBundle/Resources/config/routing_tb.yml"
     prefix:   /trial
+gist_month_end:
+    resource: "@GistAccountingBundle/Resources/config/routing_month_end.yml"
+    prefix:   /month_end
