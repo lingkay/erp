@@ -387,29 +387,48 @@ class TrialBalanceController extends BaseController
         $from = $dateFrom;
         $to = $dateTo;
 
+       
         //get COA balance per month
         $qb = $em->createQueryBuilder();
         $qb->select('o')
             ->from('GistAccountingBundle:TrialBalance', 'o')
-            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id')
-            ->where('o.date_create between :date_from and :date_to ')
-            ->setParameter('date_from', $from)
-            ->setParameter('date_to', $to);
+            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id');
+            
+
+        foreach ($month_year as $key => $m) {
+            $m1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $y1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $m2 = $m1->format('m');
+            $y2 = $y1->format('Y');
+
+            if($key == 0) {
+                $qb->where('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }else{
+                $qb->orWhere('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }
+        }
 
         $coa = $qb->getQuery()->getResult();
 
         $coa_array = [];
         foreach ($coa as $c) {
-            if(isset($coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')])) {
-                $coa_arr = $coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')];
-                $coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')] = [
+            $year_format = new DateTime($c->getYear().'-'.$c->getMonth().'-01');
+            $year_format = $year_format->format('my');
+
+            if(isset($coa_array[$c->getAccount()->getID()][$year_format])) {
+                $coa_arr = $coa_array[$c->getAccount()->getID()][$year_format];
+                $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
                     'total_debit' => $coa_arr['total_debit'] += $c->getDebit(),
                     'total_credit' => $coa_arr['total_credit'] += $c->getCredit(),
                 ]; 
             }else{
-                $coa_array[$c->getAccount()->getID()][$c->getDateCreate()->format('my')] = [
+                $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
                     'total_debit' => $c->getDebit(),

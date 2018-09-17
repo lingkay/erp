@@ -350,8 +350,14 @@ class XZManager
             $out = '';
             $total = '';
             if(isset($attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')])) {
-                $in = $attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')]['time_in'];
-                $out = $attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')]['time_out'];
+                $dteStart = new DateTime($attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')]['time_in']); 
+                $dteEnd   = new DateTime($attendance[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')]['time_out']); 
+                $dteDiff  = $dteEnd->diff($dteStart);
+                $in = $dteStart->format('H:i');
+                $out = $dteEnd->format('H:i');
+                $hours = $dteDiff->format("%h");
+                $minutes = $dteDiff->format("%I");
+                $total = $hours.'.'.($minutes/60);
             }
             if(isset($array[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')])) {
                 $arr = $array[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')];
@@ -361,7 +367,7 @@ class XZManager
                     'employee_pic' => $res->getUserCreate()->getProfilePicture() != null ? $res->getUserCreate()->getProfilePicture()->getURL() : '',
                     'in' => $in,
                     'out' => $out,
-                    'total' => '',
+                    'total' => $total,
                     'sales' => ($arr['sales'] + 1),
                     'amount' => $arr['amount'] + $res->getCartOrigTotal(),
                 ];
@@ -372,7 +378,7 @@ class XZManager
                     'employee_pic' => $res->getUserCreate()->getProfilePicture() != null ? $res->getUserCreate()->getProfilePicture()->getURL() : '',
                     'in' => $in,
                     'out' => $out,
-                    'total' => '',
+                    'total' => $total,
                     'sales' => 1,
                     'amount' => $res->getCartOrigTotal() != null ?  $res->getCartOrigTotal() : 0,
                 ];
@@ -440,6 +446,7 @@ class XZManager
         //Credit Card Interest
         $cc_interests = 0;
         foreach ($result as $key => $res) {
+            var_dump($res->getID());
             if ($res->hasPayments()) {
                 foreach ($res->getPayments() as $k => $pay) {
                     $interest = 0;
@@ -470,7 +477,7 @@ class XZManager
                 }
             }
         }
-        
+        die();
         $count_total = $cash_count + $credit_card_count + $check_count + $gift_card_count;
         $amount_total = $cash + $credit_card + $check + $gift_card;
         $array = [
@@ -608,9 +615,8 @@ class XZManager
             $commission = 0;
             $bonus = 0;
             $fine  = 0;
-            if($conf->get('commission_percentage') != null ){
-                $percentage = $conf->get('commission_percentage');
-                $commission = ($res->getTransaction()->getCartOrigTotal() * ($conf->get('commission_percentage')/100)) * .88;
+            if($res->getCommission() != null ){
+                $commission = $res->getCommission();
             }
 
             if (isset($bnf[$res->getConsultant()->getID()])) {
@@ -621,20 +627,25 @@ class XZManager
             if(isset($array[$res->getConsultant()->getID()])) {
                 $arr = $array[$res->getConsultant()->getID()];
                 $total = $arr['total'] += $commission;
+                $sales_total = $arr['sales'] += $res->getTransaction()->getCartOrigTotal();
+                $com_total = $arr['commission'] += $commission;
+                $percentage =  (($com_total/$sales_total)*100);
 
                 $array[$res->getConsultant()->getID()] = [
                     'employee' => $res->getConsultant()->getName(),
                     'employee_id' => $res->getConsultant()->getUsername(),
                     'employee_pic' => $res->getConsultant()->getProfilePicture() != null ? $res->getConsultant()->getProfilePicture()->getURL() : '',
                     'percent' => $percentage,
-                    'commission' => $arr['commission'] +=$commission,
+                    'commission' => $com_total,
                     'fine' => $fine,
                     'bonus' => $bonus,
-                    'sales' => $arr['sales'] += $res->getTransaction()->getCartOrigTotal(),
+                    'sales' => $sales_total,
                     'total' => $total + ($bonus - $fine),
                 ];
             }else{
                 $total = $commission;
+                $percentage =  (($commission/$res->getTransaction()->getCartOrigTotal())*100);
+
                 $array[$res->getConsultant()->getID()] = [
                     'employee' => $res->getConsultant()->getName(),
                     'employee_id' => $res->getConsultant()->getUsername(),
