@@ -929,7 +929,8 @@ function requestProductData(request) {
         	var dataSet = [];
         	var qty_total = 0, price_total = 0,
         		discount_total = 0, adj_total = 0;
-        	for(i in data){
+            product_table.fnClearTable();
+            for(i in data){
         		product_table.dataTable().fnAddData([data[i].name,
         			data[i].quantity,
         			Number(data[i].total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
@@ -1185,6 +1186,7 @@ function requestEmployeeData(request) {
             var series_sales = [];
             var series_amount = [];
             var series_avg = [];
+            employee_table.fnClearTable();
             for(i in data){
                 for(j in data[i]){
                     employee_table.dataTable().fnAddData([data[i][j].employee_pic,
@@ -1202,9 +1204,11 @@ function requestEmployeeData(request) {
                     series_avg.push(parseFloat(data[i][j].amount/data[i][j].sales));
                     total_sales+= parseFloat(data[i][j].sales);
                     total_amount+= parseFloat(data[i][j].amount);
+                    if (data[i][j].total != '') {
+                        total_hours+= parseFloat(data[i][j].total);
+                    }
                 }
             }
-
             $('#emp_total').html(total_hours);
             $('#emp_sales_total').html(total_sales);
             $('#emp_amount_total').html(Number(total_amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
@@ -1348,6 +1352,7 @@ function requestCustomerData(request) {
                 total_amount = 0,
                 is_new_count = 0,
                 not_new_count = 0;
+            customer_table.fnClearTable();
             for(i in data){
                 if(data[i].is_new == 'X'){
                     not_new_count += 1;
@@ -1507,11 +1512,12 @@ function requestCommissionData(request) {
                 total_sales = 0,
                 total = 0;
 
+            commissions_table.fnClearTable();
             for(i in data){
                 commissions_table.dataTable().fnAddData([data[i].employee_pic,
                     data[i].employee_id,
                     data[i].employee,
-                    data[i].percent,
+                    Number(data[i].percent).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
                     Number(data[i].commission).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
                     Number(data[i].fine).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
                     Number(data[i].bonus).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
