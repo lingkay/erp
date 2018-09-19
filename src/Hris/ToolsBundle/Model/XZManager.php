@@ -446,7 +446,6 @@ class XZManager
         //Credit Card Interest
         $cc_interests = 0;
         foreach ($result as $key => $res) {
-            var_dump($res->getID());
             if ($res->hasPayments()) {
                 foreach ($res->getPayments() as $k => $pay) {
                     $interest = 0;
@@ -477,7 +476,7 @@ class XZManager
                 }
             }
         }
-        die();
+
         $count_total = $cash_count + $credit_card_count + $check_count + $gift_card_count;
         $amount_total = $cash + $credit_card + $check + $gift_card;
         $array = [
