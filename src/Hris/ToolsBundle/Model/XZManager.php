@@ -53,8 +53,8 @@ class XZManager
     {
     	$qb = $this->em->createQueryBuilder();
     	$qb->select(["o.date_create as date_create",
-            "o.transaction_total as transaction_total",
-            "SUM(o.cart_orig_total) as sub_total",
+            "SUM(o.transaction_total) as transaction_total",
+            "SUM(o.transaction_total) as sub_total",
     		"SUM(o.total_discount) as total_discount",])
             ->from('GistPOSERPBundle:POSTransaction', 'o')
             ->where('o.date_create between :date_from and :date_to ')
@@ -67,6 +67,7 @@ class XZManager
             ->setParameter('branch', $data['branch']);
 
         $result = $qb->getQuery()->getResult();
+
         return $result;
     }
 
@@ -82,7 +83,7 @@ class XZManager
 
         $qb = $this->em->createQueryBuilder();
         $qb->select(["COUNT(o.id) as total_sales",
-                    "SUM(o.cart_orig_total) as sub_total",
+                    "SUM(o.transaction_total) as sub_total",
                     "SUM(o.total_discount) as total_discount",])
             ->from('GistPOSERPBundle:POSTransaction', 'o')
             ->where('o.date_create between :date_from and :date_to ')
@@ -121,8 +122,7 @@ class XZManager
         $interval = DateAggregate::TYPE_DAILY;
 
         $chart = $this->getChartVariables();
-
-
+     
         $dateFrom = $data['date_from'];
         $dateTo = $data['date_to'];
         $oChart = new Chart();
@@ -369,7 +369,7 @@ class XZManager
                     'out' => $out,
                     'total' => $total,
                     'sales' => ($arr['sales'] + 1),
-                    'amount' => $arr['amount'] + $res->getCartOrigTotal(),
+                    'amount' => $arr['amount'] + $res->getTransactionTotal(),
                 ];
             }else{
                 $array[$res->getUserCreate()->getID()][$res->getDateCreate()->format('mdy')] = [
@@ -380,7 +380,7 @@ class XZManager
                     'out' => $out,
                     'total' => $total,
                     'sales' => 1,
-                    'amount' => $res->getCartOrigTotal() != null ?  $res->getCartOrigTotal() : 0,
+                    'amount' => $res->getTransactionTotal() != null ?  $res->getTransactionTotal() : 0,
                 ];
             }
         }
@@ -407,7 +407,7 @@ class XZManager
                         'name' => $res->getCustomer()->getNameFormatted(),
                         'id' => $res->getCustomer()->getID(),
                         'sales' => ($arr['sales'] + 1),
-                        'amount' => $arr['amount'] + $res->getCartOrigTotal(),
+                        'amount' => $arr['amount'] + $res->getTransactionTotal(),
                         'arrival' => '',
                         'is_new' => $is_new,
                     ];
@@ -416,7 +416,7 @@ class XZManager
                         'name' => $res->getCustomer()->getNameFormatted(),
                         'id' => $res->getCustomer()->getID(),
                         'sales' => 1,
-                        'amount' => $res->getCartOrigTotal() != null ?  $res->getCartOrigTotal() : 0,
+                        'amount' => $res->getTransactionTotal() != null ?  $res->getTransactionTotal() : 0,
                         'arrival' => '',
                         'is_new' => $is_new,
                     ];
@@ -521,25 +521,25 @@ class XZManager
         foreach ($result as $key => $res) {
             switch ($res->getTransactionMode()) {
                 case 'normal':
-                    $normal += $res->getCartOrigTotal();
+                    $normal += $res->getTransactionTotal();
                     $normal_count++;               
                     break;
                 case 'upsale':
-                    $upsale += $res->getCartOrigTotal();
+                    $upsale += $res->getTransactionTotal();
                     $upsale_count++;
                     break;
                 case 'deposit':
-                    $deposit += $res->getCartOrigTotal();
+                    $deposit += $res->getTransactionTotal();
                     $deposit_count++;
                     $deposit_outof += $res->getDepositAmount();
                     $deposit_balance += $res->getBalance();
                     break;
                 case 'quotation':
-                    $quotation += $res->getCartOrigTotal();
+                    $quotation += $res->getTransactionTotal();
                     $quotation_count++;
                     break;
                 case 'frozen':
-                    $frozen += $res->getCartOrigTotal();
+                    $frozen += $res->getTransactionTotal();
                     $frozen_count++;
                     break;
                 default:
@@ -626,7 +626,7 @@ class XZManager
             if(isset($array[$res->getConsultant()->getID()])) {
                 $arr = $array[$res->getConsultant()->getID()];
                 $total = $arr['total'] += $commission;
-                $sales_total = $arr['sales'] += $res->getTransaction()->getCartOrigTotal();
+                $sales_total = $arr['sales'] += $res->getTransaction()->getTransactionTotal();
                 $com_total = $arr['commission'] += $commission;
                 $percentage =  (($com_total/$sales_total)*100);
 
@@ -643,7 +643,7 @@ class XZManager
                 ];
             }else{
                 $total = $commission;
-                $percentage =  (($commission/$res->getTransaction()->getCartOrigTotal())*100);
+                $percentage =  (($commission/$res->getTransaction()->getTransactionTotal())*100);
 
                 $array[$res->getConsultant()->getID()] = [
                     'employee' => $res->getConsultant()->getName(),
@@ -653,7 +653,7 @@ class XZManager
                     'commission' => $commission,
                     'fine' => $fine,
                     'bonus' => $bonus,
-                    'sales' => $res->getTransaction()->getCartOrigTotal(),
+                    'sales' => $res->getTransaction()->getTransactionTotal(),
                     'total' => $total + ($bonus - $fine),
                 ];
             }

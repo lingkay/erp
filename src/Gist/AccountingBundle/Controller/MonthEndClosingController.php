@@ -41,6 +41,34 @@ class MonthEndClosingController extends BaseController
 
         $params['list_title'] = $this->list_title;
         // $params['grid_cols'] = $gl->getColumns();
+
+        // notice of the last month end closing
+        $notice = 'No closed month end yet. Kindly add a new month end closing.';
+        $em = $this->getDoctrine()->getManager();
+
+        $month_end_last = $em->getRepository('GistAccountingBundle:MonthEndClosing')->findAll();
+
+        if (count($month_end_last) == 0) {
+            $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
+                               ->createQueryBuilder('o')
+                               ->orderBy('o.id','DESC')
+                               ->getQuery()->getOneOrNullResult();
+        }else{
+            $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
+                           ->createQueryBuilder('o')
+                           ->orderBy('o.id','DESC')
+                           ->setMaxResults(1)
+                           ->getQuery()->getSingleResult();
+        }
+
+
+        if($last_end != null){
+            $date = new Datetime($last_end->getYear().'-'.$last_end->getMonth().'-01 00:00:00');
+            $notice = 'The last month end that has been closed was last '.$date->format('F Y');
+        }
+
+        $params['notice'] = $notice;
+
         $this->padListParams($params);
         return $this->render($twig_file, $params);
     }
@@ -90,13 +118,21 @@ class MonthEndClosingController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $am = $this->get('gist_accounting');
             $data = $this->getRequest()->request->all();
-          
-            // check the last month end
-            $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
-                           ->createQueryBuilder('o')
-                           ->orderBy('o.id','DESC')
-                           ->getQuery()->getOneOrNullResult();
+            
+            $month_end_last = $em->getRepository('GistAccountingBundle:MonthEndClosing')->findAll();
 
+            if (count($month_end_last) == 0) {
+                $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
+                                   ->createQueryBuilder('o')
+                                   ->orderBy('o.id','DESC')
+                                   ->getQuery()->getOneOrNullResult();
+            }else{
+                $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
+                               ->createQueryBuilder('o')
+                               ->orderBy('o.id','DESC')
+                               ->setMaxResults(1)
+                               ->getQuery()->getSingleResult();
+            }
 
             if ($last_end == null) {
                 // if null can add the new month end closing
@@ -218,6 +254,24 @@ class MonthEndClosingController extends BaseController
         $last_day = $last_day->format('d');
         $to   = new Datetime($data['year'].'-'.$data['month'].'-'.$last_day.' 23:59:59');
 
+
+        $month_year = $this->getMonthYearArray($from->format('m/d/Y'), $to->format('m/d/Y'));
+
+        //get COA balance per month old
+        // $qb = $em->createQueryBuilder();
+        // $qb->select(['c.id as coa_id',
+        //              'sum(o.debit) as total_debit',
+        //              'sum(o.credit) as total_credit',
+        //             ])
+        //     ->from('GistAccountingBundle:TrialBalance', 'o')
+        //     ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id')
+        //     ->where('o.date_create between :date_from and :date_to ')
+        //     ->setParameter('date_from', $from)
+        //     ->setParameter('date_to', $to)
+        //     ->groupBy('c.id');
+
+        // $coa = $qb->getQuery()->getResult();
+
         //get COA balance per month
         $qb = $em->createQueryBuilder();
         $qb->select(['c.id as coa_id',
@@ -225,11 +279,26 @@ class MonthEndClosingController extends BaseController
                      'sum(o.credit) as total_credit',
                     ])
             ->from('GistAccountingBundle:TrialBalance', 'o')
-            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id')
-            ->where('o.date_create between :date_from and :date_to ')
-            ->setParameter('date_from', $from)
-            ->setParameter('date_to', $to)
-            ->groupBy('c.id');
+            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id');
+            
+
+        foreach ($month_year as $key => $m) {
+            $m1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $y1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $m2 = $m1->format('m');
+            $y2 = $y1->format('Y');
+
+            if($key == 0) {
+                $qb->where('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }else{
+                $qb->orWhere('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }
+        }
+        $qb->groupBy('c.id');
 
         $coa = $qb->getQuery()->getResult();
 
@@ -256,13 +325,22 @@ class MonthEndClosingController extends BaseController
             $coa_final[$c->getID()]['credit'] = $credit;
         }        
 
-        // get the last month end Ending Balance and make it the beginning of the new month end
-        // check the last month end
-        $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
-                       ->createQueryBuilder('o')
-                       ->orderBy('o.id','DESC')
-                       ->getQuery()->getOneOrNullResult();
+        $month_end_last = $em->getRepository('GistAccountingBundle:MonthEndClosing')->findAll();
 
+        if (count($month_end_last) == 0) {
+            $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
+                               ->createQueryBuilder('o')
+                               ->orderBy('o.id','DESC')
+                               ->getQuery()->getOneOrNullResult();
+        }else{
+            $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
+                           ->createQueryBuilder('o')
+                           ->orderBy('o.id','DESC')
+                           ->setMaxResults(1)
+                           ->getQuery()->getSingleResult();
+        }
+
+        
         if($last_end == null) {
             // add debit + credit to compute the ending
             foreach ($coa_final as $c) {
@@ -312,5 +390,34 @@ class MonthEndClosingController extends BaseController
             }
         }
 
+    }
+
+    protected function getMonthYearArray($from, $to)
+    {
+        $dateFrom = new DateTime($from);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($to);
+        $dateTo->setTime(23,59);
+        $from = $dateFrom;
+        $to = $dateTo;
+
+        $start = $dateFrom->format('my');
+        $end = $dateTo->format('my');
+
+        $array = [];
+    
+        //loop within the daterange
+        if ($start != $end) {
+            do {
+                $array[] = $from->format('my');     
+                $from->modify('+1 month');
+                $start = $from->format('my');
+            } while ($start != $end);
+        }
+        
+        //push the end
+        $array[] = $end;
+ 
+        return $array;
     }
 }
