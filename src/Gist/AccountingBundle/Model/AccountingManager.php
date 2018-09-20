@@ -8,6 +8,7 @@ use Gist\UserBundle\Entity\ItemsList;
 use Doctrine\ORM\EntityManager;
 use Gist\AccountingBundle\Entity\JournalEntryAbstract;
 use Gist\AccountingBundle\Entity\TrialBalance;
+use Gist\AccountingBundle\Entity\CRJJournalEntry;
 
 class AccountingManager
 {
