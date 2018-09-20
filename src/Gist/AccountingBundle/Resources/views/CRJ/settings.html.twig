@@ -12,7 +12,25 @@
                     <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal">
                         <div class="form-body">
-                           
+                            <table class=" table table-striped table-bordered table-hover">
+                                <thead>
+                                    <th>Account</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Sales</td>
+                                        <td></td>
+                                        <td>{{ form.select('sales_debit', account_opts) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Receivable</td>
+                                        <td>{{ form.select('receivable_credit', account_opts) }}</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             {# {{ form.group_select('Account Name', 'name', account_opts,object.getName|default(""), 3, 4, readonly) }} #}
                  	        {# {{ form.group_text('Code', 'code', object.getCode|default(""), 3, 4, readonly) }} #}
                             {# {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }} #}
@@ -35,81 +53,7 @@
     <script>
         $(document).ready(function() {
 
-        	function switchEmployee()
-        	{
-
-		        var path;
-		        var employee = $('#cform-employee').val();
-		        path = "{{path('cat_user_user_ajax_get', {'id': 'EMPLOYEE'})}}";
-		        path = path.replace('EMPLOYEE', employee);
-
-		        var $request = $.ajax({
-		            url: path
-		        });
-
-		        $request.then(function (data){
-		            console.log(data);
-		            $('#cform-team').val(data.area.name)
-		        });
-        	}
-
-        	switchEmployee();
-
-        	$('#cform-employee').change(function(){
-    			switchEmployee();
-        	});
         	
-            FormValidation.init(); // init form validation
-
-            // set default error and success elements
-            jQuery.validator.setDefaults({
-                errorClass: 'help-block',
-                errorElement: 'span',
-                errorPlacement: function(error, element) {
-                    if(element.parent().parent().hasClass('form-group'))
-                    {
-                        error.appendTo(element.parent().last());
-                        element.parent().parent().addClass('has-error');
-                    }
-                    else
-                    {
-                        error.appendTo(element.parent().parent().last());
-                        element.parent().parent().parent().addClass('has-error');
-                    }
-                },
-                success: function(element) {
-                    if(element.parent().parent().hasClass('form-group'))
-                    {
-                        element.parent().parent().removeClass('has-error');
-                        element.parent().parent().addClass('has-success');
-                    }
-                    else
-                    {
-                        element.parent().parent().parent().removeClass('has-error');
-                        element.parent().parent().parent().addClass('has-success');
-                    }
-
-                    element.remove();
-                }
-            });
-
-            // validate form elements
-            $(".form-horizontal").validate({
-                onfocusout: function(element) {
-                    this.element(element);
-                },
-                rules: {
-                    name: {
-                        required: true
-                    },
-                    code: {
-                        required: true
-                    }
-                },
-                submitHandler: function(form) {
-                    form.submit();
-                }
-            });
         });
     </script>
 {% endblock %}

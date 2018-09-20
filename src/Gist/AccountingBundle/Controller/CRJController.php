@@ -164,7 +164,7 @@ class CRJController extends CrudController
     {
         $this->checkAccess('gist_accounting_settings.view');
         $this->hookPreAction();
-
+         
         $params = $this->getViewParams('Add');
 
         $twig_file = 'GistAccountingBundle:CRJ:settings.html.twig';
@@ -172,6 +172,28 @@ class CRJController extends CrudController
         $params['list_title'] = $this->list_title;
         $this->padFormParams($params);
         return $this->render($twig_file, $params);
+ 
+    }
+
+    public function settingsSubmitAction()
+    {
+        $this->checkAccess('gist_accounting_settings.view');
+        $this->hookPreAction();
+        $em = $this->getDoctrine()->getManager();
+
+        $conf = $this->get('gist_configuration');
+
+        $data = $this->getRequest()->request->all();
+
+        $crj = ['sales_debit' => $data['sales_debit'],
+                'receivable_credit' => $data['receivable_credit']];
+
+        $conf->set('crj_settings', json_encode($crj));
+        $em->flush();        
+        $this->addFlash('success', 'CRJ Settings edited successfully.');
+
+        return $this->redirect($this->generateUrl('gist_crj_settings_index'));
+
  
     }
 

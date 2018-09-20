@@ -248,4 +248,39 @@ class AccountingManager
 
         return $array;
     }
+
+    public function insertCRJEntry($transaction)
+    {
+        $sale_approved = ['normal', 'upsell'];
+        $conf = $this->get('gist_configuration');
+        $am = $this->get('gist_accounting');
+        $crj_conf = json_decode($conf->get('crj_settings'));
+        $sales_coa = $findChartOfAccount($crj_conf['sales_debit']);
+        $rcv_coa = $findChartOfAccount($crj_conf['receivable_credit']);
+
+        if(in_array($transaction->getTransactionMode(),$sale_approved))
+        {
+            $sales_entry = new CRJJournalEntry();
+            $sales_entry->setAccount($sales_coa)
+                    ->setDebit(0)
+                    ->setCredit((float)$transaction->getTransactionTotal())
+                    ->setNotes($transaction->getTransDisplayId())
+                    ->setUserCreate($transaction->getUserCreate())
+                    ->setRecordDate($transaction->getDateCreate());
+            
+            $em->persist($sales_entry);
+            $em->flush();
+
+            $rcv_entry = new CRJJournalEntry();
+            $rcv_entry->setAccount($rcv_coa)
+                    ->setDebit((float)$transaction->getTransactionTotal())
+                    ->setCredit(0)
+                    ->setNotes($transaction->getTransDisplayId())
+                    ->setUserCreate($transaction->getUserCreate())
+                    ->setRecordDate($transaction->getDateCreate());
+            
+            $em->persist($rcv_entry);
+            $em->flush();
+        }
+    }
 }
