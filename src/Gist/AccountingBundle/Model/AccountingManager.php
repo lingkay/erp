@@ -269,8 +269,8 @@ class AccountingManager
                     ->setUserCreate($transaction->getUserCreate())
                     ->setRecordDate($transaction->getDateCreate());
             
-            $em->persist($sales_entry);
-            $em->flush();
+            $this->em->persist($sales_entry);
+            $this->em->flush();
 
             $rcv_entry = new CRJJournalEntry();
             $rcv_entry->setAccount($rcv_coa)
@@ -280,8 +280,8 @@ class AccountingManager
                     ->setUserCreate($transaction->getUserCreate())
                     ->setRecordDate($transaction->getDateCreate());
             
-            $em->persist($rcv_entry);
-            $em->flush();
+            $this->em->persist($rcv_entry);
+            $this->em->flush();
         }
     }
 }
