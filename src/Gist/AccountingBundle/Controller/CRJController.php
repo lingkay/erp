@@ -18,7 +18,8 @@ use LimitIterator;
 class CRJController extends CrudController
 {
     use TrackCreate;
-
+    protected $date_from;
+    protected $date_to;
     public function __construct()
     {
         $this->route_prefix = 'gist_accounting_crj';
@@ -28,6 +29,26 @@ class CRJController extends CrudController
         $this->repo = "GistAccountingBundle:CRJJournalEntry";
     }
 
+
+    protected function hookPreAction()
+    {
+        $this->getControllerBase();
+        if($this->getRequest()->get('date_from') != null){
+            $this->date_from = new DateTime($this->getRequest()->get('date_from'));
+        }else {
+           $date_from = new DateTime();
+           $date_from->modify('first day of this month');
+           $this->date_from = $date_from;
+        }
+
+        if($this->getRequest()->get('date_to') != null){
+            $this->date_to = new DateTime($this->getRequest()->get('date_to'));
+        }else {
+           $date_to = new DateTime();
+           $date_to->modify('last day of this month');
+           $this->date_to = $date_to;
+        }
+    }
 
     protected function newBaseClass()
     {
@@ -54,17 +75,24 @@ class CRJController extends CrudController
     protected function getGridColumns()
     {
         $grid = $this->get('gist_grid');
-
         return array(
-            $grid->newColumn('Account Name', 'getName', 'name'),
-            $grid->newColumn('Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
+            $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
+            $grid->newColumn('Record Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
             $grid->newColumn('Particulars', 'getNotes', 'notes'),
-     
-            $grid->newColumn('Debit', 'getDebit', 'debit'),
-            $grid->newColumn('Credit', 'getCredit', 'credit'),
+            $grid->newColumn('Debit', 'getDebit', 'debit', 'o', [$this,'formatPrice']),
+            $grid->newColumn('Credit', 'getCredit', 'credit',  'o', [$this,'formatPrice']),
         );
     }
 
+    protected function getGridJoins()
+    {
+        $grid = $this->get('gist_grid');
+        return array(
+            $grid->newJoin('a', 'chart_of_account', 'getAccount'),
+            // $grid->newJoin('t', 'transaction', 'getTransaction'),
+            // $grid->newJoin('g', 'group', 'getGroup'),
+        );
+    }
     // protected function padFormParams(&$params, $user = null)
     // {
 	    
@@ -197,6 +225,27 @@ class CRJController extends CrudController
  
     }
 
+    protected function padListParams(&$params, $obj = null)
+    {
+        $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+        
+        return $params;
+
+    }
+
+    protected function filterGrid()
+    {
+        $this->date_from->setTime(0,0);
+        $this->date_to->setTime(23,59);
+
+        $fg = parent::filterGrid();
+        $fg->where('o.record_date between :date_from and :date_to ')
+            ->setParameter("date_from", $this->date_from)
+            ->setParameter("date_to", $this->date_to);
+     
+        return $fg;
+    }
 
 
 }
