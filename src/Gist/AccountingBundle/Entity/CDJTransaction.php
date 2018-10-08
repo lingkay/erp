@@ -26,6 +26,9 @@ class CDJTransaction
     /** @ORM\OneToMany(targetEntity="CDJJournalEntry", mappedBy="transaction") */
     protected $entries;
 
+    /** @ORM\Column(type="datetime", nullable=true) */
+    protected $record_date;
+
 
     public function __construct()
     {
@@ -38,4 +41,16 @@ class CDJTransaction
     	$str_date = $record_date->format('dmY');
     	$this->code = $str_date."-".str_pad($this->getID(), 8, "0",STR_PAD_LEFT);
     }
+
+    public function setRecordDate(DateTime $record)
+    {
+        $this->record_date = $record;
+        return $this;
+    }
+
+    public function getRecordDate()
+    {
+        return $this->record_date;
+    }
+
 }

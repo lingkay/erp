@@ -121,6 +121,11 @@ menu_items:
       label: CDJ
       parent: gist_accounting_menu
 
+    - id: gist_accounting_voucher_index
+      acl: gist_accounting_voucher.menu
+      label: Payment Voucher
+      parent: gist_accounting_menu
+
     - id: gist_accounting_crj_index
       acl: gist_accounting_crj.menu
       label: CRJ

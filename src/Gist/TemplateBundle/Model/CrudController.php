@@ -573,7 +573,7 @@ abstract class CrudController extends BaseController
 
     public function formatPrice($price)
     {
-        return '<div class="numeric">'.number_format($price, 2).'</div>';
+        return '<div class="numeric"> ₱ '.number_format($price, 2).'</div>';
     }
 
     public function formatDate($date)

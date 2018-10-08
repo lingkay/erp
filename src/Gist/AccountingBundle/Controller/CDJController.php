@@ -52,6 +52,7 @@ class CDJController extends CrudController
         return array(
             $grid->newJoin('a', 'chart_of_account', 'getAccount'),
             $grid->newJoin('t', 'transaction', 'getTransaction'),
+            $grid->newJoin('u', 'user_create', 'getUserCreate'),
             // $grid->newJoin('g', 'group', 'getGroup'),
         );
     }
@@ -61,13 +62,14 @@ class CDJController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
-            $grid->newColumn('Transaction Code', 'getCode', 'code', 't'),
             $grid->newColumn('Record Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
+            $grid->newColumn('Transaction Code', 'getCode', 'code', 't'),
+            $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
             $grid->newColumn('Particulars', 'getNotes', 'notes'),
-     
             $grid->newColumn('Debit', 'getDebit', 'debit', 'o', [$this,'formatPrice']),
             $grid->newColumn('Credit', 'getCredit', 'credit',  'o', [$this,'formatPrice']),
+            $grid->newColumn('Prepared By', 'getDisplayName', 'user_create',  'u'),
+       
         );
     }
 
@@ -160,6 +162,7 @@ class CDJController extends CrudController
         $em->persist($transaction);
         $em->flush();
         $transaction->setCDJCode($record_date);
+        $transaction->setRecordDate($record_date);
         $em->persist($transaction);
 
         foreach ($data['account'] as $key => $account_id) {
