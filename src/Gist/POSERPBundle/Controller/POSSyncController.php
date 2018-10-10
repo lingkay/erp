@@ -64,7 +64,7 @@ class POSSyncController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $inv = $this->get('gist_inventory');
-
+        $acct = $this->get('gist_accounting');
         $ucreate = $em->getRepository('GistUserBundle:User')->findOneBy(array('id'=>$uid));
         $pos_location = $em->getRepository('GistLocationBundle:POSLocations')->findOneBy(array('id'=>$pos_loc_id));
         //$pos_iacc_id = $pos_location->getInventoryAccount()->getDamagedContainer()->getID();
@@ -136,11 +136,11 @@ class POSSyncController extends CrudController
 
         $em->persist($transaction);
         $em->flush();
-
+        
         $transaction->setUserCreate($ucreate);
         $em->persist($transaction);
         $em->flush();
-
+        $acct->insertCRJEntry($transaction);
         $list_opts[] = array('status'=>$transaction->getStatus(),'new_id'=>$transaction->getID());
         return new JsonResponse($list_opts);
     }

@@ -154,6 +154,10 @@ gist_accounting_accounts:
     resource: "@GistAccountingBundle/Resources/config/routing_coa.yml"
     prefix:   /coa
 
+gist_accounting_voucher:
+    resource: "@GistAccountingBundle/Resources/config/routing_voucher.yml"
+    prefix:   /voucher
+
 gist_accounting_cdj:
     resource: "@GistAccountingBundle/Resources/config/routing_cdj.yml"
     prefix:   /cdj

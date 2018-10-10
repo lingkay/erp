@@ -8,6 +8,7 @@ use Gist\UserBundle\Entity\ItemsList;
 use Doctrine\ORM\EntityManager;
 use Gist\AccountingBundle\Entity\JournalEntryAbstract;
 use Gist\AccountingBundle\Entity\TrialBalance;
+use Gist\AccountingBundle\Entity\CRJJournalEntry;
 
 class AccountingManager
 {
@@ -247,5 +248,40 @@ class AccountingManager
         }
 
         return $array;
+    }
+
+    public function insertCRJEntry($transaction)
+    {
+        $sale_approved = ['normal', 'upsell'];
+        $conf = $this->get('gist_configuration');
+        $am = $this->get('gist_accounting');
+        $crj_conf = json_decode($conf->get('crj_settings'));
+        $sales_coa = $findChartOfAccount($crj_conf['sales_debit']);
+        $rcv_coa = $findChartOfAccount($crj_conf['receivable_credit']);
+
+        if(in_array($transaction->getTransactionMode(),$sale_approved))
+        {
+            $sales_entry = new CRJJournalEntry();
+            $sales_entry->setAccount($sales_coa)
+                    ->setDebit(0)
+                    ->setCredit((float)$transaction->getTransactionTotal())
+                    ->setNotes($transaction->getTransDisplayId())
+                    ->setUserCreate($transaction->getUserCreate())
+                    ->setRecordDate($transaction->getDateCreate());
+            
+            $this->em->persist($sales_entry);
+            $this->em->flush();
+
+            $rcv_entry = new CRJJournalEntry();
+            $rcv_entry->setAccount($rcv_coa)
+                    ->setDebit((float)$transaction->getTransactionTotal())
+                    ->setCredit(0)
+                    ->setNotes($transaction->getTransDisplayId())
+                    ->setUserCreate($transaction->getUserCreate())
+                    ->setRecordDate($transaction->getDateCreate());
+            
+            $this->em->persist($rcv_entry);
+            $this->em->flush();
+        }
     }
 }

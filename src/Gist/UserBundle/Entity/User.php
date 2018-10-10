@@ -648,6 +648,15 @@ class User extends BaseUser
         return $this->employee;
     }
 
+    public function getEmployeeName()
+    {
+
+        if($this->employee != null)
+            return $this->employee->getDisplayName();
+        else 
+            return "";
+    }
+
     public function setGroup($group)
     {
         $this->group = $group;

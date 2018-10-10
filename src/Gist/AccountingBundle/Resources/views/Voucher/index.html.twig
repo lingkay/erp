@@ -11,7 +11,7 @@
             </div>
             <div class="portlet-body">
                 <div class="table-toolbar">
-     
+      
                 </div>
 
                 <div class="portlet box blue-hoki">
@@ -49,7 +49,7 @@ $(document).ready(function() {
     $('#btn_filter').click(function(){
             var from = $('#cform-date_from').val();
             var to = $('#cform-date_to').val();
-             window.location.replace("{{ path('gist_accounting_crj_index') }}?date_from="+from+"&date_to="+to);
+             window.location.replace("{{ path('gist_accounting_voucher_index') }}?date_from="+from+"&date_to="+to);
 
         });
 

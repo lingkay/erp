@@ -50,6 +50,8 @@ class GeneralJournalController extends CrudController
         $grid = $this->get('gist_grid');
         return array(
             $grid->newJoin('a', 'chart_of_account', 'getAccount'),
+            $grid->newJoin('u', 'user_create', 'getUserCreate'),
+  
             // $grid->newJoin('g', 'group', 'getGroup'),
         );
     }
@@ -59,12 +61,13 @@ class GeneralJournalController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
             $grid->newColumn('Record Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
+            $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
             $grid->newColumn('Particulars', 'getNotes', 'notes'),
      
             $grid->newColumn('Debit', 'getDebit', 'debit', 'o', [$this,'formatPrice']),
             $grid->newColumn('Credit', 'getCredit', 'credit',  'o', [$this,'formatPrice']),
+            $grid->newColumn('Prepared By', 'getDisplayName', 'user_create',  'u'),
         );
     }
 

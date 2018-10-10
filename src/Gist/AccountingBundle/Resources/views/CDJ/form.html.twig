@@ -22,7 +22,7 @@
                                     <th width="20%">Account</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
-                                    <th>Notes</th>
+                                    <th>Particulars</th>
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -116,12 +116,29 @@
          updateTotal();
     }
 
+    function checkField(el)
+    {
+        if(el.hasClass('debit'))
+            if(parseFloat(el.val()) != 0.0 && el.val() != ""){
+                el.parents('tr').find('input.credit').prop('readonly', true);
+            }else {
+                el.parents('tr').find('input.credit').prop('readonly', false);
+            }
+            
+        if(el.hasClass('credit'))
+            if(parseFloat(el.val()) != 0.0 && el.val() != ""){
+                el.parents('tr').find('input.debit').prop('readonly', true);
+            }else {
+                el.parents('tr').find('input.debit').prop('readonly', false);
+            }
+    }
     $(document).ready(function() {
     	$('#btn_add_entry').click(function(){
             addEntry();
         })
 
         $('#table_entries').on("change, blur", ".debit, .credit", function(){
+            checkField($(this));
             updateTotal();
         });
 

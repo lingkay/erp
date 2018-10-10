@@ -97,6 +97,16 @@ acl:
         - id: gist_accounting_cdj.add
           label: "Add"
 
+
+    - category: Payment Voucher
+      entries:
+        - id: gist_accounting_voucher.menu
+          label: "Menu"
+        - id: gist_accounting_voucher.view
+          label: "View"
+        - id: gist_accounting_voucher.add
+          label: "Print"
+
     - category: CRJ
       entries:
         - id: gist_accounting_crj.menu

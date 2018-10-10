@@ -9,7 +9,7 @@ gist_accounting_tb_generate:
     methods: [POST]
     defaults: { _controller: GistAccountingBundle:TrialBalance:generateCSV }
 
-gist_accounting_crj_grid:
+gist_accounting_tb_grid:
     pattern: /grid
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:TrialBalance:grid }
