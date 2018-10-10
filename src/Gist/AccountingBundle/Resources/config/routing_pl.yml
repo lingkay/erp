@@ -1,0 +1,9 @@
+gist_accounting_pl_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:ProfitAndLoss:index }
+
+gist_accounting_pl_generate:
+    pattern: /list
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:ProfitAndLoss:generateCSV }

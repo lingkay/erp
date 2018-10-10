@@ -1,0 +1,9 @@
+gist_accounting_bs_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BalanceSheet:index }
+
+gist_accounting_bs_generate:
+    pattern: /list
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:BalanceSheet:generateCSV }

@@ -140,4 +140,13 @@ menu_items:
       acl: gist_accounting_tb.menu
       label: Trial Balance
       parent: gist_accounting_menu
-      
+    
+    - id: gist_accounting_bs_index
+      acl: gist_accounting_bs.menu
+      label: Balance Sheet
+      parent: gist_accounting_menu
+    
+    - id: gist_accounting_pl_index
+      acl: gist_accounting_pl.menu
+      label: Profit or Loss Sheet
+      parent: gist_accounting_menu

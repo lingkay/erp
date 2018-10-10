@@ -22,7 +22,7 @@
                                     <h4 class="form-section">Information</h4>
                                     <input type="hidden" id="sp_flag" name="sp_flag" value="false">
                                     <input type="hidden" id="rollback_flag" name="rollback_flag" value="{{ is_rolled_back|default('false') }}">
-                                    {{ form.group_text('Inventory', 'source', object.getInventoryAccount.getName, 3, 5, true) }}
+                                    {{ form.group_text('Inventory', 'source', object.getInventoryAccount.getName|default(''), 3, 5, true) }}
                                     {{ form.group_textarea('Description', 'description',object.getRemarks|default(''),3,3,5, true)}}
                                     {{ form.group_text('Created by', 'created_by',object.getUserCreate.getDisplayName|default(''),3,5, true)}}
                                     {{ form.group_text('Date Submitted', 'date_submitted',object.getDateTimeCreateFormatted|default(''),3,5, true)}}

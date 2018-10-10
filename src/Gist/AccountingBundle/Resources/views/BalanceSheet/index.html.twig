@@ -1,0 +1,63 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{list_title}}</div>
+            </div>
+            <div class="portlet-body form">
+               {#  <div class="alert alert-warning alert-dismissable">
+                   <strong>Notice: </strong>
+                   {{ notice }}
+                </div> #}
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            {{ form.group_date('Year', 'year', "now"|date('Y'), 3, 4, false) }}              
+                            {{ form.group_select('Month', 'month', months, '', 3, 4) }}
+                    
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn blue">Generate</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+$(document).ready(function() {
+    //for Year Picker
+    $("#cform-year").css('cursor', 'pointer');
+    $("#cform-year").change(function() {
+       $(".datepicker").css('display','none');
+    });
+    $("#cform-year").datepicker( {
+       format: "yyyy", // Notice the Extra space at the beginning
+       viewMode: "years",
+       minViewMode: "years"
+    });
+
+    $("#cgroup-year .calendar").addClass("disabled", "true");
+    $("#cgroup-year").attr("align", "right");
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
