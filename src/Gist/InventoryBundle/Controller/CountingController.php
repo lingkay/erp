@@ -94,6 +94,7 @@ class CountingController extends CrudController
         $params = $this->getViewParams('Add');
         $params['object'] = $obj;
         $params['main_status'] = '';
+        $params['entries'] = [];
 
         // check if we have access to form
         $params['readonly'] = !$this->getUser()->hasAccess($this->route_prefix . '.add');

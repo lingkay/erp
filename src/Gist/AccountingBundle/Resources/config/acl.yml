@@ -129,3 +129,18 @@ acl:
           label: "Menu"
         - id: gist_month_end.view
           label: "View"
+
+    - category: Balance Sheet
+      entries:
+        - id: gist_accounting_bs.menu
+          label: "Menu"
+        - id: gist_accounting_bs.view
+          label: "View"
+    
+    - category: Profit or Loss Sheet
+      entries:
+        - id: gist_accounting_pl.menu
+          label: "Menu"
+        - id: gist_accounting_pl.view
+          label: "View"
+          

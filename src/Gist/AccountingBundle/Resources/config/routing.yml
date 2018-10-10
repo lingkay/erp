@@ -169,3 +169,9 @@ gist_accounting_tb:
 gist_month_end:
     resource: "@GistAccountingBundle/Resources/config/routing_month_end.yml"
     prefix:   /month_end
+gist_accounting_bs:
+    resource: "@GistAccountingBundle/Resources/config/routing_bs.yml"
+    prefix:   /balance_sheet
+gist_accounting_pl:
+    resource: "@GistAccountingBundle/Resources/config/routing_pl.yml"
+    prefix:   /profit_loss
