@@ -67,14 +67,7 @@ class VoucherController extends CrudController
         );
     }
 
-    protected function padFormParams(&$params, $obj = null)
-    {
-        $am = $this->get('gist_accounting');
-        $params['account_opts'] = $am->getChartOfAccountOptions();
-        $params['cdate'] = new DateTime();
-    }
-    
-
+   
      protected function padListParams(&$params, $obj = null)
     {
         $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
@@ -115,6 +108,29 @@ class VoucherController extends CrudController
             ->setParameter("date_to", $this->date_to);
      
         return $fg;
+    }
+
+    protected function padFormParams(&$params, $obj = null)
+    {
+        $params['obj'] = $obj;
+    }
+
+    public function pdfAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+   
+        $obj = $em->getRepository('GistAccountingBundle:CDJTransaction')->find($id);
+
+        $params = $this->getViewParams('Edit');
+      
+        $this->padFormParams($params, $obj);
+        $twig = "GistAccountingBundle:Voucher:print.html.twig";
+
+        $pdf = $this->get('gist_pdf');
+        $pdf->newPdf('A4');
+        $html = $this->render($twig, $params);
+        return $pdf->printPdf($html->getContent());
+  
     }
 
 

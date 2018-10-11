@@ -12,17 +12,18 @@
                 <div class="portlet-body form">
                     <div class="table-toolbar">
                         <a href="javascript:void(0)" class="btn green" id="btn_add_entry">Add Entry</a>
-                </div>
+                     </div>
                     <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal" id="cdj_form">
                         <div class="form-body">
                             {{ form.group_date('Record Date', 'record_date',cdate|date('m/d/Y'), 2,4)}}
+                            {{ form.group_textarea('Particulars', 'particulars',"",4,2,4)}}
+                           
                             <table id="table_entries" class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <th width="20%">Account</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
-                                    <th>Particulars</th>
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -72,9 +73,6 @@
         </td>
         <td style="vertical-align:middle">
            <input class="form-control price align-right credit" name="credit[]" type="number" value="0" min="0" />
-        </td>
-        <td style="vertical-align:middle">
-            <textarea class="form-control" name="notes[]" rows="2"></textarea>
         </td>
         <td style="vertical-align:middle">
             <button type="button" class="btn default btn-xs red btn_delete">
