@@ -258,8 +258,8 @@ class AccountingManager
         $conf = $this->container->get('gist_configuration');
         $am = $this->container->get('gist_accounting');
         $crj_conf = json_decode($conf->get('crj_settings'));
-        $sales_coa = $findChartOfAccount($crj_conf['sales_debit']);
-        $rcv_coa = $findChartOfAccount($crj_conf['receivable_credit']);
+        $sales_coa = $am->findChartOfAccount($crj_conf['sales_debit']);
+        $rcv_coa = $am->findChartOfAccount($crj_conf['receivable_credit']);
 
         if(in_array($transaction->getTransactionMode(),$sale_approved))
         {
