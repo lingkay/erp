@@ -13,10 +13,12 @@ use Gist\AccountingBundle\Entity\CRJJournalEntry;
 class AccountingManager
 {
     protected $em;
+    protected $container;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $container = null)
     {
         $this->em = $em;
+        $this->container = $container;
     }
 
     public function getAccountTypeOptions()
@@ -253,11 +255,11 @@ class AccountingManager
     public function insertCRJEntry($transaction)
     {
         $sale_approved = ['normal', 'upsell'];
-        $conf = $this->get('gist_configuration');
-        $am = $this->get('gist_accounting');
-        $crj_conf = json_decode($conf->get('crj_settings'));
-        $sales_coa = $findChartOfAccount($crj_conf['sales_debit']);
-        $rcv_coa = $findChartOfAccount($crj_conf['receivable_credit']);
+        $conf = $this->container->get('gist_configuration');
+        $am = $this->container->get('gist_accounting');
+        $crj_conf = json_decode($conf->get('crj_settings'),true);
+        $sales_coa = $am->findChartOfAccount($crj_conf['sales_debit']);
+        $rcv_coa = $am->findChartOfAccount($crj_conf['receivable_credit']);
 
         if(in_array($transaction->getTransactionMode(),$sale_approved))
         {

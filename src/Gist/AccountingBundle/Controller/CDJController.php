@@ -163,6 +163,7 @@ class CDJController extends CrudController
         $em->flush();
         $transaction->setCDJCode($record_date);
         $transaction->setRecordDate($record_date);
+        $transaction->setNotes($data['particulars']);
         $em->persist($transaction);
 
         foreach ($data['account'] as $key => $account_id) {
@@ -171,7 +172,7 @@ class CDJController extends CrudController
             $cdj_entry->setAccount($account)
                 ->setDebit($data['debit'][$key])
                 ->setCredit($data['credit'][$key])
-                ->setNotes($data['notes'][$key])
+                ->setNotes($data['particulars'])
                 ->setUserCreate($this->getUser())
                 ->setRecordDate($record_date)
                 ->setTransaction($transaction);

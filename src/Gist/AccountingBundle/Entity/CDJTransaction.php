@@ -21,6 +21,7 @@ class CDJTransaction
 {
     use HasGeneratedID;
     use HasCode;
+    use HasNotes;
     use TrackCreate;
 
     /** @ORM\OneToMany(targetEntity="CDJJournalEntry", mappedBy="transaction") */
@@ -33,6 +34,11 @@ class CDJTransaction
     public function __construct()
     {
     	$this->date_create = new DateTime();
+    }
+
+    public function getEntries()
+    {
+        return $this->entries;
     }
 
     public function setCDJCode($record_date)

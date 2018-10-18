@@ -12,4 +12,4 @@ gist_accounting_voucher_grid:
 gist_accounting_voucher_print:
     pattern: /print/{id}
     methods: [GET]
-    defaults: { _controller: GistAccountingBundle:Voucher:print }
+    defaults: { _controller: GistAccountingBundle:Voucher:pdf }
