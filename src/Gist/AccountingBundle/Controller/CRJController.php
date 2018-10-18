@@ -169,7 +169,15 @@ class CRJController extends CrudController
     protected function padFormParams(&$params, $obj = null)
     {
         $am = $this->get('gist_accounting');
+        $conf = $this->get('gist_configuration');
+        $settings = json_decode($conf->get('crj_settings'),true);
+
+        $params['sales_debit']  = $settings['sales_debit'];
+        $params['receivable_credit'] = $settings['receivable_credit'];
+        
         $params['account_opts'] = $am->getChartOfAccountOptions();
+
+        
     }
 
     protected function update($data)
