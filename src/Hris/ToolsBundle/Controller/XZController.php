@@ -159,4 +159,14 @@ class XZController extends BaseController
       
         return new JsonResponse($chart);
     }
+
+    public function inventoryAction()
+    {
+        $this->hookPreAction();
+        $conf = $this->get('gist_configuration');
+        
+        $chart = $this->xz->getInventoryData($this->data, $conf);
+      
+        return new JsonResponse($chart);
+    }
 }

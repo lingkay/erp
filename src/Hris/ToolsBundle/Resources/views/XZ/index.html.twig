@@ -714,6 +714,7 @@ $(document).ready(function() {
     requestModeData(data);
     requestTransactionData(data);
     requestCommissionData(data);
+    requestInventoryData(data);
  }
 
  filtersChanged();
@@ -1539,6 +1540,79 @@ function requestCommissionData(request) {
     });
 }
 
+function requestInventoryData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_inventory')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            // totals
+            var opening_total = data['Opening'].count;
+            var in_total = data['Items In'].count;
+            var out_total = data['Items Out'].count;
+            var new_damaged_total = data['Items New Damaged'].count + data['Items New Damaged'].count_nega;
+            var closing_total = data['Closing'].count;
+
+            // should to be close 
+            var stbc_item = data['Opening'].count + data['Items Sales'].count + data['Items In'].count + data['Items Out'].count + data['Items New Damaged'].count_nega;
+            var stbc_damaged = data['Items New Damaged'].count;
+            var stbc_total = stbc_item + stbc_damaged;
+
+            // difference
+            var item_diff = stbc_total - data['Closing'].count;
+            var damaged_diff = stbc_damaged;
+            var diff_total = item_diff + damaged_diff;
+
+            $('.opening_resp_value').html(data['Opening'].responsible);
+            $('.opening_item_value').html(data['Opening'].count);
+            $('.opening_tester_value').html('');
+            $('.opening_damaged_value').html('');
+            $('.opening_total_value').html(opening_total);
+            $('.sold_and_provided_resp_value').html('');
+            $('.sold_and_provided_item_value').html(data['Items Sales'].count);
+            $('.sold_and_provided_tester_value').html('');
+            $('.sold_and_provided_damaged_value').html('');
+            $('.sold_and_provided_total_value').html(data['Items Sales'].count);
+            $('.in_resp_value').html(data['Items In'].name);
+            $('.in_item_value').html(data['Items In'].count);
+            $('.in_tester_value').html('');
+            $('.in_damaged_value').html('');
+            $('.in_total_value').html(in_total);
+            $('.out_resp_value').html(data['Items Out'].name);
+            $('.out_item_value').html(data['Items Out'].count);
+            $('.out_tester_value').html('');
+            $('.out_damaged_value').html('');
+            $('.out_total_value').html(out_total);
+            $('.new_tester_resp_value').html('');
+            $('.new_tester_item_value').html('');
+            $('.new_tester_tester_value').html('');
+            $('.new_tester_damaged_value').html('');
+            $('.new_tester_total_value').html('');
+            $('.new_damged_resp_value').html(data['Items New Damaged'].name);
+            $('.new_damged_item_value').html(data['Items New Damaged'].count_nega);
+            $('.new_damged_tester_value').html('');
+            $('.new_damged_damaged_value').html(data['Items New Damaged'].count);
+            $('.new_damged_total_value').html(new_damaged_total);
+            $('.to_be_close_item_value').html(stbc_item);
+            $('.to_be_close_resp_value').html('');
+            $('.to_be_close_tester_value').html('');
+            $('.to_be_close_damaged_value').html(stbc_damaged);
+            $('.to_be_close_total_value').html(stbc_total);
+            $('.closing_resp_value').html(data['Closing'].responsible);
+            $('.closing_item_value').html(data['Closing'].count);
+            $('.closing_tester_value').html('');
+            $('.closing_damaged_value').html('');
+            $('.closing_total_value').html(closing_total);
+            $('.differents_resp_value').html('');
+            $('.differents_item_value').html(item_diff);
+            $('.differents_tester_value').html('');
+            $('.differents_damaged_value').html(damaged_diff);
+            $('.differents_total_value').html(diff_total);
+        },
+        cache: false
+    });
+}
 });
 
 
