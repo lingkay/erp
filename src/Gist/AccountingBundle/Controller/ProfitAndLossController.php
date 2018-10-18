@@ -22,6 +22,9 @@ class ProfitAndLossController extends TrialBalanceController
 {
     use TrackCreate;
 
+    protected $date_from;
+    protected $date_to;
+
     public function __construct()
     {
         $this->route_prefix = 'gist_accounting_pl';
@@ -191,6 +194,9 @@ class ProfitAndLossController extends TrialBalanceController
         ];
         $params['months'] = $months;
 
+        $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+
         return $params;
 
     }
@@ -220,53 +226,69 @@ class ProfitAndLossController extends TrialBalanceController
         $data = $this->getRequest()->request->all();
         $filename = 'profit_and_loss_sheet.csv';
         // $tb = $this->getTrialBalanceData($data['date_from'], $data['date_to']);
-        $bs = $this->getProfitAndLossData($data['month'], $data['year']);
+        $bs = $this->getProfitAndLossData($data['date_from'], $data['date_to']);
 
-        $date = new Datetime($data['year'].'-'.$data['month'].'-01 00:00:00');
-        $date = $date->format('F Y');
+        $month_year = $this->getMonthYearArray($data['date_from'], $data['date_to']);
+        $date_array = ['Proposed Profit or Loss'];
+        foreach ($month_year as $key => $m) {
+            $date = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $date = $date->format(' F Y');
+            $date_array[] = $date;
+        }
 
         // redirect file to stdout, store in output buffer and place in $csv
         $file = fopen('php://output', 'w');
         ob_start();
 
         fputcsv($file, ["Cosmetigroup Int'l Corporation"]);
-        fputcsv($file, ["Proposed Profit or Loss", " ".$date]);
+        fputcsv($file, $date_array);
         fputcsv($file, []);
         fputcsv($file, ["Sales"]);
 
-        $sales_total = 0;
-        $revenue_total = 0;
         $gross_profit = 0;
         foreach ($bs['netsales'] as $netsales){
             // fputcsv($file, [$netsales['name']]);
             if (isset($netsales['accounts'])) {
-                foreach ($netsales['accounts'] as $a) {
+                foreach ($netsales['accounts'] as $key => $a) {
                     if (isset($a['type']) and $a['type'] == 'sales') {
-                        array_pop($a);
+                        unset($a['type']);
                         fputcsv($file, $a);
-                        $sales_total += $a['total'];
                     }
                 }
             }
         }
-        fputcsv($file, ['TOTAL SALES',$sales_total]);
+
+        $sales_total = ['TOTAL SALES'];
+        foreach ($bs['netsales']['nsale_total'] as $t){
+            $sales_total[] = $t['sales'];
+        }
+
+        fputcsv($file, $sales_total);
         fputcsv($file, []);
 
         foreach ($bs['netsales'] as $netsales){
             // fputcsv($file, [$netsales['name']]);
             if (isset($netsales['accounts'])) {
-                foreach ($netsales['accounts'] as $a) {
+                foreach ($netsales['accounts'] as $key => $a) {
                     if (isset($a['type']) and $a['type'] == 'revenue') {
-                        array_pop($a);
+                        unset($a['type']);
                         fputcsv($file, $a);
-                        $revenue_total += $a['total'];
                     }
                 }
             }
         }
 
-        fputcsv($file, ['TOTAL REVENUE',$revenue_total]);
-        fputcsv($file, ['NET REVENUE',$bs['netsales']['total']]);
+        $revenue_total = ['TOTAL REVENUE'];
+        foreach ($bs['netsales']['nsale_total'] as $t){
+            $revenue_total[] = $t['revenue'];
+        }
+        fputcsv($file, $revenue_total);
+
+        $netsales_total = ['NET REVENUE'];
+        foreach ($bs['netsales']['total'] as $t){
+            $netsales_total[] = $t;
+        }
+        fputcsv($file, $netsales_total);
         fputcsv($file, []);
         
         fputcsv($file, ["Cost of Sales"]);
@@ -279,10 +301,19 @@ class ProfitAndLossController extends TrialBalanceController
             }
         }
 
-        $gross_profit =  $bs['netsales']['total'] + $bs['cos']['total'];
-        fputcsv($file, ['TOTAL COST OF SALES',$bs['cos']['total']]);
+        $cos_total = ['TOTAL COST OF SALES'];
+        foreach ($bs['cos']['total'] as $t){
+            $cos_total[] = $t;
+        }
+        fputcsv($file, $cos_total);
         fputcsv($file, []);
-        fputcsv($file, ["GROSS PROFIT", $gross_profit]);
+
+        $gross_profit = ['GROSS PROFIT'];
+        foreach ($bs['cos']['total'] as $key => $t){
+            $gross_profit[] = $bs['netsales']['total'][$key] + $t;
+        }
+
+        fputcsv($file, $gross_profit);
         fputcsv($file, []);
 
         fputcsv($file, ["Cost of Labor"]);
@@ -294,7 +325,12 @@ class ProfitAndLossController extends TrialBalanceController
                 }
             }
         }
-        fputcsv($file, ['TOTAL PAYROLL COST',$bs['opex']['total']]);
+
+        $opex_total = ['TOTAL PAYROLL COST'];
+        foreach ($bs['opex']['total'] as $key => $t){
+            $opex_total[] = $t;
+        }
+        fputcsv($file, $opex_total);
 
         fclose($file);
         $csv = ob_get_contents();
@@ -308,33 +344,57 @@ class ProfitAndLossController extends TrialBalanceController
         return $response;
     }
 
-    protected function getProfitAndLossData($month, $year)
+    protected function getProfitAndLossData($from, $to)
     {
         $em = $this->getDoctrine()->getManager();
+        $month_year = $this->getMonthYearArray($from, $to);
+        $dateFrom = new DateTime($from);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($to);
+        $dateTo->setTime(23,59);
+        $from = $dateFrom;
+        $to = $dateTo;
 
          //get COA balance per month
         $qb = $em->createQueryBuilder();
         $qb->select('o')
             ->from('GistAccountingBundle:TrialBalance', 'o')
-            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id')
-            ->where('o.month = :MONTH and o.year = :YEAR ')
-            ->setParameter(':MONTH',$month)
-            ->setParameter(':YEAR',$year);
+            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id');
+        
+        foreach ($month_year as $key => $m) {
+            $m1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $y1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $m2 = $m1->format('m');
+            $y2 = $y1->format('Y');
+
+            if($key == 0) {
+                $qb->where('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }else{
+                $qb->orWhere('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }
+        }
 
         $coa = $qb->getQuery()->getResult();
 
         $coa_array = [];
         foreach ($coa as $c) {
-            if(isset($coa_array[$c->getAccount()->getID()])) {
-                $coa_arr = $coa_array[$c->getAccount()->getID()];
-                $coa_array[$c->getAccount()->getID()] = [
+            $year_format = new DateTime($c->getYear().'-'.$c->getMonth().'-01');
+            $year_format = $year_format->format('my');
+
+            if(isset($coa_array[$c->getAccount()->getID()][$year_format])) {
+                $coa_arr = $coa_array[$c->getAccount()->getID()][$year_format];
+                $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
                     'total_debit' => $coa_arr['total_debit'] += $c->getDebit(),
                     'total_credit' => $coa_arr['total_credit'] += $c->getCredit(),
                 ]; 
             }else{
-                $coa_array[$c->getAccount()->getID()] = [
+                $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
                     'total_debit' => $c->getDebit(),
@@ -348,75 +408,99 @@ class ProfitAndLossController extends TrialBalanceController
         $opex_main = [];
 
         $netsales_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_STALES]);
-        $netsales_total = 0;
+
         foreach ($netsales_accounts as $as) {
             $netsales_main[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
             $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
 
             foreach ($main_accounts as $acc) {
-                $debit = 0;
-                $credit = 0;
-                $total = 0;
-                if(isset($coa_array[$acc->getID()]['total_debit']))
-                    $debit = $coa_array[$acc->getID()]['total_debit'];
-                if(isset($coa_array[$acc->getID()]['total_credit']))
-                    $credit = $coa_array[$acc->getID()]['total_credit'];
-                $total = $debit - $credit;
-
                 $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
-                $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total'] = $total;
-                if ($debit == 0) {
-                    $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'revenue';
-                }else{
-                    $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'sales';
+                foreach($month_year as $key => $m) {
+                    if(isset($coa_array[$acc->getID()][$m]['total_debit']))
+                        $debit = $coa_array[$acc->getID()][$m]['total_debit'];
+                    if(isset($coa_array[$acc->getID()][$m]['total_credit']))
+                        $credit = $coa_array[$acc->getID()][$m]['total_credit'];
+                    $total = $debit - $credit;
+
+                    $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $total;
+                    if ($debit == 0) {
+                        $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'sales';
+                        if (isset($nsale_total[$m]['sales'])) {
+                            $nsale_total[$m]['sales'] += $total; 
+                        }else{
+                            $nsale_total[$m]['sales'] = $total; 
+                        }
+                    }else{
+                        $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'revenue';
+                        if (isset($nsale_total[$m]['revenue'])) {
+                            $nsale_total[$m]['revenue'] += $total; 
+                        }else{
+                            $nsale_total[$m]['revenue'] = $total; 
+                        }
+                    }
+
+                    if (isset($netsales_total[$m])) {
+                        $netsales_total[$m] += $total; 
+                    }else{
+                        $netsales_total[$m] = $total; 
+                    }
                 }
-                $netsales_total += $total; 
             }
         }  
+
         $netsales_main['total'] = $netsales_total;
+        $netsales_main['nsale_total'] = $nsale_total;
 
         $cos_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_COS]);
-        $cos_total = 0;
+        
         foreach ($cos_accounts as $as) {
             $cos_main[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
             $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
 
             foreach ($main_accounts as $acc) {
-                $debit = 0;
-                $credit = 0;
-                $total = 0;
-                if(isset($coa_array[$acc->getID()]['total_debit']))
-                    $debit = $coa_array[$acc->getID()]['total_debit'];
-                if(isset($coa_array[$acc->getID()]['total_credit']))
-                    $credit = $coa_array[$acc->getID()]['total_credit'];
-                $total = $debit - $credit;
-
                 $cos_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
-                $cos_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total'] = $total;
-                $cos_total += $total; 
+                foreach($month_year as $key => $m) {
+                    if(isset($coa_array[$acc->getID()][$m]['total_debit']))
+                        $debit = $coa_array[$acc->getID()][$m]['total_debit'];
+                    if(isset($coa_array[$acc->getID()][$m]['total_credit']))
+                        $credit = $coa_array[$acc->getID()][$m]['total_credit'];
+                    $total = $debit - $credit;
+
+                    $cos_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $total;
+
+                    if (isset($cos_total[$m])) {
+                        $cos_total[$m] += $total; 
+                    }else{
+                        $cos_total[$m] = $total; 
+                    }
+                }
             }
         }  
         $cos_main['total'] = $cos_total;
-        
+
         $opex_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_OPEX]);
-        $opex_total = 0;
+
         foreach ($opex_accounts as $as) {
             $opex_main[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
             $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
 
             foreach ($main_accounts as $acc) {
-                $debit = 0;
-                $credit = 0;
-                $total = 0;
-                if(isset($coa_array[$acc->getID()]['total_debit']))
-                    $debit = $coa_array[$acc->getID()]['total_debit'];
-                if(isset($coa_array[$acc->getID()]['total_credit']))
-                    $credit = $coa_array[$acc->getID()]['total_credit'];
-                $total = $debit - $credit;
-
                 $opex_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
-                $opex_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total'] = $total;
-                $opex_total += $total; 
+                foreach($month_year as $key => $m) {
+                    if(isset($coa_array[$acc->getID()][$m]['total_debit']))
+                        $debit = $coa_array[$acc->getID()][$m]['total_debit'];
+                    if(isset($coa_array[$acc->getID()][$m]['total_credit']))
+                        $credit = $coa_array[$acc->getID()][$m]['total_credit'];
+                    $total = $debit - $credit;
+
+                    $opex_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $total;
+
+                    if (isset($opex_total[$m])) {
+                        $opex_total[$m] += $total; 
+                    }else{
+                        $opex_total[$m] = $total; 
+                    }
+                }
             }
         }  
         $opex_main['total'] = $opex_total;
@@ -426,5 +510,38 @@ class ProfitAndLossController extends TrialBalanceController
         $list['opex'] = $opex_main;
 
         return $list;
+    }
+
+    protected function getMonthYearArray($from, $to)
+    {
+        $dateFrom = new DateTime($from);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($to);
+        $dateTo->setTime(23,59);
+        $from = $dateFrom;
+        $to = $dateTo;
+
+        $start = $dateFrom->format('my');
+        $end = $dateTo->format('my');
+
+        $array = [];
+        //1 month before the start month
+        // $before_start = $from->modify('-1 month');
+        // $before_start = $from->format('my');
+        // $array[$before_start] = $before_start;
+
+        //loop within the daterange
+        if ($start != $end) {
+            do {
+                $array[] = $from->format('my');     
+                $from->modify('+1 month');
+                $start = $from->format('my');
+            } while ($start != $end);
+        }
+        
+        //push the end
+        $array[] = $end;
+ 
+        return $array;
     }
 }

@@ -16,9 +16,10 @@
                 <form method="post" class="form-horizontal">
                     <div class="form-body">
                         <div class="form-group">
-                            {{ form.group_date('Year', 'year', "now"|date('Y'), 3, 4, false) }}              
+                            {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 3,4,'m/d/Y','m/d/Y') }}
+                         {#    {{ form.group_date('Year', 'year', "now"|date('Y'), 3, 4, false) }}              
                             {{ form.group_select('Month', 'month', months, '', 3, 4) }}
-                    
+                     #}
                         </div>
                     </div>
                     
@@ -53,6 +54,26 @@ $(document).ready(function() {
 
     $("#cgroup-year .calendar").addClass("disabled", "true");
     $("#cgroup-year").attr("align", "right");
+
+    $('#daterange').daterangepicker(
+        {
+            ranges: {
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
+                'This Year': [moment().startOf('year', 1), moment().endOf('year')],
+                'Last Year': [moment().subtract('year', 1).startOf('year'), moment().subtract('year', 1).endOf('year')]
+                
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#cform-date_from').val(start.format('MM/DD/YYYY'));
+            $('#cform-date_to').val(end.format('MM/DD/YYYY'));
+            
+        }
+    );
 });
 </script>
 {% endblock %}

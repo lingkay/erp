@@ -57,3 +57,8 @@ hris_tools_xz_commission:
     path:     /commission
     methods:  [GET]
     defaults: { _controller: HrisToolsBundle:XZ:commission }
+
+hris_tools_xz_inventory:
+    path:     /inventory
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:inventory }

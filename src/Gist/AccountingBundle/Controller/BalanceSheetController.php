@@ -22,6 +22,9 @@ class BalanceSheetController extends TrialBalanceController
 {
     use TrackCreate;
 
+    protected $date_from;
+    protected $date_to;
+
     public function __construct()
     {
         $this->route_prefix = 'gist_accounting_bs';
@@ -191,6 +194,9 @@ class BalanceSheetController extends TrialBalanceController
         ];
         $params['months'] = $months;
 
+        $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
+        $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+
         return $params;
 
     }
@@ -220,10 +226,10 @@ class BalanceSheetController extends TrialBalanceController
         $data = $this->getRequest()->request->all();
         $filename = 'balance_sheet.csv';
         // $tb = $this->getTrialBalanceData($data['date_from'], $data['date_to']);
-        $bs = $this->getBalanceSheetData($data['month'], $data['year']);
+        $bs = $this->getBalanceSheetData($data['date_from'], $data['date_to']);
 
-        $date = new Datetime($data['year'].'-'.$data['month'].'-01 00:00:00');
-        $date = $date->format('F Y');
+        // $date = new Datetime($data['year'].'-'.$data['month'].'-01 00:00:00');
+        // $date = $date->format('F Y');
 
         // redirect file to stdout, store in output buffer and place in $csv
         $file = fopen('php://output', 'w');
@@ -231,22 +237,38 @@ class BalanceSheetController extends TrialBalanceController
 
         fputcsv($file, ["Cosmetigroup Int'l Corp"]);
         fputcsv($file, ["Statement of Financial Position"]);
-        fputcsv($file, ["as of ".$date.""]);
-        fputcsv($file, []);
 
+        $month_year = $this->getMonthYearArray($data['date_from'], $data['date_to']);
+        $date_array = [''];
+        foreach ($month_year as $key => $m) {
+            $date = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $date = $date->format(' F Y');
+            $date_array[] = $date;
+        }
+        fputcsv($file, []);
+        fputcsv($file, $date_array);
         foreach ($bs['assets'] as $assets){
-            fputcsv($file, [$assets['name']]);
+            if (isset($assets['name'])) {
+                fputcsv($file, [$assets['name']]);
+            }
             if (isset($assets['accounts'])) {
                 foreach ($assets['accounts'] as $a) {
                     fputcsv($file, $a);
                 }
             }
         }
-        fputcsv($file, ['TOTAL ASSETS',$bs['assets']['total']]);
+
+        $assets_total = ['TOTAL ASSETS'];
+        foreach ($bs['assets']['total'] as $t){
+            $assets_total[] = $t;
+        }
+        fputcsv($file, $assets_total);
         fputcsv($file, []);
 
         foreach ($bs['liability'] as $liabs){
-            fputcsv($file, [$liabs['name']]);
+            if (isset($liabs['name'])) {
+                fputcsv($file, [$liabs['name']]);
+            }
             if (isset($liabs['accounts'])) {
                 foreach ($liabs['accounts'] as $l) {
                     fputcsv($file, $l);
@@ -255,7 +277,9 @@ class BalanceSheetController extends TrialBalanceController
         }
 
         foreach ($bs['capital'] as $cap){
-            fputcsv($file, [$cap['name']]);
+            if (isset($cap['name'])) {
+                fputcsv($file, [$cap['name']]);
+            }
             if (isset($cap['accounts'])) {
                 foreach ($cap['accounts'] as $l) {
                     fputcsv($file, $l);
@@ -263,8 +287,12 @@ class BalanceSheetController extends TrialBalanceController
             }
         }
 
-        $total_le = $bs['liability']['total'] + $bs['capital']['total'];
-        fputcsv($file, ['TOTAL LIABILITY AND EQUITY',$total_le]);
+        $liabs_total = ['TOTAL LIABILITY AND EQUITY'];
+        foreach ($bs['liability']['total'] as $key =>  $t){
+            $total_le = $bs['liability']['total'][$key] + $bs['capital']['total'][$key];
+            $liabs_total[] = $total_le;
+        }
+        fputcsv($file, $liabs_total);
 
         fclose($file);
         $csv = ob_get_contents();
@@ -278,33 +306,57 @@ class BalanceSheetController extends TrialBalanceController
         return $response;
     }
 
-    protected function getBalanceSheetData($month, $year)
+    protected function getBalanceSheetData($from, $to)
     {
         $em = $this->getDoctrine()->getManager();
+        $month_year = $this->getMonthYearArray($from, $to);
+        $dateFrom = new DateTime($from);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($to);
+        $dateTo->setTime(23,59);
+        $from = $dateFrom;
+        $to = $dateTo;
 
-         //get COA balance per month
+        //get COA balance per month
         $qb = $em->createQueryBuilder();
         $qb->select('o')
             ->from('GistAccountingBundle:TrialBalance', 'o')
-            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id')
-            ->where('o.month = :MONTH and o.year = :YEAR ')
-            ->setParameter(':MONTH',$month)
-            ->setParameter(':YEAR',$year);
+            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id');
+
+        foreach ($month_year as $key => $m) {
+            $m1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $y1 = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $m2 = $m1->format('m');
+            $y2 = $y1->format('Y');
+
+            if($key == 0) {
+                $qb->where('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }else{
+                $qb->orWhere('o.month = :MONTH'.$key.' and o.year = :YEAR'.$key.' ')
+                   ->setParameter(':MONTH'.$key, $m2)
+                   ->setParameter(':YEAR'.$key, $y2);
+            }
+        }
 
         $coa = $qb->getQuery()->getResult();
 
         $coa_array = [];
         foreach ($coa as $c) {
-            if(isset($coa_array[$c->getAccount()->getID()])) {
-                $coa_arr = $coa_array[$c->getAccount()->getID()];
-                $coa_array[$c->getAccount()->getID()] = [
+            $year_format = new DateTime($c->getYear().'-'.$c->getMonth().'-01');
+            $year_format = $year_format->format('my');
+
+            if(isset($coa_array[$c->getAccount()->getID()][$year_format])) {
+                $coa_arr = $coa_array[$c->getAccount()->getID()][$year_format];
+                $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
                     'total_debit' => $coa_arr['total_debit'] += $c->getDebit(),
                     'total_credit' => $coa_arr['total_credit'] += $c->getCredit(),
                 ]; 
             }else{
-                $coa_array[$c->getAccount()->getID()] = [
+                $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
                     'total_debit' => $c->getDebit(),
@@ -318,7 +370,6 @@ class BalanceSheetController extends TrialBalanceController
         $capital_main = [];
 
         $asset_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_ASSET]);
-        $asset_total = 0;
         foreach ($asset_accounts as $as) {
             $assets_main[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
             $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
@@ -326,7 +377,8 @@ class BalanceSheetController extends TrialBalanceController
             $coa_push_list_total = [];
             foreach ($main_accounts as $c) {
                 $clist = [];
-                $last_month = new DateTime($month.'/'.'01/'.$year);
+
+                $last_month = new DateTime(substr($month_year[0], 0,2).'/'.'01/'.substr($month_year[0], 2));
                 $last_month->modify('-1 month');
                 $last_month_m = $last_month->format('m');
                 $last_month_Y = $last_month->format('Y');
@@ -347,99 +399,114 @@ class BalanceSheetController extends TrialBalanceController
                     $e = $last_ending->getEnding();
                 }
 
+                $last = count($month_year) - 1;
                 $clist['ending_beginning'] = $e;
                 if (isset($coa_push_list_total['ending_beginning'])) {
                     $coa_push_list_total['ending_beginning'] += $e;
                 }else{
                     $coa_push_list_total['ending_beginning'] = $e;
                 }
-                if(isset($coa_array[$c->getID()])) {
-                    $clist['debit'] = $coa_array[$c->getID()]['total_debit'];
-                    $clist['credit'] = $coa_array[$c->getID()]['total_credit'];
+                foreach($month_year as $key => $m) {
+                    if(isset($coa_array[$c->getID()][$m])) {
+                        $clist['debit_'.$m.''] = $coa_array[$c->getID()][$m]['total_debit'];
+                        $clist['credit_'.$m.''] = $coa_array[$c->getID()][$m]['total_credit'];
 
-                    if (isset($coa_push_list_total['debit'])) {
-                        $coa_push_list_total['debit'] += $coa_array[$c->getID()]['total_debit'];
+                        if (isset($coa_push_list_total['debit_'.$m.''])) {
+                            $coa_push_list_total['debit_'.$m.''] += $coa_array[$c->getID()][$m]['total_debit'];
+                        }else{
+                            $coa_push_list_total['debit_'.$m.''] = $coa_array[$c->getID()][$m]['total_debit'];
+                        }
+
+                        if (isset($coa_push_list_total['credit_'.$m.''])) {
+                            $coa_push_list_total['credit_'.$m.''] += $coa_array[$c->getID()][$m]['total_credit'];
+                        }else{
+                            $coa_push_list_total['credit_'.$m.''] = $coa_array[$c->getID()][$m]['total_credit'];
+                        }
+
+                        $ending = $coa_array[$c->getID()][$m]['total_debit'] - $coa_array[$c->getID()][$m]['total_credit'];
+                        $clist['ending_'.$m.''] = $e + $ending;
+
+                        if (isset($coa_push_list_total['ending_'.$m.''])) {
+                            $coa_push_list_total['ending_'.$m.''] += ($e + $ending);
+                        }else{
+                            $coa_push_list_total['ending_'.$m.''] = ($e + $ending);
+                        }
+                        if ($key != $last) {
+                            $clist['beginning_'.$m.''] = $e + $ending;
+                            if (isset($coa_push_list_total['beginning_'.$m.''])) {
+                                $coa_push_list_total['beginning_'.$m.''] += ($e + $ending);
+                            }else{
+                                $coa_push_list_total['beginning_'.$m.''] = ($e + $ending);
+                            }
+                        }
+
+                        $e = $e + $ending;
                     }else{
-                        $coa_push_list_total['debit'] = $coa_array[$c->getID()]['total_debit'];
-                    }
+                        $clist['debit_'.$m.''] = 0;
+                        $clist['credit_'.$m.''] = 0;
+                        $clist['ending_'.$m.''] = $e;
 
-                    if (isset($coa_push_list_total['credit'])) {
-                        $coa_push_list_total['credit'] += $coa_array[$c->getID()]['total_credit'];
-                    }else{
-                        $coa_push_list_total['credit'] = $coa_array[$c->getID()]['total_credit'];
-                    }
+                        if (isset($coa_push_list_total['debit_'.$m.''])) {
+                            $coa_push_list_total['debit_'.$m.''] += 0;
+                        }else{
+                            $coa_push_list_total['debit_'.$m.''] = 0;
+                        }
 
-                    $ending = $coa_array[$c->getID()]['total_debit'] - $coa_array[$c->getID()]['total_credit'];
-                    $clist['ending'] = $e + $ending;
+                        if (isset($coa_push_list_total['credit_'.$m.''])) {
+                            $coa_push_list_total['credit_'.$m.''] += 0;
+                        }else{
+                            $coa_push_list_total['credit_'.$m.''] = 0;
+                        }
 
-                    if (isset($coa_push_list_total['ending'])) {
-                        $coa_push_list_total['ending'] += ($e + $ending);
-                    }else{
-                        $coa_push_list_total['ending'] = ($e + $ending);
-                    }
-                    
-                    $clist['beginning'] = $e + $ending;
-                    if (isset($coa_push_list_total['beginning'])) {
-                        $coa_push_list_total['beginning'] += ($e + $ending);
-                    }else{
-                        $coa_push_list_total['beginning'] = ($e + $ending);
-                    }
+                        if (isset($coa_push_list_total['ending_'.$m.''])) {
+                            $coa_push_list_total['ending_'.$m.''] += $e;
+                        }else{
+                            $coa_push_list_total['ending_'.$m.''] = $e;
+                        }
 
-                    $e = $e + $ending;
-                }else{
-                    $clist['debit'] = 0;
-                    $clist['credit'] = 0;
-                    $clist['ending'] = $e;
-
-                    if (isset($coa_push_list_total['debit'])) {
-                        $coa_push_list_total['debit'] += 0;
-                    }else{
-                        $coa_push_list_total['debit'] = 0;
-                    }
-
-                    if (isset($coa_push_list_total['credit'])) {
-                        $coa_push_list_total['credit'] += 0;
-                    }else{
-                        $coa_push_list_total['credit'] = 0;
-                    }
-
-                    if (isset($coa_push_list_total['ending'])) {
-                        $coa_push_list_total['ending'] += $e;
-                    }else{
-                        $coa_push_list_total['ending'] = $e;
-                    }
-
-                    $clist['beginning'] = $e;
-                    if (isset($coa_push_list_total['beginning'])) {
-                        $coa_push_list_total['beginning'] += $e;
-                    }else{
-                        $coa_push_list_total['beginning'] = $e;
+                        if ($key != $last) {
+                            $clist['beginning_'.$m.''] = $e;
+                            if (isset($coa_push_list_total['beginning_'.$m.''])) {
+                                $coa_push_list_total['beginning_'.$m.''] += $e;
+                            }else{
+                                $coa_push_list_total['beginning_'.$m.''] = $e;
+                            }
+                        }
                     }
                 }
                 $coa_list['list'][] = $clist;
             }        
             $coa_list['total'][] = $coa_push_list_total;
+            
 
+     
             // add all accounts by our tb settings
             $charts_of_account = [];
             foreach ($coa_list['list'] as $list) {
                 $charts_of_account[$list['code']] = $list;
             }
-
+         
             foreach ($main_accounts as $acc) {
                 $ending = 0;
-                if(isset($charts_of_account[$acc->getCode()]['ending']))
-                    $ending = $charts_of_account[$acc->getCode()]['ending'];
+                foreach($month_year as $key => $m) {
+                    if(isset($charts_of_account[$acc->getCode()]['ending_'.$m.'']))
+                        $ending = $charts_of_account[$acc->getCode()]['ending_'.$m.''];
 
-                $assets_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getName();
-                $assets_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total'] = $ending;
-                $asset_total += $ending; 
+                    $assets_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getName();
+                    $assets_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $ending;
+
+                    if (isset($asset_total[$m])) {
+                        $asset_total[$m] += $ending; 
+                    }else{
+                        $asset_total[$m] = $ending; 
+                    }
+                }
             }
         }  
         $assets_main['total'] = $asset_total;
-        
+
         $liab_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_LIABILITY]);
-        $liab_total = 0;
+
         foreach ($liab_accounts as $as) {
             $liab_main[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
             $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
@@ -447,7 +514,7 @@ class BalanceSheetController extends TrialBalanceController
             $coa_push_list_total = [];
             foreach ($main_accounts as $c) {
                 $clist = [];
-                $last_month = new DateTime($month.'/'.'01/'.$year);
+                $last_month = new DateTime(substr($month_year[0], 0,2).'/'.'01/'.substr($month_year[0], 2));
                 $last_month->modify('-1 month');
                 $last_month_m = $last_month->format('m');
                 $last_month_Y = $last_month->format('Y');
@@ -468,73 +535,79 @@ class BalanceSheetController extends TrialBalanceController
                     $e = $last_ending->getEnding();
                 }
 
+                $last = count($month_year) - 1;
                 $clist['ending_beginning'] = $e;
                 if (isset($coa_push_list_total['ending_beginning'])) {
                     $coa_push_list_total['ending_beginning'] += $e;
                 }else{
                     $coa_push_list_total['ending_beginning'] = $e;
                 }
-                if(isset($coa_array[$c->getID()])) {
-                    $clist['debit'] = $coa_array[$c->getID()]['total_debit'];
-                    $clist['credit'] = $coa_array[$c->getID()]['total_credit'];
+                foreach($month_year as $key => $m) {
+                    if(isset($coa_array[$c->getID()][$m])) {
+                        $clist['debit_'.$m.''] = $coa_array[$c->getID()][$m]['total_debit'];
+                        $clist['credit_'.$m.''] = $coa_array[$c->getID()][$m]['total_credit'];
 
-                    if (isset($coa_push_list_total['debit'])) {
-                        $coa_push_list_total['debit'] += $coa_array[$c->getID()]['total_debit'];
+                        if (isset($coa_push_list_total['debit_'.$m.''])) {
+                            $coa_push_list_total['debit_'.$m.''] += $coa_array[$c->getID()][$m]['total_debit'];
+                        }else{
+                            $coa_push_list_total['debit_'.$m.''] = $coa_array[$c->getID()][$m]['total_debit'];
+                        }
+
+                        if (isset($coa_push_list_total['credit_'.$m.''])) {
+                            $coa_push_list_total['credit_'.$m.''] += $coa_array[$c->getID()][$m]['total_credit'];
+                        }else{
+                            $coa_push_list_total['credit_'.$m.''] = $coa_array[$c->getID()][$m]['total_credit'];
+                        }
+
+                        $ending = $coa_array[$c->getID()][$m]['total_debit'] - $coa_array[$c->getID()][$m]['total_credit'];
+                        $clist['ending_'.$m.''] = $e + $ending;
+
+                        if (isset($coa_push_list_total['ending_'.$m.''])) {
+                            $coa_push_list_total['ending_'.$m.''] += ($e + $ending);
+                        }else{
+                            $coa_push_list_total['ending_'.$m.''] = ($e + $ending);
+                        }
+                        if ($key != $last) {
+                            $clist['beginning_'.$m.''] = $e + $ending;
+                            if (isset($coa_push_list_total['beginning_'.$m.''])) {
+                                $coa_push_list_total['beginning_'.$m.''] += ($e + $ending);
+                            }else{
+                                $coa_push_list_total['beginning_'.$m.''] = ($e + $ending);
+                            }
+                        }
+
+                        $e = $e + $ending;
                     }else{
-                        $coa_push_list_total['debit'] = $coa_array[$c->getID()]['total_debit'];
-                    }
+                        $clist['debit_'.$m.''] = 0;
+                        $clist['credit_'.$m.''] = 0;
+                        $clist['ending_'.$m.''] = $e;
 
-                    if (isset($coa_push_list_total['credit'])) {
-                        $coa_push_list_total['credit'] += $coa_array[$c->getID()]['total_credit'];
-                    }else{
-                        $coa_push_list_total['credit'] = $coa_array[$c->getID()]['total_credit'];
-                    }
+                        if (isset($coa_push_list_total['debit_'.$m.''])) {
+                            $coa_push_list_total['debit_'.$m.''] += 0;
+                        }else{
+                            $coa_push_list_total['debit_'.$m.''] = 0;
+                        }
 
-                    $ending = $coa_array[$c->getID()]['total_debit'] - $coa_array[$c->getID()]['total_credit'];
-                    $clist['ending'] = $e + $ending;
+                        if (isset($coa_push_list_total['credit_'.$m.''])) {
+                            $coa_push_list_total['credit_'.$m.''] += 0;
+                        }else{
+                            $coa_push_list_total['credit_'.$m.''] = 0;
+                        }
 
-                    if (isset($coa_push_list_total['ending'])) {
-                        $coa_push_list_total['ending'] += ($e + $ending);
-                    }else{
-                        $coa_push_list_total['ending'] = ($e + $ending);
-                    }
-                    
-                    $clist['beginning'] = $e + $ending;
-                    if (isset($coa_push_list_total['beginning'])) {
-                        $coa_push_list_total['beginning'] += ($e + $ending);
-                    }else{
-                        $coa_push_list_total['beginning'] = ($e + $ending);
-                    }
+                        if (isset($coa_push_list_total['ending_'.$m.''])) {
+                            $coa_push_list_total['ending_'.$m.''] += $e;
+                        }else{
+                            $coa_push_list_total['ending_'.$m.''] = $e;
+                        }
 
-                    $e = $e + $ending;
-                }else{
-                    $clist['debit'] = 0;
-                    $clist['credit'] = 0;
-                    $clist['ending'] = $e;
-
-                    if (isset($coa_push_list_total['debit'])) {
-                        $coa_push_list_total['debit'] += 0;
-                    }else{
-                        $coa_push_list_total['debit'] = 0;
-                    }
-
-                    if (isset($coa_push_list_total['credit'])) {
-                        $coa_push_list_total['credit'] += 0;
-                    }else{
-                        $coa_push_list_total['credit'] = 0;
-                    }
-
-                    if (isset($coa_push_list_total['ending'])) {
-                        $coa_push_list_total['ending'] += $e;
-                    }else{
-                        $coa_push_list_total['ending'] = $e;
-                    }
-
-                    $clist['beginning'] = $e;
-                    if (isset($coa_push_list_total['beginning'])) {
-                        $coa_push_list_total['beginning'] += $e;
-                    }else{
-                        $coa_push_list_total['beginning'] = $e;
+                        if ($key != $last) {
+                            $clist['beginning_'.$m.''] = $e;
+                            if (isset($coa_push_list_total['beginning_'.$m.''])) {
+                                $coa_push_list_total['beginning_'.$m.''] += $e;
+                            }else{
+                                $coa_push_list_total['beginning_'.$m.''] = $e;
+                            }
+                        }
                     }
                 }
                 $coa_list['list'][] = $clist;
@@ -549,18 +622,24 @@ class BalanceSheetController extends TrialBalanceController
 
             foreach ($main_accounts as $acc) {
                 $ending = 0;
-                if(isset($charts_of_account[$acc->getCode()]['ending']))
-                    $ending = $charts_of_account[$acc->getCode()]['ending'];
+                foreach($month_year as $key => $m) {
+                    if(isset($charts_of_account[$acc->getCode()]['ending_'.$m.'']))
+                        $ending = $charts_of_account[$acc->getCode()]['ending_'.$m.''];
 
-                $liab_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getName();
-                $liab_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total'] = $ending;
-                $liab_total += $ending; 
+                    $liab_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getName();
+                    $liab_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $ending;
+                    if (isset($liab_total[$m])) {
+                        $liab_total[$m] += $ending; 
+                    }else{
+                        $liab_total[$m] = $ending; 
+                    }
+                }
             }
         }  
         $liab_main['total'] = $liab_total;
-        
+
         $capital_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_CAPITAL]);
-        $capital_total = 0;
+
         foreach ($capital_accounts as $as) {
             $capital_main[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
             $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
@@ -568,7 +647,7 @@ class BalanceSheetController extends TrialBalanceController
             $coa_push_list_total = [];
             foreach ($main_accounts as $c) {
                 $clist = [];
-                $last_month = new DateTime($month.'/'.'01/'.$year);
+                $last_month = new DateTime(substr($month_year[0], 0,2).'/'.'01/'.substr($month_year[0], 2));
                 $last_month->modify('-1 month');
                 $last_month_m = $last_month->format('m');
                 $last_month_Y = $last_month->format('Y');
@@ -589,73 +668,79 @@ class BalanceSheetController extends TrialBalanceController
                     $e = $last_ending->getEnding();
                 }
 
+                $last = count($month_year) - 1;
                 $clist['ending_beginning'] = $e;
                 if (isset($coa_push_list_total['ending_beginning'])) {
                     $coa_push_list_total['ending_beginning'] += $e;
                 }else{
                     $coa_push_list_total['ending_beginning'] = $e;
                 }
-                if(isset($coa_array[$c->getID()])) {
-                    $clist['debit'] = $coa_array[$c->getID()]['total_debit'];
-                    $clist['credit'] = $coa_array[$c->getID()]['total_credit'];
+                foreach($month_year as $key => $m) {
+                    if(isset($coa_array[$c->getID()][$m])) {
+                        $clist['debit_'.$m.''] = $coa_array[$c->getID()][$m]['total_debit'];
+                        $clist['credit_'.$m.''] = $coa_array[$c->getID()][$m]['total_credit'];
 
-                    if (isset($coa_push_list_total['debit'])) {
-                        $coa_push_list_total['debit'] += $coa_array[$c->getID()]['total_debit'];
+                        if (isset($coa_push_list_total['debit_'.$m.''])) {
+                            $coa_push_list_total['debit_'.$m.''] += $coa_array[$c->getID()][$m]['total_debit'];
+                        }else{
+                            $coa_push_list_total['debit_'.$m.''] = $coa_array[$c->getID()][$m]['total_debit'];
+                        }
+
+                        if (isset($coa_push_list_total['credit_'.$m.''])) {
+                            $coa_push_list_total['credit_'.$m.''] += $coa_array[$c->getID()][$m]['total_credit'];
+                        }else{
+                            $coa_push_list_total['credit_'.$m.''] = $coa_array[$c->getID()][$m]['total_credit'];
+                        }
+
+                        $ending = $coa_array[$c->getID()][$m]['total_debit'] - $coa_array[$c->getID()][$m]['total_credit'];
+                        $clist['ending_'.$m.''] = $e + $ending;
+
+                        if (isset($coa_push_list_total['ending_'.$m.''])) {
+                            $coa_push_list_total['ending_'.$m.''] += ($e + $ending);
+                        }else{
+                            $coa_push_list_total['ending_'.$m.''] = ($e + $ending);
+                        }
+                        if ($key != $last) {
+                            $clist['beginning_'.$m.''] = $e + $ending;
+                            if (isset($coa_push_list_total['beginning_'.$m.''])) {
+                                $coa_push_list_total['beginning_'.$m.''] += ($e + $ending);
+                            }else{
+                                $coa_push_list_total['beginning_'.$m.''] = ($e + $ending);
+                            }
+                        }
+
+                        $e = $e + $ending;
                     }else{
-                        $coa_push_list_total['debit'] = $coa_array[$c->getID()]['total_debit'];
-                    }
+                        $clist['debit_'.$m.''] = 0;
+                        $clist['credit_'.$m.''] = 0;
+                        $clist['ending_'.$m.''] = $e;
 
-                    if (isset($coa_push_list_total['credit'])) {
-                        $coa_push_list_total['credit'] += $coa_array[$c->getID()]['total_credit'];
-                    }else{
-                        $coa_push_list_total['credit'] = $coa_array[$c->getID()]['total_credit'];
-                    }
+                        if (isset($coa_push_list_total['debit_'.$m.''])) {
+                            $coa_push_list_total['debit_'.$m.''] += 0;
+                        }else{
+                            $coa_push_list_total['debit_'.$m.''] = 0;
+                        }
 
-                    $ending = $coa_array[$c->getID()]['total_debit'] - $coa_array[$c->getID()]['total_credit'];
-                    $clist['ending'] = $e + $ending;
+                        if (isset($coa_push_list_total['credit_'.$m.''])) {
+                            $coa_push_list_total['credit_'.$m.''] += 0;
+                        }else{
+                            $coa_push_list_total['credit_'.$m.''] = 0;
+                        }
 
-                    if (isset($coa_push_list_total['ending'])) {
-                        $coa_push_list_total['ending'] += ($e + $ending);
-                    }else{
-                        $coa_push_list_total['ending'] = ($e + $ending);
-                    }
-                    
-                    $clist['beginning'] = $e + $ending;
-                    if (isset($coa_push_list_total['beginning'])) {
-                        $coa_push_list_total['beginning'] += ($e + $ending);
-                    }else{
-                        $coa_push_list_total['beginning'] = ($e + $ending);
-                    }
+                        if (isset($coa_push_list_total['ending_'.$m.''])) {
+                            $coa_push_list_total['ending_'.$m.''] += $e;
+                        }else{
+                            $coa_push_list_total['ending_'.$m.''] = $e;
+                        }
 
-                    $e = $e + $ending;
-                }else{
-                    $clist['debit'] = 0;
-                    $clist['credit'] = 0;
-                    $clist['ending'] = $e;
-
-                    if (isset($coa_push_list_total['debit'])) {
-                        $coa_push_list_total['debit'] += 0;
-                    }else{
-                        $coa_push_list_total['debit'] = 0;
-                    }
-
-                    if (isset($coa_push_list_total['credit'])) {
-                        $coa_push_list_total['credit'] += 0;
-                    }else{
-                        $coa_push_list_total['credit'] = 0;
-                    }
-
-                    if (isset($coa_push_list_total['ending'])) {
-                        $coa_push_list_total['ending'] += $e;
-                    }else{
-                        $coa_push_list_total['ending'] = $e;
-                    }
-
-                    $clist['beginning'] = $e;
-                    if (isset($coa_push_list_total['beginning'])) {
-                        $coa_push_list_total['beginning'] += $e;
-                    }else{
-                        $coa_push_list_total['beginning'] = $e;
+                        if ($key != $last) {
+                            $clist['beginning_'.$m.''] = $e;
+                            if (isset($coa_push_list_total['beginning_'.$m.''])) {
+                                $coa_push_list_total['beginning_'.$m.''] += $e;
+                            }else{
+                                $coa_push_list_total['beginning_'.$m.''] = $e;
+                            }
+                        }
                     }
                 }
                 $coa_list['list'][] = $clist;
@@ -670,12 +755,19 @@ class BalanceSheetController extends TrialBalanceController
 
             foreach ($main_accounts as $acc) {
                 $ending = 0;
-                if(isset($charts_of_account[$acc->getCode()]['ending']))
-                    $ending = $charts_of_account[$acc->getCode()]['ending'];
+                foreach($month_year as $key => $m) {
+                    if(isset($charts_of_account[$acc->getCode()]['ending_'.$m.'']))
+                        $ending = $charts_of_account[$acc->getCode()]['ending_'.$m.''];
 
-                $capital_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getName();
-                $capital_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total'] = $ending;
-                $capital_total += $ending; 
+                    $capital_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getName();
+                    $capital_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $ending;
+                    
+                    if (isset($capital_total[$m])) {
+                        $capital_total[$m] += $ending; 
+                    }else{
+                        $capital_total[$m] = $ending; 
+                    }
+                }
             }
         }  
         $capital_main['total'] = $capital_total;
@@ -685,5 +777,38 @@ class BalanceSheetController extends TrialBalanceController
         $list['capital'] = $capital_main;
 
         return $list;
+    }
+
+    protected function getMonthYearArray($from, $to)
+    {
+        $dateFrom = new DateTime($from);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($to);
+        $dateTo->setTime(23,59);
+        $from = $dateFrom;
+        $to = $dateTo;
+
+        $start = $dateFrom->format('my');
+        $end = $dateTo->format('my');
+
+        $array = [];
+        //1 month before the start month
+        // $before_start = $from->modify('-1 month');
+        // $before_start = $from->format('my');
+        // $array[$before_start] = $before_start;
+
+        //loop within the daterange
+        if ($start != $end) {
+            do {
+                $array[] = $from->format('my');     
+                $from->modify('+1 month');
+                $start = $from->format('my');
+            } while ($start != $end);
+        }
+        
+        //push the end
+        $array[] = $end;
+ 
+        return $array;
     }
 }

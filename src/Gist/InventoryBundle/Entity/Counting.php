@@ -137,6 +137,17 @@ class Counting
         return $flag;
     }
 
+    public function getEntriesTotalQty()
+    {
+        $qty = 0;
+        foreach ($this->entries as $e) {
+            if ($e->getQuantity() > 0) {
+                $qty += $e->getQuantity();
+            }
+        }
+
+        return $qty;
+    }
 
     public function toData()
     {

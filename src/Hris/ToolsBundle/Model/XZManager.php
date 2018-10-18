@@ -662,6 +662,131 @@ class XZManager
         return $array;
     }
     
+    public function getInventoryData($data, $conf)
+    {
+        $dateFrom = new DateTime($data['date']);
+        $dateFrom->setTime(0,0);
+        $dateTo = new DateTime($data['date']);
+        $dateTo->setTime(23,59);
+        $data['date_from'] = $dateFrom;
+        $data['date_to'] = $dateTo;
+
+        // Items Opening and Closing
+        $inv_acct = $this->em->getRepository('GistLocationBundle:POSLocations')->find($data['branch'])->getInventoryAccount();
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistInventoryBundle:Counting', 'o')
+            ->join('GistInventoryBundle:Account', 'a', 'WITH', 'o.inventory_account = a.id')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->andWhere('a.id = :inv_acct ')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->setParameter('inv_acct', $inv_acct->getID());
+
+        $counting = $qb->getQuery()->getResult();
+
+        $array = [];
+        $array['Opening']['count'] = 0;
+        $array['Opening']['responsible'] = '';
+        $array['Closing']['count'] = 0;
+        $array['Closing']['responsible'] = '';
+        foreach ($counting as $key => $c) {
+            $array[$c->getCountTimeSlot()]['count'] = $c->getEntriesTotalQty(); 
+            $array[$c->getCountTimeSlot()]['responsible'] = $c->getUserCreate()->getName(); 
+        }
+
+        // Items In and Out
+        $items_in = 0; 
+        $items_in_name = ''; 
+        $items_out = 0; 
+        $items_out_name = ''; 
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistInventoryBundle:StockTransfer', 'o')
+            ->join('GistInventoryBundle:Account', 'a', 'WITH', 'o.destination_inv_account = a.id')
+            ->where('o.date_received between :date_from and :date_to ')
+            ->andWhere('a.id = :inv_acct ')
+            ->andWhere('o.status = :status')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->setParameter('status', 'arrived')
+            ->setParameter('inv_acct', $inv_acct->getID());
+
+        $stock_transfer_in = $qb->getQuery()->getResult();
+
+        foreach ($stock_transfer_in as $in) {
+            $items_in += $in->countItemEntries();
+            $items_in_name = $in->getReceivingUser()->getName();
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistInventoryBundle:StockTransfer', 'o')
+            ->join('GistInventoryBundle:Account', 'a', 'WITH', 'o.source_inv_account = a.id')
+            ->where('o.date_received between :date_from and :date_to ')
+            ->andWhere('a.id = :inv_acct ')
+            ->andWhere('o.status = :status')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->setParameter('status', 'arrived')
+            ->setParameter('inv_acct', $inv_acct->getID());
+
+        $stock_transfer_out = $qb->getQuery()->getResult();
+
+        foreach ($stock_transfer_out as $out) {
+            $items_out += $out->countItemEntries();
+            $items_out_name = $out->getReceivingUser()->getName();
+        }
+
+        $array['Items In']['count'] = $items_in; 
+        $array['Items In']['name'] = $items_in_name; 
+        $array['Items Out']['count'] = $items_out; 
+        $array['Items Out']['name'] = $items_out_name; 
+
+        // Items Sales and Provided
+        $sales = $this->getAllTransaction($data);
+
+        $items_sales = 0; 
+        foreach ($sales as $s) {
+            $items_sales += count($s->getItems());
+        }
+        $array['Items Sales']['count'] = $items_sales; 
+
+        // Items New Damaged
+        $items_new_damaged = 0; 
+        $items_new_damaged_user = ''; 
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistInventoryBundle:DamagedItemsEntry', 'o')
+            ->join('GistInventoryBundle:DamagedItems', 'd', 'WITH', 'o.damaged_items = d.id')
+            ->join('GistInventoryBundle:Account', 'a', 'WITH', 'd.destination_inv_account = a.id')
+            ->where('o.date_create between :date_from and :date_to ')
+            ->andWhere('o.status = :status')
+            ->setParameter('date_from', $data['date_from'])
+            ->setParameter('date_to', $data['date_to'])
+            ->setParameter('status', 'returned');
+            
+
+        if ($inv_acct->getDamagedContainer() != null) {
+            $qb->andWhere('a.id = :inv_acct ')
+               ->setParameter('inv_acct', $inv_acct->getDamagedContainer()->getID());
+        }
+
+        $damaged_items = $qb->getQuery()->getResult();
+
+        foreach ($damaged_items as $d) {
+            $items_new_damaged += $d->getQuantity();
+            $items_new_damaged_user = $d->getRequestingUser()->getName();
+        }
+
+        $array['Items New Damaged']['count'] = $items_new_damaged; 
+        $array['Items New Damaged']['count_nega'] = $items_new_damaged * -1; 
+        $array['Items New Damaged']['name'] = $items_new_damaged_user; 
+
+        return $array;
+    }
 }
 
 
