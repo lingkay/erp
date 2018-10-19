@@ -21,10 +21,16 @@
                                 {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 3,4,'m/d/Y','m/d/Y') }}
                                 
                             </div>
+                            <div class="col-md-12 list-table-wrapper" style="overflow: auto;">
+                            </div>
+                                  
 
+                            <div class="clearfix"></div>
                             <div class="form-actions fluid">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn blue">Generate</button>
+                                    <button type="submit" class="btn blue">Generate CSV</button>
+                                    <button type="button" id="tb_table_btn" class="btn green">Generate Table</button>
+                                    {# <a class="btn green" href="{{ path('gist_accounting_tb_generate_table',{ 'from' : date_from|date('Y-m-d') , 'to' : date_to|date('Y-m-d') }) }}">Generate Table</a> #}
                                 </div>
                             </div>
                         </form>
@@ -74,7 +80,161 @@ $(document).ready(function() {
     $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
     $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+    $('#tb_table_btn').click(function(){
+        var from = moment($('#cform-date_from').val());
+        var to = moment($('#cform-date_to').val());
+
+        from = from.format('YYYY-MM-DD');
+        to = to.format('YYYY-MM-DD');
+        var path = "{{ path('gist_accounting_tb_generate_table', { 'from' : 'FROM', 'to' : 'TO' } )}}"
+        path = path.replace('FROM',from);
+        path = path.replace('TO',to);
+
+        $.ajax({
+            url: path,
+            type: "GET",
+            success: function(data) {
+                console.log(data,"data");
+                $('#list_table').remove();
+                var html = $('#tb_table_template').html();
+                $('.list-table-wrapper').append(html);
+                
+                // append header 1
+                $('#thead_tb').append('<tr id="tr_thead1">');
+                $.each(data.header1, function(h1, v1) {
+                    $('#tr_thead1').append('<th>'+v1+'</th>');
+                });
+                $('#thead_tb').append('</tr>');
+
+                // append header 2
+                $('#thead_tb').append('<tr id="tr_thead2">');
+                $.each(data.header2, function(h1, v1) {
+                    $('#tr_thead2').append('<th>'+v1+'</th>');
+                });
+                $('#thead_tb').append('</tr>');
+
+                // append list of accounts
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.tb.list, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                    $.each(v1, function(h2, v2) {
+                        $('.1trlist'+h1+'').append('<td>'+v2+'</td>');
+                    });
+
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.total, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="2trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.2trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.total_dc, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="3trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.3trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                // append empty values for spacing
+                $.each(data.tb.total_dc, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="4trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.4trlist'+h1+'').append('<td></td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                // append empty values for spacing
+                $.each(data.tb.total_dc, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="5trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.5trlist'+h1+'').append('<td></td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+
+                $.each(data.tb.assets, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="6trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.6trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.liability, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="7trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.7trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.capital, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="8trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.8trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.space, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="9trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.9trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.netsales, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="10trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.10trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.cos, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="11trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.11trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.opex, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="12trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.12trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+
+                $.each(data.tb.profit, function(h1, v1) {
+                    $('#tbody_tb').append('<tr class="13trlist'+h1+'">');
+                        $.each(v1, function(h2, v2) {
+                            $('.13trlist'+h1+'').append('<td>'+v2+'</td>');
+                        });
+                    $('#tbody_tb').append('</tr>');
+                });
+                $('#list_table').append('</tbody>');
+            },
+            cache: false
+        });
+    });
 });
+</script>
+<script id="tb_table_template" type="x-tmpl-mustache">
+<table class="table table-striped table-bordered table-hover" id="list_table">
+    <thead id="thead_tb">
+    </thead>
+</table>
 </script>
 {% endblock %}
 

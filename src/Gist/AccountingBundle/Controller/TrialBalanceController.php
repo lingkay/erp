@@ -209,6 +209,21 @@ class TrialBalanceController extends BaseController
         return $response;
     }
 
+    public function generateTableAction($from, $to)
+    {
+        $data = $this->getRequest()->request->all();
+        $tb = $this->getTrialBalanceDataTotal($from, $to);
+        $header1 = $this->trialBalanceHeader($from, $to);
+        $header2 = $this->trialBalanceHeader2($from, $to);
+
+        $array['tb'] = $tb; 
+       
+        $array['header1'] = $header1; 
+        $array['header2'] = $header2;
+
+        return new JsonResponse($array);
+    }
+
     public function trialBalanceHeader($from, $to)
     {
         $month_year = $this->getMonthYearArray($from, $to);
