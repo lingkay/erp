@@ -503,7 +503,13 @@ class BalanceSheetController extends TrialBalanceController
                 }
             }
         }  
-        $assets_main['total'] = $asset_total;
+        // reloop for ui table
+        $ass_total = [];
+        foreach ($asset_total as  $ass) {
+            $ass_total[] = $ass;
+        }
+
+        $assets_main['total'] = $ass_total;
 
         $liab_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_LIABILITY]);
 
@@ -636,7 +642,13 @@ class BalanceSheetController extends TrialBalanceController
                 }
             }
         }  
-        $liab_main['total'] = $liab_total;
+        // reloop for ui table
+        $lia_total = [];
+        foreach ($liab_total as  $li) {
+            $lia_total[] = $li;
+        }
+
+        $liab_main['total'] = $lia_total;
 
         $capital_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_CAPITAL]);
 
@@ -770,7 +782,12 @@ class BalanceSheetController extends TrialBalanceController
                 }
             }
         }  
-        $capital_main['total'] = $capital_total;
+        // reloop for ui table
+        $cap_total = [];
+        foreach ($capital_total as  $ct) {
+            $cap_total[] = $ct;
+        }
+        $capital_main['total'] = $cap_total;
 
         $list['assets'] = $assets_main;
         $list['liability'] = $liab_main;
@@ -810,5 +827,25 @@ class BalanceSheetController extends TrialBalanceController
         $array[] = $end;
  
         return $array;
+    }
+
+    public function generateTableAction($from, $to)
+    {
+        $data = $this->getRequest()->request->all();
+        $bs = $this->getBalanceSheetData($from, $to);
+
+        $month_year = $this->getMonthYearArray($from, $to);
+        $date_array = [''];
+        foreach ($month_year as $key => $m) {
+            $date = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $date = $date->format(' F Y');
+            $date_array[] = $date;
+        }
+
+        $array['bs'] = $bs; 
+        $array['date_array'] = $date_array; 
+        $array['month_year'] = $month_year; 
+
+        return new JsonResponse($array);
     }
 }
