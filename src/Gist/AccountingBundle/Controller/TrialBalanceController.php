@@ -446,8 +446,8 @@ class TrialBalanceController extends BaseController
                 $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
-                    'total_debit' => $c->getDebit(),
-                    'total_credit' => $c->getCredit(),
+                    'total_debit' => (float)$c->getDebit(),
+                    'total_credit' => (float)$c->getCredit(),
                 ];
             }
         }
