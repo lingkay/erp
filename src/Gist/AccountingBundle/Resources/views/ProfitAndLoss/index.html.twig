@@ -15,23 +15,25 @@
                 <!-- BEGIN FORM-->
                 <form method="post" class="form-horizontal">
                     <div class="form-body">
-                        <div class="form-group">
+                        <div class="portlet box blue-hoki">
+                            <div class="portlet-body">
                             {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 3,4,'m/d/Y','m/d/Y') }}
+                            <br/>
+                            <button type="submit" class="btn blue">Export CSV</button>
+                            <button type="button" id="tb_table_btn" class="btn green">Generate Table</button>
+                           
+                            </div>
+                        </div>
                             {# 
                             {{ form.group_date('Year', 'year', "now"|date('Y'), 3, 4, false) }}              
                             {{ form.group_select('Month', 'month', months, '', 3, 4) }} #}
                     
-                        </div>
                         <div class="col-md-12 list-table-wrapper" style="overflow: auto;">
                         </div>
                     </div>
                     
                     <div class="clearfix"></div>
                     <div class="form-actions fluid">
-                        <div class="col-md-offset-3 col-md-9">
-                            <button type="submit" class="btn blue">Generate</button>
-                            <button type="button" id="tb_table_btn" class="btn green">Generate Table</button>
-                        </div>
                     </div>
                 </form>
                 <!-- END FORM-->
@@ -138,8 +140,14 @@ $(document).ready(function() {
                             if(typeof(v2.type) != "undefined" && v2.type !== null && v2.type == 'sales') {
                                 delete v2["type"];
                                 $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
+                                var c = 0;
                                 $.each(v2, function(h3, v3) {
-                                    $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                    if (c != 0) {
+                                        $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                                    }else{
+                                        $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                    }
+                                    c++;
                                 });
                                 $('#tbody_tb').append('</tr>');
                             }
@@ -152,9 +160,9 @@ $(document).ready(function() {
                     $('.1trlisttotal').append('<td>TOTAL SALES</td>');
                     $.each(data.pl.netsales['nsale_total'], function(nk, nv) {
                         if(typeof(nv.sales) != "undefined" && nv.sales !== null) {
-                            $('.1trlisttotal').append('<td>'+nv.sales+'</td>');
+                            $('.1trlisttotal').append('<td style="text-align:right;">'+nv.sales.toLocaleString('en')+'</td>');
                         }else{
-                            $('.1trlisttotal').append('<td>0</td>');
+                            $('.1trlisttotal').append('<td style="text-align:right;">0</td>');
                             
                         }
                     });
@@ -175,8 +183,14 @@ $(document).ready(function() {
                             if(typeof(v2.type) != "undefined" && v2.type !== null && v2.type == 'revenue') {
                                 delete v2["type"];
                                 $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
+                                var c = 0;
                                 $.each(v2, function(h3, v3) {
-                                    $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                    if (c != 0) {
+                                        $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                                    }else{
+                                        $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                    }
+                                    c++;
                                 });
                                 $('#tbody_tb').append('</tr>');
                             }
@@ -189,9 +203,9 @@ $(document).ready(function() {
                     $('.2trlisttotal').append('<td>TOTAL REVENUE</td>');
                     $.each(data.pl.netsales['nsale_total'], function(nk, nv) {
                         if(typeof(nv.revenue) != "undefined" && nv.revenue !== null) {
-                            $('.2trlisttotal').append('<td>'+nv.revenue+'</td>');
+                            $('.2trlisttotal').append('<td style="text-align:right;">'+nv.revenue.toLocaleString('en')+'</td>');
                         }else{
-                            $('.2trlisttotal').append('<td>0</td>');
+                            $('.2trlisttotal').append('<td style="text-align:right;">0</td>');
                         }
                     });
                 $('#tbody_tb').append('</tr>');
@@ -200,7 +214,7 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="3trlisttotal">');
                     $('.3trlisttotal').append('<td>NET REVENUE</td>');
                     $.each(data.pl.netsales['total'], function(nk, nv) {
-                        $('.3trlisttotal').append('<td>'+nv+'</td>');
+                        $('.3trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
@@ -225,8 +239,14 @@ $(document).ready(function() {
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
                         $.each(v1.accounts, function(h2, v2) {
                             $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
+                            var c = 0;
                             $.each(v2, function(h3, v3) {
-                                $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                if (c != 0) {
+                                    $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                                }else{
+                                    $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                }
+                                c++;
                             });
                             $('#tbody_tb').append('</tr>');
                         });
@@ -237,7 +257,7 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="4trlisttotal">');
                     $('.4trlisttotal').append('<td>TOTAL COST OF SALES</td>');
                     $.each(data.pl.cos['total'], function(nk, nv) {
-                        $('.4trlisttotal').append('<td>'+nv+'</td>');
+                        $('.4trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
@@ -253,7 +273,7 @@ $(document).ready(function() {
                     $('.5trlisttotal').append('<td>GROSS PROFIT</td>');
                     $.each(data.pl.cos['total'], function(lk, lv) {
                         var sum = data.pl.cos['total'][lk] + data.pl.netsales['total'][lk];
-                        $('.5trlisttotal').append('<td>'+sum+'</td>');
+                        $('.5trlisttotal').append('<td style="text-align:right;">'+sum.toLocaleString('en')+'</td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
@@ -278,8 +298,14 @@ $(document).ready(function() {
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
                         $.each(v1.accounts, function(h2, v2) {
                             $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
+                            var c = 0;
                             $.each(v2, function(h3, v3) {
-                                $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                if (c != 0) {
+                                    $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                                }else{
+                                    $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
+                                }
+                                c++;
                             });
                             $('#tbody_tb').append('</tr>');
                         });
@@ -290,7 +316,7 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="6trlisttotal">');
                     $('.6trlisttotal').append('<td>TOTAL PAYROLL COST</td>');
                     $.each(data.pl.opex['total'], function(nk, nv) {
-                        $('.6trlisttotal').append('<td>'+nv+'</td>');
+                        $('.6trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
                     });
                 $('#tbody_tb').append('</tr>');
 

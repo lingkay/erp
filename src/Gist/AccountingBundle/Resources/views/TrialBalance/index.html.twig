@@ -18,8 +18,15 @@
                     <div class="portlet-body form">
                         <form method="post" class="form-horizontal">
                             <div class="form-body">
-                                {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 3,4,'m/d/Y','m/d/Y') }}
-                                
+                                <div class="portlet box blue-hoki">
+                                    <div class="portlet-body">
+                                    {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 3,4,'m/d/Y','m/d/Y') }}
+                                    <br/>
+                                    <button type="submit" class="btn blue">Export CSV</button>
+                                    <button type="button" id="tb_table_btn" class="btn green">Generate Table</button>
+                                   
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-12 list-table-wrapper" style="overflow: auto;">
                             </div>
@@ -27,11 +34,10 @@
 
                             <div class="clearfix"></div>
                             <div class="form-actions fluid">
-                                <div class="col-md-offset-3 col-md-9">
+                                {# <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn blue">Generate CSV</button>
                                     <button type="button" id="tb_table_btn" class="btn green">Generate Table</button>
-                                    {# <a class="btn green" href="{{ path('gist_accounting_tb_generate_table',{ 'from' : date_from|date('Y-m-d') , 'to' : date_to|date('Y-m-d') }) }}">Generate Table</a> #}
-                                </div>
+                                </div> #}
                             </div>
                         </form>
                     </div>
@@ -118,8 +124,14 @@ $(document).ready(function() {
                 $('#list_table').append('<tbody id="tbody_tb">');
                 $.each(data.tb.list, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                    var c = 0;
                     $.each(v1, function(h2, v2) {
-                        $('.1trlist'+h1+'').append('<td>'+v2+'</td>');
+                        if (c > 2) {
+                            $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                        }else{
+                            $('.1trlist'+h1+'').append('<td>'+v2+'</td>');
+                        }
+                        c++;
                     });
 
                     $('#tbody_tb').append('</tr>');
@@ -127,16 +139,28 @@ $(document).ready(function() {
 
                 $.each(data.tb.total, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="2trlist'+h1+'">');
-                        $.each(v1, function(h2, v2) {
+                    var c = 0;
+                    $.each(v1, function(h2, v2) {
+                        if (c > 2) {
+                            $('.2trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                        }else{
                             $('.2trlist'+h1+'').append('<td>'+v2+'</td>');
-                        });
+                        }
+                        c++;
+                    });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.total_dc, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="3trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.3trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.3trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.3trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
@@ -162,64 +186,112 @@ $(document).ready(function() {
 
                 $.each(data.tb.assets, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="6trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.6trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.6trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.6trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.liability, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="7trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.7trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.7trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.7trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.capital, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="8trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.8trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.8trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.8trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.space, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="9trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.9trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.9trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.9trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.netsales, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="10trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.10trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.10trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.10trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.cos, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="11trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.11trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.11trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.11trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.opex, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="12trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.12trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.12trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.12trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
 
                 $.each(data.tb.profit, function(h1, v1) {
                     $('#tbody_tb').append('<tr class="13trlist'+h1+'">');
+                        var c = 0;
                         $.each(v1, function(h2, v2) {
-                            $('.13trlist'+h1+'').append('<td>'+v2+'</td>');
+                            if (c > 2) {
+                                $('.13trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.13trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
                         });
                     $('#tbody_tb').append('</tr>');
                 });
