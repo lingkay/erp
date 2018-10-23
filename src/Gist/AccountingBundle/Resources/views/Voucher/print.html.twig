@@ -12,8 +12,8 @@ table {
 	<br/>
 	<table >
 		<tr >
-			<td>PAYEE</td>
-			<td>_______________________________</td>
+			<td>PAYEE:</td>
+			<td>{{ obj.getPayee }}</td>
 		</tr>
 
 		<tr>			
@@ -25,6 +25,23 @@ table {
 			<td>{{ obj.getRecordDate|date('m/d/Y') }}</td>
 		</tr>	
 	</table>
+
+	{% if obj.getPaymentType == 'Check' %}
+		<br/>
+		<br/>
+		<table >
+
+
+		<tr>			
+			<td>Check No.: </td>
+			<td> {{ obj.getCheckNumber }}</td>
+		</tr>
+		<tr>
+			<td>Bank: </td>			
+			<td> {{ obj.getBank}} </td>
+		</tr>	
+	</table>
+	{% endif %}
 	<br />
 	<br />
 	<table class="table" style="border: 1px solid; width: 800px" cellspacing="0">	
@@ -57,12 +74,14 @@ table {
 		{% endfor %}
 		</tbody>
 	</table>
+
+
 	<page_footer>
 		<table>
 			<tr>
 				<td style="width:200px">Prepared By: {{ obj.getUserCreate.getDisplayName}}</td>			
-				<td style="width:300px">Certified Correct By: ___________________</td>
-				<td style="width:300px">Approved By: ___________________</td>			
+				<td style="width:300px">Certified Correct By: {{ obj.getCertifiedBy.getDisplayName }} </td>
+				<td style="width:300px">Approved By: {{ obj.getApproved.getDisplayName }} </td>			
 			</tr>
 		</table>		
 	</page_footer>

@@ -112,18 +112,37 @@ class VoucherController extends CrudController
 
     protected function padFormParams(&$params, $obj = null)
     {
+        $um = $this->get('gist_user');
         $params['obj'] = $obj;
+        $params['paytype_opts'] = ["Cash"=>"Cash", "Check" => "Check"];
+        $params['emp_opts'] = $um->getUserFullNameOptions();
+    
     }
+
+
 
     public function pdfAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-   
+        $um = $this->get('gist_user');
+        $data = $this->getRequest()->request->all();
         $obj = $em->getRepository('GistAccountingBundle:CDJTransaction')->find($id);
 
         $params = $this->getViewParams('Edit');
       
+     
+        $obj->setPayee($data['payee'])
+            ->setPaymentType($data['payment_type'])
+            ->setCheckNumber($data['check_number'])
+            ->setBank($data['bank'])
+            ->setCertifiedBy($um->findUser($data['certified_by']))
+            ->setApprovedBy($um->findUser($data['approved_by']));
+
+        $em->persist($obj);
+        $em->flush();
+        
         $this->padFormParams($params, $obj);
+
         $twig = "GistAccountingBundle:Voucher:print.html.twig";
 
         $pdf = $this->get('gist_pdf');

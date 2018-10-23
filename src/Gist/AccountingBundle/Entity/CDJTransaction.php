@@ -31,6 +31,30 @@ class CDJTransaction
     protected $record_date;
 
 
+    /** 
+     * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="certified_id", referencedColumnName="id")
+     */
+    protected $certified_by;
+
+    /** 
+     * @ORM\ManyToOne(targetEntity="\Gist\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="approved_by", referencedColumnName="id")
+     */
+    protected $approved_by;
+
+    /** @ORM\Column(type="string", length=80, nullable=true) */
+    protected $payee;
+
+    /** @ORM\Column(type="string", length=80, nullable=true) */
+    protected $payment_type;
+
+    /** @ORM\Column(type="string", length=80, nullable=true) */
+    protected $check_number;
+
+    /** @ORM\Column(type="string", length=80, nullable=true) */
+    protected $bank;
+
     public function __construct()
     {
     	$this->date_create = new DateTime();
@@ -58,5 +82,72 @@ class CDJTransaction
     {
         return $this->record_date;
     }
+
+    public function setCertifiedBy($certified_by)
+    {
+        $this->certified_by = $certified_by;
+        return $this;
+    }
+
+    public function getCertifiedBy()
+    {
+        return $this->certified_by;
+    }
+
+    public function setApprovedBy($approved_by)
+    {
+        $this->approved_by = $approved_by;
+        return $this;
+    }
+
+    public function getApprovedBy()
+    {
+        return $this->approved_by;
+    }
+
+    public function setCheckNumber($check_number)
+    {
+        $this->check_number = $check_number;
+        return $this;
+    }
+
+    public function getCheckNumber()
+    {
+        return $this->check_number;
+    }
+
+    public function setBank($bank)
+    {
+        $this->bank = $bank;
+        return $this;
+    }
+
+    public function getBank()
+    {
+        return $this->bank;
+    }
+
+    public function setPaymentType($payment_type)
+    {
+        $this->payment_type = $payment_type;
+        return $this;
+    }
+
+    public function getPaymentType()
+    {
+        return $this->payment_type;
+    }
+
+    public function setPayee($payee)
+    {
+        $this->payee = $payee;
+        return $this;
+    }
+
+    public function getPayee()
+    {
+        return $this->payee;
+    }
+
 
 }
