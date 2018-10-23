@@ -9,6 +9,11 @@ gist_accounting_tb_generate:
     methods: [POST]
     defaults: { _controller: GistAccountingBundle:TrialBalance:generateCSV }
 
+gist_accounting_tb_generate_table:
+    pattern: /list_table/{from}/{to}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:TrialBalance:generateTable }
+
 gist_accounting_tb_grid:
     pattern: /grid
     methods: [GET]

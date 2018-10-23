@@ -7,3 +7,8 @@ gist_accounting_bs_generate:
     pattern: /list
     methods: [POST]
     defaults: { _controller: GistAccountingBundle:BalanceSheet:generateCSV }
+
+gist_accounting_bs_generate_table:
+    pattern: /list_table/{from}/{to}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BalanceSheet:generateTable }

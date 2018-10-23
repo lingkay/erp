@@ -260,7 +260,11 @@ class ProfitAndLossController extends TrialBalanceController
 
         $sales_total = ['TOTAL SALES'];
         foreach ($bs['netsales']['nsale_total'] as $t){
-            $sales_total[] = $t['sales'];
+            if (isset($t['sales'])) {
+                $sales_total[] = $t['sales'];
+            }else{
+                $sales_total[] = 0;
+            }
         }
 
         fputcsv($file, $sales_total);
@@ -280,7 +284,11 @@ class ProfitAndLossController extends TrialBalanceController
 
         $revenue_total = ['TOTAL REVENUE'];
         foreach ($bs['netsales']['nsale_total'] as $t){
-            $revenue_total[] = $t['revenue'];
+            if (isset($t['revenue'])) {
+                $revenue_total[] = $t['revenue'];
+            }else{
+                $revenue_total[] = 0;
+            }
         }
         fputcsv($file, $revenue_total);
 
@@ -416,6 +424,8 @@ class ProfitAndLossController extends TrialBalanceController
             foreach ($main_accounts as $acc) {
                 $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
                 foreach($month_year as $key => $m) {
+                    $debit = 0;
+                    $credit = 0;
                     if(isset($coa_array[$acc->getID()][$m]['total_debit']))
                         $debit = $coa_array[$acc->getID()][$m]['total_debit'];
                     if(isset($coa_array[$acc->getID()][$m]['total_credit']))
@@ -448,8 +458,20 @@ class ProfitAndLossController extends TrialBalanceController
             }
         }  
 
-        $netsales_main['total'] = $netsales_total;
-        $netsales_main['nsale_total'] = $nsale_total;
+        // reloop for ui table
+        $n_total = [];
+        foreach ($nsale_total as  $nt) {
+            $n_total[] = $nt;
+        }
+
+        // reloop for ui table
+        $ns_total = [];
+        foreach ($netsales_total as  $nt) {
+            $ns_total[] = $nt;
+        }
+
+        $netsales_main['total'] = $ns_total;
+        $netsales_main['nsale_total'] = $n_total;
 
         $cos_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_COS]);
         
@@ -460,6 +482,8 @@ class ProfitAndLossController extends TrialBalanceController
             foreach ($main_accounts as $acc) {
                 $cos_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
                 foreach($month_year as $key => $m) {
+                    $debit = 0;
+                    $credit = 0;
                     if(isset($coa_array[$acc->getID()][$m]['total_debit']))
                         $debit = $coa_array[$acc->getID()][$m]['total_debit'];
                     if(isset($coa_array[$acc->getID()][$m]['total_credit']))
@@ -476,7 +500,13 @@ class ProfitAndLossController extends TrialBalanceController
                 }
             }
         }  
-        $cos_main['total'] = $cos_total;
+        // reloop for ui table
+        $cs_total = [];
+        foreach ($cos_total as  $cs) {
+            $cs_total[] = $cs;
+        }
+
+        $cos_main['total'] = $cs_total;
 
         $opex_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_OPEX]);
 
@@ -487,6 +517,8 @@ class ProfitAndLossController extends TrialBalanceController
             foreach ($main_accounts as $acc) {
                 $opex_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
                 foreach($month_year as $key => $m) {
+                    $debit = 0;
+                    $credit = 0;
                     if(isset($coa_array[$acc->getID()][$m]['total_debit']))
                         $debit = $coa_array[$acc->getID()][$m]['total_debit'];
                     if(isset($coa_array[$acc->getID()][$m]['total_credit']))
@@ -503,7 +535,14 @@ class ProfitAndLossController extends TrialBalanceController
                 }
             }
         }  
-        $opex_main['total'] = $opex_total;
+
+        // reloop for ui table
+        $o_total = [];
+        foreach ($opex_total as  $ot) {
+            $o_total[] = $ot;
+        }
+
+        $opex_main['total'] = $o_total;
 
         $list['netsales'] = $netsales_main;
         $list['cos'] = $cos_main;
@@ -543,5 +582,25 @@ class ProfitAndLossController extends TrialBalanceController
         $array[] = $end;
  
         return $array;
+    }
+
+    public function generateTableAction($from, $to)
+    {
+        $data = $this->getRequest()->request->all();
+        $pl = $this->getProfitAndLossData($from, $to);
+
+        $month_year = $this->getMonthYearArray($from, $to);
+        $date_array = ['Proposed Profit or Loss'];
+        foreach ($month_year as $key => $m) {
+            $date = new DateTime(substr($m, 0,2).'/'.'01/'.substr($m, 2));
+            $date = $date->format(' F Y');
+            $date_array[] = $date;
+        }
+
+        $array['pl'] = $pl; 
+        $array['date_array'] = $date_array; 
+        $array['month_year'] = $month_year; 
+
+        return new JsonResponse($array);
     }
 }
