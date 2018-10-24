@@ -1,0 +1,16 @@
+config:
+  - category: "Tools"
+    entries:
+    - id: tools_area_manager
+      label: "Area Manager Roles"
+      type: select_multi
+      options_service: gist_user
+      options_method: getGroupOptions
+    - id: tools_admin
+      label: "Admin Roles"
+      type: select_multi
+      options_service: gist_user
+      options_method: getGroupOptions
+    - id: commission_percentage
+      label: "Commission Percentage"
+      type: number

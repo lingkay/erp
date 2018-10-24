@@ -28,13 +28,13 @@ class POSTransactionItem
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $product_id;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $orig_price;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $minimum_price;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $adjusted_price;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */

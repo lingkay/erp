@@ -37,8 +37,11 @@ class POSTransactionSplit
      */
     protected $transaction;
 
-    /** @ORM\Column(type="string", length=20) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $amount;
+
+    /** @ORM\Column(type="float", nullable=true) */
+    protected $commission;
 
     /** @ORM\Column(type="string", length=20) */
     protected $percent;
@@ -54,6 +57,7 @@ class POSTransactionSplit
         $data = new \stdClass();
         $this->dataHasGeneratedID($data);
         $this->dataTrackCreate($data);
+        $this->commission = 0.0;
         return $data;
     }
 
@@ -81,6 +85,17 @@ class POSTransactionSplit
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    public function setCommission($commission)
+    {
+        $this->commission = $commission;
+        return $this;
+    }
+
+    public function getCommission()
+    {
+        return $this->commission;
     }
 
     /**

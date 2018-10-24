@@ -1,6 +1,7 @@
 <?php
 
 namespace Gist\ChartBundle\Model;
+use stdClass;
 
 class ChartSeries
 {
@@ -33,5 +34,14 @@ class ChartSeries
     public function getData()
     {
         return $this->data;
+    }
+
+    public function toData()
+    {
+        $data = new stdClass();
+        $data->name = $this->name;
+        $data->data = $this->data;
+
+        return $data;
     }
 }

@@ -27,6 +27,9 @@ class ConfigEntryController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         foreach ($data as $key => $value)
+            if(is_array($value)){
+                $value = json_encode($value);
+            }
             $config->set($key, $value);
 
         $em->flush();

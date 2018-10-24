@@ -463,4 +463,9 @@ class UserController extends CrudController
             'getName'
         );
     }
+
+    public function buildData($obj)
+    {
+        return $obj->toData();
+    }
 }

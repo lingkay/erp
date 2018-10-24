@@ -1,0 +1,1628 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">XZ Reports </div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+            	<div class="row">
+            	{{ form.group_select('Location','location', area_opts, '', 3,4)}}<br/>
+                {{ form.group_date('Date', 'date',cdate|date('m/d/Y'), 3,4)}}
+                </div>
+            	<div class="row">
+            	<div class="col-md-12">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Total Sales </div>
+		                     <div class="tools">
+			                   <a href="javascript:;" class="collapse"></a>S
+			                </div>
+			            </div>
+			              <div class="portlet-body">
+			              	<div id="chart_container">
+                                <div id="sales_table_container" class="col-md-3">
+                                    <table id="sales_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="sales_stotal_tr">
+                                                <td width="40%">Sub Total:</td>
+                                                <td id="stotal_value"></td>
+                                            </tr>
+                                            <tr class="sales_tdiscount_tr">
+                                                <td width="40%">Total Discount:</td>
+                                                <td id="tdiscount_value"></td>
+                                            </tr>
+                                            <tr class="sales_dgross_tr">
+                                                <td width="40%">Discounted gross:</td>
+                                                <td id="dgross_value"></td>
+                                            </tr>
+                                            <tr class="sales_vgross_tr">
+                                                <td width="40%">Vatebal gross:</td>
+                                                <td id="vgross_value"></td>
+                                            </tr>
+                                            <tr class="sales_vat_tr">
+                                                <td width="40%">V.A.T</td>
+                                                <td id="vat_value"></td>
+                                            </tr>
+                                            <tr class="sales_gtotal_tr">
+                                                <td width="40%">Grand Total:</td>
+                                                <td id="gtotal_value"></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        </tfoot>
+                                    </table>
+                                    <br>
+                                    <table id="sales_table_2" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="sales_pdiscount_tr">
+                                                <td width="40%">% of Discount</td>
+                                                <td id="pdiscount_value"></td>
+                                            </tr>
+                                            <tr class="sales_nsales_tr">
+                                                <td width="40%"># of Sales</td>
+                                                <td id="nsales_value"></td>
+                                            </tr>
+                                            <tr class="sales_acheck_tr">
+                                                <td width="40%">Avg Check</td>
+                                                <td id="acheck_value"></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                        </tfoot>
+                                    </table>
+                                </div>
+							    <div id="sales_chart" class="col-md-9">
+							    </div>
+							</div>
+                            <div class="clearfix"></div>
+			              </div>
+			         </div>
+			     </div>
+
+			     <div class="col-md-12">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Products</div>
+			            	<div class="tools">
+			                   <a href="javascript:;" class="collapse"></a>
+			                </div>
+			            </div>
+			              <div class="portlet-body">
+                            <div class="col-md-10">
+    			              	<table id="product_table" class="table table-striped table-bordered table-hover" id="list_table">
+        		                    <thead>
+        		                        <tr>
+        		                        <th>Item</th>
+        		                        <th>Quantity</th>
+        		                        <th>Price</th>
+        		                        <th>Discount</th>
+        		                        <th>Adjusted Price</th>
+        		                        <th>Average</th>
+        		                        </tr>
+        		                    </thead>
+        		                    <tbody>
+        		                    </tbody>
+        		                    <tfoot>
+        		                    	<tr>
+        		                    		<td>Total</td>
+        		                    		<td id="qty_total"></td>
+        		                    		<td id="price_total"></td>
+        		                    		<td id="discount_total"></td>
+        		                    		<td id="adj_total"></td>
+        		                    		<td ></td>
+        		                    	</tr>
+        		                    </tfoot>
+        		                </table>
+                            </div>
+                            <div class="col-md-2">
+                                <table id="product_avg_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Avg p/Item</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="avg_pitem"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+		                	<div id="chart_container">
+							    <div id="product_chart">
+							    </div>
+							</div>
+			              </div>
+			         </div>
+			     </div>
+				 </div>
+
+            	<div class="row">
+                	<div class="col-md-12">
+    	            	<div class="portlet box blue-hoki">
+    			            <div class="portlet-title">
+    			            	<div class="caption">Employees </div>
+    			            </div>
+    			              <div class="portlet-body">
+    			              	<div id="chart_container">
+                                    <table id="employee_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="3">Employee</th>
+                                                <th colspan="3">Time</th>
+                                                <th colspan="2">Sales</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Employee pic</th>
+                                                <th>Employee ID</th>
+                                                <th>Employee</th>
+                                                <th>IN</th>
+                                                <th>OUT</th>
+                                                <th>Total</th>
+                                                <th>#sales</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="5">Summary</td>
+                                                <td id="emp_total"></td>
+                                                <td id="emp_sales_total"></td>
+                                                <td id="emp_amount_total"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+    							    <div id="employee_chart">
+    							    </div>
+    							</div>
+    			              </div>
+    			         </div>
+    			     </div>
+                 </div>
+
+                <div class="row">
+			        <div class="col-md-12">
+    	            	<div class="portlet box blue-hoki">
+    			            <div class="portlet-title">
+    			            	<div class="caption">Customers</div>
+    			            </div>
+    			              <div class="portlet-body">
+    			              	 <div id="chart_container">
+                                   {#  <table id="customer_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Name</th>
+                                                <th colspan="2">#Tnx</th>
+                                                <th>Arrival</th>
+                                                <th>New Customer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Sum</td>
+                                                <td></td>
+                                                <td id="cust_tnx_total"></td>
+                                                <td id="cust_tnx_amount_total"></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table> #}
+                                    <table id="customer_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Customer</th>
+                                                <th colspan="2">Transactions</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>ID</th>
+                                                <th>#Tnx</th>
+                                                <th>Amount</th>
+                                                <th>Arrival</th>
+                                                <th>New Customer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Sum</td>
+                                                <td></td>
+                                                <td id="cust_tnx_total"></td>
+                                                <td id="cust_tnx_amount_total"></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <div class="col-md-6 ">
+        							    <div id="customer_pie_chart">
+        							    </div>
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        <div id="customer_chart">
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+    							</div>
+    			              </div>
+    			         </div>
+                     </div>
+			     </div>
+				 <div class="row">
+            	 <div class="col-md-6">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Mode of Payment</div>
+			            </div>
+			              <div class="portlet-body">
+			              	<div id="chart_container">
+                                <div class="col-md-6">
+                                    <table id="mode_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                <th>Mode of Payment</th>
+                                                <th>TNX</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="mode_cash_tr">
+                                                <td width="40%">Cash</td>
+                                                <td id="cash_value_count"></td>
+                                                <td id="cash_value"></td>
+                                            </tr>
+                                            <tr class="mode_cc_tr">
+                                                <td width="40%">Credit Card</td>
+                                                <td id="cc_value_count"></td>
+                                                <td id="cc_value"></td>
+                                            </tr>
+                                            <tr class="mode_check_tr">
+                                                <td width="40%">Checks</td>
+                                                <td id="check_value_count"></td>
+                                                <td id="check_value"></td>
+                                            </tr>
+                                            <tr class="mode_gc_tr">
+                                                <td width="40%">Gift Card</td>
+                                                <td id="gc_value_count"></td>
+                                                <td id="gc_value"></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Sum</td>
+                                                <td id="mode_tnx_total"></td>
+                                                <td id="mode_amount_total"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                    <table id="mode_interest_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <tbody>
+                                            <tr class="mode_zero_tr">
+                                                <td width="40%">0 interest</td>
+                                                <td id="zero_value"></td>
+                                            </tr>
+                                            <tr class="mode_interest_tr">
+                                                <td width="40%">W/ interest</td>
+                                                <td id="interest_value"></td>
+                                            </tr>
+                                            <tr class="mode_interest_total_tr">
+                                                <td width="40%">&nbsp;</td>
+                                                <td id="interest_total_value"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table id="mode_list_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <tbody>
+                                            <tr class="mode_0_tr">
+                                                <td width="40%">0</td>
+                                                <td class="list_0_value"></td>
+                                            </tr>
+                                            <tr class="mode_3_tr">
+                                                <td width="40%">3</td>
+                                                <td class="list_3_value"></td>
+                                            </tr>
+                                            <tr class="mode_6_tr">
+                                                <td width="40%">6</td>
+                                                <td class="list_6_value"></td>
+                                            </tr>
+                                            <tr class="mode_9_tr">
+                                                <td width="40%">9</td>
+                                                <td class="list_9_value"></td>
+                                            </tr>
+                                            <tr class="mode_12_tr">
+                                                <td width="40%">12</td>
+                                                <td class="list_12_value"></td>
+                                            </tr>
+                                            <tr class="mode_18_tr">
+                                                <td width="40%">18</td>
+                                                <td class="list_18_value"></td>
+                                            </tr>
+                                            <tr class="mode_24_tr">
+                                                <td width="40%">24</td>
+                                                <td class="list_24_value"></td>
+                                            </tr>
+                                            <tr class="mode_36_tr">
+                                                <td width="40%">36</td>
+                                                <td class="list_36_value"></td>
+                                            </tr>
+                                            <tr class="mode_list_total_tr">
+                                                <td width="40%"></td>
+                                                <td class="list_total_value"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+    							    <div id="mode_chart">
+    							    </div>
+                                   {#  <table id="mode_bank_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                        <thead>
+                                            <tr>
+                                                <th>Bank</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="mode_bpi_tr">
+                                                <td width="40%">BPI</td>
+                                                <td class="bpi_value"></td>
+                                            </tr>
+                                            <tr class="mode_bdo_tr">
+                                                <td width="40%">BDO</td>
+                                                <td class="bdo_value"></td>
+                                            </tr>
+                                            <tr class="mode_mb_tr">
+                                                <td width="40%">M.B</td>
+                                                <td class="mb_value"></td>
+                                            </tr>
+                                            <tr class="mode_union_tr">
+                                                <td width="40%">Union</td>
+                                                <td class="mb_value"></td>
+                                            </tr>
+                                            <tr class="mode_bank_total_tr">
+                                                <td width="40%">&nbsp;</td>
+                                                <td class="bank_total_value"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table> #}
+                                </div>
+                                <div class="clearfix"></div>
+							</div>
+			              </div>
+			         </div>
+			     </div>
+
+			     <div class="col-md-6">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Transactions</div>
+			            </div>
+			              <div class="portlet-body">
+			              	 {# Products #}
+                            <table id="transaction_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Quantity</th>
+                                        <th>Amount</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="transaction_normal_tr">
+                                        <td>Normal</td>
+                                        <td id="normal_qty_value"></td>
+                                        <td id="normal_amount_value"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="transaction_upsale_tr">
+                                        <td>Upsale</td>
+                                        <td id="upsale_qty_value"></td>
+                                        <td id="upsale_amount_value"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Out of</td>
+                                        <td>Balance</td>
+                                    </tr>
+                                    <tr class="transaction_deposit_tr">
+                                        <td>Deposit</td>
+                                        <td id="deposit_qty_value"></td>
+                                        <td id="deposit_amount_value"></td>
+                                        <td id="deposit_outof_value"></td>
+                                        <td id="deposit_balance_value"></td>
+                                    </tr>
+                                    <tr class="transaction_quotation_tr">
+                                        <td>Quotation</td>
+                                        <td id="quotation_qty_value"></td>
+                                        <td id="quotation_amount_value"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="transaction_frozen_tr">
+                                        <td>Frozen</td>
+                                        <td id="frozen_qty_value"></td>
+                                        <td id="frozen_amount_value"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            {# <table id="deposit_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>Out of</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="transaction_deposit_tr">
+                                        <td>Deposit</td>
+                                        <td class="deposit_qty_value"></td>
+                                        <td class="deposit_amount_value"></td>
+                                        <td class="deposit_outof_value"></td>
+                                        <td class="deposit_balance_value"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table id="quotation_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                <tbody>
+                                    <tr class="transaction_quotation_tr">
+                                        <td>Quotation</td>
+                                        <td class="quotation_qty_value"></td>
+                                        <td class="quotation_amount_value"></td>
+                                    </tr>
+                                    <tr class="transaction_frozen_tr">
+                                        <td>Frozen</td>
+                                        <td class="frozen_qty_value"></td>
+                                        <td class="frozen_amount_value"></td>
+                                    </tr>
+                                </tbody>
+                            </table> #}
+			              </div>
+			         </div>
+			     </div>
+				 </div>
+				 <div class="row">
+            	<div class="col-md-6">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Inventory </div>
+			            </div>
+			              <div class="portlet-body">
+			              	<table id="inventory_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Responsible</th>
+                                        <th>Items</th>
+                                        <th>Testers</th>
+                                        <th>Damaged</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="inventory_opening_tr">
+                                        <td>Opening</td>
+                                        <td class="opening_resp_value"></td>
+                                        <td class="opening_item_value"></td>
+                                        <td class="opening_tester_value"></td>
+                                        <td class="opening_damaged_value"></td>
+                                        <td class="opening_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_sold_and_provided_tr">
+                                        <td>(Sold and Provided)</td>
+                                        <td class="sold_and_provided_resp_value"></td>
+                                        <td class="sold_and_provided_item_value"></td>
+                                        <td class="sold_and_provided_tester_value"></td>
+                                        <td class="sold_and_provided_damaged_value"></td>
+                                        <td class="sold_and_provided_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_in_tr">
+                                        <td>In</td>
+                                        <td class="in_resp_value"></td>
+                                        <td class="in_item_value"></td>
+                                        <td class="in_tester_value"></td>
+                                        <td class="in_damaged_value"></td>
+                                        <td class="in_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_out_tr">
+                                        <td>(Out)</td>
+                                        <td class="out_resp_value"></td>
+                                        <td class="out_item_value"></td>
+                                        <td class="out_tester_value"></td>
+                                        <td class="out_damaged_value"></td>
+                                        <td class="out_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_new_tester_tr">
+                                        <td>New Tester</td>
+                                        <td class="new_tester_resp_value"></td>
+                                        <td class="new_tester_item_value"></td>
+                                        <td class="new_tester_tester_value"></td>
+                                        <td class="new_tester_damaged_value"></td>
+                                        <td class="new_tester_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_new_damged_tr">
+                                        <td>New Damaged</td>
+                                        <td class="new_damged_resp_value"></td>
+                                        <td class="new_damged_item_value"></td>
+                                        <td class="new_damged_tester_value"></td>
+                                        <td class="new_damged_damaged_value"></td>
+                                        <td class="new_damged_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_to_be_close_tr">
+                                        <td>Should to be Close</td>
+                                        <td class="to_be_close_resp_value"></td>
+                                        <td class="to_be_close_item_value"></td>
+                                        <td class="to_be_close_tester_value"></td>
+                                        <td class="to_be_close_damaged_value"></td>
+                                        <td class="to_be_close_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_closing_tr">
+                                        <td>Closing</td>
+                                        <td class="closing_resp_value"></td>
+                                        <td class="closing_item_value"></td>
+                                        <td class="closing_tester_value"></td>
+                                        <td class="closing_damaged_value"></td>
+                                        <td class="closing_total_value"></td>
+                                    </tr>
+                                    <tr class="inventory_differents_tr">
+                                        <td>Differents</td>
+                                        <td class="differents_resp_value"></td>
+                                        <td class="differents_item_value"></td>
+                                        <td class="differents_tester_value"></td>
+                                        <td class="differents_damaged_value"></td>
+                                        <td class="differents_total_value"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+			              </div>
+			         </div>
+			     </div>
+
+			     <div class="col-md-12">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Statistics</div>
+			            </div>
+			              <div class="portlet-body">
+			              	 <div id="chart_container">
+							    <div id="statistics_chart">
+							    </div>
+							</div>
+			              </div>
+			         </div>
+			     </div>
+				 </div>
+				 <div class="row">
+            	<div class="col-md-12">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Commissions/Bonus/Fines </div>
+			            </div>
+			              <div class="portlet-body">
+                            <table id="commissions_table" class="table table-striped table-bordered table-hover" id="list_table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3">Employee</th>
+                                        <th colspan="2"></th>
+                                        <th colspan="2"></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Employee pic</th>
+                                        <th>Employee ID</th>
+                                        <th>Employee</th>
+                                        <th>% of Com</th>
+                                        <th>Commis</th>
+                                        <th>Fine</th>
+                                        <th>Bonus</th>
+                                        <th>Sales</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5">Summary</td>
+                                        <td id="commissions_fine_total"></td>
+                                        <td id="commissions_bonus_total"></td>
+                                        <td id="commissions_sales_total"></td>
+                                        <td id="commissions_total"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+			              	{# <div id="chart_container">
+							</div> #}
+			              </div>
+			         </div>
+			     </div>
+
+			     {# <div class="col-md-6">
+	            	<div class="portlet box blue-hoki">
+			            <div class="portlet-title">
+			            	<div class="caption">Targets</div>
+			            </div>
+			              <div class="portlet-body">
+			              	 Products
+			              </div>
+			         </div>
+			     </div> #}
+				 </div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+$(document).ready(function() {
+
+ function filtersChanged()
+ {
+    let data = {'date' : $('#cform-date').val(),
+                'branch': $('#cform-location').val()
+            }
+
+ 	console.log(data);
+
+    requestSalesData(data);
+ 	requestSalesTableData(data);
+ 	requestProductData(data);
+ 	requestStatisticsData(data);
+    requestEmployeeData(data);
+    requestCustomerData(data);
+    requestModeData(data);
+    requestTransactionData(data);
+    requestCommissionData(data);
+    requestInventoryData(data);
+ }
+
+ filtersChanged();
+
+ $('#cform-location').on('change', function(){
+ 	filtersChanged();
+ });
+
+ $("#cform-date").datepicker({
+    todayBtn:  1,
+    autoclose: true,
+ }).on('changeDate', function (selected) {
+    filtersChanged();
+ });
+
+//Sales Portlet
+    var sales_chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'sales_chart',
+            type: 'line',
+            // events: {
+            //     load: requestSalesData
+            // }
+        },
+        title: {
+            text: 'Daily Sales',
+            x: -20 //center
+        },
+        xAxis: {
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '9px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Total Sales (PHP)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -10,
+            y: 100,
+            borderWidth: 0
+        },
+        series: [
+         {
+            name: 'Sales',
+            data: []
+          }
+        ]
+    });
+
+function requestSalesData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_sales')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+        	converted = data.series[0].data.map(function(el){
+            		return parseFloat(el);
+            });
+            sales_chart.xAxis[0].setCategories(data.categories);
+            sales_chart.series[0].setData(converted);
+        },
+        cache: false
+    });
+}
+
+function requestSalesTableData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_sales_table')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            var stotal = 0;
+            var tdiscount = 0;
+            var tsales = 0;
+
+            if(data[0].sub_total != null && data[0].sub_total != '')
+                stotal = data[0].sub_total;
+            if(data[0].total_discount != null && data[0].total_discount != '')
+                tdiscount = data[0].total_discount;
+            if(data[0].total_sales != null && data[0].total_sales != '')
+                tsales = data[0].total_sales;
+
+            var avg = (stotal - tdiscount);
+            if(avg == '0' || stotal == '0'){
+                avg = 0;
+                pdiscount = 0;
+            }else{
+                avg = ((stotal - tdiscount)/tsales);
+                pdiscount = (tdiscount/stotal);
+            }
+                
+            $('#stotal_value').html(Number(stotal).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#tdiscount_value').html(Number(tdiscount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#dgross_value').html(Number((stotal - tdiscount)).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#vgross_value').html(Number(((stotal - tdiscount)/1.12)).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#vat_value').html(Number((((stotal - tdiscount) - ((stotal - tdiscount)/1.12)))).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#gtotal_value').html(Number((stotal - tdiscount)).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#pdiscount_value').html(pdiscount.toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#nsales_value').html(tsales);
+            $('#acheck_value').html(Number(avg).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        },
+        cache: false
+    });
+}
+
+
+//Product portlet
+//
+var branch = 1;
+// requestProductData(branch);
+
+var product_chart = new Highcharts.Chart( {
+    chart: {
+        renderTo: 'product_chart',
+        type: 'column',
+        // events: {
+        //     load: requestProductData
+        // }
+    },
+    title: {
+        text: 'Sales per Product'
+    },
+    xAxis: {
+        categories: [
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Adjusted Sales (PHP)'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} PHP</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Sales',
+        data: [],
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+
+    }]
+
+});
+var product_table = $('#product_table').dataTable({
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        }
+    });
+
+function requestProductData(request) {
+	var branch;
+    $.ajax({
+        url: "{{ path('hris_tools_xz_product')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+     
+        	var categories = [];
+        	var dataSet = [];
+        	var qty_total = 0, price_total = 0,
+        		discount_total = 0, adj_total = 0;
+            product_table.fnClearTable();
+            for(i in data){
+        		product_table.dataTable().fnAddData([data[i].name,
+        			data[i].quantity,
+        			Number(data[i].total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+        			Number(data[i].discount),
+        			Number(data[i].adjusted_price).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+        			Number(data[i].average).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2})]);
+        		categories.push(data[i].name);
+        		dataSet.push(parseFloat(data[i].adjusted_price));
+        		qty_total+= parseFloat(data[i].quantity);
+        		price_total+= parseFloat(data[i].total);
+        		discount_total+= parseFloat(data[i].discount);
+        		adj_total+= parseFloat(data[i].adjusted_price);
+        	}
+
+            if(qty_total == '0' || adj_total == '0'){
+                avg = 0;
+            }else{
+                avg = (adj_total/qty_total);
+            }
+        	$('#qty_total').html(qty_total);
+        	$('#price_total').html(Number(price_total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        	$('#discount_total').html(Number(discount_total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        	$('#adj_total').html(Number(adj_total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+            $('#avg_pitem').html(Number(avg).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+        	product_chart.xAxis[0].setCategories(categories);
+    		product_chart.series[0].setData(dataSet);
+
+
+        },
+        cache: false
+    });
+}
+
+//Statistics Chart
+
+var statistics_chart = new Highcharts.Chart( {
+    chart: {
+        renderTo: 'statistics_chart',
+        type: 'column',
+        // events: {
+        //     load: requestStatisticsData
+        // }
+    },
+    title: {
+        text: 'Sales per Location'
+    },
+    xAxis: {
+        categories: [
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Adjusted Sales (PHP)'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} PHP</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Sales',
+        data: [],
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+
+    }]
+
+});
+
+function requestStatisticsData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_location')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+        	var categories = [];
+        	var dataSet = [];
+        	var sum = 0, count = 0;
+        	for(i in data){
+        		categories.push(data[i].name);
+        		if(request.branch == data[i].id){
+	    			dataSet.push({y: parseFloat(data[i].total), color: "#FFD700"} );
+	    		}else {
+	    			dataSet.push({y: parseFloat(data[i].total), color: "#7cb5ec"} );
+	    		}
+
+	    		sum += parseFloat(data[i].total); 
+	    		count++;
+        	}
+        	var average = sum / count;
+        	// console.log(dataSet);
+        	statistics_chart.xAxis[0].setCategories(categories);
+    		statistics_chart.series[0].setData(dataSet);
+    		statistics_chart.yAxis[0].addPlotLine({
+                value: average,
+                width: 2,
+                color: '#ff0000',
+                zIndex: 3
+            });
+    		
+
+        },
+        cache: false
+    });
+}
+
+//Employee Portlet
+
+var employee_table = $('#employee_table').dataTable({
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        }
+    });
+
+var employee_chart = new Highcharts.Chart( {
+    chart: {
+        renderTo: 'employee_chart',
+        type: 'column',
+        // events: {
+        //     load: requestProductData
+        // }
+    },
+    title: {
+        text: "Employee's Sales"
+    },
+    xAxis: {
+        categories: [
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Amount Sales (PHP)'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span>',
+        // pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        //     '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+        // footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: '#sales',
+        data: [],
+        tooltip: {
+            valueSuffix: '',
+        },
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+
+    },{
+        name: 'Amount',
+        data: [],
+        tooltip: {
+            valueSuffix: ' PHP',
+        },
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+
+    },{
+        name: 'Avg',
+        data: [],
+        tooltip: {
+            valueSuffix: ' PHP',
+        },
+        dataLabels: {
+            enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.2f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+
+    }]
+});
+
+function requestEmployeeData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_employee')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            var total_sales = 0,
+                total_hours = 0,
+                total_amount = 0;
+            var categories = [];
+            var series_sales = [];
+            var series_amount = [];
+            var series_avg = [];
+            employee_table.fnClearTable();
+            for(i in data){
+                for(j in data[i]){
+                    employee_table.dataTable().fnAddData([data[i][j].employee_pic,
+                        data[i][j].employee_id,
+                        data[i][j].employee,
+                        data[i][j].in,
+                        data[i][j].out,
+                        data[i][j].total,
+                        data[i][j].sales,
+                        Number(data[i][j].amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2})]);
+
+                    categories.push(data[i][j].employee);
+                    series_sales.push(data[i][j].sales);
+                    series_amount.push(data[i][j].amount);
+                    series_avg.push(parseFloat(data[i][j].amount/data[i][j].sales));
+                    total_sales+= parseFloat(data[i][j].sales);
+                    total_amount+= parseFloat(data[i][j].amount);
+                    if (data[i][j].total != '') {
+                        total_hours+= parseFloat(data[i][j].total);
+                    }
+                }
+            }
+            $('#emp_total').html(total_hours);
+            $('#emp_sales_total').html(total_sales);
+            $('#emp_amount_total').html(Number(total_amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+            employee_chart.xAxis[0].setCategories(categories);
+            employee_chart.series[0].setData(series_sales);
+            employee_chart.series[1].setData(series_amount);
+            employee_chart.series[2].setData(series_avg);
+        },
+        cache: false
+    });
+}
+var customer_table = $('#customer_table').dataTable({
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        }
+    });
+
+var customer_pie_chart = new Highcharts.Chart({
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        renderTo: 'customer_pie_chart',     
+    },
+    title: {
+        text: 'Customer'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                // enabled: false,
+                enabled: true,
+                formatter: function() {
+                    return Math.round(this.percentage*100)/100 + ' %';
+                },
+                distance: -30,
+                color:'white'
+            },
+            showInLegend: true
+        }
+    },
+    credits:{
+        enabled: false
+    },
+    series: [{
+        name: 'Customer',
+        colorByPoint: true,
+        data: [{
+            name: 'NEW CUST',
+            y: 0,
+            selected: true
+            },{
+            name: 'EXIST CUST',
+            y: 0,
+            selected: true
+            }]
+    }]
+});
+
+var customer_chart = new Highcharts.Chart({
+    chart: {
+        type: 'bar',
+        renderTo: 'customer_chart',     
+    },
+    title: {
+        text: 'CAUSE OF ARRIVAL'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: ['Employee atn', 'Walk in', 'call center'],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'top',
+        x: -40,
+        y: 80,
+        floating: true,
+        borderWidth: 1,
+        backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+        shadow: true
+    },
+    series: [{
+        name: 'Employee atn',
+        data: []
+    }, {
+        name: 'Walk in',
+        data: []
+    }, {
+        name: 'call center',
+        data: []
+    }]
+});
+
+function requestCustomerData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_customer_portlet')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            var total_tnx = 0,
+                total_amount = 0,
+                is_new_count = 0,
+                not_new_count = 0;
+            customer_table.fnClearTable();
+            for(i in data){
+                if(data[i].is_new == 'X'){
+                    not_new_count += 1;
+                }else{
+                    is_new_count += 1;
+                }
+
+                customer_table.dataTable().fnAddData([data[i].name,
+                    data[i].id,
+                    data[i].sales,
+                    Number(data[i].amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    data[i].arrival,
+                    data[i].is_new]);
+                total_tnx += parseFloat(data[i].sales);
+                total_amount+= parseFloat(data[i].amount);
+            }
+            $('#cust_tnx_total').html(total_tnx);
+            $('#cust_tnx_amount_total').html(Number(total_amount).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+            customer_pie_chart.series[0].setData([["NEW CUST",is_new_count],["EXIST CUST",not_new_count]]);
+        },
+        cache: false
+    });
+}
+
+
+//Mode of Payment Portlet
+var mode_chart = new Highcharts.Chart({
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        renderTo: 'mode_chart',     
+    },
+    title: {
+        text: 'Mode of Payment'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                // enabled: false,
+                enabled: true,
+                formatter: function() {
+                    return Math.round(this.percentage*100)/100 + ' %';
+                },
+                distance: -30,
+                color:'white'
+            },
+            showInLegend: true,
+        }
+    },
+    credits:{
+        enabled: false
+    },
+    series: [{
+        name: 'Mode of Payment',
+        colorByPoint: true,
+        data: []
+    }]
+});
+
+
+function requestModeData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_mode')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            var zero_value = 0
+            var interest_value = 0
+            var interest_total_value = 0
+
+            //count
+            $('#cash_value_count').html(data['cash_count']);
+            $('#cc_value_count').html(data['credit_card_count']);
+            $('#check_value_count').html(data['check_count']);
+            $('#gc_value_count').html(data['gift_card_count']);
+            //amount
+            $('#cash_value').html(Number(data['cash']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#cc_value').html(Number(data['credit_card']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#check_value').html(Number(data['check']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#gc_value').html(Number(data['gift_card']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            //total
+            $('#mode_tnx_total').html(data['count_total']);
+            $('#mode_amount_total').html(Number(data['amount_total']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+            //Interest
+            $('#zero_value').html(Number(data['credit_card']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#interest_value').html(Number(data['cc_interests']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#interest_total_value').html(Number((data['credit_card'] - data['cc_interests'] )).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            
+            mode_chart.series[0].setData([["Cash",data['cash']],["Credit Card",data['credit_card']],["Check",data['check']],["Gift Card",data['gift_card']]]);
+        },
+        cache: false
+    });
+}
+
+//Transaction Portlet
+
+function requestTransactionData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_transactions')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            //count
+            $('#normal_qty_value').html(data['normal_count']);
+            $('#upsale_qty_value').html(data['upsale_count']);
+            $('#deposit_qty_value').html(data['deposit_count']);
+            $('#quotation_qty_value').html(data['quotation_count']);
+            $('#frozen_qty_value').html(data['frozen_count']);
+            //amount
+            $('#normal_amount_value').html(Number(data['normal']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#upsale_amount_value').html(Number(data['upsale']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#deposit_amount_value').html(Number(data['deposit']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#quotation_amount_value').html(Number(data['quotation']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#frozen_amount_value').html(Number(data['frozen']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            //total
+            $('#deposit_outof_value').html(Number(data['deposit_outof']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#deposit_balance_value').html(Number(data['deposit_balance']).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        },
+        cache: false
+    });
+}
+
+//Commissions Portlet
+
+var commissions_table = $('#commissions_table').dataTable({
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        }
+    });
+
+function requestCommissionData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_commission')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            var total_fine = 0,
+                total_bonus = 0,
+                total_sales = 0,
+                total = 0;
+
+            commissions_table.fnClearTable();
+            for(i in data){
+                commissions_table.dataTable().fnAddData([data[i].employee_pic,
+                    data[i].employee_id,
+                    data[i].employee,
+                    Number(data[i].percent).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].commission).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].fine).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].bonus).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].sales).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    Number(data[i].total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2})]);
+                    
+                total_fine+= parseFloat(data[i].fine);
+                total_bonus+= parseFloat(data[i].bonus);
+                total_sales+= parseFloat(data[i].sales);
+                total+= parseFloat(data[i].total);
+            }
+
+            $('#commissions_fine_total').html(Number(total_fine).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#commissions_bonus_total').html(Number(total_bonus).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#commissions_sales_total').html(Number(total_sales).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#commissions_total').html(Number(total).toLocaleString('en',{minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        },
+        cache: false
+    });
+}
+
+function requestInventoryData(request) {
+    $.ajax({
+        url: "{{ path('hris_tools_xz_inventory')}}",
+        type: "GET",
+        dataType: "json",
+        data : request,
+        success: function(data) {
+            // totals
+            var opening_total = data['Opening'].count;
+            var in_total = data['Items In'].count;
+            var out_total = data['Items Out'].count;
+            var new_damaged_total = data['Items New Damaged'].count + data['Items New Damaged'].count_nega;
+            var closing_total = data['Closing'].count;
+
+            // should to be close 
+            var stbc_item = data['Opening'].count + data['Items Sales'].count + data['Items In'].count + data['Items Out'].count + data['Items New Damaged'].count_nega;
+            var stbc_damaged = data['Items New Damaged'].count;
+            var stbc_total = stbc_item + stbc_damaged;
+
+            // difference
+            var item_diff = stbc_total - data['Closing'].count;
+            var damaged_diff = stbc_damaged;
+            var diff_total = item_diff + damaged_diff;
+
+            $('.opening_resp_value').html(data['Opening'].responsible);
+            $('.opening_item_value').html(data['Opening'].count);
+            $('.opening_tester_value').html('');
+            $('.opening_damaged_value').html('');
+            $('.opening_total_value').html(opening_total);
+            $('.sold_and_provided_resp_value').html('');
+            $('.sold_and_provided_item_value').html(data['Items Sales'].count);
+            $('.sold_and_provided_tester_value').html('');
+            $('.sold_and_provided_damaged_value').html('');
+            $('.sold_and_provided_total_value').html(data['Items Sales'].count);
+            $('.in_resp_value').html(data['Items In'].name);
+            $('.in_item_value').html(data['Items In'].count);
+            $('.in_tester_value').html('');
+            $('.in_damaged_value').html('');
+            $('.in_total_value').html(in_total);
+            $('.out_resp_value').html(data['Items Out'].name);
+            $('.out_item_value').html(data['Items Out'].count);
+            $('.out_tester_value').html('');
+            $('.out_damaged_value').html('');
+            $('.out_total_value').html(out_total);
+            $('.new_tester_resp_value').html('');
+            $('.new_tester_item_value').html('');
+            $('.new_tester_tester_value').html('');
+            $('.new_tester_damaged_value').html('');
+            $('.new_tester_total_value').html('');
+            $('.new_damged_resp_value').html(data['Items New Damaged'].name);
+            $('.new_damged_item_value').html(data['Items New Damaged'].count_nega);
+            $('.new_damged_tester_value').html('');
+            $('.new_damged_damaged_value').html(data['Items New Damaged'].count);
+            $('.new_damged_total_value').html(new_damaged_total);
+            $('.to_be_close_item_value').html(stbc_item);
+            $('.to_be_close_resp_value').html('');
+            $('.to_be_close_tester_value').html('');
+            $('.to_be_close_damaged_value').html(stbc_damaged);
+            $('.to_be_close_total_value').html(stbc_total);
+            $('.closing_resp_value').html(data['Closing'].responsible);
+            $('.closing_item_value').html(data['Closing'].count);
+            $('.closing_tester_value').html('');
+            $('.closing_damaged_value').html('');
+            $('.closing_total_value').html(closing_total);
+            $('.differents_resp_value').html('');
+            $('.differents_item_value').html(item_diff);
+            $('.differents_tester_value').html('');
+            $('.differents_damaged_value').html(damaged_diff);
+            $('.differents_total_value').html(diff_total);
+        },
+        cache: false
+    });
+}
+});
+
+
+</script>
+
+{% endblock %}
+{% block css %}
+<style type="text/css">
+#product_table td {
+	text-align: right;
+}
+</style>
+{% endblock %}

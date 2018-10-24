@@ -1,0 +1,133 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                {% if app.user.hasAccess(prefix ~ '.add') %}
+                    <a href="{{ path(route_add) }}" class="btn green">Add New</a>
+                {% endif %}
+                </div>
+                <div class="portlet box blue-hoki">
+                    <div class="portlet-body">
+                    {{ form.group_date_range('daterange', "Record Date", 'date_from','date_to', date_from, date_to, 2,4,'m/d/Y','m/d/Y') }}
+                        <br/><br/><a id="btn_filter" href="javascript:void(0)" class="btn green">Filter</a>
+                        <a href="{{ path('hris_tools_deposit_csv')}}" id="btn_csv"  class="btn green" >Download CSV File</a>
+               
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover" id="list_table">
+                    <thead>
+                        <tr>
+                        {% for col in grid_cols %}
+                            <th>{{ col.getLabel }}</th>
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+var date_from = "{{ date_from }}";
+var date_to = "{{ date_to }}";
+$(document).ready(function() {
+
+function generatePath(){
+  
+    var from = $('#cform-date_from').val();
+    var to = $('#cform-date_to').val();
+
+    var path = "{{path(route_grid)}}"
+    var csv_path = "{{path('hris_tools_deposit_csv')}}"
+  
+    var data = {'date_from' : from,
+                'date_to' : to};
+    let qs = $.param(data);
+
+
+    var resp = {'path': path+"?"+qs,
+                'csv': csv_path+"?"+qs};
+    return resp ;
+
+}
+
+
+    // $('#btn_filter').click(function(){
+    //         var from = $('#cform-date_from').val();
+    //         var to = $('#cform-date_to').val();
+    //          window.location.replace("{{ path('hris_tools_deposit_index') }}?date_from="+from+"&date_to="+to);
+
+    //     });
+
+     var dTable = $('#list_table').dataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "{{ path(route_grid) }}?date_from="+date_from+"&date_to="+date_to,
+        "iDisplayLength": 100,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ records",
+            "oPaginate": {
+                "sPrevious": "Prev",
+                "sNext": "Next"
+            }
+        },
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [{{ grid_cols|length - 1}}] },
+        ]
+    });
+
+    $('#btn_filter').on('click',function(){
+        path = generatePath();
+        dTable.fnReloadAjax(path.path);
+        $('#btn_csv').attr('href', path.csv);
+
+    });
+    
+    $('#daterange').daterangepicker(
+            {
+                ranges: {
+                    'Today': [new Date(), new Date()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), new Date()],
+                    'Last 30 Days': [moment().subtract('days', 29), new Date()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                opens: 'left',
+                format: 'MM/DD/YYYY',
+            },
+            function(start, end) {
+                $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+                $('#cform-date_from').val(start.format('MM/DD/YYYY'));
+                $('#cform-date_to').val(end.format('MM/DD/YYYY'));
+                
+            }
+        );
+    $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
+    $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

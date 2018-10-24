@@ -2917,6 +2917,22 @@ Portlets
   background-image: url(../img/portlet-collapse-icon.png);
   width: 14px;
 }
+.portlet > .portlet-title > .tools > a.fullscreen {
+  display: inline-block;
+  top: -7px;
+  padding-right: 10px;
+  padding-left: 7px;
+  position: relative;
+  font-size: 120%;
+  font-family: FontAwesome;
+  color: #ACACAC;
+}
+.portlet > .portlet-title > .tools > a.fullscreen:before {
+  content: "\f065";
+}
+.portlet > .portlet-title > .tools > a.fullscreen.on:before {
+  content: "\f066";
+}
 .portlet > .portlet-title > .tools > a:hover {
   text-decoration: none;
   -webkit-transition: all 0.1s ease-in-out;

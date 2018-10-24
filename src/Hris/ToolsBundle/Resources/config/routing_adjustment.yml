@@ -1,0 +1,40 @@
+
+hris_tools_adjustment_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:Adjustment:index }
+
+hris_tools_adjustment_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:Adjustment:grid }
+
+hris_tools_adjustment_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:Adjustment:addForm }
+
+hris_tools_adjustment_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: HrisToolsBundle:Adjustment:addSubmit }
+
+hris_tools_adjustment_edit_form:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:Adjustment:editForm }
+
+hris_tools_adjustment_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: HrisToolsBundle:Adjustment:editSubmit }
+
+hris_tools_adjustment_delete:
+    pattern: /delete/{id}
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:Adjustment:delete }
+
+hris_tools_adjustment_csv:
+    pattern: /csv
+    methods: [GET]
+    defaults: { _controller: HrisToolsBundle:Adjustment:csv }

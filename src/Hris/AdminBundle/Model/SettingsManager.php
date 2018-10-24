@@ -342,4 +342,90 @@ class SettingsManager
 
         return $incentivePeriods;
     }
+
+    public function getBonusOptions($filter = [])
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('HrisAdminBundle:Bonus')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $options = array();
+        foreach ($entries as $entry)
+            $options[$entry->getID()] = $entry->getName();
+
+        return $options;
+    }
+
+      public function getFineOptions($filter = [])
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('HrisAdminBundle:Fines')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        $options = array();
+        foreach ($entries as $entry)
+            $options[$entry->getID()] = $entry->getName();
+
+        return $options;
+    }
+
+    public function getDepositOptions($filter = [])
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('HrisAdminBundle:Deposit')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+        $options = array();
+        foreach ($entries as $entry)
+            $options[$entry->getID()] = $entry->getName();
+
+        return $options;
+    }
+
+    public function findDepositType($id)
+    {
+        return $this->em->getRepository('HrisAdminBundle:Deposit')->find($id);
+    }
+
+    public function findBonus($id)
+    {
+        return $this->em->getRepository('HrisAdminBundle:Bonus')->find($id);
+    }
+
+    
+    public function findFine($id)
+    {
+        return $this->em->getRepository('HrisAdminBundle:Fines')->find($id);
+    }
+
+
+    public function getPOSLocations()
+    {
+        $em = $this->em;
+        $entries = $em
+            ->getRepository('Gist\LocationBundle\Entit:POSLocations')
+            ->findBy(
+                $filter,
+                array('id' => 'ASC')
+            );
+
+        return $entries;
+    
+    }
+
+    
+
+
+
 }

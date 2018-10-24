@@ -1,0 +1,32 @@
+
+gist_accounting_crj_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CRJ:index }
+
+gist_accounting_crj_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CRJ:grid }
+
+gist_accounting_crj_add_form:
+    pattern: /add
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CRJ:addForm }
+
+gist_accounting_crj_add_submit:
+    pattern: /add
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:CRJ:addSubmit }
+
+
+gist_crj_settings_index:
+    pattern: /settings
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CRJ:settingsForm }
+
+
+gist_crj_settings_submit:
+    pattern: /settings
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:CRJ:settingsSubmit }

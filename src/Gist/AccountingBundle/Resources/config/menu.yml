@@ -4,6 +4,37 @@ menu_items:
       label: Accounting
       icon: fa-money
 
+
+    - id: gist_accounting_settings
+      acl: gist_accounting_settings.menu
+      label: Accounting Settings
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_main_index
+      acl: gist_accounting_main.menu
+      label: Main Accounts
+      parent: gist_accounting_settings
+
+    - id: gist_accounting_accounts_index
+      acl: gist_accounting_accounts.menu
+      label: Chart of Accounts
+      parent: gist_accounting_settings
+
+    - id: gist_crj_settings_index
+      acl: gist_crj_settings.menu
+      label: CRJ Settings
+      parent: gist_accounting_settings
+
+    - id: gist_tb_settings_index
+      acl: gist_tb_settings.menu
+      label: Trial Balance Settings
+      parent: gist_accounting_settings
+
+    - id: gist_month_end_index
+      acl: gist_month_end.menu
+      label: Month End Closing
+      parent: gist_accounting_settings
+
     - id: gist_banks_menu
       acl: gist_banks.menu
       label: Banks
@@ -84,3 +115,38 @@ menu_items:
       acl: hris_payroll_settings_incentive.menu
       label: Incentives
       parent: menu_hr
+
+    - id: gist_accounting_cdj_index
+      acl: gist_accounting_cdj.menu
+      label: CDJ
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_voucher_index
+      acl: gist_accounting_voucher.menu
+      label: Payment Voucher
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_crj_index
+      acl: gist_accounting_crj.menu
+      label: CRJ
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_general_index
+      acl: gist_accounting_general.menu
+      label: General Journal
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_tb_index
+      acl: gist_accounting_tb.menu
+      label: Trial Balance
+      parent: gist_accounting_menu
+    
+    - id: gist_accounting_bs_index
+      acl: gist_accounting_bs.menu
+      label: Balance Sheet
+      parent: gist_accounting_menu
+    
+    - id: gist_accounting_pl_index
+      acl: gist_accounting_pl.menu
+      label: Profit or Loss Sheet
+      parent: gist_accounting_menu
