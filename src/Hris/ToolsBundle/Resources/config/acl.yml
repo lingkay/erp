@@ -15,3 +15,65 @@ acl:
           label: "Menu"
         - id: hris_tools_weekly_schedule.view
           label: "View"
+
+    - category: Bonus/Fines
+      entries:
+        - id: hris_tools_bonus.menu
+          label: "Menu"
+        - id: hris_tools_bonus.view
+          label: "View"
+        - id: hris_tools_bonus.add
+          label: "Add"
+        - id: hris_tools_bonus.edit
+          label: "Edit"
+        - id: hris_tools_bonus.delete
+          label: "Delete"
+
+    - category: Deposit
+      entries:
+        - id: hris_tools_deposit.menu
+          label: "Menu"
+        - id: hris_tools_deposit.view
+          label: "View"
+        - id: hris_tools_deposit.add
+          label: "Add"
+        - id: hris_tools_deposit.edit
+          label: "Edit"
+        - id: hris_tools_deposit.delete
+          label: "Delete"
+
+
+    - category: Adjustment
+      entries:
+        - id: hris_tools_adjustment.menu
+          label: "Menu"
+        - id: hris_tools_adjustment.view
+          label: "View"
+        - id: hris_tools_adjustment.add
+          label: "Add"
+        - id: hris_tools_adjustment.edit
+          label: "Edit"
+        - id: hris_tools_adjustment.delete
+          label: "Delete"
+
+    - category: Cash Advance
+      entries:
+        - id: hris_tools_advance.menu
+          label: "Menu"
+        - id: hris_tools_advance.view
+          label: "View"
+        - id: hris_tools_advance.add
+          label: "Add"
+        - id: hris_tools_advance.edit
+          label: "Edit"
+        - id: hris_tools_advance.delete
+          label: "Delete"
+
+    - category: XZ Tools
+      entries:
+        - id: hris_tools_xz.menu
+          label: "Menu"
+        - id: hris_tools_xz.view
+          label: "View"
+  
+

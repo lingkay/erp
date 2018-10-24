@@ -1,0 +1,331 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">{% block form_header %}Role{% endblock %}</div>
+                </div>
+                <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form method="post" class="form-horizontal" id="advance_form">
+                        <div class="form-body">
+                            <h4 class="form-section">Information</h4>
+                            {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Employee', 'employee', emp_opts, object.getEmployee != null ? object.getEmployee.getID: "", 3, 4, readonly) }}
+                            {{ form.group_text('Team', 'team', object.getTeam != null ? object.getTeam.getName : "" , 3, 4, true) }}
+                 	        {{ form.group_select('Given By', 'given', emp_opts, object.getGivenBy != null ? object.getGivenBy.getID :"", 3, 4, readonly) }}
+                            
+                            {# {{ form.group_select('Adjustment', 'adjustment_type', adjustment_opts, object.getAdjustmentType|default(''), 3, 4, readonly) }} #}
+                            {{ form.group_number('Total Amount', 'amount', object.getTotal|default(0.00), 3, 2, readonly) }}
+					        {{ form.group_number('Current Balance', 'balance', object.getBalance|default(0.00), 3, 2, true) }}
+                            {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }}
+                    		{{ form.group_date('Date Request', 'date_request', object.getDateRequest|date('m/d/Y'), 3, 3, readonly) }}
+                            {{ form.group_date('Date Released', 'date_release', object.getDateRelease|date('m/d/Y'), 3, 3, readonly) }}
+                            
+                            {# {{ form.group_select('Cutoff', 'cutoff', cutoff_opts, object.getCutoff|default(''), 3, 2, readonly) }} #}
+                            
+                            <div class="portlet box blue-hoki">
+                                <div class="portlet-title">
+                                    <div class="caption">Deductions</div>
+                                    <div class="actions">
+                                          <a href="javascript:void(0)" id="add_deduction" class="btn green">Add Deduction</a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body form">
+                                    <table class="table table-striped table-bordered table-hover" id="list_table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Deduction Amount</th>
+                                            <th>Balance</th>
+                                            <th>Deduction Date</th>
+                                            <th>Cutoff</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in object.getEntries %}
+                                        <tr >
+                                            <td style="vertical-align:middle">
+                                                <span class="row_count"></span>
+                                            </td>
+                                            <td style="vertical-align:middle">
+                                               <input class="form-control price align-right deduction_input" name="deduction_input[]" type="number" value="{{ row.getDeduction }}" min="0" />
+                                            </td>
+                                            <td style="vertical-align:middle">
+                                               <input class="form-control price align-right balance_input" name="balance_input[]" type="number" value="{{ row.getBalance }}" min="0" readonly="readonly" />
+                                            </td>
+                                            <td style="vertical-align:middle">
+                                                 <div class="input-group date date-picker" data-date-format="mm/dd/yyyy">
+                                                    <input type="text" class="form-control" name="date_deduction[]" placeholder="" value="{{ row.getDateDeduction|date('m/d/Y')}}" readonly>
+                                                    <span class="input-group-btn">
+                                                        <button class="btn default calendar" type="button"><i class="fa fa-calendar"></i></button>
+                                                    </span>
+                                                </div>
+                                             </td>
+                                            <td style="vertical-align:middle">
+                                                {{ form.select('cutoff[]', cutoff_opts)}}
+                                            </td>
+                                            <td style="vertical-align:middle">
+                                                <button type="button" class="btn default btn-xs red btn_delete">
+                                                    <i class="fa fa-minus-circle"></i>
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                {% if not readonly %}
+                                    <button type="submit" class="btn blue">Submit</button>
+                                {% endif %}
+                                <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script id="row-template" type="x-tmpl-mustache">
+    <tr >
+        <td style="vertical-align:middle">
+            <span class="row_count"></span>
+        </td>
+        <td style="vertical-align:middle">
+           <input class="form-control price align-right deduction_input" name="deduction_input[]" type="number" value="0" min="0" />
+        </td>
+        <td style="vertical-align:middle">
+           <input class="form-control price align-right balance_input" name="balance_input[]" type="number" value="0" min="0" readonly="readonly" />
+        </td>
+        <td style="vertical-align:middle">
+             <div class="input-group date date-picker" data-date-format="mm/dd/yyyy">
+                <input type="text" class="form-control" name="date_deduction[]" placeholder="" value="" readonly>
+                <span class="input-group-btn">
+                    <button class="btn default calendar" type="button"><i class="fa fa-calendar"></i></button>
+                </span>
+            </div>
+         </td>
+        <td style="vertical-align:middle">
+            {{ form.select('cutoff[]', cutoff_opts)}}
+        </td>
+        <td style="vertical-align:middle">
+            <button type="button" class="btn default btn-xs red btn_delete">
+                <i class="fa fa-minus-circle"></i>
+                Remove
+            </button>
+        </td>
+    </tr>
+</script>
+<script>
+$(document).ready(function() {
+
+        function computeBalance()
+        {
+            let balance = $('#cform-amount').val();
+
+            $('#list_table tbody tr').each(function(){
+                let row = $(this)
+                let deduction = row.find('.deduction_input').val();
+                balance-= deduction;
+                row.find('.balance_input').val(balance);
+            });
+            $('#cform-balance').val(balance);
+        }
+
+
+        function addDeduction()
+        {
+             var template = $('#row-template').html();
+             Mustache.parse(template);
+             var entry = Mustache.render(template,{count:1});
+             $('#list_table tbody').append(entry);
+             $('.select_2').select2(); 
+             $('.date-picker').datepicker({
+                todayHighlight: true,
+                autoclose: true
+              });
+             updateCount();
+             computeBalance();
+        }
+
+        function removeDeduction(el)
+        {
+            $(el).parents('tr').remove();
+            updateCount();
+            computeBalance();
+        }
+
+        function updateCount(){
+            let count = 1;
+            $('#list_table tbody tr').each(function(){
+                $(this).find('.row_count').html(count);
+                count++;
+            })
+        }
+        function switchType()
+        {
+            let type = $('#cform-type').val();
+            switch(type){
+                case "Straight":
+                    $('#add_deduction').hide();
+                    $('.btn_delete').hide();
+                    break;
+                case "Installment":
+                    $('#add_deduction').show();
+                    $('.btn_delete').show();
+                    break;
+            }
+
+            $('#list_table tbody').html('');
+            addDeduction();
+
+
+        }
+
+    	function switchEmployee()
+    	{
+
+	        var path;
+	        var employee = $('#cform-employee').val();
+	        path = "{{path('cat_user_user_ajax_get', {'id': 'EMPLOYEE'})}}";
+	        path = path.replace('EMPLOYEE', employee);
+
+	        var $request = $.ajax({
+	            url: path
+	        });
+
+	        $request.then(function (data){
+	            console.log(data);
+	            $('#cform-team').val(data.area.name)
+	        });
+    	}
+
+        updateCount();
+    	switchEmployee();
+        {% if object.getID == null %}
+            switchType();
+        {% endif %}
+      // $('#list_table tbody').html('');
+      //               addDeduction();
+              
+
+        $('#cform-type').change(function(){
+            switchType();
+        });
+
+    	$('#cform-employee').change(function(){
+			switchEmployee();
+    	});
+    	
+        $('#add_deduction').click(function(){
+            addDeduction();
+        });
+
+        $('#list_table').on('click','.btn_delete', function(){
+            removeDeduction(this);
+        });
+
+        $('#list_table').on('change','.deduction_input', function(){
+            computeBalance();
+        });
+        $('#cform-amount').change(function(){
+            computeBalance();
+        });
+
+
+         $('#advance_form').submit(function(e) {
+
+            let invalid_deduction = false;
+            let invalid_date = false;
+            $('#list_table > tbody > tr:visible').each(function() {
+                let  deduction = $(this).find('.deduction_input').val();
+                
+                if(deduction <= 0 ){
+                    invalid_deduction = true;
+                }
+
+                 let  date_picker = $(this).find('.date-picker input').val();
+                if(date_picker == '' ){
+                    invalid_date = true;
+                }
+
+            });
+
+            if(invalid_deduction){
+                 e.preventDefault();
+                 toastr['error']('Deduction Cannot be 0.');
+                 return;
+             }
+
+             if(invalid_date){
+                 e.preventDefault();
+                 toastr['error']('Date Cannot be blank.');
+                 return;
+             }
+        });
+
+
+        // FormValidation.init(); // init form validation
+
+        // // set default error and success elements
+        // jQuery.validator.setDefaults({
+        //     errorClass: 'help-block',
+        //     errorElement: 'span',
+        //     errorPlacement: function(error, element) {
+        //         if(element.parent().parent().hasClass('form-group'))
+        //         {
+        //             error.appendTo(element.parent().last());
+        //             element.parent().parent().addClass('has-error');
+        //         }
+        //         else
+        //         {
+        //             error.appendTo(element.parent().parent().last());
+        //             element.parent().parent().parent().addClass('has-error');
+        //         }
+        //     },
+        //     success: function(element) {
+        //         if(element.parent().parent().hasClass('form-group'))
+        //         {
+        //             element.parent().parent().removeClass('has-error');
+        //             element.parent().parent().addClass('has-success');
+        //         }
+        //         else
+        //         {
+        //             element.parent().parent().parent().removeClass('has-error');
+        //             element.parent().parent().parent().addClass('has-success');
+        //         }
+
+        //         element.remove();
+        //     }
+        // });
+
+        // // validate form elements
+        // $(".form-horizontal").validate({
+        //     onfocusout: function(element) {
+        //         this.element(element);
+        //     },
+        //     rules: {
+        //         name: {
+        //             required: true
+        //         }
+        //     },
+        //     submitHandler: function(form) {
+        //         form.submit();
+        //     }
+        // });
+    });
+    </script>
+{% endblock %}

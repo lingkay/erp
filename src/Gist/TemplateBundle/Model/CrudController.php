@@ -172,8 +172,14 @@ abstract class CrudController extends BaseController
         $this->padGridParams($params, $id);
 
         $engine = $this->get('templating');
+
+        $twig_file = 'GistTemplateBundle:Object:action.html.twig';
+        if ($this->get('templating')->exists($this->base_view.':action.html.twig')) {
+          $twig_file = $this->base_view.':action.html.twig';
+        }
+
         return $engine->render(
-            'GistTemplateBundle:Object:action.html.twig',
+            $twig_file,
             $params
         );
     }
@@ -199,9 +205,13 @@ abstract class CrudController extends BaseController
             $twig_file = 'GistTemplateBundle:Object:list.dynamic.html.twig';
         }
 
+        if ($this->get('templating')->exists($this->base_view.':index.html.twig')) {
+            $twig_file = $this->base_view.':index.html.twig';
+        }
+
         $params['list_title'] = $this->list_title;
         $params['grid_cols'] = $gl->getColumns();
-
+        $this->padListParams($params);
         return $this->render($twig_file, $params);
     }
 
@@ -325,11 +335,17 @@ abstract class CrudController extends BaseController
         }
         catch (ValidationException $e)
         {
-             $this->addFlash('error', 'Database error occurred. Possible duplicate.');
-            return $this->addError($obj);
+            $this->addFlash('error',$e->getMessage());
+         
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
+         
+            error_log($e->getMessage());
+             return $this->addError($obj);
         }
         catch (DBALException $e)
         {
+             $this->addFlash('error',$e->getMessage());
+         
             $this->addFlash('error', 'Database error occurred. Possible duplicate.');
             error_log($e->getMessage());
             return $this->addError($obj);
@@ -513,7 +529,7 @@ abstract class CrudController extends BaseController
     protected function logAdd($data)
     {
         $log = $this->get('gist_log');
-        error_log(print_r($data, true));
+        // error_log(print_r($data, true));
         $desc = 'added ' . $this->title . ' ' . $data->id . '.';
         $log->log($this->route_prefix . '_add', $desc, $data);
     }
@@ -557,7 +573,7 @@ abstract class CrudController extends BaseController
 
     public function formatPrice($price)
     {
-        return '<div class="numeric">'.number_format($price, 2).'</div>';
+        return '<div class="numeric"> ₱ '.number_format($price, 2).'</div>';
     }
 
     public function formatDate($date)

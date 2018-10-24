@@ -1,0 +1,59 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">CRJ Settings</div>
+                </div>
+                <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                            <table class=" table table-striped table-bordered table-hover">
+                                <thead>
+                                    <th>Account</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Sales</td>
+                                        <td></td>
+                                        <td>{{ form.select('sales_debit', account_opts, sales_debit) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Receivable</td>
+                                        <td>{{ form.select('receivable_credit', account_opts, receivable_credit) }}</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {# {{ form.group_select('Account Name', 'name', account_opts,object.getName|default(""), 3, 4, readonly) }} #}
+                 	        {# {{ form.group_text('Code', 'code', object.getCode|default(""), 3, 4, readonly) }} #}
+                            {# {{ form.group_textarea('Description', 'notes', object.getNotes|default(''), 4, 3, 4, readonly) }} #}
+                            
+                        </div>
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                    <button type="submit" class="btn blue">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+
+        	
+        });
+    </script>
+{% endblock %}

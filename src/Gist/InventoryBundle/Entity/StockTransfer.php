@@ -176,6 +176,18 @@ class StockTransfer
         return true;
     }
 
+    public function countItemEntries()
+    {
+        $total = 0;
+        foreach ($this->entries as $entry){
+            if ($entry->getReceivedQuantity() != null && $entry->getReceivedQuantity() > 0) {
+                $total += $entry->getReceivedQuantity();
+            }
+        }
+
+        return $total;
+    }
+
     public function toData()
     {
         $entries = array();

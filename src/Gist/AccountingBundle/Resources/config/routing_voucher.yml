@@ -1,0 +1,21 @@
+
+gist_accounting_voucher_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Voucher:index }
+
+gist_accounting_voucher_grid:
+    pattern: /grid
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Voucher:grid }
+
+gist_accounting_voucher_print:
+    pattern: /print/{id}
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:Voucher:pdf }
+
+
+gist_accounting_voucher_view:
+    pattern: /edit/{id}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:Voucher:editForm }

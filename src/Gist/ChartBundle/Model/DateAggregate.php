@@ -32,13 +32,13 @@ class DateAggregate
         {
             case self::TYPE_DAILY:
                 $agg_data = $this->initializeDaily($date_from, $date_to);
-                return $this->processData($agg_data, $series, $data, 'Ymd', $method_date, $method_value);
+                return $this->processData2($agg_data, $series, $data, 'Ymd', $method_date, $method_value);
             case self::TYPE_MONTHLY:
                 $agg_data = $this->initializeMonthly($date_from, $date_to);
-                return $this->processData($agg_data, $series, $data, 'Ym', $method_date, $method_value);
+                return $this->processData2($agg_data, $series, $data, 'Ym', $method_date, $method_value);
             case self::TYPE_WEEKLY:
                 $agg_data = $this->initializeWeekly($date_from, $date_to);
-                return $this->processData($agg_data, $series, $data, 'Y-W', $method_date, $method_value);
+                return $this->processData2($agg_data, $series, $data, 'Y-W', $method_date, $method_value);
         }
 
         // TODO: throw exception
@@ -161,6 +161,29 @@ class DateAggregate
         // add data into series
         foreach ($agg_data as $entry)
             $series->addValue($entry);
+        $this->chart->addSeries($series);
+
+        return $this->chart;
+    }
+
+    protected function processData2($agg_data, ChartSeries $series, $data, $date_format, $method_date, $method_value)
+    {
+        // iterate through the data and aggregate
+        foreach ($data as $entry) {
+            if(is_a($entry[$method_date], 'DateTime')){
+                $entryDate = $entry[$method_date];
+            }else {
+                $entryDate = new DateTime($entry[$method_date]);
+            }
+            // update our aggregate data
+            $index = $entryDate->format($date_format);
+            $agg_data[$index] = bcadd($agg_data[$index], $entry[$method_value], $this->precision);
+        }
+
+        // add data into series
+        foreach ($agg_data as $entry) {
+            $series->addValue($entry);
+        }
         $this->chart->addSeries($series);
 
         return $this->chart;

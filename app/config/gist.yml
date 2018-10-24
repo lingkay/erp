@@ -43,6 +43,7 @@ gist_user:
 gist_configuration:
     bundles:
         - GistInventoryBundle
+        - HrisToolsBundle
 
 gist_media:
     upload_storage:

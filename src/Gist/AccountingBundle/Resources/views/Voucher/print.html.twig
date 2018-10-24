@@ -1,0 +1,88 @@
+<style type="text/css">
+ .table td, .table tr, .table th {
+ 	border: 1px solid;
+ }
+
+table {
+
+}
+</style>
+<page>
+	<div style="text-align:center; font-family:arial; padding-bottom: 7px; font-size: 15px; font-weight:bold;">PAYMENT VOUCHER</div>
+	<br/>
+	<table >
+		<tr >
+			<td>PAYEE:</td>
+			<td>{{ obj.getPayee }}</td>
+		</tr>
+
+		<tr>			
+			<td>Transaction No.: </td>
+			<td> {{ obj.getCode }}</td>
+		</tr>
+		<tr>
+			<td>Transaction Date: </td>			
+			<td>{{ obj.getRecordDate|date('m/d/Y') }}</td>
+		</tr>	
+	</table>
+
+	{% if obj.getPaymentType == 'Check' %}
+		<br/>
+		<br/>
+		<table >
+
+
+		<tr>			
+			<td>Check No.: </td>
+			<td> {{ obj.getCheckNumber }}</td>
+		</tr>
+		<tr>
+			<td>Bank: </td>			
+			<td> {{ obj.getBank}} </td>
+		</tr>	
+	</table>
+	{% endif %}
+	<br />
+	<br />
+	<table class="table" style="border: 1px solid; width: 800px" cellspacing="0">	
+		<tr>
+			<th style="width:600px">PARTICULARS</th>
+		</tr>		
+		<tbody>		
+			<tr>
+				<td style="height:300px;">{{ obj.getNotes }}</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	<strong> Distribution of Account </strong>
+	<br/>
+	<br/>
+	<table class="table" cellspacing="0" cellpadding="5"  width="800">	
+		<tr>
+			<th style="width:200px">Account Title</th>
+			<th style="width:200px">Debit</th>
+			<th style="width:200px">Credit</th>
+		</tr>		
+		<tbody>		
+		{% for entry in obj.getEntries %}			
+			<tr>
+				<td >{{ entry.getAccount.getName}}</td>
+				<td style="text-align: right">Php {{ entry.getDebit|number_format(2) }}</td>
+				<td style="text-align: right">Php {{entry.getCredit|number_format(2) }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+
+
+	<page_footer>
+		<table>
+			<tr>
+				<td style="width:200px">Prepared By: {{ obj.getUserCreate.getDisplayName}}</td>			
+				<td style="width:300px">Certified Correct By: {{ obj.getCertifiedBy.getDisplayName }} </td>
+				<td style="width:300px">Approved By: {{ obj.getApproved.getDisplayName }} </td>			
+			</tr>
+		</table>		
+	</page_footer>
+</page>

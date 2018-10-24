@@ -1,0 +1,143 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-hoki">
+                <div class="portlet-title">
+                    <div class="caption">{% block form_header %}Role{% endblock %}</div>
+                </div>
+                <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form method="post" class="form-horizontal">
+                        <div class="form-body">
+                            <h4 class="form-section">Information</h4>
+                            {{ form.group_select('Bonus/Fine', 'bf_type',bftype_opts, object.getBFType|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Type', 'type', type_opts, object.getType|default(''), 3, 4, readonly) }}
+                            {{ form.group_select('Employee', 'employee', emp_opts, object.getEmployee != null ? object.getEmployee.getID : "", 3, 4, readonly) }}
+                            {{ form.group_text('Team', 'team', object.getTeam != null ? object.getTeam.getName : "", 3, 4, true) }}
+             			    {{ form.group_select('Given By', 'given', emp_opts, object.getGivenBy != null ? object.getGivenBy.getID :"", 3, 4, readonly) }}
+                 			
+             			    {{ form.group_select('Reason', 'reason_bonus', bonus_opts, object.getReason != null ? object.getReason.getID : "", 3, 4, readonly) }}
+                 			{{ form.group_select('Reason', 'reason_fine', fine_opts, object.getReason != null ? object.getReason.getID: "", 3, 4, readonly) }}
+                 	        {{ form.group_number('Amount', 'amount', object.getAmount|default(0.00), 3, 2, readonly) }}
+							{{ form.group_date('Date Released', 'date_released', object.getDateReleased|date('m/d/Y'), 3, 3, readonly) }}
+    		                {{ form.group_select('Cutoff', 'cutoff', cutoff_opts, object.getCutoff|default(''), 3, 2, readonly) }}
+
+                        </div>
+                        <div class="form-actions fluid">
+                            <div class="col-md-9">
+                                {% if not readonly %}
+                                    <button type="submit" class="btn blue">Submit</button>
+                                {% endif %}
+                                <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+
+        	function switchEmployee()
+        	{
+
+		        var path;
+		        var employee = $('#cform-employee').val();
+		        path = "{{path('cat_user_user_ajax_get', {'id': 'EMPLOYEE'})}}";
+		        path = path.replace('EMPLOYEE', employee);
+
+		        var $request = $.ajax({
+		            url: path
+		        });
+
+		        $request.then(function (data){
+		            console.log(data);
+		            $('#cform-team').val(data.area.name)
+		        });
+        	}
+
+
+        	function switchReason()
+        	{
+        		switch($('#cform-bf_type').val()){
+        		
+        			case "Bonus": 
+        			console.log('fasdfas');
+        				$('#cgroup-reason_bonus').show();
+        				$('#cgroup-reason_fine').hide();
+        				break;
+        			case "Fine":
+        				$('#cgroup-reason_bonus').hide();
+        				$('#cgroup-reason_fine').show();
+        				break;
+        		}
+        	}
+
+        	switchReason();
+        	switchEmployee();
+        	$('#cform-bf_type').change(function(){
+    			switchReason();
+        	});
+        	$('#cform-employee').change(function(){
+    			switchEmployee();
+        	});
+        	
+            FormValidation.init(); // init form validation
+
+            // set default error and success elements
+            jQuery.validator.setDefaults({
+                errorClass: 'help-block',
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    if(element.parent().parent().hasClass('form-group'))
+                    {
+                        error.appendTo(element.parent().last());
+                        element.parent().parent().addClass('has-error');
+                    }
+                    else
+                    {
+                        error.appendTo(element.parent().parent().last());
+                        element.parent().parent().parent().addClass('has-error');
+                    }
+                },
+                success: function(element) {
+                    if(element.parent().parent().hasClass('form-group'))
+                    {
+                        element.parent().parent().removeClass('has-error');
+                        element.parent().parent().addClass('has-success');
+                    }
+                    else
+                    {
+                        element.parent().parent().parent().removeClass('has-error');
+                        element.parent().parent().parent().addClass('has-success');
+                    }
+
+                    element.remove();
+                }
+            });
+
+            // validate form elements
+            $(".form-horizontal").validate({
+                onfocusout: function(element) {
+                    this.element(element);
+                },
+                rules: {
+                    name: {
+                        required: true
+                    }
+                },
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+{% endblock %}

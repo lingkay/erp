@@ -1,0 +1,8 @@
+parameters:
+#    gist_user.example.class: Gist\UserBundle\Example
+
+services:
+    tools_xz:
+        class: Hris\ToolsBundle\Model\XZManager
+        arguments:
+            em: "@doctrine.orm.entity_manager"

@@ -1,0 +1,64 @@
+
+hris_tools_xz_index:
+    path:     /index
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:index }
+
+
+hris_tools_xz_sales:
+    path:     /sales
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:sales }
+
+
+hris_tools_xz_sales_table:
+    path:     /sales_table
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:salesTable }
+
+
+hris_tools_xz_product:
+    path:     /product
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:product }
+
+
+hris_tools_xz_location:
+    path:     /location
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:location }
+
+hris_tools_xz_customer:
+    path:     /customer
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:customer }
+
+hris_tools_xz_employee:
+    path:     /employee
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:employee }
+
+hris_tools_xz_customer_portlet:
+    path:     /customer_portlet
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:customerPortlet }
+
+hris_tools_xz_mode:
+    path:     /mode
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:mode }
+
+hris_tools_xz_transactions:
+    path:     /transactions
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:transactions }
+
+hris_tools_xz_commission:
+    path:     /commission
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:commission }
+
+hris_tools_xz_inventory:
+    path:     /inventory
+    methods:  [GET]
+    defaults: { _controller: HrisToolsBundle:XZ:inventory }

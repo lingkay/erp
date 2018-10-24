@@ -24,10 +24,10 @@ class POSTransaction
     /** @ORM\Column(type="string", length=150, nullable=true) */
     protected $trans_display_id;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $transaction_total;
 
-    /** @ORM\Column(type="string", length=150, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $transaction_balance;
 
     /** @ORM\Column(type="string", length=150, nullable=true) */
@@ -54,28 +54,28 @@ class POSTransaction
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $tax_rate;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $orig_vat_amt;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $new_vat_amt;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $orig_amt_net_vat;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $new_amt_net_vat;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $tax_coverage;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $cart_min;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $cart_orig_total;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $cart_new_total;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -96,16 +96,16 @@ class POSTransaction
     /** @ORM\OneToMany(targetEntity="POSTransactionSplit", mappedBy="transaction") */
     protected $splits;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $deposit_vat_amt;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $deposit_amt_net_vat;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $balance_vat_amt;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $balance_amt_net_vat;
 
     /** @ORM\Column(type="string", length=50, nullable=true) */
@@ -114,10 +114,10 @@ class POSTransaction
     /** @ORM\Column(type="string", length=50, nullable=true) */
     protected $deposit_amount;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $gc_credit_amount;
 
-    /** @ORM\Column(type="string", length=50, nullable=true) */
+    /** @ORM\Column(type="float", nullable=true) */
     protected $gc_debit_amount;
 
     /**
@@ -159,13 +159,21 @@ class POSTransaction
     /** @ORM\Column(type="string", length=255, nullable=true) */
     protected $remarks;
 
+    /** @ORM\Column(type="float", nullable=true) */
+    protected $total_discount;
 
+
+    /**
+     * POSTransaction constructor.
+     */
     public function __construct()
     {
         $this->initTrackCreate();
     }
 
-
+    /**
+     * @return stdClass
+     */
     public function toData()
     {
         $data = new \stdClass();
@@ -174,6 +182,10 @@ class POSTransaction
         return $data;
     }
 
+    /**
+     * @param $pos_location
+     * @return $this
+     */
     public function setPOSLocation($pos_location)
     {
         $this->pos_location = $pos_location;
@@ -181,21 +193,33 @@ class POSTransaction
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPOSLocation()
     {
         return $this->pos_location;
     }
 
+    /**
+     * @return mixed
+     */
     public function getDiscountAmount()
     {
         return ($this->transaction_total - $this->cart_orig_total);
     }
 
+    /**
+     * @return string
+     */
     public function getPercentOfSale()
     {
         return round((($this->transaction_total/$this->cart_orig_total)*100),2)."%";
     }
 
+    /**
+     * @return mixed
+     */
     public function getCartTotalFormatted()
     {
         if ($this->cart_new_total != 0) {
@@ -205,6 +229,9 @@ class POSTransaction
         }
     }
 
+    /**
+     * @return bool
+     */
     public function hasItems()
     {
         if (count($this->items) > 0) {
@@ -214,6 +241,9 @@ class POSTransaction
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function hasChildLayeredReport()
     {
         if ($this->child_transaction == null) {
@@ -227,6 +257,9 @@ class POSTransaction
         }
     }
 
+    /**
+     * @return string
+     */
     public function getTransDisplayIdFormatted()
     {
         $ret = $this->trans_display_id;
@@ -237,6 +270,9 @@ class POSTransaction
         return $ret;
     }
 
+    /**
+     * @return bool
+     */
     public function hasPayments()
     {
         if (count($this->payments) > 0) {
@@ -298,10 +334,12 @@ class POSTransaction
         return $total;
     }
 
+    /**
+     * @return int
+     */
     public function getPaymentIssued()
     {
         $total = 0;
-
         // if ($this->hasParent() && !$this->hasPayments()) {
         //     foreach ($this->reference_transaction->getPayments() as $p) {
         //         if ($this->id == $p->getPaymentIssuedOn()->getID()) {
@@ -1513,5 +1551,17 @@ class POSTransaction
     public function getGCCreditAbsolute()
     {
         return abs($this->gc_credit_amount);
+    }
+
+    public function getTotalDiscount()
+    {
+        return $this->total_discount;
+    }
+
+    public function setTotalDiscount($total_discount)
+    {
+        $this->total_discount = $total_discount;
+
+        return $this;
     }
 }
