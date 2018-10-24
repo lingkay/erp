@@ -246,7 +246,7 @@ class ProfitAndLossController extends TrialBalanceController
         fputcsv($file, ["Sales"]);
 
         $gross_profit = 0;
-        foreach ($bs['netsales'] as $netsales){
+        foreach ($bs['netsales_main_sales'] as $netsales){
             // fputcsv($file, [$netsales['name']]);
             if (isset($netsales['accounts'])) {
                 foreach ($netsales['accounts'] as $key => $a) {
@@ -270,7 +270,7 @@ class ProfitAndLossController extends TrialBalanceController
         fputcsv($file, $sales_total);
         fputcsv($file, []);
 
-        foreach ($bs['netsales'] as $netsales){
+        foreach ($bs['netsales_main_revenue'] as $netsales){
             // fputcsv($file, [$netsales['name']]);
             if (isset($netsales['accounts'])) {
                 foreach ($netsales['accounts'] as $key => $a) {
@@ -283,7 +283,7 @@ class ProfitAndLossController extends TrialBalanceController
         }
 
         $revenue_total = ['TOTAL REVENUE'];
-        foreach ($bs['netsales']['nsale_total'] as $t){
+        foreach ($bs['netsales']['nrevenue_total'] as $t){
             if (isset($t['revenue'])) {
                 $revenue_total[] = $t['revenue'];
             }else{
@@ -318,7 +318,7 @@ class ProfitAndLossController extends TrialBalanceController
 
         $gross_profit = ['GROSS PROFIT'];
         foreach ($bs['cos']['total'] as $key => $t){
-            $gross_profit[] = $bs['netsales']['total'][$key] + $t;
+            $gross_profit[] = $bs['netsales']['total'][$key] - $t;
         }
 
         fputcsv($file, $gross_profit);
@@ -411,18 +411,21 @@ class ProfitAndLossController extends TrialBalanceController
             }
         }
 
-        $netsales_main = [];
+        $netsales_main_sales = [];
+        $netsales_main_revenue = [];
         $cos_main = [];
         $opex_main = [];
 
-        $netsales_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_STALES]);
+        $netsales_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_SALES]);
+        $netsales_accounts_revenue = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_REVENUE]);
 
+        // for sales
         foreach ($netsales_accounts as $as) {
-            $netsales_main[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
+            $netsales_main_sales[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
             $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
 
             foreach ($main_accounts as $acc) {
-                $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
+                $netsales_main_sales[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
                 foreach($month_year as $key => $m) {
                     $debit = 0;
                     $credit = 0;
@@ -432,21 +435,46 @@ class ProfitAndLossController extends TrialBalanceController
                         $credit = $coa_array[$acc->getID()][$m]['total_credit'];
                     $total = $debit - $credit;
 
-                    $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $total;
-                    if ($debit == 0) {
-                        $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'sales';
-                        if (isset($nsale_total[$m]['sales'])) {
-                            $nsale_total[$m]['sales'] += $total; 
-                        }else{
-                            $nsale_total[$m]['sales'] = $total; 
-                        }
+                    $netsales_main_sales[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $total;
+                    $netsales_main_sales[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'sales';
+
+                    if (isset($nsale_total[$m]['sales'])) {
+                        $nsale_total[$m]['sales'] += $total; 
                     }else{
-                        $netsales_main[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'revenue';
-                        if (isset($nsale_total[$m]['revenue'])) {
-                            $nsale_total[$m]['revenue'] += $total; 
-                        }else{
-                            $nsale_total[$m]['revenue'] = $total; 
-                        }
+                        $nsale_total[$m]['sales'] = $total; 
+                    }
+
+                    if (isset($netsales_total[$m])) {
+                        $netsales_total[$m] += $total; 
+                    }else{
+                        $netsales_total[$m] = $total; 
+                    }
+                }
+            }
+        }  
+
+        // for revenue
+        foreach ($netsales_accounts_revenue as $as) {
+            $netsales_main_revenue[$as->getAccount()->getID()]['name'] = $as->getAccount()->getName();
+            $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
+
+            foreach ($main_accounts as $acc) {
+                $netsales_main_revenue[$as->getAccount()->getID()]['accounts'][$acc->getID()]['name'] = $acc->getCode() .' '. $acc->getName();
+                foreach($month_year as $key => $m) {
+                    $debit = 0;
+                    $credit = 0;
+                    if(isset($coa_array[$acc->getID()][$m]['total_debit']))
+                        $debit = $coa_array[$acc->getID()][$m]['total_debit'];
+                    if(isset($coa_array[$acc->getID()][$m]['total_credit']))
+                        $credit = $coa_array[$acc->getID()][$m]['total_credit'];
+                    $total = $debit - $credit;
+
+                    $netsales_main_revenue[$as->getAccount()->getID()]['accounts'][$acc->getID()]['total_'.$m.''] = $total;
+                    $netsales_main_revenue[$as->getAccount()->getID()]['accounts'][$acc->getID()]['type'] = 'revenue';
+                    if (isset($nsale_total[$m]['revenue'])) {
+                        $nrevenue_total[$m]['revenue'] += $total; 
+                    }else{
+                        $nrevenue_total[$m]['revenue'] = $total; 
                     }
 
                     if (isset($netsales_total[$m])) {
@@ -465,6 +493,12 @@ class ProfitAndLossController extends TrialBalanceController
         }
 
         // reloop for ui table
+        $n_total_r = [];
+        foreach ($nrevenue_total as  $nt) {
+            $n_total_r[] = $nt;
+        }
+
+        // reloop for ui table
         $ns_total = [];
         foreach ($netsales_total as  $nt) {
             $ns_total[] = $nt;
@@ -472,6 +506,7 @@ class ProfitAndLossController extends TrialBalanceController
 
         $netsales_main['total'] = $ns_total;
         $netsales_main['nsale_total'] = $n_total;
+        $netsales_main['nrevenue_total'] = $n_total_r;
 
         $cos_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_COS]);
         
@@ -545,6 +580,8 @@ class ProfitAndLossController extends TrialBalanceController
         $opex_main['total'] = $o_total;
 
         $list['netsales'] = $netsales_main;
+        $list['netsales_main_sales'] = $netsales_main_sales;
+        $list['netsales_main_revenue'] = $netsales_main_revenue;
         $list['cos'] = $cos_main;
         $list['opex'] = $opex_main;
 

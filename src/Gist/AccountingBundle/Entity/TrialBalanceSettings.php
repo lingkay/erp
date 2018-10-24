@@ -24,7 +24,8 @@ class TrialBalanceSettings
     const TYPE_ASSET        = "Asset";
     const TYPE_LIABILITY    = "Liability";
     const TYPE_CAPITAL      = "Capital";
-    const TYPE_NET_STALES   = "Net Sales";
+    const TYPE_NET_SALES    = "Net Sales (Sales)";
+    const TYPE_NET_REVENUE    = "Net Sales (Revenue)";
     const TYPE_COS          = "Cos";
     const TYPE_OPEX         = "Opex";
 
