@@ -35,6 +35,11 @@ menu_items:
       label: Month End Closing
       parent: gist_accounting_settings
 
+    - id: gist_cf_settings_index
+      acl: gist_cf_settings.menu
+      label: Cash Flow Settings
+      parent: gist_accounting_settings
+
     - id: gist_banks_menu
       acl: gist_banks.menu
       label: Banks
@@ -149,4 +154,9 @@ menu_items:
     - id: gist_accounting_pl_index
       acl: gist_accounting_pl.menu
       label: Profit or Loss Sheet
+      parent: gist_accounting_menu
+
+    - id: gist_accounting_cf_index
+      acl: gist_accounting_cf.menu
+      label: Cash Flow
       parent: gist_accounting_menu

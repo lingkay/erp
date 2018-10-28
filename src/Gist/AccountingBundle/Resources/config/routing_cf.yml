@@ -1,0 +1,24 @@
+gist_cf_settings_index:
+    pattern: /list
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CashFlowSettings:index }
+
+gist_cf_settings_generate:
+    pattern: /list
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:CashFlowSettings:save }
+
+gist_accounting_cf_index:
+    pattern: /list_index
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CashFlow:index }
+
+gist_accounting_cf_save:
+    pattern: /list_index
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:CashFlow:generateCSV }
+
+gist_accounting_cf_generate_table:
+    pattern: /list_table/{month}/{year}
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:CashFlow:generateTable }

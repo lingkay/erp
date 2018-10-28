@@ -179,3 +179,6 @@ gist_accounting_bs:
 gist_accounting_pl:
     resource: "@GistAccountingBundle/Resources/config/routing_pl.yml"
     prefix:   /profit_loss
+gist_cf_settings:
+    resource: "@GistAccountingBundle/Resources/config/routing_cf.yml"
+    prefix:   /cash_flow

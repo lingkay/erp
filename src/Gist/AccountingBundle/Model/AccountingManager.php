@@ -286,4 +286,19 @@ class AccountingManager
             $this->em->flush();
         }
     }
+
+    public function findCashFlowSettingsByType($type){
+
+        $tbs = $this->em->getRepository('GistAccountingBundle:CashFlowSettings')
+            ->findBy(['type' => $type]);
+
+        $array = [];
+        if($tbs != null){
+            foreach ($tbs as $key => $t) {
+                $array[$t->getAccount()->getID()] = $t->getAccount()->getID();
+            }
+        }
+
+        return $array;
+    }
 }
