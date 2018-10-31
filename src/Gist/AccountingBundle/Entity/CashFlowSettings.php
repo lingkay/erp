@@ -13,27 +13,26 @@ use DateTime;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="acct_balance_settings")
+ * @ORM\Table(name="acct_cashflow_settings")
  */
 
-class TrialBalanceSettings
+class CashFlowSettings
 {
     use HasGeneratedID;
     use TrackCreate;
 
-    const TYPE_ASSET        = "Asset";
-    const TYPE_LIABILITY    = "Liability";
-    const TYPE_CAPITAL      = "Capital";
-    const TYPE_NET_SALES    = "Net Sales (Sales)";
-    const TYPE_NET_REVENUE    = "Net Sales (Revenue)";
-    const TYPE_COS          = "Cos";
-    const TYPE_OPEX         = "Opex";
+    const TYPE_AR  = "Accounts Receivable";
+    const TYPE_PE  = "Prepaid Expenses";
+    const TYPE_AP  = "Accounts Payable";
+    const TYPE_DEP = "Depreciation";
+    const TYPE_IA  = "Investing Activities";
+    const TYPE_FA  = "Financing Activities";
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\MainAccount")
+     * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\ChartOfAccount")
      * @ORM\JoinColumn(name="main_account_id", referencedColumnName="id", nullable=true)
      */
-    protected $main_account;
+    protected $coa;
 
     /** @ORM\Column(type="string", length=150) */
     protected $type;
@@ -45,13 +44,13 @@ class TrialBalanceSettings
 
     public function setAccount($account)
     {
-        $this->main_account = $account;
+        $this->coa = $account;
         return $this;
     }
 
     public function getAccount()
     {
-        return $this->main_account;
+        return $this->coa;
     }
 
     public function setType($type)

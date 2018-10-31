@@ -115,7 +115,8 @@ class TrialBalanceSettingsController extends BaseController
         $params['asset_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_ASSET);
         $params['liablity_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_LIABILITY);
         $params['capital_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_CAPITAL);
-        $params['netsales_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_NET_STALES);
+        $params['netsales_sales_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_NET_SALES);
+        $params['netsales_revenue_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_NET_REVENUE);
         $params['cos_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_COS);
         $params['opex_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_OPEX);
 
@@ -171,17 +172,28 @@ class TrialBalanceSettingsController extends BaseController
                 }
             }
 
-            if(isset($data['net_sales'])) {
-                foreach ($data['net_sales'] as $key => $account) {
+            if(isset($data['net_sales_sales'])) {
+                foreach ($data['net_sales_sales'] as $key => $account) {
                     $id = $am->findMainAccount($account);
                     $net_sales = new TrialBalanceSettings();
                     $net_sales->setAccount($id)
-                              ->setType(TrialBalanceSettings::TYPE_NET_STALES)
+                              ->setType(TrialBalanceSettings::TYPE_NET_SALES)
                               ->setUserCreate($this->getUser());
                     $em->persist($net_sales);
                 }
             }
 
+            if(isset($data['net_sales_revenue'])) {
+                foreach ($data['net_sales_revenue'] as $key => $account) {
+                    $id = $am->findMainAccount($account);
+                    $net_sales = new TrialBalanceSettings();
+                    $net_sales->setAccount($id)
+                              ->setType(TrialBalanceSettings::TYPE_NET_REVENUE)
+                              ->setUserCreate($this->getUser());
+                    $em->persist($net_sales);
+                }
+            }
+            
             if(isset($data['cos'])) {
                 foreach ($data['cos'] as $key => $account) {
                     $id = $am->findMainAccount($account);

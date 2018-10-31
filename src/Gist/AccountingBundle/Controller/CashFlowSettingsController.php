@@ -11,14 +11,14 @@ use Gist\NotificationBundle\Model\NotificationEvent;
 use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Gist\AccountingBundle\Entity\EndingBalance;
-use Gist\AccountingBundle\Entity\TrialBalanceSettings;
+use Gist\AccountingBundle\Entity\CashFlowSettings;
 use Gist\AccountingBundle\Controller\TrialBalanceController;
 
 use DateTime;
 use SplFileObject;
 use LimitIterator;
 
-class ProfitAndLossController extends TrialBalanceController
+class CashFlowSettingsController extends TrialBalanceController
 {
     use TrackCreate;
 
@@ -27,9 +27,9 @@ class ProfitAndLossController extends TrialBalanceController
 
     public function __construct()
     {
-        $this->route_prefix = 'gist_accounting_pl';
-        $this->title = 'Profit and Loss Sheet';
-        $this->list_title = 'Profit and Loss Sheet';
+        $this->route_prefix = 'gist_cf_settings';
+        $this->title = 'Cash Flow Settings';
+        $this->list_title = 'Cash Flow Settings';
         $this->list_type = 'dynamic';
     }
 
@@ -41,7 +41,7 @@ class ProfitAndLossController extends TrialBalanceController
 
         $params = $this->getViewParams('List');
 
-        $twig_file = 'GistAccountingBundle:ProfitAndLoss:index.html.twig';
+        $twig_file = 'GistAccountingBundle:CashFlowSettings:index.html.twig';
 
         $params['list_title'] = $this->list_title;
         // $params['grid_cols'] = $gl->getColumns();
@@ -94,72 +94,104 @@ class ProfitAndLossController extends TrialBalanceController
             $em = $this->getDoctrine()->getManager();
             $am = $this->get('gist_accounting');
             $data = $this->getRequest()->request->all();
-            
-            $month_end_last = $em->getRepository('GistAccountingBundle:MonthEndClosing')->findAll();
 
-            if (count($month_end_last) == 0) {
-                $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
-                                   ->createQueryBuilder('o')
-                                   ->orderBy('o.id','DESC')
-                                   ->getQuery()->getOneOrNullResult();
-            }else{
-                $last_end = $em->getRepository('GistAccountingBundle:MonthEndClosing')
-                               ->createQueryBuilder('o')
-                               ->orderBy('o.id','DESC')
-                               ->setMaxResults(1)
-                               ->getQuery()->getSingleResult();
+            $cfs = $em->getRepository('GistAccountingBundle:CashFlowSettings')->findAll();
+            foreach ($cfs as $cf) {
+                $em->remove($cf);
             }
+            $em->flush();
 
-            if ($last_end == null) {
-                // if null can add the new month end closing
-                $month_end = new MonthEndClosing();
-                $month_end->setYear($data['year'])
-                          ->setMonth($data['month'])
-                          ->setUserCreate($this->getUser())
-                          ->setIsClosed(1);
-
-                $em->persist($month_end);
-            }else{
-                $d2 = new Datetime($last_end->getYear().'-'.$last_end->getMonth().'-01 00:00:00');
-                $month_end_text = $d2->format('F Y');
-
-                $d3 = new Datetime($last_end->getYear().'-'.$last_end->getMonth().'-01 00:00:00');
-                $month_end_date = $d3->modify('+1 month');
-                $month_end_date = $month_end_date->format('my');
-
-                $date_new = new Datetime($data['year'].'-'.$data['month'].'-01 00:00:00');
-                $date_new = $date_new->format('my');
-
-                // if not null, check data if it's the next month of the last month end
-                if($date_new == $month_end_date){
-                    $month_end = new MonthEndClosing();
-                    $month_end->setYear($data['year'])
-                              ->setMonth($data['month'])
-                              ->setUserCreate($this->getUser())
-                              ->setIsClosed(1);
-
-                    $em->persist($month_end);
-                }else{
-                    //prompt error
-                    throw new ValidationException('The selected month is not the next month of the last month end closing of ' . $month_end_text . '.');
+            if(isset($data['accounts_receivable'])) {
+                foreach ($data['accounts_receivable'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_AR)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
                 }
             }
 
-            $this->saveEndingClosing($month_end, $data);
+            if(isset($data['pre_expenses'])) {
+                foreach ($data['pre_expenses'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_PE)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+
+            if(isset($data['accounts_payable'])) {
+                foreach ($data['accounts_payable'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_AP)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+
+            if(isset($data['depreciation'])) {
+                foreach ($data['depreciation'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_DEP)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+
+            if(isset($data['iaa'])) {
+                foreach ($data['iaa'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_IA)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+
+            if(isset($data['faa'])) {
+                foreach ($data['faa'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_FA)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
             $em->flush();
-            $this->addFlash('success','Month End Closed successfully.');
-            return $this->redirect($this->generateUrl('gist_month_end_index'));
+
+            $this->addFlash('success', $this->title . ' updated successfully.');
+            return $this->redirect($this->generateUrl('gist_cf_settings_index'));
         }
-        catch (ValidationException $e) {
-            $this->addFlash('error', $e->getMessage());
-            return $this->editError($e);
-        } catch (DBALException $e) {
-            $this->addFlash('error', 'Database error encountered. Possible duplicate.');            
-            // error_log($e->getMessage());
-            $this->addFlash('error', $e->getMessage());
-            return $this->addError($e);
+        catch (ValidationException $e)
+        {
+            $this->addFlash('error',$e->getMessage());
+         
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
+         
+            error_log($e->getMessage());
+             return $this->addError($obj);
         }
-      
+        catch (DBALException $e)
+        {
+             $this->addFlash('error',$e->getMessage());
+         
+            $this->addFlash('error', 'Database error occurred. Possible duplicate.');
+            error_log($e->getMessage());
+            return $this->addError($obj);
+        }
+        catch (\Exception $e) {
+            $this->addFlash('error',$e->getMessage());
+            return $this->addError($obj);
+        }
     }
 
     protected function addError($obj)
@@ -178,6 +210,8 @@ class ProfitAndLossController extends TrialBalanceController
 
     protected function padListParams(&$params, $obj = null)
     {
+        $am = $this->get('gist_accounting');
+
         $months = [
             '01' => 'January',
             '02' => 'February',
@@ -196,6 +230,14 @@ class ProfitAndLossController extends TrialBalanceController
 
         $params['date_from'] = $this->date_from->format('m/d/Y'); //$this->date_from->format('m/d/Y'): $date_from->format('m/d/Y');
         $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
+        
+        $params['account_opts'] = $am->getChartOfAccountOptions();
+        $params['ar_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_AR);
+        $params['pe_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_PE);
+        $params['ap_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_AP);
+        $params['dep_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_DEP);
+        $params['ia_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_IA);
+        $params['fa_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_FA);
 
         return $params;
 

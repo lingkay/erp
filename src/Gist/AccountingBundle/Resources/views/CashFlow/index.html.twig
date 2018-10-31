@@ -1,0 +1,500 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{list_title}}</div>
+            </div>
+            <div class="portlet-body form">
+               {#  <div class="alert alert-warning alert-dismissable">
+                   <strong>Notice: </strong>
+                   {{ notice }}
+                </div> #}
+                <!-- BEGIN FORM-->
+                <form method="post" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="portlet box blue-hoki">
+                            <div class="portlet-body">
+                            {{ form.group_date('Year', 'year', "now"|date('Y'), 3, 4, false) }}              
+                            {{ form.group_select('Month', 'month', months, '', 3, 4) }}
+                            <br/>
+                            <button type="submit" class="btn blue">Export CSV</button>
+                            <button type="button" id="tb_table_btn" class="btn green">Generate Table</button>
+                           
+                            </div>
+                        </div>
+                        <div class="col-md-12 list-table-wrapper" style="overflow: auto;">
+                        </div>
+                    </div>
+                    
+                    <div class="clearfix"></div>
+                    <div class="form-actions fluid">
+                        {# <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn blue">Generate</button>
+                            <button type="button" id="tb_table_btn" class="btn green">Generate Table</button>
+                        </div> #}
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<script>
+$(document).ready(function() {
+    //for Year Picker
+    $("#cform-year").css('cursor', 'pointer');
+    $("#cform-year").change(function() {
+       $(".datepicker").css('display','none');
+    });
+    $("#cform-year").datepicker( {
+       format: "yyyy", // Notice the Extra space at the beginning
+       viewMode: "years",
+       minViewMode: "years"
+    });
+
+    $("#cgroup-year .calendar").addClass("disabled", "true");
+    $("#cgroup-year").attr("align", "right");
+
+    $('#daterange').daterangepicker(
+        {
+            ranges: {
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
+                'This Year': [moment().startOf('year', 1), moment().endOf('year')],
+                'Last Year': [moment().subtract('year', 1).startOf('year'), moment().subtract('year', 1).endOf('year')]
+                
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+        },
+        function(start, end) {
+            $('#daterange input').val(start.format('MM/DD/YYYY') + '   -   ' + end.format('MM/DD/YYYY'));
+            $('#cform-date_from').val(start.format('MM/DD/YYYY'));
+            $('#cform-date_to').val(end.format('MM/DD/YYYY'));
+            
+        }
+    );
+
+    $('#tb_table_btn').click(function(){
+        var month = $('#cform-month').val();
+        var year = $('#cform-year').val();
+
+        var path = "{{ path('gist_accounting_cf_generate_table', { 'month' : 'MONTH', 'year' : 'YEAR' } )}}"
+        path = path.replace('MONTH',month);
+        path = path.replace('YEAR',year);
+        console.log(month,year,"year");
+        $.ajax({
+            url: path,
+            type: "GET",
+            success: function(data) {
+                console.log(data);
+                $('#list_table').remove();
+                var html = $('#tb_table_template').html();
+                $('.list-table-wrapper').append(html);
+
+                // text 1
+                $('#thead_tb').append('<tr class="1trhead">');
+                $('.1trhead').append("<th colspan='4'>Cosmetigroup Int'l Corp</th>");
+                $('#thead_tb').append('</tr>');
+
+                // text 2
+                $('#thead_tb').append('<tr class="2trhead">');
+                $('.2trhead').append('<th colspan="4">Cash Flow Statement</th>');
+                $('#thead_tb').append('</tr>');
+
+                // append Month
+                $('#thead_tb').append('<tr id="tr_thead1">');
+                    $('#tr_thead1').append('<th colspan="4">'+data.date+'</th>');
+                $('#thead_tb').append('</tr>');
+                
+                $('#thead_tb').append('<tr id="tr_thead2">');
+                    $('#tr_thead2').append('<th colspan="4" style="text-align:left;">CASH FLOW FROM OPERATING ACTIVITIES</th>');
+                $('#thead_tb').append('</tr>');
+
+                $('#thead_tb').append('<tr id="tr_thead3">');
+                    $('#tr_thead3').append('<td></td>');
+                    $('#tr_thead3').append('<td style="text-align:left;">Income before Income tax</td>');
+                    $('#tr_thead3').append('<td></td>');
+                    $('#tr_thead3').append('<td></td>');
+                $('#thead_tb').append('</tr>');
+
+                // Accounts Receivable
+                $('#thead_tb').append('<tr id="tr_thead4">');
+                    $('#tr_thead4').append('<td></td>');
+                    $('#tr_thead4').append('<td style="text-align:left;">Accounts Receivable</td>');
+                    $('#tr_thead4').append('<td></td>');
+                    $('#tr_thead4').append('<td></td>');
+                $('#thead_tb').append('</tr>');
+
+                $('#thead_tb').append('<tr id="tr_thead5">');
+                    $('#tr_thead5').append('<td></td>');
+                    $('#tr_thead5').append('<td style="text-align:left;">Deduct: </td>');
+                    $('#tr_thead5').append('<td></td>');
+                    $('#tr_thead5').append('<td></td>');
+                $('#thead_tb').append('</tr>');
+
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.cf.accounts_receivable, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.decrease, function(h2, v2) {
+                            if (c > 1) {
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $('#tbody_tb').append('<tr id="tr_thead6">');
+                    $('#tr_thead6').append('<td></td>');
+                    $('#tr_thead6').append('<td style="text-align:left;">Add: </td>');
+                    $('#tr_thead6').append('<td></td>');
+                    $('#tr_thead6').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.accounts_receivable, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="2trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.increase, function(h2, v2) {
+                            if (c > 1) {
+                                $('.2trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.2trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // Prepaid Expenses
+                $('#tbody_tb').append('<tr id="tr_thead7">');
+                    $('#tr_thead7').append('<td></td>');
+                    $('#tr_thead7').append('<td style="text-align:left;">Prepaid Expenses</td>');
+                    $('#tr_thead7').append('<td></td>');
+                    $('#tr_thead7').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead8">');
+                    $('#tr_thead8').append('<td></td>');
+                    $('#tr_thead8').append('<td style="text-align:left;">Deduct: </td>');
+                    $('#tr_thead8').append('<td></td>');
+                    $('#tr_thead8').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.prepaid_expenses, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="3trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.decrease, function(h2, v2) {
+                            if (c > 1) {
+                                $('.3trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.3trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                 $('#tbody_tb').append('<tr id="tr_thead9">');
+                    $('#tr_thead9').append('<td></td>');
+                    $('#tr_thead9').append('<td style="text-align:left;">Add: </td>');
+                    $('#tr_thead9').append('<td></td>');
+                    $('#tr_thead9').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.prepaid_expenses, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="4trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.increase, function(h2, v2) {
+                            if (c > 1) {
+                                $('.4trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.4trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // Accounts Payable
+                $('#tbody_tb').append('<tr id="tr_thead10">');
+                    $('#tr_thead10').append('<td></td>');
+                    $('#tr_thead10').append('<td style="text-align:left;">Accounts Payable</td>');
+                    $('#tr_thead10').append('<td></td>');
+                    $('#tr_thead10').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead11">');
+                    $('#tr_thead11').append('<td></td>');
+                    $('#tr_thead11').append('<td style="text-align:left;">Add: </td>');
+                    $('#tr_thead11').append('<td></td>');
+                    $('#tr_thead11').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.prepaid_expenses, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="5trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.increase, function(h2, v2) {
+                            if (c > 1) {
+                                $('.5trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.5trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $('#tbody_tb').append('<tr id="tr_thead12">');
+                    $('#tr_thead12').append('<td></td>');
+                    $('#tr_thead12').append('<td style="text-align:left;">Deduct: </td>');
+                    $('#tr_thead12').append('<td></td>');
+                    $('#tr_thead12').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.prepaid_expenses, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="6trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.decrease, function(h2, v2) {
+                            if (c > 1) {
+                                $('.6trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.6trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // Depreciation
+                $('#tbody_tb').append('<tr id="tr_thead13">');
+                    $('#tr_thead13').append('<td></td>');
+                    $('#tr_thead13').append('<td style="text-align:left;">Depreciation</td>');
+                    $('#tr_thead13').append('<td></td>');
+                    $('#tr_thead13').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead14">');
+                    $('#tr_thead14').append('<td></td>');
+                    $('#tr_thead14').append('<td style="text-align:left;">Add: </td>');
+                    $('#tr_thead14').append('<td></td>');
+                    $('#tr_thead14').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.depreciation, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="7trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h2, v2) {
+                            if (c > 1) {
+                                $('.7trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.7trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $('#tbody_tb').append('<tr id="tr_thead15">');
+                    $('#tr_thead15').append('<td>NET CASH PROVIDED BY/(USED IN) OPERATING ACTIVITIES</td>');
+                    $('#tr_thead15').append('<td></td>');
+                    $('#tr_thead15').append('<td></td>');
+                    $('#tr_thead15').append('<td style="text-align:right;">'+data.cf.operating_activities_total.toLocaleString('en')+'</td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead16">');
+                    $('#tr_thead16').append('<td></td>');
+                    $('#tr_thead16').append('<td></td>');
+                    $('#tr_thead16').append('<td></td>');
+                    $('#tr_thead16').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead17">');
+                    $('#tr_thead17').append('<td></td>');
+                    $('#tr_thead17').append('<td></td>');
+                    $('#tr_thead17').append('<td></td>');
+                    $('#tr_thead17').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                // Investing Activities
+                $('#tbody_tb').append('<tr class="tr_thead18">');
+                $('.tr_thead18').append('<th colspan="4">CASH FLOW FROM INVESTING ACTIVITIES</td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead18">');
+                    $('#tr_thead18').append('<td></td>');
+                    $('#tr_thead18').append('<td>Disposals of:</td>');
+                    $('#tr_thead18').append('<td></td>');
+                    $('#tr_thead18').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead19">');
+                    $('#tr_thead19').append('<td></td>');
+                    $('#tr_thead19').append('<td>Add:</td>');
+                    $('#tr_thead19').append('<td></td>');
+                    $('#tr_thead19').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.investing_activities, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="8trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.increase, function(h2, v2) {
+                            if (c > 1) {
+                                $('.8trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.8trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $('#tbody_tb').append('<tr id="tr_thead20">');
+                    $('#tr_thead20').append('<td></td>');
+                    $('#tr_thead20').append('<td>Purchase/Additions to:</td>');
+                    $('#tr_thead20').append('<td></td>');
+                    $('#tr_thead20').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead21">');
+                    $('#tr_thead21').append('<td></td>');
+                    $('#tr_thead21').append('<td>Deduct:</td>');
+                    $('#tr_thead21').append('<td></td>');
+                    $('#tr_thead21').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.investing_activities, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="9trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.decrease, function(h2, v2) {
+                            if (c > 1) {
+                                $('.9trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.9trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $('#tbody_tb').append('<tr id="tr_thead22">');
+                    $('#tr_thead22').append('<td>NET CASH PROVIDED BY/(USED IN) INVESTING ACTIVITIES</td>');
+                    $('#tr_thead22').append('<td></td>');
+                    $('#tr_thead22').append('<td></td>');
+                    $('#tr_thead22').append('<td style="text-align:right;">'+data.cf.investing_activities_total.toLocaleString('en')+'</td>');
+                $('#tbody_tb').append('</tr>');
+
+                // Financing Activities
+                $('#tbody_tb').append('<tr class="tr_thead23">');
+                $('.tr_thead23').append('<th colspan="4">CASH FLOW FROM FINANCING ACTIVITIES</td>');
+                $('#tbody_tb').append('</tr>');
+
+                $.each(data.cf.investing_activities, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="10trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.increase, function(h2, v2) {
+                            if (c > 1) {
+                                $('.10trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.10trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $.each(data.cf.investing_activities, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="11trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.decrease, function(h2, v2) {
+                            if (c > 1) {
+                                $('.11trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.11trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $('#tbody_tb').append('<tr id="tr_thead24">');
+                    $('#tr_thead24').append('<td>NET CASH PROVIDED BY/(USED IN) FINANCING ACTIVITIES</td>');
+                    $('#tr_thead24').append('<td></td>');
+                    $('#tr_thead24').append('<td></td>');
+                    $('#tr_thead24').append('<td style="text-align:right;">'+data.cf.financing_activities_total.toLocaleString('en')+'</td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead25">');
+                    $('#tr_thead25').append('<td>NET INCREASE/(DECREASE) IN CASH AND CASH EQUIVALENTS</td>');
+                    $('#tr_thead25').append('<td></td>');
+                    $('#tr_thead25').append('<td></td>');
+                    $('#tr_thead25').append('<td style="text-align:right;">'+data.cf.net_total.toLocaleString('en')+'</td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead26">');
+                    $('#tr_thead26').append('<td>ADD: BEGINNING BALANCE OF CASH AND CASH EQUIVALENTS</td>');
+                    $('#tr_thead26').append('<td></td>');
+                    $('#tr_thead26').append('<td></td>');
+                    $('#tr_thead26').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#tbody_tb').append('<tr id="tr_thead27">');
+                    $('#tr_thead27').append('<td>ENDING BALANCE OF CASH AND CASH EQUIVALENTS</td>');
+                    $('#tr_thead27').append('<td></td>');
+                    $('#tr_thead27').append('<td></td>');
+                    $('#tr_thead27').append('<td></td>');
+                $('#tbody_tb').append('</tr>');
+
+                $('#list_table').append('</tbody>');
+            },
+            cache: false
+        });
+    });
+});
+</script>
+<script id="tb_table_template" type="x-tmpl-mustache">
+<table class="table table-striped table-bordered table-hover" id="list_table">
+    <thead id="thead_tb">
+        
+    </thead>
+</table>
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

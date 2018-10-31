@@ -637,7 +637,9 @@ class TrialBalanceController extends BaseController
             // netsales
             $netsales[] = 'net sales';
             // loop the tb settings
-            $net_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_STALES]);
+            $net_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_SALES]);
+            // for revenue net sales
+            $net_accounts_revenue = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_REVENUE]);
             $net_total = 0;
             foreach ($net_accounts as $as) {
                 $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
@@ -646,6 +648,16 @@ class TrialBalanceController extends BaseController
                     $net_total += $charts_of_account[$acc->getCode()]['ending_'.$m.'']; 
                 }
             }  
+
+            // for revenue accounts
+            foreach ($net_accounts_revenue as $as) {
+                $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
+                
+                foreach ($main_accounts as $acc) {
+                    $net_total += $charts_of_account[$acc->getCode()]['ending_'.$m.'']; 
+                }
+            }  
+
             $netsales[] = $net_total;
             $netsales[] = '';
             $netsales[] = $net_total;

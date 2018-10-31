@@ -134,7 +134,7 @@ $(document).ready(function() {
 
                 // append list of accounts in netsales sales
                 $('#list_table').append('<tbody id="tbody_tb">');
-                $.each(data.pl.netsales, function(h1, v1) {
+                $.each(data.pl.netsales_main_sales, function(h1, v1) {
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
                         $.each(v1.accounts, function(h2, v2) {
                             if(typeof(v2.type) != "undefined" && v2.type !== null && v2.type == 'sales') {
@@ -177,7 +177,7 @@ $(document).ready(function() {
 
                 // append list of accounts in netsales revenue
                 $('#list_table').append('<tbody id="tbody_tb">');
-                $.each(data.pl.netsales, function(h1, v1) {
+                $.each(data.pl.netsales_main_revenue, function(h1, v1) {
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
                         $.each(v1.accounts, function(h2, v2) {
                             if(typeof(v2.type) != "undefined" && v2.type !== null && v2.type == 'revenue') {
@@ -201,7 +201,7 @@ $(document).ready(function() {
                 // netsales revenue total
                 $('#tbody_tb').append('<tr class="2trlisttotal">');
                     $('.2trlisttotal').append('<td>TOTAL REVENUE</td>');
-                    $.each(data.pl.netsales['nsale_total'], function(nk, nv) {
+                    $.each(data.pl.netsales['nrevenue_total'], function(nk, nv) {
                         if(typeof(nv.revenue) != "undefined" && nv.revenue !== null) {
                             $('.2trlisttotal').append('<td style="text-align:right;">'+nv.revenue.toLocaleString('en')+'</td>');
                         }else{
@@ -272,7 +272,7 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="5trlisttotal">');
                     $('.5trlisttotal').append('<td>GROSS PROFIT</td>');
                     $.each(data.pl.cos['total'], function(lk, lv) {
-                        var sum = data.pl.cos['total'][lk] + data.pl.netsales['total'][lk];
+                        var sum = data.pl.netsales['total'][lk] - data.pl.cos['total'][lk];
                         $('.5trlisttotal').append('<td style="text-align:right;">'+sum.toLocaleString('en')+'</td>');
                     });
                 $('#tbody_tb').append('</tr>');

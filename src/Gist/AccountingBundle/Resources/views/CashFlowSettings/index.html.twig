@@ -1,0 +1,120 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+
+                </div>
+
+                <div class="portlet box blue-hoki">
+                    <div class="portlet-body form">
+                        <form method="post" class="form-horizontal">
+                            <div class="form-body">
+                                <h4 class="form-section"><strong>Operating Activities</strong></h4>
+                                {{ form.group_selectmulti('Accounts Receivable', 'accounts_receivable', account_opts, ar_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Prepaid Expenses', 'pre_expenses', account_opts, pe_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Accounts Payable', 'accounts_payable', account_opts, ap_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Depreciation', 'depreciation', account_opts, dep_opts_selected , 3, 4) }}
+
+                                <h4 class="form-section"><strong>Investing Activities</strong></h4>
+                                {{ form.group_selectmulti('Investing Activities Accounts', 'iaa', account_opts, ia_opts_selected , 3, 4) }}
+                                <h4 class="form-section"><strong>Financing Activities</strong></h4>
+                                {{ form.group_selectmulti('Financing Activities Accounts', 'faa', account_opts, fa_opts_selected , 3, 4) }}
+                            </div>
+
+                            <div class="form-actions fluid">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" onclick="return check_duplicate()" class="btn blue mobile-button-full">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+$(document).ready(function() {
+
+});
+check_duplicate = function(){
+    var check = true;
+    var accounts_receivable = $('#cform-accounts_receivable').val();
+    var pre_expenses = $('#cform-pre_expenses').val();
+    var accounts_payable = $('#cform-accounts_payable').val();
+    var depreciation = $('#cform-depreciation').val();
+    var iaa = $('#cform-iaa').val();
+    var faa = $('#cform-faa').val();
+    var array = [];
+    for(i in accounts_receivable){
+        if(jQuery.inArray(accounts_receivable[i], array) == -1){
+            array.push(accounts_receivable[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Accounts Receivable!','Error');
+        }
+    }
+    for(i in pre_expenses){
+        if(jQuery.inArray(pre_expenses[i], array) == -1){
+            array.push(pre_expenses[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Prepaid Expenses!','Error');
+        }
+    }
+    for(i in accounts_payable){
+        if(jQuery.inArray(accounts_payable[i], array) == -1){
+            array.push(accounts_payable[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Accounts Payable!','Error');
+        }
+    }
+    for(i in depreciation){
+        if(jQuery.inArray(depreciation[i], array) == -1){
+            array.push(depreciation[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Depreciation!','Error');
+        }
+    }
+    for(i in iaa){
+        if(jQuery.inArray(iaa[i], array) == -1){
+            array.push(iaa[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Investing Activities Accounts!','Error');
+        }
+    }
+    for(i in faa){
+        if(jQuery.inArray(faa[i], array) == -1){
+            array.push(faa[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Financing Activities Accounts!','Error');
+        }
+    }
+
+    return check;
+}
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
