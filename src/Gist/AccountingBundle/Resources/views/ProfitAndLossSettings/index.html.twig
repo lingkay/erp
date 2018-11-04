@@ -1,0 +1,244 @@
+{% extends "GistTemplateBundle::base.html.twig" %}
+{% import "GistTemplateBundle::form.html.twig" as form %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+            <div class="portlet-title">
+                <div class="caption">{{ list_title }}</div>
+                <div class="actions">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+
+                </div>
+
+                <div class="portlet box blue-hoki">
+                    <div class="portlet-body form">
+                        <form method="post" class="form-horizontal">
+                            <div class="form-body">
+                                <h4 class="form-section"><strong>Sales</strong></h4>
+                                {{ form.group_selectmulti('Sales', 'sales', account_opts, sales_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Return', 'return', account_opts, return_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Sales Return', 'sales_return', account_opts, sr_opts_selected , 3, 4) }}
+                                
+                                <h4 class="form-section"><strong>Cost of Sales</strong></h4>
+                                {{ form.group_selectmulti('Cost of Sales', 'cos', account_opts, cos_opts_selected , 3, 4) }}
+
+                                <h4 class="form-section"><strong>Cost of Labor</strong></h4>
+                                {{ form.group_selectmulti('Cost of Labor', 'col', account_opts, col_opts_selected , 3, 4) }}
+                                
+                                <h4 class="form-section"><strong>Other Employee Cost</strong></h4>
+                                {{ form.group_selectmulti('Other Employee Cost', 'oec', account_opts, oec_opts_selected , 3, 4) }}
+
+                                <h4 class="form-section"><strong>Operating Expenses</strong></h4>
+                                <h4 class="form-section"><strong>Controllable Expenses</strong></h4>
+                                {{ form.group_selectmulti('Utility Cost', 'uc', account_opts, uc_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Telephone Charges and DSL Connection', 'tcdc', account_opts, tcdc_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Supplies', 'supp', account_opts, supp_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Repair and Maintenance', 'rm', account_opts, rm_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Freight Out and Others', 'foo', account_opts, foo_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Other External Expenditures', 'oee', account_opts, oee_opts_selected , 3, 4) }}
+
+                                <h4 class="form-section"><strong>Non Controllable Expenses</strong></h4>
+                                {{ form.group_selectmulti('Occupancy Cost', 'oc', account_opts, oc_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Depreciation and Amortization', 'da', account_opts, da_opts_selected , 3, 4) }}
+                                
+                                <h4 class="form-section"><strong>Sales and Marketing</strong></h4>
+                                {{ form.group_selectmulti('Marketing Advertising and Branding', 'mab', account_opts, mab_opts_selected , 3, 4) }}
+
+                                <h4 class="form-section"><strong>Other Income and Charges</strong></h4>
+                                {{ form.group_selectmulti('Other Income and Charges', 'oic', account_opts, oic_opts_selected , 3, 4) }}
+
+                                <h4 class="form-section"><strong>Net Income Tax</strong></h4>
+                                {{ form.group_selectmulti('Net Income Tax', 'nit', account_opts, nit_opts_selected , 3, 4) }}
+                            </div>
+
+                            <div class="form-actions fluid">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" onclick="return check_duplicate()" class="btn blue mobile-button-full">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+$(document).ready(function() {
+
+});
+check_duplicate = function(){
+    var check = true;
+    var sales = $('#cform-sales').val();
+    var return = $('#cform-return').val();
+    var sales_return = $('#cform-sales_return').val();
+    var cos = $('#cform-cos').val();
+    var col = $('#cform-col').val();
+    var oec = $('#cform-oec').val();
+    var uc = $('#cform-uc').val();
+    var tcdc = $('#cform-tcdc').val();
+    var supp = $('#cform-supp').val();
+    var rm = $('#cform-rm').val();
+    var foo = $('#cform-foo').val();
+    var oee = $('#cform-oee').val();
+    var oc = $('#cform-oc').val();
+    var da = $('#cform-da').val();
+    var mab = $('#cform-mab').val();
+    var oic = $('#cform-oic').val();
+    var nit = $('#cform-nit').val();
+
+    var array = [];
+    for(i in sales){
+        if(jQuery.inArray(sales[i], array) == -1){
+            array.push(sales[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Sales!','Error');
+        }
+    }
+    for(i in return){
+        if(jQuery.inArray(return[i], array) == -1){
+            array.push(return[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Return!','Error');
+        }
+    }
+    for(i in sales_return){
+        if(jQuery.inArray(sales_return[i], array) == -1){
+            array.push(sales_return[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Sales Return!','Error');
+        }
+    }
+    for(i in cos){
+        if(jQuery.inArray(cos[i], array) == -1){
+            array.push(cos[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Cost of Sales!','Error');
+        }
+    }
+    for(i in col){
+        if(jQuery.inArray(col[i], array) == -1){
+            array.push(col[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Cost of Labor!','Error');
+        }
+    }
+    for(i in oec){
+        if(jQuery.inArray(oec[i], array) == -1){
+            array.push(oec[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Other Employee Cost!','Error');
+        }
+    }
+    for(i in uc){
+        if(jQuery.inArray(uc[i], array) == -1){
+            array.push(uc[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Utility Cost!','Error');
+        }
+    }
+    for(i in tcdc){
+        if(jQuery.inArray(tcdc[i], array) == -1){
+            array.push(tcdc[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Telephone Charges and DSL Connection!','Error');
+        }
+    }
+    for(i in supp){
+        if(jQuery.inArray(supp[i], array) == -1){
+            array.push(supp[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Supplies!','Error');
+        }
+    }
+    for(i in rm){
+        if(jQuery.inArray(rm[i], array) == -1){
+            array.push(rm[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Repair and Maintenance!','Error');
+        }
+    }
+    for(i in foo){
+        if(jQuery.inArray(foo[i], array) == -1){
+            array.push(foo[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Freight Out and Others!','Error');
+        }
+    }
+    for(i in oee){
+        if(jQuery.inArray(oee[i], array) == -1){
+            array.push(oee[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Other External Expenditures!','Error');
+        }
+    }
+    for(i in oc){
+        if(jQuery.inArray(oc[i], array) == -1){
+            array.push(oc[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Occupancy Cost!','Error');
+        }
+    }
+    for(i in da){
+        if(jQuery.inArray(da[i], array) == -1){
+            array.push(da[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Depreciation and Amortization!','Error');
+        }
+    }
+    for(i in mab){
+        if(jQuery.inArray(mab[i], array) == -1){
+            array.push(mab[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Marketing Advertising and Branding!','Error');
+        }
+    }
+    for(i in oic){
+        if(jQuery.inArray(oic[i], array) == -1){
+            array.push(oic[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Other Income and Charges!','Error');
+        }
+    }
+    for(i in nit){
+        if(jQuery.inArray(nit[i], array) == -1){
+            array.push(nit[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Net Income Tax!','Error');
+        }
+    }
+    return check;
+}
+</script>
+{% endblock %}
+
+{% block css %}
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/select2/select2.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('bundles/gisttemplate/assets/global/plugins/data-tables/DT_bootstrap.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

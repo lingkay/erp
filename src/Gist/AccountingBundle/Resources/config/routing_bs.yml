@@ -12,3 +12,14 @@ gist_accounting_bs_generate_table:
     pattern: /list_table/{from}/{to}
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:BalanceSheet:generateTable }
+
+gist_bs_settings_index:
+    pattern: /list_settings
+    methods: [GET]
+    defaults: { _controller: GistAccountingBundle:BalanceSheetSettings:index }
+
+gist_bs_settings_generate:
+    pattern: /list_settings
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:BalanceSheetSettings:save }
+

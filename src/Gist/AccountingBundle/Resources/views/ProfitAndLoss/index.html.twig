@@ -104,6 +104,7 @@ $(document).ready(function() {
 
                 // text 1
                 $('#thead_tb').append('<tr class="1trhead">');
+                $('.1trhead').append("<th></th>");
                 $('.1trhead').append("<th>Cosmetigroup Int'l Corporation</th>");
                 for (var i = 1; count >= i; i++) {
                     $('.1trhead').append('<th></th>');
@@ -112,13 +113,23 @@ $(document).ready(function() {
 
                 // append Months
                 $('#thead_tb').append('<tr id="tr_thead1">');
+                $('#tr_thead1').append("<th></th>");
                 $.each(data.date_array, function(h1, v1) {
                     $('#tr_thead1').append('<th>'+v1+'</th>');
                 });
                 $('#thead_tb').append('</tr>');
 
+                // append below text
+                $('#thead_tb').append('<tr id="tr_thead1_1">');
+                $('#tr_thead1_1').append("<th></th>");
+                $.each(data.below_text, function(h1, v1) {
+                    $('#tr_thead1_1').append('<th>'+v1+'</th>');
+                });
+                $('#thead_tb').append('</tr>');
+
                 // add space
                 $('#tbody_tb').append('<tr class="1space">');
+                $('.1space').append('<td></td>');
                 for (var i = 0; count >= i; i++) {
                     $('.1space').append('<td></td>');
                 }
@@ -126,6 +137,7 @@ $(document).ready(function() {
 
                 // text 1
                 $('#thead_tb').append('<tr class="2trhead">');
+                $('.2trhead').append("<th>Code</th>");
                 $('.2trhead').append("<th>Sales</th>");
                 for (var i = 1; count >= i; i++) {
                     $('.2trhead').append('<th></th>');
@@ -135,28 +147,28 @@ $(document).ready(function() {
                 // append list of accounts in netsales sales
                 $('#list_table').append('<tbody id="tbody_tb">');
                 $.each(data.pl.netsales_main_sales, function(h1, v1) {
+                    console.log(v1,"v1");
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
-                        $.each(v1.accounts, function(h2, v2) {
-                            if(typeof(v2.type) != "undefined" && v2.type !== null && v2.type == 'sales') {
-                                delete v2["type"];
-                                $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
-                                var c = 0;
-                                $.each(v2, function(h3, v3) {
-                                    if (c != 0) {
-                                        $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
-                                    }else{
-                                        $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
-                                    }
-                                    c++;
-                                });
-                                $('#tbody_tb').append('</tr>');
-                            }
-                        });
+                        if(typeof(v1.accounts.type) != "undefined" && v1.accounts.type !== null && v1.accounts.type == 'sales') {
+                            delete v1.accounts["type"];
+                            $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                            var c = 0;
+                            $.each(v1.accounts, function(h3, v3) {
+                                if (c < 2) {
+                                    $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                                }else{
+                                    $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                                }
+                                c++;
+                            });
+                            $('#tbody_tb').append('</tr>');
+                        }
                     }
                 });
 
                 // netsales sales total
                 $('#tbody_tb').append('<tr class="1trlisttotal">');
+                    $('.1trlisttotal').append('<td></td>');
                     $('.1trlisttotal').append('<td>TOTAL SALES</td>');
                     $.each(data.pl.netsales['nsale_total'], function(nk, nv) {
                         if(typeof(nv.sales) != "undefined" && nv.sales !== null) {
@@ -165,11 +177,13 @@ $(document).ready(function() {
                             $('.1trlisttotal').append('<td style="text-align:right;">0</td>');
                             
                         }
+                        $('.1trlisttotal').append('<td style="text-align:right;"></td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
                 // add space
                 $('#tbody_tb').append('<tr class="2space">');
+                $('.2space').append('<td></td>');
                 for (var i = 0; count >= i; i++) {
                     $('.2space').append('<td></td>');
                 }
@@ -179,27 +193,26 @@ $(document).ready(function() {
                 $('#list_table').append('<tbody id="tbody_tb">');
                 $.each(data.pl.netsales_main_revenue, function(h1, v1) {
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
-                        $.each(v1.accounts, function(h2, v2) {
-                            if(typeof(v2.type) != "undefined" && v2.type !== null && v2.type == 'revenue') {
-                                delete v2["type"];
-                                $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
-                                var c = 0;
-                                $.each(v2, function(h3, v3) {
-                                    if (c != 0) {
-                                        $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
-                                    }else{
-                                        $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
-                                    }
-                                    c++;
-                                });
-                                $('#tbody_tb').append('</tr>');
-                            }
-                        });
+                        if(typeof(v1.accounts.type) != "undefined" && v1.accounts.type !== null && v1.accounts.type == 'revenue') {
+                            delete v1.accounts["type"];
+                            $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                            var c = 0;
+                            $.each(v1.accounts, function(h3, v3) {
+                                if (c < 2) {
+                                    $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                                }else{
+                                    $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                                }
+                                c++;
+                            });
+                            $('#tbody_tb').append('</tr>');
+                        }
                     }
                 });
 
                 // netsales revenue total
                 $('#tbody_tb').append('<tr class="2trlisttotal">');
+                    $('.2trlisttotal').append('<td></td>');
                     $('.2trlisttotal').append('<td>TOTAL REVENUE</td>');
                     $.each(data.pl.netsales['nrevenue_total'], function(nk, nv) {
                         if(typeof(nv.revenue) != "undefined" && nv.revenue !== null) {
@@ -207,26 +220,90 @@ $(document).ready(function() {
                         }else{
                             $('.2trlisttotal').append('<td style="text-align:right;">0</td>');
                         }
+                        $('.2trlisttotal').append('<td style="text-align:right;"></td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
-                // net revenue total
-                $('#tbody_tb').append('<tr class="3trlisttotal">');
-                    $('.3trlisttotal').append('<td>NET REVENUE</td>');
-                    $.each(data.pl.netsales['total'], function(nk, nv) {
-                        $('.3trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
-                    });
+                // text 1
+                $('#tbody_tb').append('<tr class="2trhead_1">');
+                $('.2trhead_1').append("<td></td>");
+                $('.2trhead_1').append("<td>Sales Return, Sales Discount and other Allowances</td>");
+                for (var i = 1; count >= i; i++) {
+                    $('.2trhead_1').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // append list of accounts in netsales sales and return
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.netsales_main_sales_return, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        if(typeof(v1.accounts.type) != "undefined" && v1.accounts.type !== null && v1.accounts.type == 'sales_return') {
+                            delete v1.accounts["type"];
+                            $('#tbody_tb').append('<tr class="1trlist_1_'+h1+'">');
+                            var c = 0;
+                            $.each(v1.accounts, function(h3, v3) {
+                                if (c < 2) {
+                                    $('.1trlist_1_'+h1+'').append('<td>'+v3+'</td>');
+                                }else{
+                                    $('.1trlist_1_'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                                }
+                                c++;
+                            });
+                            $('#tbody_tb').append('</tr>');
+                        }
+                    }
+                });
+
+                // netsales sales and return total
+                $('#tbody_tb').append('<tr class="2trlisttotal_1">');
+                    $('.2trlisttotal_1').append('<td></td>');
+                    $('.2trlisttotal_1').append('<td>TOTAL SALES RETURN, ALLOWANCES AND DISCOUNTS</td>');
+                    // console.log(data.pl.netsales['nsale_return_total'], " test");
+                    if(typeof(data.pl.netsales['nsale_return_total']) != "undefined" && data.pl.netsales['nsale_return_total'] !== null) {
+                        $.each(data.pl.netsales['nsale_return_total'], function(nk, nv) {
+                            if(typeof(nv.sales_return) != "undefined" && nv.sales_return !== null) {
+                                $('.2trlisttotal_1').append('<td style="text-align:right;">'+nv.sales_return.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.2trlisttotal_1').append('<td style="text-align:right;">0</td>');
+                            }
+                            $('.2trlisttotal_1').append('<td style="text-align:right;"></td>');
+                        });
+                    }else{
+                        for (var i = 1; count >= i; i++) {
+                            $('.2trlisttotal_1').append('<th></th>');
+                        }
+                    }
                 $('#tbody_tb').append('</tr>');
 
                 // add space
                 $('#tbody_tb').append('<tr class="3space">');
+                $('.3space').append('<td></td>');
                 for (var i = 0; count >= i; i++) {
                     $('.3space').append('<td></td>');
                 }
                 $('#tbody_tb').append('</tr>');
 
+                // net revenue total
+                $('#tbody_tb').append('<tr class="3trlisttotal">');
+                    $('.3trlisttotal').append('<td></td>');
+                    $('.3trlisttotal').append('<td>NET REVENUE</td>');
+                    $.each(data.pl.netsales['total'], function(nk, nv) {
+                        $('.3trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.3trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="4space_0">');
+                $('.4space_0').append('<td></td>');
+                for (var i = 0; count >= i; i++) {
+                    $('.4space_0').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
                 // text 2
                 $('#tbody_tb').append('<tr class="3trhead">');
+                $('.3trhead').append("<td></td>");
                 $('.3trhead').append("<td>Cost of Sales</td>");
                 for (var i = 1; count >= i; i++) {
                     $('.3trhead').append('<td></td>');
@@ -237,32 +314,33 @@ $(document).ready(function() {
                 $('#list_table').append('<tbody id="tbody_tb">');
                 $.each(data.pl.cos, function(h1, v1) {
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
-                        $.each(v1.accounts, function(h2, v2) {
-                            $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
-                            var c = 0;
-                            $.each(v2, function(h3, v3) {
-                                if (c != 0) {
-                                    $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
-                                }else{
-                                    $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
-                                }
-                                c++;
-                            });
-                            $('#tbody_tb').append('</tr>');
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2 ) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
                         });
+                        $('#tbody_tb').append('</tr>');
                     }
                 });
 
                 // cos total
                 $('#tbody_tb').append('<tr class="4trlisttotal">');
+                    $('.4trlisttotal').append('<td></td>');
                     $('.4trlisttotal').append('<td>TOTAL COST OF SALES</td>');
                     $.each(data.pl.cos['total'], function(nk, nv) {
                         $('.4trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.4trlisttotal').append('<td style="text-align:right;"></td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
                 // add space
                 $('#tbody_tb').append('<tr class="4space">');
+                $('.4space').append('<td></td>');
                 for (var i = 0; count >= i; i++) {
                     $('.4space').append('<td></td>');
                 }
@@ -270,15 +348,18 @@ $(document).ready(function() {
 
                 // GROSS PROFIT TOTAL
                 $('#tbody_tb').append('<tr class="5trlisttotal">');
+                    $('.5trlisttotal').append('<td></td>');
                     $('.5trlisttotal').append('<td>GROSS PROFIT</td>');
                     $.each(data.pl.cos['total'], function(lk, lv) {
                         var sum = data.pl.netsales['total'][lk] - data.pl.cos['total'][lk];
                         $('.5trlisttotal').append('<td style="text-align:right;">'+sum.toLocaleString('en')+'</td>');
+                        $('.5trlisttotal').append('<td style="text-align:right;"></td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
                 // add space
                 $('#tbody_tb').append('<tr class="5space">');
+                $('.5space').append('<td></td>');
                 for (var i = 0; count >= i; i++) {
                     $('.5space').append('<td></td>');
                 }
@@ -286,6 +367,7 @@ $(document).ready(function() {
 
                 // text 2
                 $('#tbody_tb').append('<tr class="4trhead">');
+                $('.4trhead').append('<td></td>');
                 $('.4trhead').append("<td>Cost of Labor</td>");
                 for (var i = 1; count >= i; i++) {
                     $('.4trhead').append('<td></td>');
@@ -294,32 +376,544 @@ $(document).ready(function() {
 
                 // Cost of labor
                 $('#list_table').append('<tbody id="tbody_tb">');
-                $.each(data.pl.opex, function(h1, v1) {
+                $.each(data.pl.col, function(h1, v1) {
                     if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
-                        $.each(v1.accounts, function(h2, v2) {
-                            $('#tbody_tb').append('<tr class="1trlist'+h2+'">');
-                            var c = 0;
-                            $.each(v2, function(h3, v3) {
-                                if (c != 0) {
-                                    $('.1trlist'+h2+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
-                                }else{
-                                    $('.1trlist'+h2+'').append('<td>'+v3+'</td>');
-                                }
-                                c++;
-                            });
-                            $('#tbody_tb').append('</tr>');
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
                         });
+                        $('#tbody_tb').append('</tr>');
                     }
                 });
 
                 // cos total
                 $('#tbody_tb').append('<tr class="6trlisttotal">');
+                    $('.6trlisttotal').append('<td></td>');
                     $('.6trlisttotal').append('<td>TOTAL PAYROLL COST</td>');
-                    $.each(data.pl.opex['total'], function(nk, nv) {
+                    $.each(data.pl.col['total'], function(nk, nv) {
                         $('.6trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.6trlisttotal').append('<td style="text-align:right;"></td>');
                     });
                 $('#tbody_tb').append('</tr>');
 
+                // add space
+                $('#tbody_tb').append('<tr class="6space">');
+                $('.6space').append('<td></td>');
+                for (var i = 0; count >= i; i++) {
+                    $('.6space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="5trhead">');
+                $('.5trhead').append('<td></td>');
+                $('.5trhead').append("<td>Other Employee Cost</td>");
+                for (var i = 1; count >= i; i++) {
+                    $('.5trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Other Employee Cost
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.eoc, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // TOTAL OTHER EMPLOYEE COST
+                $('#tbody_tb').append('<tr class="7trlisttotal">');
+                    $('.7trlisttotal').append('<td></td>');
+                    $('.7trlisttotal').append('<td>TOTAL OTHER EMPLOYEE COST</td>');
+                    $.each(data.pl.eoc['total'], function(nk, nv) {
+                        $('.7trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.7trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // TOTAL PAYROLL AND OTHER EMPLOYEE COST
+                $('#tbody_tb').append('<tr class="8trlisttotal">');
+                    $('.8trlisttotal').append('<td></td>');
+                    $('.8trlisttotal').append('<td>TOTAL PAYROLL AND OTHER EMPLOYEE COST</td>');
+                    $.each(data.pl.eoc['total'], function(nk, nv) {
+                        $('.8trlisttotal').append('<td style="text-align:right;">'+(nv + data.pl.col['total'][nk]).toLocaleString('en')+'</td>');
+                        $('.8trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="7space">');
+                $('.7space').append('<td></td>');
+                for (var i = 0; count >= i; i++) {
+                    $('.7space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="6trhead">');
+                $('.6trhead').append('<td></td>');
+                $('.6trhead').append("<td>Operating Expenses</td>");
+                for (var i = 1; count >= i; i++) {
+                    $('.6trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="7trhead">');
+                $('.7trhead').append('<td></td>');
+                $('.7trhead').append("<td>Controllable Expenses</td>");
+                for (var i = 1; count >= i; i++) {
+                    $('.7trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="8trhead">');
+                $('.8trhead').append("<td>Utility Cost</td>");
+                $('.8trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.8trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Utility Cost
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.uc, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // text 2
+                $('#tbody_tb').append('<tr class="9trhead">');
+                $('.9trhead').append("<td>Telephone Charges and DSL Connection</td>");
+                $('.9trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.9trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Telephone Charges and DSL Connection
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.tcdc, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // text 2
+                $('#tbody_tb').append('<tr class="10trhead">');
+                $('.10trhead').append("<td>Supplies</td>");
+                $('.10trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.10trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Supplies
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.supp, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // text 2
+                $('#tbody_tb').append('<tr class="11trhead">');
+                $('.11trhead').append("<td>Repair and Maintenance</td>");
+                $('.11trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.11trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Repair and Maintenance
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.rm, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // text 2
+                $('#tbody_tb').append('<tr class="12trhead">');
+                $('.12trhead').append("<td>Freight Out and Others</td>");
+                $('.12trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.12trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Freight Out and Others
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.foo, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // text 2
+                $('#tbody_tb').append('<tr class="13trhead">');
+                $('.13trhead').append("<td>Other External Expenditures</td>");
+                $('.13trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.13trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Other External Expenditures
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.oee, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // TOTAL CONTROLLABLE COST
+                $('#tbody_tb').append('<tr class="9trlisttotal">');
+                    $('.9trlisttotal').append('<td></td>');
+                    $('.9trlisttotal').append('<td>TOTAL CONTROLLABLE COST</td>');
+                    $.each(data.pl.controllable_total['total'], function(nk, nv) {
+                        $('.9trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.9trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="8space">');
+                $('.8space').append('<td></td>');
+                for (var i = 0; count >= i; i++) {
+                    $('.8space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="14trhead">');
+                $('.14trhead').append('<td></td>');
+                $('.14trhead').append("<td>Non Controllable Expenses</td>");
+                for (var i = 1; count >= i; i++) {
+                    $('.14trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="15trhead">');
+                $('.15trhead').append("<td>Occupancy Cost</td>");
+                $('.15trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.15trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Occupancy Cost
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.oc, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // text 2
+                $('#tbody_tb').append('<tr class="16trhead">');
+                $('.16trhead').append("<td>Depreciation and Amortization</td>");
+                $('.16trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.16trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Depreciation and Amortization
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.da, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // TOTAL NON CONTROLLABLE COST
+                $('#tbody_tb').append('<tr class="10trlisttotal">');
+                    $('.10trlisttotal').append('<td></td>');
+                    $('.10trlisttotal').append('<td>TOTAL NON CONTROLLABLE COST</td>');
+                    $.each(data.pl.non_controllable_total['total'], function(nk, nv) {
+                        $('.10trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.10trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // TOTAL OPERATING EXPENSES
+                $('#tbody_tb').append('<tr class="11trlisttotal">');
+                    $('.11trlisttotal').append('<td></td>');
+                    $('.11trlisttotal').append('<td>TOTAL OPERATING EXPENSES</td>');
+                    $.each(data.pl.non_controllable_total['total'], function(nk, nv) {
+                        $('.11trlisttotal').append('<td style="text-align:right;">'+(nv + data.pl.controllable_total['total'][nk]).toLocaleString('en')+'</td>');
+                        $('.11trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="9space">');
+                $('.9space').append('<td></td>');   
+                for (var i = 0; count >= i; i++) {
+                    $('.9space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="17trhead">');
+                $('.17trhead').append("<td>Marketing Advertising and Branding</td>");
+                $('.17trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.17trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Marketing Advertising and Branding
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.mab, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // TOTAL SALES AND MARKETING
+                $('#tbody_tb').append('<tr class="12trlisttotal">');
+                    $('.12trlisttotal').append('<td></td>');
+                    $('.12trlisttotal').append('<td>TOTAL SALES AND MARKETING</td>');
+                    $.each(data.pl.mab['total'], function(nk, nv) {
+                        $('.12trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.12trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // text 2
+                $('#tbody_tb').append('<tr class="18trhead">');
+                $('.18trhead').append("<td>Other income and charges</td>");
+                $('.18trhead').append('<td></td>');
+                for (var i = 1; count >= i; i++) {
+                    $('.18trhead').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // Other income and charges
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.oic, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // TOTAL OTHER INCOME/(CHARGES)
+                $('#tbody_tb').append('<tr class="13trlisttotal">');
+                    $('.13trlisttotal').append('<td></td>');
+                    $('.13trlisttotal').append('<td>TOTAL OTHER INCOME/(CHARGES)</td>');
+                    $.each(data.pl.oic['total'], function(nk, nv) {
+                        $('.13trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.13trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="10space">');
+                $('.10space').append('<td></td>');   
+                for (var i = 0; count >= i; i++) {
+                    $('.10space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // TOTAL COST AND EXPENSES
+                $('#tbody_tb').append('<tr class="2trlisttotal_2">');
+                    $('.2trlisttotal_2').append('<td></td>');
+                    $('.2trlisttotal_2').append('<td>TOTAL COST AND EXPENSES</td>');
+                    for (var i = 1; count >= i; i++) {
+                        $('.2trlisttotal_2').append('<th></th>');
+                    }
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="11space">');
+                $('.11space').append('<td></td>');   
+                for (var i = 0; count >= i; i++) {
+                    $('.11space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // INCOME OR LOSS FROM OPERATIONS
+                $('#tbody_tb').append('<tr class="2trlisttotal_3">');
+                    $('.2trlisttotal_3').append('<td></td>');
+                    $('.2trlisttotal_3').append('<td>INCOME OR LOSS FROM OPERATIONS</td>');
+                    for (var i = 1; count >= i; i++) {
+                        $('.2trlisttotal_3').append('<th></th>');
+                    }
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="12space">');
+                $('.12space').append('<td></td>');   
+                for (var i = 0; count >= i; i++) {
+                    $('.12space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // NET INCOME/(LOSS) BEFORE TAX
+                $('#tbody_tb').append('<tr class="2trlisttotal_4">');
+                    $('.2trlisttotal_4').append('<td></td>');
+                    $('.2trlisttotal_4').append('<td>NET INCOME/(LOSS) BEFORE TAX</td>');
+                    for (var i = 1; count >= i; i++) {
+                        $('.2trlisttotal_4').append('<th></th>');
+                    }
+                $('#tbody_tb').append('</tr>');
+
+                // add space
+                $('#tbody_tb').append('<tr class="13space">');
+                $('.13space').append('<td></td>');   
+                for (var i = 0; count >= i; i++) {
+                    $('.13space').append('<td></td>');
+                }
+                $('#tbody_tb').append('</tr>');
+
+                // NET INCOME AFTER TAX
+                $('#list_table').append('<tbody id="tbody_tb">');
+                $.each(data.pl.nit, function(h1, v1) {
+                    if(typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="1trlist'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h3, v3) {
+                            if (c < 2) {
+                                $('.1trlist'+h1+'').append('<td>'+v3+'</td>');
+                            }else{
+                                $('.1trlist'+h1+'').append('<td style="text-align:right;">'+v3.toLocaleString('en')+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // NET INCOME AFTER TAX TOTAL
+                $('#tbody_tb').append('<tr class="14trlisttotal">');
+                    $('.14trlisttotal').append('<td></td>');
+                    $('.14trlisttotal').append('<td>NET INCOME AFTER TAX</td>');
+                    $.each(data.pl.nit['total'], function(nk, nv) {
+                        $('.14trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                        $('.14trlisttotal').append('<td style="text-align:right;"></td>');
+                    });
+                $('#tbody_tb').append('</tr>');
             },
             cache: false
         });
