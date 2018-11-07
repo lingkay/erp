@@ -31,6 +31,8 @@
                                 {{ form.group_selectmulti('Investing Activities Accounts', 'iaa', account_opts, ia_opts_selected , 3, 4) }}
                                 <h4 class="form-section"><strong>Financing Activities</strong></h4>
                                 {{ form.group_selectmulti('Financing Activities Accounts', 'faa', account_opts, fa_opts_selected , 3, 4) }}
+                                <h4 class="form-section"><strong>Cash and Cash Equivalents accounts</strong></h4>
+                                {{ form.group_selectmulti('Cash and Cash Equivalents', 'ca', account_opts, ca_opts_selected , 3, 4) }}
                             </div>
 
                             <div class="form-actions fluid">
@@ -138,7 +140,6 @@ check_duplicate = function(){
             toastr['error']('Duplicate Entry of detected at Financing Activities Accounts!','Error');
         }
     }
-
     return check;
 }
 </script>

@@ -123,7 +123,7 @@ $(document).ready(function() {
                     $('#tr_thead3').append('<td></td>');
                     $('#tr_thead3').append('<td style="text-align:left;">Income before Income tax</td>');
                     $('#tr_thead3').append('<td></td>');
-                    $('#tr_thead3').append('<td></td>');
+                    $('#tr_thead3').append('<td style="text-align:right;">'+data.income_before_tax.toLocaleString('en')+'</td>');
                 $('#thead_tb').append('</tr>');
 
                 // Accounts Receivable
@@ -542,7 +542,7 @@ $(document).ready(function() {
                     $('#tr_thead27').append('<td>ENDING BALANCE OF CASH AND CASH EQUIVALENTS</td>');
                     $('#tr_thead27').append('<td></td>');
                     $('#tr_thead27').append('<td></td>');
-                    $('#tr_thead27').append('<td></td>');
+                    $('#tr_thead27').append('<td style="text-align:right;">'+data.cf.net_total.toLocaleString('en')+'</td>');
                 $('#tbody_tb').append('</tr>');
 
                 $('#list_table').append('</tbody>');

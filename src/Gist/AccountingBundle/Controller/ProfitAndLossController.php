@@ -737,7 +737,7 @@ class ProfitAndLossController extends TrialBalanceController
                 $netsales_main_revenue[$as->getAccount()->getID()]['accounts']['total_'.$m.''] = $total;
                 $netsales_main_revenue[$as->getAccount()->getID()]['accounts']['total_'.$m.'space'] = '';
                 $netsales_main_revenue[$as->getAccount()->getID()]['accounts']['type'] = 'revenue';
-                if (isset($nsale_total[$m]['revenue'])) {
+                if (isset($nrevenue_total[$m]['revenue'])) {
                     $nrevenue_total[$m]['revenue'] += $total; 
                 }else{
                     $nrevenue_total[$m]['revenue'] = $total; 

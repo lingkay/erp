@@ -30,6 +30,7 @@ class CashFlowSettings
     const TYPE_DRA = "Disposals of Retired Assets";
     const TYPE_II  = "Interest Income";
     const TYPE_IBC = "Interest and other Bank Charges";
+    const TYPE_CA  = "Cash Accounts";
 
     /**
      * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\ChartOfAccount")

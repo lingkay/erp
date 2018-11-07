@@ -199,6 +199,17 @@ class CashFlowSettingsController extends TrialBalanceController
                     $em->persist($assets);
                 }
             }
+
+            if(isset($data['ca'])) {
+                foreach ($data['ca'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_CA)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
             $em->flush();
 
             $this->addFlash('success', $this->title . ' updated successfully.');
@@ -274,6 +285,7 @@ class CashFlowSettingsController extends TrialBalanceController
         $params['dep_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_DEP);
         $params['ia_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_IA);
         $params['fa_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_FA);
+        $params['ca_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_CA);
 
         return $params;
 

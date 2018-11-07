@@ -12,6 +12,7 @@ use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Gist\AccountingBundle\Entity\EndingBalance;
 use Gist\AccountingBundle\Entity\CashFlowSettings;
+use Gist\AccountingBundle\Entity\ProfitAndLossSettings;
 use Gist\AccountingBundle\Controller\TrialBalanceController;
 
 use DateTime;
@@ -227,10 +228,11 @@ class CashFlowController extends TrialBalanceController
         $filename = 'cash_flow.csv';
         // $tb = $this->getTrialBalanceData($data['date_from'], $data['date_to']);
         $cf = $this->getCashFlowData($data['month'], $data['year']);
+        $income_before_tax = $this->getIncomeBeforeTaxTotal($data['month'], $data['year']);
+        $cash_accounts_total = $this->getCashAndCashEquivalents($data['month'], $data['year']);
 
         $date = new Datetime($data['year'].'-'.$data['month'].'-01 00:00:00');
         $date = $date->format(' F Y');
-
         // redirect file to stdout, store in output buffer and place in $csv
         $file = fopen('php://output', 'w');
         ob_start();
@@ -241,7 +243,7 @@ class CashFlowController extends TrialBalanceController
 
         fputcsv($file, []);
         fputcsv($file, ["CASH FLOW FROM OPERATING ACTIVITIES"]);
-        fputcsv($file, ["","Income before Income tax"]);
+        fputcsv($file, ["","Income before Income tax","",$income_before_tax]);
         fputcsv($file, ["","Accounts Receivable"]);
         fputcsv($file, ["","Deduct:"]);
         foreach ($cf['accounts_receivable'] as $ar){
@@ -353,10 +355,11 @@ class CashFlowController extends TrialBalanceController
                 fputcsv($file, $ar['accounts']['decrease']);
             }
         }
+        $ending = $cash_accounts_total + $cf['net_total'];
         fputcsv($file, ["NET CASH PROVIDED BY/(USED IN) FINANCING ACTIVITIES","","",$cf['financing_activities_total']]);
         fputcsv($file, ["NET INCREASE/(DECREASE) IN CASH AND CASH EQUIVALENTS","","",$cf['net_total']]);
-        fputcsv($file, ["ADD: BEGINNING BALANCE OF CASH AND CASH EQUIVALENTS","","",""]);
-        fputcsv($file, ["ENDING BALANCE OF CASH AND CASH EQUIVALENTS","","",""]);
+        fputcsv($file, ["ADD: BEGINNING BALANCE OF CASH AND CASH EQUIVALENTS","","",$cash_accounts_total]);
+        fputcsv($file, ["ENDING BALANCE OF CASH AND CASH EQUIVALENTS","","",$ending]);
 
         fclose($file);
         $csv = ob_get_contents();
@@ -373,6 +376,7 @@ class CashFlowController extends TrialBalanceController
     protected function getCashFlowData($month, $year)
     {
         $em = $this->getDoctrine()->getManager();
+        $income_before_tax = $this->getIncomeBeforeTaxTotal($month, $year);
 
          //get COA balance per month
         $qb = $em->createQueryBuilder();
@@ -626,7 +630,7 @@ class CashFlowController extends TrialBalanceController
         $list['investing_activities_total'] = $investing_activities_total;
         $list['financing_activities_total'] = $financing_activities_total;
 
-        $list['net_total'] = ($operating_activities_total + $investing_activities_total + $financing_activities_total);
+        $list['net_total'] = ($income_before_tax + $operating_activities_total + $investing_activities_total + $financing_activities_total);
 
         return $list;
     }
@@ -668,13 +672,321 @@ class CashFlowController extends TrialBalanceController
     {
         $data = $this->getRequest()->request->all();
         $cf = $this->getCashFlowData($month, $year);
+        $income_before_tax = $this->getIncomeBeforeTaxTotal($month, $year);
         
         $date = new Datetime($year.'-'.$month.'-01 00:00:00');
         $date = $date->format(' F Y');
 
         $array['cf'] = $cf;
         $array['date'] = $date;
+        $array['income_before_tax'] = $income_before_tax;
 
         return new JsonResponse($array);
+    }
+
+    protected function getIncomeBeforeTaxTotal($month, $year)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+         //get COA balance per month
+        $qb = $em->createQueryBuilder();
+        $qb->select('o')
+            ->from('GistAccountingBundle:TrialBalance', 'o')
+            ->join('GistAccountingBundle:ChartOfAccount', 'c', 'WITH', 'o.chart_of_account = c.id')
+            ->where('o.month = :MONTH and o.year = :YEAR ')
+            ->setParameter(':MONTH',$month)
+            ->setParameter(':YEAR',$year);
+
+        $coa = $qb->getQuery()->getResult();
+
+        $coa_array = [];
+        foreach ($coa as $c) {
+            if(isset($coa_array[$c->getAccount()->getID()])) {
+                $coa_arr = $coa_array[$c->getAccount()->getID()];
+                $coa_array[$c->getAccount()->getID()] = [
+                    'coa_id' => $c->getAccount()->getID(),
+                    'coa_date' => $c->getDateCreate()->format('mdy'),
+                    'total_debit' => $coa_arr['total_debit'] += $c->getDebit(),
+                    'total_credit' => $coa_arr['total_credit'] += $c->getCredit(),
+                ]; 
+            }else{
+                $coa_array[$c->getAccount()->getID()] = [
+                    'coa_id' => $c->getAccount()->getID(),
+                    'coa_date' => $c->getDateCreate()->format('mdy'),
+                    'total_debit' => (float)$c->getDebit(),
+                    'total_credit' => (float)$c->getCredit(),
+                ];
+            }
+        }
+
+        $nsales_total = 0;
+        $final_total = 0;
+        $netsales_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_SALES]);
+        $netsales_accounts_revenue = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_RETURN]);
+        $netsales_accounts_sales_return = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_SR]);
+
+        // for sales
+        foreach ($netsales_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $nsales_total += $total;
+        }  
+
+        // for revenue
+        foreach ($netsales_accounts_revenue as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+            $nsales_total += $total;
+        }  
+        
+        // for sales return
+        foreach ($netsales_accounts_sales_return as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $nsales_total += $total;
+        }  
+
+        $cos_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_COS]);
+        
+        foreach ($cos_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Cost of Labor
+        $col_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_COL]);
+
+        foreach ($col_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Operation Expenses
+        // Controllable Expenses
+        // Utility Cost
+        $uc_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_UC]);
+
+        foreach ($uc_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Telephone Charges and DSL Connection
+        $tcdc_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_TCDC]);
+
+        foreach ($tcdc_accounts as $as) {
+            
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Supplies
+        $supp_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_SUPP]);
+        foreach ($supp_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+            
+            $final_total += $total; 
+        }  
+        
+        // Repair and Maintenance
+        $rm_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_RM]);
+
+        foreach ($rm_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Freight Out and Others
+        $foo_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_FOO]);
+
+        foreach ($foo_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Other External Expenditures
+        $oee_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_OEE]);
+
+        foreach ($oee_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Non Controllable Expenses
+        // Occupancy Cost
+        $oc_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_OC]);
+
+        foreach ($oc_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Depreciation and Amortization
+        $da_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_DA]);
+
+        foreach ($da_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+       
+
+        // Marketing Advertising and Branding
+        $mab_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_MAB]);
+
+        foreach ($mab_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        // Other Income and Charges
+        $oic_accounts = $em->getRepository('GistAccountingBundle:ProfitAndLossSettings')->findBy(['type' => ProfitAndLossSettings::TYPE_OIC]);
+
+        foreach ($oic_accounts as $as) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$as->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$as->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$as->getAccount()->getID()]['total_credit']))
+                $credit = $coa_array[$as->getAccount()->getID()]['total_credit'];
+            $total = $debit - $credit;
+
+            $final_total += $total; 
+        }  
+
+        $income_before_tax = $nsales_total - $final_total;
+
+        return $income_before_tax;
+    }
+
+    protected function getCashAndCashEquivalents($month, $year)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $cash_accounts = $em->getRepository('GistAccountingBundle:CashFlowSettings')->findBy(['type' => CashFlowSettings::TYPE_CA]);
+
+        $last_month = new DateTime($month.'/'.'01/'.$year);
+        $last_month->modify('-1 month');
+        $last_month_m = $last_month->format('m');
+        $last_month_Y = $last_month->format('Y');
+
+        $total = 0;
+     
+        if ($cash_accounts != null) {
+            foreach ($cash_accounts as $as) {
+                $last_ending = $em->getRepository('GistAccountingBundle:EndingBalance')
+                                  ->createQueryBuilder('o')
+                                  ->where('o.chart_of_account = :COA')
+                                  ->andWhere('o.month = :MONTH and o.year = :YEAR')
+                                  ->setParameter(':COA', $as->getAccount()->getID())
+                                  ->setParameter(':MONTH', $last_month_m)
+                                  ->setParameter(':YEAR', $last_month_Y)
+                                  ->getQuery()->getOneOrNullResult();
+                if($last_ending == null ) {
+                    $e = 0;
+                }else{
+                    $e = $last_ending->getEnding();
+                }
+
+                $total += $e;
+            }
+        }
+        
+        return $total;
     }
 }
