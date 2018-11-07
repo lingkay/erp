@@ -21,10 +21,9 @@
                                 {{ form.group_selectmulti('Asset', 'assets', coa_opts, asset_opts_selected , 3, 4) }}
                                 {{ form.group_selectmulti('Liability', 'liability', coa_opts, liablity_opts_selected , 3, 4) }}
                                 {{ form.group_selectmulti('Capital', 'capital', coa_opts, capital_opts_selected , 3, 4) }}
-                                {{ form.group_selectmulti('Net Sales (Sales)', 'net_sales_sales', coa_opts, netsales_sales_opts_selected , 3, 4) }}
-                                {{ form.group_selectmulti('Net Sales (Revenue)', 'net_sales_revenue', coa_opts, netsales_revenue_opts_selected , 3, 4) }}
-                                {{ form.group_selectmulti('Cos', 'cos', coa_opts, cos_opts_selected , 3, 4) }}
-                                {{ form.group_selectmulti('Opex', 'opex', coa_opts, opex_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Net Sales', 'net_sales_sales', coa_opts, netsales_sales_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Cos', 'cos', accounts_opts, cos_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Opex', 'opex', accounts_opts, opex_opts_selected , 3, 4) }}
                             </div>
 
                             <div class="form-actions fluid">
@@ -57,6 +56,7 @@ check_duplicate = function(){
     var cos       = $('#cform-cos').val();
     var opex      = $('#cform-opex').val();
     var array = [];
+    var acc_array = [];
     for(i in assets){
         if(jQuery.inArray(assets[i], array) == -1){
             array.push(assets[i]);
@@ -90,16 +90,16 @@ check_duplicate = function(){
         }
     }
     for(i in cos){
-        if(jQuery.inArray(cos[i], array) == -1){
-            array.push(cos[i]);
+        if(jQuery.inArray(cos[i], acc_array) == -1){
+            acc_array.push(cos[i]);
         }else{
             check = false
             toastr['error']('Duplicate Entry of detected at Cos!','Error');
         }
     }
     for(i in opex){
-        if(jQuery.inArray(opex[i], array) == -1){
-            array.push(opex[i]);
+        if(jQuery.inArray(opex[i], acc_array) == -1){
+            acc_array.push(opex[i]);
         }else{
             check = false
             toastr['error']('Duplicate Entry of detected at Opex!','Error');

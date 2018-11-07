@@ -12,6 +12,7 @@ use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Gist\AccountingBundle\Entity\TrialBalance;
 use Gist\AccountingBundle\Entity\TrialBalanceSettings;
+use Gist\AccountingBundle\Entity\TrialBalanceExpenseSettings;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -638,19 +639,8 @@ class TrialBalanceController extends BaseController
             $netsales[] = 'net sales';
             // loop the tb settings
             $net_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_SALES]);
-            // for revenue net sales
-            $net_accounts_revenue = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_NET_REVENUE]);
             $net_total = 0;
             foreach ($net_accounts as $as) {
-                $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
-                
-                foreach ($main_accounts as $acc) {
-                    $net_total += $charts_of_account[$acc->getCode()]['ending_'.$m.'']; 
-                }
-            }  
-
-            // for revenue accounts
-            foreach ($net_accounts_revenue as $as) {
                 $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
                 
                 foreach ($main_accounts as $acc) {
@@ -665,15 +655,11 @@ class TrialBalanceController extends BaseController
             // cos
             $cos[] = 'COS';
             // loop the tb settings
-            $cos_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_COS]);
+            $cos_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceExpenseSettings')->findBy(['type' => TrialBalanceExpenseSettings::TYPE_COS]);
             $cos_total = 0;
-            foreach ($cos_accounts as $as) {
-                $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
-                
-                foreach ($main_accounts as $acc) {
-                    $cos_total += $charts_of_account[$acc->getCode()]['ending_'.$m.'']; 
-                }
-            }  
+            foreach ($cos_accounts as $acc) {
+                $cos_total += $charts_of_account[$acc->getAccount()->getCode()]['ending_'.$m.'']; 
+            }
             $cos[] = $cos_total;
             $cos[] = '';
             $cos[] = $cos_total;
@@ -681,15 +667,11 @@ class TrialBalanceController extends BaseController
             // opex
             $opex[] = 'OPEX';
             // loop the tb settings
-            $opex_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findBy(['type' => TrialBalanceSettings::TYPE_OPEX]);
+            $opex_accounts = $em->getRepository('GistAccountingBundle:TrialBalanceExpenseSettings')->findBy(['type' => TrialBalanceExpenseSettings::TYPE_OPEX]);
             $opex_total = 0;
-            foreach ($opex_accounts as $as) {
-                $main_accounts = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findBy(['main_account' => $as->getAccount()->getID()]);
-                
-                foreach ($main_accounts as $acc) {
-                    $opex_total += $charts_of_account[$acc->getCode()]['ending_'.$m.'']; 
-                }
-            }  
+            foreach ($opex_accounts as $acc) {
+                $opex_total += $charts_of_account[$acc->getAccount()->getCode()]['ending_'.$m.'']; 
+            }
             $opex[] = $opex_total;
             $opex[] = '';
             $opex[] = $opex_total;

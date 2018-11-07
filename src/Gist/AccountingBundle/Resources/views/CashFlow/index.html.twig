@@ -250,7 +250,7 @@ $(document).ready(function() {
                     $('#tr_thead11').append('<td></td>');
                 $('#tbody_tb').append('</tr>');
 
-                $.each(data.cf.prepaid_expenses, function(h1, v1) {
+                $.each(data.cf.accounts_payable, function(h1, v1) {
                     if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
                         $('#tbody_tb').append('<tr class="5trlist'+h1+'">');
                         var c = 0;
@@ -273,7 +273,7 @@ $(document).ready(function() {
                     $('#tr_thead12').append('<td></td>');
                 $('#tbody_tb').append('</tr>');
 
-                $.each(data.cf.prepaid_expenses, function(h1, v1) {
+                $.each(data.cf.accounts_payable, function(h1, v1) {
                     if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
                         $('#tbody_tb').append('<tr class="6trlist'+h1+'">');
                         var c = 0;
@@ -282,6 +282,73 @@ $(document).ready(function() {
                                 $('.6trlist'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
                             }else{
                                 $('.6trlist'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // Gain or Loss 
+                $.each(data.cf.disposal_assets, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="5trlist_1_'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.increase, function(h2, v2) {
+                            if (c > 1) {
+                                $('.5trlist_1_'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.5trlist_1_'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                $.each(data.cf.disposal_assets, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="6trlist_1_'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts.decrease, function(h2, v2) {
+                            if (c > 1) {
+                                $('.6trlist_1_'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.6trlist_1_'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // Interest Income
+                $.each(data.cf.interest_income, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="7trlist_1_'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h2, v2) {
+                            if (c > 1) {
+                                $('.7trlist_1_'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.7trlist_1_'+h1+'').append('<td>'+v2+'</td>');
+                            }
+                            c++;
+                        });
+                        $('#tbody_tb').append('</tr>');
+                    }
+                });
+
+                // Income and Other Bank Charges
+                $.each(data.cf.interest_and_bank, function(h1, v1) {
+                    if(typeof(v1) != "undefined" && v1 !== null && typeof(v1.accounts) != "undefined" && v1.accounts !== null) {
+                        $('#tbody_tb').append('<tr class="8trlist_1_'+h1+'">');
+                        var c = 0;
+                        $.each(v1.accounts, function(h2, v2) {
+                            if (c > 1) {
+                                $('.8trlist_1_'+h1+'').append('<td style="text-align:right;">'+v2.toLocaleString('en')+'</td>');
+                            }else{
+                                $('.8trlist_1_'+h1+'').append('<td>'+v2+'</td>');
                             }
                             c++;
                         });

@@ -13,29 +13,22 @@ use DateTime;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="acct_cashflow_settings")
+ * @ORM\Table(name="acct_balance_settings_expense")
  */
 
-class CashFlowSettings
+class TrialBalanceExpenseSettings
 {
     use HasGeneratedID;
     use TrackCreate;
 
-    const TYPE_AR  = "Accounts Receivable";
-    const TYPE_PE  = "Prepaid Expenses";
-    const TYPE_AP  = "Accounts Payable";
-    const TYPE_DEP = "Depreciation";
-    const TYPE_IA  = "Investing Activities";
-    const TYPE_FA  = "Financing Activities";
-    const TYPE_DRA = "Disposals of Retired Assets";
-    const TYPE_II  = "Interest Income";
-    const TYPE_IBC = "Interest and other Bank Charges";
+    const TYPE_COS          = "Cos";
+    const TYPE_OPEX         = "Opex";
 
     /**
      * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\ChartOfAccount")
-     * @ORM\JoinColumn(name="main_account_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="account", referencedColumnName="id", nullable=true)
      */
-    protected $coa;
+    protected $account;
 
     /** @ORM\Column(type="string", length=150) */
     protected $type;
@@ -47,13 +40,13 @@ class CashFlowSettings
 
     public function setAccount($account)
     {
-        $this->coa = $account;
+        $this->account = $account;
         return $this;
     }
 
     public function getAccount()
     {
-        return $this->coa;
+        return $this->account;
     }
 
     public function setType($type)

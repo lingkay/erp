@@ -284,6 +284,32 @@ class CashFlowController extends TrialBalanceController
             }
         }
 
+        // Gain or Loss 
+        foreach ($cf['disposal_assets'] as $ar){
+            if (isset($ar['accounts']['increase'])) {
+                fputcsv($file, $ar['accounts']['increase']);
+            }
+        }
+        foreach ($cf['disposal_assets'] as $ar){
+            if (isset($ar['accounts']['decrease'])) {
+                fputcsv($file, $ar['accounts']['decrease']);
+            }
+        }
+
+        // Income Intereset
+        foreach ($cf['interest_income'] as $ar){
+            if (isset($ar['accounts'])) {
+                fputcsv($file, $ar['accounts']);
+            }
+        }
+
+        // Income and Other Bank Charges
+        foreach ($cf['interest_and_bank'] as $ar){
+            if (isset($ar['accounts'])) {
+                fputcsv($file, $ar['accounts']);
+            }
+        }
+
         fputcsv($file, ["","Depreciation"]);
         fputcsv($file, ["","Add:"]);
         foreach ($cf['depreciation'] as $ar){
@@ -373,8 +399,8 @@ class CashFlowController extends TrialBalanceController
                 $coa_array[$c->getAccount()->getID()] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
-                    'total_debit' => $c->getDebit(),
-                    'total_credit' => $c->getCredit(),
+                    'total_debit' => (float)$c->getDebit(),
+                    'total_credit' => (float)$c->getCredit(),
                 ];
             }
         }
@@ -385,6 +411,9 @@ class CashFlowController extends TrialBalanceController
         $depreciation = [];
         $investing_activities = [];
         $financing_activities = [];
+        $disposal_assets = [];
+        $interest_income = [];
+        $interest_and_bank = [];
         $operating_activities_total = 0;
         $investing_activities_total = 0;
         $financing_activities_total = 0;
@@ -460,6 +489,65 @@ class CashFlowController extends TrialBalanceController
             $operating_activities_total += $total;
         } 
 
+        $disposals = $em->getRepository('GistAccountingBundle:CashFlowSettings')->findBy(['type' => CashFlowSettings::TYPE_DRA]);
+        foreach ($disposals as $d) {
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$d->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$d->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$d->getAccount()->getID()]['total_credit']))
+                $credit = -$coa_array[$d->getAccount()->getID()]['total_credit'];
+            $total = $debit + $credit;
+
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['increase']['code'] = $d->getAccount()->getCode();
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['increase']['name'] = 'Gain in ' .$d->getAccount()->getName();
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['decrease']['code'] = $d->getAccount()->getCode();
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['decrease']['name'] = 'Loss in ' .$d->getAccount()->getName();
+
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['increase']['amount'] = $debit;
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['decrease']['amount'] = $credit;
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['increase']['space'] = "";
+            $disposal_assets[$d->getAccount()->getID()]['accounts']['decrease']['space'] = "";
+
+            $operating_activities_total += $total;
+        }  
+
+        $int_income = $em->getRepository('GistAccountingBundle:CashFlowSettings')->findBy(['type' => CashFlowSettings::TYPE_II]);
+        foreach ($int_income as $d) {
+            $interest_income[$d->getAccount()->getID()]['accounts']['code'] = $d->getAccount()->getCode();
+            $interest_income[$d->getAccount()->getID()]['accounts']['name'] = $d->getAccount()->getName();
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$d->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$d->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$d->getAccount()->getID()]['total_credit']))
+                $credit = -$coa_array[$d->getAccount()->getID()]['total_credit'];
+            $total = $debit + $credit;
+                
+            $interest_income[$d->getAccount()->getID()]['accounts']['amount'] = $total;
+            $interest_income[$d->getAccount()->getID()]['accounts']['space'] = "";
+
+            $operating_activities_total += $total;
+        } 
+
+        $interest_ibc = $em->getRepository('GistAccountingBundle:CashFlowSettings')->findBy(['type' => CashFlowSettings::TYPE_IBC]);
+        foreach ($interest_ibc as $d) {
+            $interest_and_bank[$d->getAccount()->getID()]['accounts']['code'] = $d->getAccount()->getCode();
+            $interest_and_bank[$d->getAccount()->getID()]['accounts']['name'] = $d->getAccount()->getName();
+            $debit = 0;
+            $credit = 0;
+            if(isset($coa_array[$d->getAccount()->getID()]['total_debit']))
+                $debit = $coa_array[$d->getAccount()->getID()]['total_debit'];
+            if(isset($coa_array[$d->getAccount()->getID()]['total_credit']))
+                $credit = -$coa_array[$d->getAccount()->getID()]['total_credit'];
+            $total = $debit + $credit;
+                
+            $interest_and_bank[$d->getAccount()->getID()]['accounts']['amount'] = $total;
+            $interest_and_bank[$d->getAccount()->getID()]['accounts']['space'] = "";
+
+            $operating_activities_total += $total;
+        } 
+
         $depr = $em->getRepository('GistAccountingBundle:CashFlowSettings')->findBy(['type' => CashFlowSettings::TYPE_DEP]);
         foreach ($depr as $d) {
             $depreciation[$d->getAccount()->getID()]['accounts']['code'] = $d->getAccount()->getCode();
@@ -529,6 +617,9 @@ class CashFlowController extends TrialBalanceController
         $list['depreciation'] = $depreciation;
         $list['investing_activities'] = $investing_activities;
         $list['financing_activities'] = $financing_activities;
+        $list['disposal_assets'] = $disposal_assets;
+        $list['interest_income'] = $interest_income;
+        $list['interest_and_bank'] = $interest_and_bank;
 
         // Totals
         $list['operating_activities_total'] = $operating_activities_total;

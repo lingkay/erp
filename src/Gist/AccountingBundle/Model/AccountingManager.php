@@ -252,6 +252,21 @@ class AccountingManager
         return $array;
     }
 
+    public function findTBESettingsByType($type){
+
+        $tbs = $this->em->getRepository('GistAccountingBundle:TrialBalanceExpenseSettings')
+            ->findBy(['type' => $type]);
+
+        $array = [];
+        if($tbs != null){
+            foreach ($tbs as $key => $t) {
+                $array[$t->getAccount()->getID()] = $t->getAccount()->getID();
+            }
+        }
+
+        return $array;
+    }
+
     public function insertCRJEntry($transaction)
     {
         $sale_approved = ['normal', 'upsell'];

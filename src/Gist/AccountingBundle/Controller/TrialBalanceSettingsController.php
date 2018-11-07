@@ -12,6 +12,7 @@ use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Gist\AccountingBundle\Entity\TrialBalance;
 use Gist\AccountingBundle\Entity\TrialBalanceSettings;
+use Gist\AccountingBundle\Entity\TrialBalanceExpenseSettings;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -112,13 +113,13 @@ class TrialBalanceSettingsController extends BaseController
         $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
         
         $params['coa_opts'] = $am->getMainAccountOptions();
+        $params['accounts_opts'] = $am->getChartOfAccountOptions();
         $params['asset_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_ASSET);
         $params['liablity_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_LIABILITY);
         $params['capital_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_CAPITAL);
         $params['netsales_sales_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_NET_SALES);
-        $params['netsales_revenue_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_NET_REVENUE);
-        $params['cos_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_COS);
-        $params['opex_opts_selected'] = $am->findTBSettingsByType(TrialBalanceSettings::TYPE_OPEX);
+        $params['cos_opts_selected'] = $am->findTBESettingsByType(TrialBalanceExpenseSettings::TYPE_COS);
+        $params['opex_opts_selected'] = $am->findTBESettingsByType(TrialBalanceExpenseSettings::TYPE_OPEX);
 
 
         return $params;
@@ -135,6 +136,10 @@ class TrialBalanceSettingsController extends BaseController
 
             $tbs = $em->getRepository('GistAccountingBundle:TrialBalanceSettings')->findAll();
             foreach ($tbs as $tb) {
+                $em->remove($tb);
+            }
+            $tbe = $em->getRepository('GistAccountingBundle:TrialBalanceExpenseSettings')->findAll();
+            foreach ($tbe as $tb) {
                 $em->remove($tb);
             }
             $em->flush();
@@ -182,24 +187,13 @@ class TrialBalanceSettingsController extends BaseController
                     $em->persist($net_sales);
                 }
             }
-
-            if(isset($data['net_sales_revenue'])) {
-                foreach ($data['net_sales_revenue'] as $key => $account) {
-                    $id = $am->findMainAccount($account);
-                    $net_sales = new TrialBalanceSettings();
-                    $net_sales->setAccount($id)
-                              ->setType(TrialBalanceSettings::TYPE_NET_REVENUE)
-                              ->setUserCreate($this->getUser());
-                    $em->persist($net_sales);
-                }
-            }
             
             if(isset($data['cos'])) {
                 foreach ($data['cos'] as $key => $account) {
-                    $id = $am->findMainAccount($account);
-                    $cos = new TrialBalanceSettings();
+                    $id = $am->findChartOfAccount($account);
+                    $cos = new TrialBalanceExpenseSettings();
                     $cos->setAccount($id)
-                        ->setType(TrialBalanceSettings::TYPE_COS)
+                        ->setType(TrialBalanceExpenseSettings::TYPE_COS)
                         ->setUserCreate($this->getUser());
                     $em->persist($cos);
                 }
@@ -207,10 +201,10 @@ class TrialBalanceSettingsController extends BaseController
 
             if(isset($data['opex'])) {
                 foreach ($data['opex'] as $key => $account) {
-                    $id = $am->findMainAccount($account);
-                    $opex = new TrialBalanceSettings();
+                    $id = $am->findChartOfAccount($account);
+                    $opex = new TrialBalanceExpenseSettings();
                     $opex->setAccount($id)
-                         ->setType(TrialBalanceSettings::TYPE_OPEX)
+                         ->setType(TrialBalanceExpenseSettings::TYPE_OPEX)
                          ->setUserCreate($this->getUser());
                     $em->persist($opex);
                 }
