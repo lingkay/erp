@@ -90,12 +90,10 @@ $(document).ready(function() {
         var path = "{{ path('gist_accounting_cf_generate_table', { 'month' : 'MONTH', 'year' : 'YEAR' } )}}"
         path = path.replace('MONTH',month);
         path = path.replace('YEAR',year);
-        console.log(month,year,"year");
         $.ajax({
             url: path,
             type: "GET",
             success: function(data) {
-                console.log(data);
                 $('#list_table').remove();
                 var html = $('#tb_table_template').html();
                 $('.list-table-wrapper').append(html);
@@ -535,14 +533,16 @@ $(document).ready(function() {
                     $('#tr_thead26').append('<td>ADD: BEGINNING BALANCE OF CASH AND CASH EQUIVALENTS</td>');
                     $('#tr_thead26').append('<td></td>');
                     $('#tr_thead26').append('<td></td>');
-                    $('#tr_thead26').append('<td></td>');
+                    $('#tr_thead26').append('<td style="text-align:right;">'+data.cash_accounts_total.toLocaleString('en')+'</td>');
                 $('#tbody_tb').append('</tr>');
 
+                var total = data.cash_accounts_total + data.cf.net_total; 
+                
                 $('#tbody_tb').append('<tr id="tr_thead27">');
                     $('#tr_thead27').append('<td>ENDING BALANCE OF CASH AND CASH EQUIVALENTS</td>');
                     $('#tr_thead27').append('<td></td>');
                     $('#tr_thead27').append('<td></td>');
-                    $('#tr_thead27').append('<td style="text-align:right;">'+data.cf.net_total.toLocaleString('en')+'</td>');
+                    $('#tr_thead27').append('<td style="text-align:right;">'+total.toLocaleString('en')+'</td>');
                 $('#tbody_tb').append('</tr>');
 
                 $('#list_table').append('</tbody>');

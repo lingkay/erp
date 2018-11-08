@@ -453,8 +453,12 @@ class TrialBalanceController extends BaseController
             }
         }
 
-        $coa_all = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findAll();
-        
+        // $coa_all = $em->getRepository('GistAccountingBundle:ChartOfAccount')->findAll();
+
+        $coa_all = $em->getRepository('GistAccountingBundle:ChartOfAccount')
+                      ->createQueryBuilder('o')
+                      ->orderBy('o.code','ASC')
+                      ->getQuery()->getResult();
         $coa_list = [];
         $coa_push_list_total = [];
         foreach ($coa_all as $c) {

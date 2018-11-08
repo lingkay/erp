@@ -673,6 +673,7 @@ class CashFlowController extends TrialBalanceController
         $data = $this->getRequest()->request->all();
         $cf = $this->getCashFlowData($month, $year);
         $income_before_tax = $this->getIncomeBeforeTaxTotal($month, $year);
+        $cash_accounts_total = $this->getCashAndCashEquivalents($month, $year);
         
         $date = new Datetime($year.'-'.$month.'-01 00:00:00');
         $date = $date->format(' F Y');
@@ -680,6 +681,7 @@ class CashFlowController extends TrialBalanceController
         $array['cf'] = $cf;
         $array['date'] = $date;
         $array['income_before_tax'] = $income_before_tax;
+        $array['cash_accounts_total'] = $cash_accounts_total;
 
         return new JsonResponse($array);
     }
