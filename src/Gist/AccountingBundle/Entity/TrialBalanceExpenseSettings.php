@@ -13,24 +13,22 @@ use DateTime;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="acct_balance_settings")
+ * @ORM\Table(name="acct_balance_settings_expense")
  */
 
-class TrialBalanceSettings
+class TrialBalanceExpenseSettings
 {
     use HasGeneratedID;
     use TrackCreate;
 
-    const TYPE_ASSET        = "Asset";
-    const TYPE_LIABILITY    = "Liability";
-    const TYPE_CAPITAL      = "Capital";
-    const TYPE_NET_SALES    = "Net Sales";
+    const TYPE_COS          = "Cos";
+    const TYPE_OPEX         = "Opex";
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\MainAccount")
-     * @ORM\JoinColumn(name="main_account_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="\Gist\AccountingBundle\Entity\ChartOfAccount")
+     * @ORM\JoinColumn(name="account", referencedColumnName="id", nullable=true)
      */
-    protected $main_account;
+    protected $account;
 
     /** @ORM\Column(type="string", length=150) */
     protected $type;
@@ -42,13 +40,13 @@ class TrialBalanceSettings
 
     public function setAccount($account)
     {
-        $this->main_account = $account;
+        $this->account = $account;
         return $this;
     }
 
     public function getAccount()
     {
-        return $this->main_account;
+        return $this->account;
     }
 
     public function setType($type)

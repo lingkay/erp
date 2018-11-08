@@ -22,12 +22,17 @@
                                 {{ form.group_selectmulti('Accounts Receivable', 'accounts_receivable', account_opts, ar_opts_selected , 3, 4) }}
                                 {{ form.group_selectmulti('Prepaid Expenses', 'pre_expenses', account_opts, pe_opts_selected , 3, 4) }}
                                 {{ form.group_selectmulti('Accounts Payable', 'accounts_payable', account_opts, ap_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Gain/Loss from disposals of retired assets', 'dra', account_opts, dra_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Interest Income', 'interest_income', account_opts, ii_opts_selected , 3, 4) }}
+                                {{ form.group_selectmulti('Interest and other Bank Charges', 'ibc', account_opts, ibc_opts_selected , 3, 4) }}
                                 {{ form.group_selectmulti('Depreciation', 'depreciation', account_opts, dep_opts_selected , 3, 4) }}
 
                                 <h4 class="form-section"><strong>Investing Activities</strong></h4>
                                 {{ form.group_selectmulti('Investing Activities Accounts', 'iaa', account_opts, ia_opts_selected , 3, 4) }}
                                 <h4 class="form-section"><strong>Financing Activities</strong></h4>
                                 {{ form.group_selectmulti('Financing Activities Accounts', 'faa', account_opts, fa_opts_selected , 3, 4) }}
+                                <h4 class="form-section"><strong>Cash and Cash Equivalents accounts</strong></h4>
+                                {{ form.group_selectmulti('Cash and Cash Equivalents', 'ca', account_opts, ca_opts_selected , 3, 4) }}
                             </div>
 
                             <div class="form-actions fluid">
@@ -56,6 +61,9 @@ check_duplicate = function(){
     var accounts_receivable = $('#cform-accounts_receivable').val();
     var pre_expenses = $('#cform-pre_expenses').val();
     var accounts_payable = $('#cform-accounts_payable').val();
+    var dra = $('#cform-dra').val();
+    var interest_income = $('#cform-interest_income').val();
+    var ibc = $('#cform-ibc').val();
     var depreciation = $('#cform-depreciation').val();
     var iaa = $('#cform-iaa').val();
     var faa = $('#cform-faa').val();
@@ -84,6 +92,30 @@ check_duplicate = function(){
             toastr['error']('Duplicate Entry of detected at Accounts Payable!','Error');
         }
     }
+    for(i in dra){
+        if(jQuery.inArray(dra[i], array) == -1){
+            array.push(dra[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Gain/Loss from disposals of retired assets Accounts!','Error');
+        }
+    }
+    for(i in interest_income){
+        if(jQuery.inArray(interest_income[i], array) == -1){
+            array.push(interest_income[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Interest Income Accounts!','Error');
+        }
+    }
+    for(i in ibc){
+        if(jQuery.inArray(ibc[i], array) == -1){
+            array.push(ibc[i]);
+        }else{
+            check = false
+            toastr['error']('Duplicate Entry of detected at Interest and other Bank Charges Accounts!','Error');
+        }
+    }
     for(i in depreciation){
         if(jQuery.inArray(depreciation[i], array) == -1){
             array.push(depreciation[i]);
@@ -108,7 +140,6 @@ check_duplicate = function(){
             toastr['error']('Duplicate Entry of detected at Financing Activities Accounts!','Error');
         }
     }
-
     return check;
 }
 </script>

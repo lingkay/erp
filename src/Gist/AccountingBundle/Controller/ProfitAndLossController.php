@@ -497,11 +497,64 @@ class ProfitAndLossController extends TrialBalanceController
         }
         fputcsv($file, $oic_total);
         fputcsv($file, []);
-        fputcsv($file, ['','TOTAL COST AND EXPENSES']);
+        $tce_total = ['','TOTAL COST AND EXPENSES'];
+        foreach ($bs['oic']['total'] as $key => $t){
+            $cos = 0;
+            $refund = 0;
+            $col = 0;
+            $opex = 0;
+            $mab = 0;
+            $oic = 0;
+            if (isset($bs['cos']['total'][$key]))
+                $cos = $bs['cos']['total'][$key];
+            if (isset($bs['netsales']['nrevenue_total'][$key]['revenue']))
+                $refund = $bs['netsales']['nrevenue_total'][$key]['revenue'];
+            if (isset($bs['col']['total'][$key]))
+                $col = $bs['col']['total'][$key];
+            if (isset($bs['non_controllable_total']['total'][$key]) && isset($bs['controllable_total']['total'][$key]))
+                $opex = $bs['non_controllable_total']['total'][$key] + $bs['controllable_total']['total'][$key];
+            if (isset($bs['mab']['total'][$key]))
+                $mab = $bs['mab']['total'][$key];
+
+            $tce_total[] = $cos + $refund + $col + $opex + $mab + $t;
+            $tce_total[] = '';
+        }
+        fputcsv($file, $tce_total);
         fputcsv($file, []);
-        fputcsv($file, ['','INCOME OR LOSS FROM OPERATIONS']);
+        $ilop_total = ['','INCOME OR LOSS FROM OPERATIONS'];
+        $nibt_total = ['','NET INCOME/(LOSS) BEFORE TAX'];
+        foreach ($bs['oic']['total'] as $key => $t){
+            $cos = 0;
+            $refund = 0;
+            $col = 0;
+            $opex = 0;
+            $mab = 0;
+            $oic = 0;
+            $nr = 0;
+            if (isset($bs['cos']['total'][$key]))
+                $cos = $bs['cos']['total'][$key];
+            if (isset($bs['netsales']['nrevenue_total'][$key]['revenue']))
+                $refund = $bs['netsales']['nrevenue_total'][$key]['revenue'];
+            if (isset($bs['col']['total'][$key]))
+                $col = $bs['col']['total'][$key];
+            if (isset($bs['non_controllable_total']['total'][$key]) && isset($bs['controllable_total']['total'][$key]))
+                $opex = $bs['non_controllable_total']['total'][$key] + $bs['controllable_total']['total'][$key];
+            if (isset($bs['mab']['total'][$key]))
+                $mab = $bs['mab']['total'][$key];
+            if (isset($bs['netsales']['total'][$key]))
+                $nr = $bs['netsales']['total'][$key];
+
+            
+            $total = $cos + $refund + $col + $opex + $mab + $t;
+
+            $ilop_total[] = $nr - $total;
+            $ilop_total[] = '';
+            $nibt_total[] = $nr - $total;
+            $nibt_total[] = '';
+        }
+        fputcsv($file, $ilop_total);
         fputcsv($file, []);
-        fputcsv($file, ['','NET INCOME/(LOSS) BEFORE TAX']);
+        fputcsv($file, $nibt_total);
         fputcsv($file, []);
 
         foreach ($bs['nit'] as $nit){
@@ -512,8 +565,33 @@ class ProfitAndLossController extends TrialBalanceController
         }
 
         $nit_total = ['','NET INCOME AFTER TAX'];
-        foreach ($bs['nit']['total'] as $key => $t){
-            $nit_total[] = $t;
+        foreach ($bs['oic']['total'] as $key => $t){
+            $cos = 0;
+            $refund = 0;
+            $col = 0;
+            $opex = 0;
+            $mab = 0;
+            $oic = 0;
+            $nr = 0;
+            $nit = 0;
+            if (isset($bs['cos']['total'][$key]))
+                $cos = $bs['cos']['total'][$key];
+            if (isset($bs['netsales']['nrevenue_total'][$key]['revenue']))
+                $refund = $bs['netsales']['nrevenue_total'][$key]['revenue'];
+            if (isset($bs['col']['total'][$key]))
+                $col = $bs['col']['total'][$key];
+            if (isset($bs['non_controllable_total']['total'][$key]) && isset($bs['controllable_total']['total'][$key]))
+                $opex = $bs['non_controllable_total']['total'][$key] + $bs['controllable_total']['total'][$key];
+            if (isset($bs['mab']['total'][$key]))
+                $mab = $bs['mab']['total'][$key];
+            if (isset($bs['netsales']['total'][$key]))
+                $nr = $bs['netsales']['total'][$key];
+            if (isset($bs['nit']['total'][$key]))
+                $nit = $bs['nit']['total'][$key];
+            
+            $total = $cos + $refund + $col + $opex + $mab + $t;
+
+            $nit_total[] = ($nr - $total) + $nit;
             $nit_total[] = '';
         }
         fputcsv($file, $nit_total);
@@ -583,8 +661,8 @@ class ProfitAndLossController extends TrialBalanceController
                 $coa_array[$c->getAccount()->getID()][$year_format] = [
                     'coa_id' => $c->getAccount()->getID(),
                     'coa_date' => $c->getDateCreate()->format('mdy'),
-                    'total_debit' => $c->getDebit(),
-                    'total_credit' => $c->getCredit(),
+                    'total_debit' => (float)$c->getDebit(),
+                    'total_credit' => (float)$c->getCredit(),
                 ];
             }
         }
@@ -659,7 +737,7 @@ class ProfitAndLossController extends TrialBalanceController
                 $netsales_main_revenue[$as->getAccount()->getID()]['accounts']['total_'.$m.''] = $total;
                 $netsales_main_revenue[$as->getAccount()->getID()]['accounts']['total_'.$m.'space'] = '';
                 $netsales_main_revenue[$as->getAccount()->getID()]['accounts']['type'] = 'revenue';
-                if (isset($nsale_total[$m]['revenue'])) {
+                if (isset($nrevenue_total[$m]['revenue'])) {
                     $nrevenue_total[$m]['revenue'] += $total; 
                 }else{
                     $nrevenue_total[$m]['revenue'] = $total; 

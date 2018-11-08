@@ -134,6 +134,39 @@ class CashFlowSettingsController extends TrialBalanceController
                 }
             }
 
+            if(isset($data['dra'])) {
+                foreach ($data['dra'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_DRA)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+
+            if(isset($data['interest_income'])) {
+                foreach ($data['interest_income'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_II)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+
+            if(isset($data['ibc'])) {
+                foreach ($data['ibc'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_IBC)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+            
             if(isset($data['depreciation'])) {
                 foreach ($data['depreciation'] as $key => $account) {
                     $id = $am->findChartOfAccount($account);
@@ -162,6 +195,17 @@ class CashFlowSettingsController extends TrialBalanceController
                     $assets = new CashFlowSettings();
                     $assets->setAccount($id)
                            ->setType(CashFlowSettings::TYPE_FA)
+                           ->setUserCreate($this->getUser());
+                    $em->persist($assets);
+                }
+            }
+
+            if(isset($data['ca'])) {
+                foreach ($data['ca'] as $key => $account) {
+                    $id = $am->findChartOfAccount($account);
+                    $assets = new CashFlowSettings();
+                    $assets->setAccount($id)
+                           ->setType(CashFlowSettings::TYPE_CA)
                            ->setUserCreate($this->getUser());
                     $em->persist($assets);
                 }
@@ -232,12 +276,16 @@ class CashFlowSettingsController extends TrialBalanceController
         $params['date_to'] = $this->date_to->format('m/d/Y');// != null?$this->date_to->format('m/d/Y'): $date_to->format('m/d/Y');
         
         $params['account_opts'] = $am->getChartOfAccountOptions();
-        $params['ar_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_AR);
-        $params['pe_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_PE);
-        $params['ap_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_AP);
+        $params['ar_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_AR);
+        $params['pe_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_PE);
+        $params['ap_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_AP);
+        $params['dra_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_DRA);
+        $params['ii_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_II);
+        $params['ibc_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_IBC);
         $params['dep_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_DEP);
-        $params['ia_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_IA);
-        $params['fa_opts_selected'] = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_FA);
+        $params['ia_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_IA);
+        $params['fa_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_FA);
+        $params['ca_opts_selected']  = $am->findCashFlowSettingsByType(CashFlowSettings::TYPE_CA);
 
         return $params;
 

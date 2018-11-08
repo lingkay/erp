@@ -840,9 +840,33 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="2trlisttotal_2">');
                     $('.2trlisttotal_2').append('<td></td>');
                     $('.2trlisttotal_2').append('<td>TOTAL COST AND EXPENSES</td>');
-                    for (var i = 1; count >= i; i++) {
-                        $('.2trlisttotal_2').append('<th></th>');
-                    }
+                    $.each(data.pl.oic['total'], function(nk, nv) {
+                        var cos = 0;
+                        var refund = 0;
+                        var col = 0;
+                        var opex = 0;
+                        var mab = 0;
+                        var oic = 0;
+                        if(typeof(data.pl.cos['total'][nk]) != "undefined" && data.pl.cos['total'][nk] !== null) {
+                            cos = data.pl.cos['total'][nk];
+                        }
+                        if(typeof(data.pl.netsales['nrevenue_total'][nk].revenue) != "undefined" && data.pl.netsales['nrevenue_total'][nk].revenue !== null) {
+                            refund = data.pl.netsales['nrevenue_total'][nk].revenue;
+                        }
+                        if(typeof(data.pl.col['total'][nk]) != "undefined" && data.pl.col['total'][nk] !== null) {
+                            col = data.pl.col['total'][nk];
+                        }
+                        if(typeof(data.pl.non_controllable_total['total'][nk]) != "undefined" && data.pl.non_controllable_total['total'][nk] !== null && data.pl.controllable_total['total'][nk] != "undefined" && data.pl.controllable_total['total'][nk] !== null) {
+                            opex = data.pl.non_controllable_total['total'][nk] + data.pl.controllable_total['total'][nk];
+                        }
+                        if(typeof(data.pl.mab['total'][nk]) != "undefined" && data.pl.mab['total'][nk] !== null) {
+                            mab = data.pl.mab['total'][nk];
+                        }
+
+                        var total = cos + refund + col + opex + mab + nv;
+                        $('.2trlisttotal_2').append('<td style="text-align:right;">'+total+'</td>');
+                        $('.2trlisttotal_2').append('<td style="text-align:right;"></td>');
+                    });
                 $('#tbody_tb').append('</tr>');
 
                 // add space
@@ -857,9 +881,39 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="2trlisttotal_3">');
                     $('.2trlisttotal_3').append('<td></td>');
                     $('.2trlisttotal_3').append('<td>INCOME OR LOSS FROM OPERATIONS</td>');
-                    for (var i = 1; count >= i; i++) {
-                        $('.2trlisttotal_3').append('<th></th>');
-                    }
+                    $.each(data.pl.oic['total'], function(nk, nv) {
+                        var cos = 0;
+                        var refund = 0;
+                        var col = 0;
+                        var opex = 0;
+                        var mab = 0;
+                        var oic = 0;
+                        var nr = 0;
+                        if(typeof(data.pl.cos['total'][nk]) != "undefined" && data.pl.cos['total'][nk] !== null) {
+                            cos = data.pl.cos['total'][nk];
+                        }
+                        if(typeof(data.pl.netsales['nrevenue_total'][nk].revenue) != "undefined" && data.pl.netsales['nrevenue_total'][nk].revenue !== null) {
+                            refund = data.pl.netsales['nrevenue_total'][nk].revenue;
+                        }
+                        if(typeof(data.pl.col['total'][nk]) != "undefined" && data.pl.col['total'][nk] !== null) {
+                            col = data.pl.col['total'][nk];
+                        }
+                        if(typeof(data.pl.non_controllable_total['total'][nk]) != "undefined" && data.pl.non_controllable_total['total'][nk] !== null && data.pl.controllable_total['total'][nk] != "undefined" && data.pl.controllable_total['total'][nk] !== null) {
+                            opex = data.pl.non_controllable_total['total'][nk] + data.pl.controllable_total['total'][nk];
+                        }
+                        if(typeof(data.pl.mab['total'][nk]) != "undefined" && data.pl.mab['total'][nk] !== null) {
+                            mab = data.pl.mab['total'][nk];
+                        }
+                        if(typeof(data.pl.netsales['total'][nk]) != "undefined" && data.pl.netsales['total'][nk] !== null) {
+                            nr = data.pl.netsales['total'][nk];
+                        }
+
+                        var total = cos + refund + col + opex + mab + nv;
+
+                        var final_total = nr - total;
+                        $('.2trlisttotal_3').append('<td style="text-align:right;">'+final_total+'</td>');
+                        $('.2trlisttotal_3').append('<td style="text-align:right;"></td>');
+                    });
                 $('#tbody_tb').append('</tr>');
 
                 // add space
@@ -874,9 +928,39 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="2trlisttotal_4">');
                     $('.2trlisttotal_4').append('<td></td>');
                     $('.2trlisttotal_4').append('<td>NET INCOME/(LOSS) BEFORE TAX</td>');
-                    for (var i = 1; count >= i; i++) {
-                        $('.2trlisttotal_4').append('<th></th>');
-                    }
+                    $.each(data.pl.oic['total'], function(nk, nv) {
+                        var cos = 0;
+                        var refund = 0;
+                        var col = 0;
+                        var opex = 0;
+                        var mab = 0;
+                        var oic = 0;
+                        var nr = 0;
+                        if(typeof(data.pl.cos['total'][nk]) != "undefined" && data.pl.cos['total'][nk] !== null) {
+                            cos = data.pl.cos['total'][nk];
+                        }
+                        if(typeof(data.pl.netsales['nrevenue_total'][nk].revenue) != "undefined" && data.pl.netsales['nrevenue_total'][nk].revenue !== null) {
+                            refund = data.pl.netsales['nrevenue_total'][nk].revenue;
+                        }
+                        if(typeof(data.pl.col['total'][nk]) != "undefined" && data.pl.col['total'][nk] !== null) {
+                            col = data.pl.col['total'][nk];
+                        }
+                        if(typeof(data.pl.non_controllable_total['total'][nk]) != "undefined" && data.pl.non_controllable_total['total'][nk] !== null && data.pl.controllable_total['total'][nk] != "undefined" && data.pl.controllable_total['total'][nk] !== null) {
+                            opex = data.pl.non_controllable_total['total'][nk] + data.pl.controllable_total['total'][nk];
+                        }
+                        if(typeof(data.pl.mab['total'][nk]) != "undefined" && data.pl.mab['total'][nk] !== null) {
+                            mab = data.pl.mab['total'][nk];
+                        }
+                        if(typeof(data.pl.netsales['total'][nk]) != "undefined" && data.pl.netsales['total'][nk] !== null) {
+                            nr = data.pl.netsales['total'][nk];
+                        }
+
+                        var total = cos + refund + col + opex + mab + nv;
+
+                        var final_total = nr - total;
+                        $('.2trlisttotal_4').append('<td style="text-align:right;">'+final_total+'</td>');
+                        $('.2trlisttotal_4').append('<td style="text-align:right;"></td>');
+                    });
                 $('#tbody_tb').append('</tr>');
 
                 // add space
@@ -909,8 +993,41 @@ $(document).ready(function() {
                 $('#tbody_tb').append('<tr class="14trlisttotal">');
                     $('.14trlisttotal').append('<td></td>');
                     $('.14trlisttotal').append('<td>NET INCOME AFTER TAX</td>');
-                    $.each(data.pl.nit['total'], function(nk, nv) {
-                        $('.14trlisttotal').append('<td style="text-align:right;">'+nv.toLocaleString('en')+'</td>');
+                    $.each(data.pl.oic['total'], function(nk, nv) {
+                        var cos = 0;
+                        var refund = 0;
+                        var col = 0;
+                        var opex = 0;
+                        var mab = 0;
+                        var oic = 0;
+                        var nr = 0;
+                        var nit = 0;
+                        if(typeof(data.pl.cos['total'][nk]) != "undefined" && data.pl.cos['total'][nk] !== null) {
+                            cos = data.pl.cos['total'][nk];
+                        }
+                        if(typeof(data.pl.netsales['nrevenue_total'][nk].revenue) != "undefined" && data.pl.netsales['nrevenue_total'][nk].revenue !== null) {
+                            refund = data.pl.netsales['nrevenue_total'][nk].revenue;
+                        }
+                        if(typeof(data.pl.col['total'][nk]) != "undefined" && data.pl.col['total'][nk] !== null) {
+                            col = data.pl.col['total'][nk];
+                        }
+                        if(typeof(data.pl.non_controllable_total['total'][nk]) != "undefined" && data.pl.non_controllable_total['total'][nk] !== null && data.pl.controllable_total['total'][nk] != "undefined" && data.pl.controllable_total['total'][nk] !== null) {
+                            opex = data.pl.non_controllable_total['total'][nk] + data.pl.controllable_total['total'][nk];
+                        }
+                        if(typeof(data.pl.mab['total'][nk]) != "undefined" && data.pl.mab['total'][nk] !== null) {
+                            mab = data.pl.mab['total'][nk];
+                        }
+                        if(typeof(data.pl.netsales['total'][nk]) != "undefined" && data.pl.netsales['total'][nk] !== null) {
+                            nr = data.pl.netsales['total'][nk];
+                        }
+                        if(typeof(data.pl.nit['total'][nk]) != "undefined" && data.pl.nit['total'][nk] !== null) {
+                            nit = data.pl.nit['total'][nk];
+                        }
+
+                        var total = cos + refund + col + opex + mab + nv;
+
+                        var final_total = (nr - total) + nit;
+                        $('.14trlisttotal').append('<td style="text-align:right;">'+final_total+'</td>');
                         $('.14trlisttotal').append('<td style="text-align:right;"></td>');
                     });
                 $('#tbody_tb').append('</tr>');
