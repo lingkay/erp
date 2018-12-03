@@ -11,11 +11,17 @@ gist_accounting_voucher_grid:
 
 gist_accounting_voucher_print:
     pattern: /print/{id}
-    methods: [POST]
+    methods: [GET]
     defaults: { _controller: GistAccountingBundle:Voucher:pdf }
 
 
-gist_accounting_voucher_view:
+gist_accounting_voucher_edit_form:
     pattern: /edit/{id}
     methods: [GET]
     defaults: { _controller: GistAccountingBundle:Voucher:editForm }
+
+
+gist_accounting_voucher_edit_submit:
+    pattern: /edit/{id}
+    methods: [POST]
+    defaults: { _controller: GistAccountingBundle:Voucher:editSubmit }

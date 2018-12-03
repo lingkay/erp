@@ -12,18 +12,19 @@
                 <div class="portlet-body form">
                
                     <!-- BEGIN FORM-->
-                    <form method="post" class="form-horizontal" id="cdj_form" action="{{ path('gist_accounting_voucher_print', { 'id': object.getId }) }}">
+                    <form method="post" class="form-horizontal" id="cdj_form" action="{{ path('gist_accounting_voucher_edit_submit', { 'id': object.getId }) }}">
                         <div class="form-body">
                             {{ form.group_date('Record Date', 'record_date',object.getRecordDate|date('m/d/Y'), 2,4, true)}}
                             {{ form.group_textarea('Particulars', 'particulars',object.getNotes,4,2,4, true)}}
-                            {{ form.group_text('Payee', 'payee',"", 2,4)}}
-                            {{ form.group_select('Payment Type', 'payment_type',paytype_opts,"", 2,4)}}
+                            {{ form.group_select('Payee', 'payee',supplier_opts,object.getPayee, 2,4,readonly)}}
+                            {{ form.hidden('payee_text',object.getPayeeText)}}
+                            {{ form.group_select('Payment Type', 'payment_type',paytype_opts,object.getPaymentType, 2,4,readonly)}}
                             
                             <div id="check_container" class="hidden">
-                            {{ form.group_text('Check Number', 'check_number',"", 2,4)}}
-                            {{ form.group_text('Bank', 'bank',"", 2,4)}}
-                            
-                            </div>
+                            {{ form.group_text('Check Number', 'check_number',object.getCheckNumber, 2,4,readonly)}}
+                            {{ form.group_select('Bank', 'bank',bank_opts,object.getBank, 2,4,readonly)}}
+                            {{ form.hidden('bank_text',object.getBankText)}}
+                               </div>
                             <table id="table_entries" class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <th width="20%">Account</th>
@@ -31,28 +32,41 @@
                                     <th>Credit</th>
                                 </thead>
                                 <tbody>
-                                    {% for entry in object.getEntries %}
-                                        <tr>
-                                            <td>{{ entry.getAccount.getCode }} - {{ entry.getAccount.getName }}</td>
-                                            <td><div style="text-align:right;">{{ entry.getDebit|number_format(2) }}</div></td>
-                                            <td><div style="text-align:right;">{{ entry.getCredit|number_format(2) }}</div></td>
-                                        </tr>
-                                    {% endfor %}
+                                    {% if object.getStatus == "Draft"%}
+                                        {% for entry in object.getTempEntries %}
+                                            <tr>
+                                                <td>{{ entry.getAccount.getCode }} - {{ entry.getAccount.getName }}</td>
+                                                <td><div style="text-align:right;">{{ entry.getDebit|number_format(2) }}</div></td>
+                                                <td><div style="text-align:right;">{{ entry.getCredit|number_format(2) }}</div></td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if object.getStatus == "Saved"%}
+                                        {% for entry in object.getEntries %}
+                                            <tr>
+                                                <td>{{ entry.getAccount.getCode }} - {{ entry.getAccount.getName }}</td>
+                                                <td><div style="text-align:right;">{{ entry.getDebit|number_format(2) }}</div></td>
+                                                <td><div style="text-align:right;">{{ entry.getCredit|number_format(2) }}</div></td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+
                                 </tbody>
                                
                             </table>
                         
                         </div>
                             {{ form.group_text("Prepared By", 'prepared_by', obj.getUserCreate.getDisplayName ,2,4, true)}}
-                            {{ form.group_select('Certified Correct By', 'certified_by',emp_opts,"", 2,4)}}
-                            {{ form.group_select('Approved By', 'approved_by',emp_opts,"", 2,4)}}
+                            {{ form.group_select('Certified Correct By', 'certified_by',emp_opts,"", 2,4,readonly)}}
+                            {{ form.group_select('Approved By', 'approved_by',emp_opts,"", 2,4, readonly)}}
                           
                         <div class="form-actions fluid">
                             <div class="col-md-9">
-                    
-                                {% if not readonly %}
-                                    <button type="submit" class="btn blue">Print </button>
-                                {% endif %}
+                                    {% if object.getStatus == "Saved"%}
+                                        <a href="{{ path('gist_accounting_voucher_print', { 'id': object.getId }) }}"  class="btn green"> Print </button>
+                                    {% else %}
+                                        <button type="submit" class="btn blue">Save </button>
+                                    {% endif %} 
                                 <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
                             </div>
                         </div>
@@ -70,15 +84,41 @@
 <script>
     
     $(document).ready(function() {
-    
-        $('#cform-payment_type').change(function(){
-            console.log($(this).val())
-            if($(this).val() == "Check"){
+        
+        function payeeText(){
+            var bank = $('#cform-payee :selected').text();
+            $('#cform-payee_text').val(bank);
+        }
+        function bankText(){
+            var bank = $('#cform-bank :selected').text();
+            $('#cform-bank_text').val(bank);
+        }
+
+        function paymentType(){
+            if($('#cform-payment_type').val() == "Check"){
                 $('#check_container').removeClass('hidden');
             }else {
                 $('#check_container').addClass('hidden');
             }
+        }
+
+       
+        bankText();
+        payeeText();
+        paymentType();
+    
+        $('#cform-bank').change(function(){
+            bankText();
         })
+
+        $('#cform-payee').change(function(){
+            payeeText();
+        })
+
+        $('#cform-payment_type').change(function(){
+            paymentType();
+        })
+
     });
 </script>
 {% endblock %}

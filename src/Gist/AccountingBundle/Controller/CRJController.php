@@ -23,8 +23,8 @@ class CRJController extends CrudController
     public function __construct()
     {
         $this->route_prefix = 'gist_accounting_crj';
-        $this->title = 'CRJ';
-        $this->list_title = 'CRJ';
+        $this->title = 'CRJ (Income)';
+        $this->list_title = 'CRJ (Income)';
         $this->list_type = 'dynamic';
         $this->repo = "GistAccountingBundle:CRJJournalEntry";
     }

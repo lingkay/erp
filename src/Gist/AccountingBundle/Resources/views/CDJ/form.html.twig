@@ -48,7 +48,7 @@
                         <div class="form-actions fluid">
                             <div class="col-md-9">
                                 {% if not readonly %}
-                                    <button type="submit" class="btn blue">Submit</button>
+                                    <button type="submit" class="btn blue">Next</button>
                                 {% endif %}
                                 <a href="{{ path(route_list) }}" class="btn default">Go back to list</a>
                             </div>
@@ -120,6 +120,7 @@
             if(parseFloat(el.val()) != 0.0 && el.val() != ""){
                 el.parents('tr').find('input.credit').prop('readonly', true);
             }else {
+                el.val(0);
                 el.parents('tr').find('input.credit').prop('readonly', false);
             }
             
@@ -127,13 +128,18 @@
             if(parseFloat(el.val()) != 0.0 && el.val() != ""){
                 el.parents('tr').find('input.debit').prop('readonly', true);
             }else {
+                el.val(0);
                 el.parents('tr').find('input.debit').prop('readonly', false);
             }
     }
     $(document).ready(function() {
+           addEntry();
+          addEntry();
     	$('#btn_add_entry').click(function(){
             addEntry();
         })
+
+
 
         $('#table_entries').on("change, blur", ".debit, .credit", function(){
             checkField($(this));

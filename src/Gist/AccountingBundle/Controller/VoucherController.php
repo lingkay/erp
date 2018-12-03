@@ -113,10 +113,77 @@ class VoucherController extends CrudController
     protected function padFormParams(&$params, $obj = null)
     {
         $um = $this->get('gist_user');
+        $im = $this->get('gist_inventory');
+        $am = $this->get('gist_accounting');
         $params['obj'] = $obj;
         $params['paytype_opts'] = ["Cash"=>"Cash", "Check" => "Check"];
         $params['emp_opts'] = $um->getUserFullNameOptions();
+        $params['supplier_opts'] = $im->getSupplierOptions();
+        $params['bank_opts'] = $am->getBankAccountOptions();
+
+        if($obj->getStatus() === CDJTransaction::STATUS_SAVED){
+            $params['readonly'] = true;
+        }
+   
+    }
+
+    // public function callbackGrid($id)
+    // {
+    //     $params = array(
+    //         'id' => $id,
+    //         'route_edit' => $this->getRouteGen()->getEdit(),
+    //         'route_delete' => $this->getRouteGen()->getDelete(),
+    //         'prefix' => $this->route_prefix,
+    //     );
+
+    //     $this->padGridParams($params, $id);
+
+    //     $twig_file = $this->base_view.':action.html.twig';
+
+    //     return $engine->render(
+    //         $twig_file,
+    //         $params
+    //     );
+    // }
+
+    protected function update($obj, $data)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $am = $this->get('gist_accounting');
+        $um = $this->get('gist_user');
+     
+        $obj->setPayee($data['payee'])
+            ->setPayeeText($data['payee_text'])
+            ->setPaymentType($data['payment_type'])
+            ->setCheckNumber($data['check_number'])
+            ->setBank($data['bank'])
+            ->setBankText($data['bank_text'])
+            ->setStatus(CDJTransaction::STATUS_SAVED)
+            ->setCertifiedBy($um->findUser($data['certified_by']))
+            ->setApprovedBy($um->findUser($data['approved_by']));
+
+        foreach ($obj->getTempEntries() as $temp) {
+            $cdj_entry = new CDJJournalEntry();
+            $cdj_entry->setAccount($temp->getAccount())
+                ->setDebit($temp->getDebit())
+                ->setCredit($temp->getCredit())
+                ->setNotes($temp->getNotes())
+                ->setUserCreate($this->getUser())
+                ->setRecordDate($temp->getRecordDate())
+                ->setStatus($temp->getStatus())
+                ->setTransaction($obj);
+
+            $em->persist($cdj_entry);
+            $em->flush();
+            
+            $am->addTrialBalance($cdj_entry);
     
+        }
+
+
+        $em->persist($obj);
+        $em->flush();
     }
 
 
@@ -128,18 +195,18 @@ class VoucherController extends CrudController
         $data = $this->getRequest()->request->all();
         $obj = $em->getRepository('GistAccountingBundle:CDJTransaction')->find($id);
 
-        $params = $this->getViewParams('Edit');
+        // $params = $this->getViewParams('Edit');
       
      
-        $obj->setPayee($data['payee'])
-            ->setPaymentType($data['payment_type'])
-            ->setCheckNumber($data['check_number'])
-            ->setBank($data['bank'])
-            ->setCertifiedBy($um->findUser($data['certified_by']))
-            ->setApprovedBy($um->findUser($data['approved_by']));
+        // $obj->setPayee($data['payee_text'])
+        //     ->setPaymentType($data['payment_type'])
+        //     ->setCheckNumber($data['check_number'])
+        //     ->setBank($data['bank_text'])
+        //     ->setCertifiedBy($um->findUser($data['certified_by']))
+        //     ->setApprovedBy($um->findUser($data['approved_by']));
 
-        $em->persist($obj);
-        $em->flush();
+        // $em->persist($obj);
+        // $em->flush();
         
         $this->padFormParams($params, $obj);
 

@@ -133,7 +133,7 @@ menu_items:
 
     - id: gist_accounting_cdj_index
       acl: gist_accounting_cdj.menu
-      label: CDJ
+      label: CDJ (Expenses)
       parent: gist_accounting_menu
 
     - id: gist_accounting_voucher_index
@@ -143,7 +143,7 @@ menu_items:
 
     - id: gist_accounting_crj_index
       acl: gist_accounting_crj.menu
-      label: CRJ
+      label: CRJ (Income)
       parent: gist_accounting_menu
 
     - id: gist_accounting_general_index

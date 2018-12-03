@@ -11,6 +11,7 @@ use Gist\NotificationBundle\Model\NotificationEvent;
 use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Gist\AccountingBundle\Entity\CDJJournalEntry;
+use Gist\AccountingBundle\Entity\CDJTempEntry;
 use Gist\AccountingBundle\Entity\CDJTransaction;
 use DateTime;
 use SplFileObject;
@@ -26,8 +27,8 @@ class CDJController extends CrudController
     public function __construct()
     {
         $this->route_prefix = 'gist_accounting_cdj';
-        $this->title = 'CDJ';
-        $this->list_title = 'CDJ';
+        $this->title = 'CDJ (Expenses)';
+        $this->list_title = 'CDJ (Expenses)';
         $this->list_type = 'dynamic';
         $this->repo = "GistAccountingBundle:CDJJournalEntry";
     }
@@ -102,9 +103,9 @@ class CDJController extends CrudController
         $this->hookPreAction();
         try
         {
-            $this->update($data);
+            $transaction = $this->update($data);
             $this->addFlash('success','CDJ Entries added successfully.');
-            return $this->redirect($this->generateUrl($this->getRouteGen()->getList()));
+            return $this->redirect($this->generateUrl('gist_accounting_voucher_view',['id'=>$transaction->getID()]));
         }
         catch (ValidationException $e)
         {
@@ -167,7 +168,7 @@ class CDJController extends CrudController
         $em->persist($transaction);
 
         foreach ($data['account'] as $key => $account_id) {
-            $cdj_entry = new CDJJournalEntry();
+            $cdj_entry = new CDJTempEntry();
             $account = $am->findChartOfAccount($account_id);
             $cdj_entry->setAccount($account)
                 ->setDebit($data['debit'][$key])
@@ -180,8 +181,10 @@ class CDJController extends CrudController
             $em->persist($cdj_entry);
             $em->flush();
 
-            $am->addTrialBalance($cdj_entry);
+            // $am->addTrialBalance($cdj_entry);
         }
+
+        return $transaction;
     }
 
      protected function padListParams(&$params, $obj = null)

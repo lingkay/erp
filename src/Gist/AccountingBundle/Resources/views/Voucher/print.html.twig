@@ -13,7 +13,7 @@ table {
 	<table >
 		<tr >
 			<td>PAYEE:</td>
-			<td>{{ obj.getPayee }}</td>
+			<td>{{ obj.getPayeeText }}</td>
 		</tr>
 
 		<tr>			
@@ -38,7 +38,7 @@ table {
 		</tr>
 		<tr>
 			<td>Bank: </td>			
-			<td> {{ obj.getBank}} </td>
+			<td> {{ obj.getBankText}} </td>
 		</tr>	
 	</table>
 	{% endif %}
@@ -81,7 +81,7 @@ table {
 			<tr>
 				<td style="width:200px">Prepared By: {{ obj.getUserCreate.getDisplayName}}</td>			
 				<td style="width:300px">Certified Correct By: {{ obj.getCertifiedBy.getDisplayName }} </td>
-				<td style="width:300px">Approved By: {{ obj.getApproved.getDisplayName }} </td>			
+				<td style="width:300px">Approved By: {{ obj.getApprovedBy.getDisplayName }} </td>			
 			</tr>
 		</table>		
 	</page_footer>

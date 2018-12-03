@@ -9,7 +9,7 @@ trait HasStatus
     /** @ORM\Column(type="string", length=40, nullable=true) */
     protected $status;
 
-    public function setStatus($type)
+    public function setStatus($status)
     {
         $this->status = $status;
         return $this;

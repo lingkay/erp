@@ -117,11 +117,12 @@
     }
 
     function checkField(el)
-    {
+     {
         if(el.hasClass('debit'))
             if(parseFloat(el.val()) != 0.0 && el.val() != ""){
                 el.parents('tr').find('input.credit').prop('readonly', true);
             }else {
+                el.val(0);
                 el.parents('tr').find('input.credit').prop('readonly', false);
             }
             
@@ -129,6 +130,7 @@
             if(parseFloat(el.val()) != 0.0 && el.val() != ""){
                 el.parents('tr').find('input.debit').prop('readonly', true);
             }else {
+                el.val(0);
                 el.parents('tr').find('input.debit').prop('readonly', false);
             }
     }

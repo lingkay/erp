@@ -1,2 +1,5 @@
 {# <a href="{{ path('gist_accounting_voucher_print', { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> Print</a> #}
-<a href="{{ path('gist_accounting_voucher_view', { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View </a>
+<a href="{{ path('gist_accounting_voucher_edit_form', { 'id': id }) }}" class="btn default btn-xs blue-madison"><i class="fa fa-edit"></i> View </a>
+{# {% if obj.getStatus == "Saved" %}
+<a href="{{ path('gist_accounting_voucher_print', { 'id': id }) }}" class="btn default btn-xs  green"><i class="fa fa-edit"></i> Print </a>
+{% endif %} #}
