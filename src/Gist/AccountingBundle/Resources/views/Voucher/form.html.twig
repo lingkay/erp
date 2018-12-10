@@ -14,6 +14,8 @@
                     <!-- BEGIN FORM-->
                     <form method="post" class="form-horizontal" id="cdj_form" action="{{ path('gist_accounting_voucher_edit_submit', { 'id': object.getId }) }}">
                         <div class="form-body">
+                            {{ form.hidden('expense_total',object.getTempEntriesTotal)}}
+                            
                             {{ form.group_date('Record Date', 'record_date',object.getRecordDate|date('m/d/Y'), 2,4, true)}}
                             {{ form.group_textarea('Particulars', 'particulars',object.getNotes,4,2,4, true)}}
                             {{ form.group_select('Payee', 'payee',supplier_opts,object.getPayee, 2,4,readonly)}}
@@ -21,10 +23,33 @@
                             {{ form.group_select('Payment Type', 'payment_type',paytype_opts,object.getPaymentType, 2,4,readonly)}}
                             
                             <div id="check_container" class="hidden">
-                            {{ form.group_text('Check Number', 'check_number',object.getCheckNumber, 2,4,readonly)}}
                             {{ form.group_select('Bank', 'bank',bank_opts,object.getBank, 2,4,readonly)}}
                             {{ form.hidden('bank_text',object.getBankText)}}
-                               </div>
+                            {# {{ form.group_text('Check Number', 'check_number',object.getCheckNumber, 2,4,readonly)}} #}
+                             {% if not readonly %}
+                                <a href="javascript:void(0);" id="btn_add_check"  class="btn green"> Add Check </a>
+                    
+                             {% endif %}
+                             <table id="check_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <th>Check Number</th>
+                                    <th>Amount</th>
+                                    <th>Check Date</th>
+                                    <th></th>
+                                </thead>
+                                <tbody id="check_table_body">
+                                    {% for check in obj.getChecks %}
+                                        <tr>
+                                            <td><input type="text" class="form-control check_number" name="check_number[]" value="{{ check.getCheckNumber }}" {{ readonly ? 'readonly="readonly"' }} /></td>
+                                            <td><input type="text" class="form-control check_amount price" name="check_amount[]" value="{{ check.getAmount }}" {{ readonly ? 'readonly="readonly"' }} /></td>
+                                            <td>
+                                               <input type="text" class="form-control check_date" name="check_date[]" value="{{ check.getCheckDate|date('m/d/Y') }}" readonly="readonly"  />
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                             </table>
+                           </div>
                             <table id="table_entries" class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <th width="20%">Account</th>
@@ -63,7 +88,7 @@
                         <div class="form-actions fluid">
                             <div class="col-md-9">
                                     {% if object.getStatus == "Saved"%}
-                                        <a href="{{ path('gist_accounting_voucher_print', { 'id': object.getId }) }}"  class="btn green"> Print </button>
+                                        <a href="{{ path('gist_accounting_voucher_print', { 'id': object.getId }) }}"  class="btn green"> Print </a>
                                     {% else %}
                                         <button type="submit" class="btn blue">Save </button>
                                     {% endif %} 
@@ -119,6 +144,60 @@
             paymentType();
         })
 
+        $('#btn_add_check').click(function(){
+            const row = ' <tr>'+
+                        '<td><input type="text" class="form-control check_number" name="check_number[]" value=""  /></td>'+
+                        '<td><input type="text" class="form-control check_amount price" name="check_amount[]" value="0.00" /></td>'+
+                        '<td>'+
+                            '<input type="text" class="form-control check_date" name="check_date[]" value="" readonly="readonly" />'+
+                        '</td>'+
+                        '<td>'+
+                        '<a href="javascript:void(0)" class="btn default btn-xs red-sunglo btn_del"><i class="fa fa-minus-circle"></i> Delete</a>'+
+                        '</td>'
+                    '</tr>';
+            $('#check_table_body').append(row);
+
+            $('.check_date').each(function(){
+               $(this).datepicker(); 
+            });
+        })
+
+        $('#check_table_body').on('click','.btn_del', function(){
+            $(this).parents('tr').remove();
+        });
+
+
+        $('#cdj_form').submit(function(e) {
+            let total = 0
+            $('#check_table > tbody > tr:visible').each(function() {
+                let check_number = $(this).find('.check_number').val();
+                if(check_number.trim() == ""){
+                         e.preventDefault();
+                        toastr['error']('Check Number Cannot be Blank');
+                }
+                let amount = $(this).find('.check_amount').val();
+           
+                if(amount.trim() == "" || amount <= 0){
+                        e.preventDefault();
+                        toastr['error']('Check Amount Cannot be Less than Zero');
+                }else {
+                    total += parseFloat(amount);
+                }
+
+                let check_date = $(this).find('.check_date').val();
+                if(check_date.trim() == ""){
+                         e.preventDefault();
+                        toastr['error']('Check Date Cannot be Blank');
+                }
+
+
+            });
+            if(total != $('#cform-expense_total').val()){
+                 e.preventDefault();
+                toastr['error']('Total Check Amount should be equal to Transaction Amount');
+            }
+
+        });
     });
 </script>
 {% endblock %}

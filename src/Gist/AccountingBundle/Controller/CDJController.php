@@ -30,13 +30,13 @@ class CDJController extends CrudController
         $this->title = 'CDJ (Expenses)';
         $this->list_title = 'CDJ (Expenses)';
         $this->list_type = 'dynamic';
-        $this->repo = "GistAccountingBundle:CDJJournalEntry";
+        $this->repo = "GistAccountingBundle:CDJTransaction";
     }
 
 
     protected function newBaseClass()
     {
-        return new CDJJournalEntry();
+        return new CDJTransaction();
     }
     
     protected function getObjectLabel($obj)
@@ -51,8 +51,6 @@ class CDJController extends CrudController
     {
         $grid = $this->get('gist_grid');
         return array(
-            $grid->newJoin('a', 'chart_of_account', 'getAccount'),
-            $grid->newJoin('t', 'transaction', 'getTransaction'),
             $grid->newJoin('u', 'user_create', 'getUserCreate'),
             // $grid->newJoin('g', 'group', 'getGroup'),
         );
@@ -63,12 +61,8 @@ class CDJController extends CrudController
         $grid = $this->get('gist_grid');
 
         return array(
-            $grid->newColumn('Record Date', 'getRecordDate', 'record_date', 'o', [$this,'formatDate']),
-            $grid->newColumn('Transaction Code', 'getCode', 'code', 't'),
-            $grid->newColumn('Account Name', 'getNameCode', 'name', 'a'),
+            $grid->newColumn('Transaction Code', 'getCode', 'code'),
             $grid->newColumn('Particulars', 'getNotes', 'notes'),
-            $grid->newColumn('Debit', 'getDebit', 'debit', 'o', [$this,'formatPrice']),
-            $grid->newColumn('Credit', 'getCredit', 'credit',  'o', [$this,'formatPrice']),
             $grid->newColumn('Prepared By', 'getDisplayName', 'user_create',  'u'),
        
         );
@@ -105,7 +99,7 @@ class CDJController extends CrudController
         {
             $transaction = $this->update($data);
             $this->addFlash('success','CDJ Entries added successfully.');
-            return $this->redirect($this->generateUrl('gist_accounting_voucher_view',['id'=>$transaction->getID()]));
+            return $this->redirect($this->generateUrl('gist_accounting_voucher_edit_form',['id'=>$transaction->getID()]));
         }
         catch (ValidationException $e)
         {
@@ -229,6 +223,21 @@ class CDJController extends CrudController
         return $fg;
     }
 
+
+    public function getDetailsAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $um = $this->get('gist_user');
+        $data = $this->getRequest()->request->all();
+        $obj = $em->getRepository('GistAccountingBundle:CDJTransaction')->find($id);
+        
+        $this->padFormParams($params, $obj);
+        $params['obj'] = $obj;
+        $twig = "GistAccountingBundle:CDJ:details.html.twig";
+
+        return $this->render($twig, $params);
+ 
+    }
 
 
 

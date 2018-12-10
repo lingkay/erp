@@ -31,15 +31,27 @@ table {
 		<br/>
 		<table >
 
-
-		<tr>			
-			<td>Check No.: </td>
-			<td> {{ obj.getCheckNumber }}</td>
-		</tr>
 		<tr>
 			<td>Bank: </td>			
 			<td> {{ obj.getBankText}} </td>
 		</tr>	
+	</table>
+
+	<table class="table" cellspacing="0" cellpadding="5"  width="800">	
+		<tr>
+			<th style="width:200px">Check Number</th>
+			<th style="width:200px">Amount</th>
+			<th style="width:200px">Check Date</th>
+		</tr>		
+		<tbody>		
+		{% for entry in obj.getChecks %}			
+			<tr>
+				<td >{{ entry.getCheckNumber}}</td>
+				<td style="text-align: right">Php {{ entry.getAmount|number_format(2) }}</td>
+				<td>Php {{entry.getCheckDate|date('m/d/Y') }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
 	</table>
 	{% endif %}
 	<br />

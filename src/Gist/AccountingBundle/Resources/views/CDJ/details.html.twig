@@ -1,0 +1,28 @@
+{% import "GistTemplateBundle::form.html.twig" as form %}
+{% block content %}
+	{{ form.group_text("Transaction Code", 'transaction_code', obj.getCode, 3,4,true) }}
+	{{ form.group_text("Record Date", 'record_date', obj.getRecordDate|date('m/d/Y'), 3,4,true) }}
+	{{ form.group_text("Status", '', obj.getStatus, 3,4,true) }}
+	
+	{{ form.group_textarea("Particulars", 'notes', obj.getNotes, 4,3,4,true) }}
+
+<table id="table_entries" class="table table-striped table-bordered table-hover">
+    <thead>
+        <th width="20%">Account</th>
+        <th>Debit</th>
+        <th>Credit</th>
+    </thead>
+    <tbody>
+        
+    {% for entry in obj.getEntries %}
+        <tr>
+            <td>{{ entry.getAccount.getCode }} - {{ entry.getAccount.getName }}</td>
+            <td><div style="text-align:right;">{{ entry.getDebit|number_format(2) }}</div></td>
+            <td><div style="text-align:right;">{{ entry.getCredit|number_format(2) }}</div></td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+   
+</table>
+{% endblock %}

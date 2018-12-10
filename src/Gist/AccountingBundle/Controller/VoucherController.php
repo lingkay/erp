@@ -12,6 +12,7 @@ use Gist\NotificationBundle\Entity\Notification;
 use Gist\CoreBundle\Template\Controller\TrackCreate;
 use Gist\AccountingBundle\Entity\CDJJournalEntry;
 use Gist\AccountingBundle\Entity\CDJTransaction;
+use Gist\AccountingBundle\Entity\VoucherChecks;
 use DateTime;
 use SplFileObject;
 use LimitIterator;
@@ -156,12 +157,30 @@ class VoucherController extends CrudController
         $obj->setPayee($data['payee'])
             ->setPayeeText($data['payee_text'])
             ->setPaymentType($data['payment_type'])
-            ->setCheckNumber($data['check_number'])
+            // ->setCheckNumber($data['check_number'])
             ->setBank($data['bank'])
             ->setBankText($data['bank_text'])
             ->setStatus(CDJTransaction::STATUS_SAVED)
             ->setCertifiedBy($um->findUser($data['certified_by']))
             ->setApprovedBy($um->findUser($data['approved_by']));
+
+        
+          foreach ($obj->getChecks() as $cm) {
+                $em->remove($cm);
+            }
+            $obj->clearChecks();
+
+        foreach ($data['check_number'] as $key => $value) {
+            $check_number = $value;
+            $check_date = new DateTime($data['check_date'][$key]);
+            $amount = $data['check_amount'][$key];
+           
+            $checks = new VoucherChecks($check_number,$check_date,$amount);
+            $em->persist($checks);
+            $em->flush();
+            $obj->addCheck($checks);
+
+        }
 
         foreach ($obj->getTempEntries() as $temp) {
             $cdj_entry = new CDJJournalEntry();

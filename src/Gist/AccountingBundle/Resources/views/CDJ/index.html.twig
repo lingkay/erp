@@ -38,6 +38,28 @@
         </div>
     </div>
 </div>
+
+
+<div id="open-form" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Transaction Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class=" row form-horizontal form">
+                   <div id="simple-form-container">
+                   </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="" class="btn blue" id="edit_link">View Voucher</a>
+                <button type="button" data-dismiss="modal" class="btn default">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
@@ -96,6 +118,32 @@ $(document).ready(function() {
     $('#list_table_wrapper .dataTables_filter input').addClass("form-control input-small input-inline"); // modify table search input
     $('#list_table_wrapper .dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     $('#list_table_wrapper .dataTables_length select').select2(); // initialize select2 dropdown
+
+
+    $(document).on('click','.ajax-view', function(){
+        $('#open-form').modal('show');
+        $('#mode').html("Edit");
+        $('#simple-form-container').html('');
+        mode = 'edit';
+        edit_element = $(this).data('url');
+        url_voucher = $(this).data('url_voucher');
+        full_edit_url = $(this).data('edit');
+        $('#edit_link').attr('href',url_voucher);
+        $.get(edit_element, function(data){
+            $('#simple-form-container').html(data);
+
+            // Template.init();
+            /** template.init() cannot be used because the toaster success appears everytime 
+                since it is initialized in template.js 
+            *   solution would be initialize necessary functions here
+            */
+            $('.select_2').select2({
+                minimumResultsForSearch: 10
+            });
+
+        });
+    
+    });
 });
 </script>
 {% endblock %}
