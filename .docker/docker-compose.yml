@@ -1,0 +1,42 @@
+version: '2.3'
+  
+
+services:
+
+  db:
+    container_name: qa.mysql.${COMPOSE_PROJECT_NAME}
+    build: mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWD}  
+        MYSQL_DATABASE: ${MYSQL_DB}
+    volumes:
+        - ../:/app
+    ports:
+        - 3309:3306
+        
+  app:
+    container_name: qa.php.${COMPOSE_PROJECT_NAME}
+    build: 
+        context: php
+        shm_size: 10000000
+    volumes:
+        - ../:/app
+        # - ./php/cache:/dev/shm
+        - vendor-sync:/app/vendor:nocopy
+
+  
+  nginx:
+    container_name: qa.nginx.${COMPOSE_PROJECT_NAME}
+    build: nginx
+    ports:
+        - "${PORT_NUMBER}:80"
+    environment:
+      - VIRTUAL_HOST=${COMPOSE_PROJECT_NAME}.qadev.local
+
+    volumes:
+        - ../:/app
+        - ./nginx/logs:/var/log/nginx
+
+volumes:
+  vendor-sync:
+    external: true
