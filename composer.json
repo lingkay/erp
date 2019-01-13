@@ -45,13 +45,11 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "php app/console assetic:dump",
             "php app/console cache:clear"
-        
         ]
     },
     "config": {
         "bin-dir": "bin",
-        "discard-changes": true,
-        "vendor-dir": "/home/gist_erp2/vendor"
+        "discard-changes": true
     },
     "extra": {
         "symfony-app-dir": "app",

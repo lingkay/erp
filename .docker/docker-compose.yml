@@ -4,7 +4,7 @@ version: '2.3'
 services:
 
   db:
-    container_name: qa.mysql.${COMPOSE_PROJECT_NAME}
+    container_name: cosmeti.mysql.${COMPOSE_PROJECT_NAME}
     build: mysql
     environment:
         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWD}  
@@ -15,7 +15,7 @@ services:
         - 3309:3306
         
   app:
-    container_name: qa.php.${COMPOSE_PROJECT_NAME}
+    container_name: cosmeti.php.${COMPOSE_PROJECT_NAME}
     build: 
         context: php
         shm_size: 10000000
@@ -26,12 +26,12 @@ services:
 
   
   nginx:
-    container_name: qa.nginx.${COMPOSE_PROJECT_NAME}
+    container_name: cosmeti.nginx.${COMPOSE_PROJECT_NAME}
     build: nginx
     ports:
         - "${PORT_NUMBER}:80"
     environment:
-      - VIRTUAL_HOST=${COMPOSE_PROJECT_NAME}.qadev.local
+      - VIRTUAL_HOST=${COMPOSE_PROJECT_NAME}.cosmeti.local
 
     volumes:
         - ../:/app
