@@ -8,5 +8,4 @@ web/js/*
 vendor/
 app/config/parameters.yml
 .phpintel/*
-composer.lock
 bin/*
