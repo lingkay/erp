@@ -85,14 +85,14 @@ class POSController extends CrudController
         $products = $em->getRepository('GistInventoryBundle:Product')->findBy(array('category'=>$category_id));
         $config = $this->get('gist_configuration');
         $vat = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Mode'));
-        if (count($vat) == 0) {
+        if (!$vat) {
             $vat = 'incl';
         } else {
             $vat = $vat->getValue();
         }
         
         $vat_rate = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Rate'));
-        if (count($vat_rate) == 0) {
+        if (!$vat_rate) {
             $vat_rate = '12';
         } else {
             $vat_rate = $vat_rate->getValue();
@@ -139,7 +139,7 @@ class POSController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Rate'));
-        if (count($opt) > 0) {
+        if ($opt) {
             return new JsonResponse($opt->getValue());
         }
         //default value
@@ -152,7 +152,7 @@ class POSController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Tax Mode'));
-        if (count($opt) > 0) {
+        if ($opt) {
             return new JsonResponse($opt->getValue());
         }
         //default value
@@ -191,7 +191,7 @@ class POSController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Exhange with refund'));
-        if (count($opt) > 0) {
+        if ($opt) {
             return new JsonResponse($opt->getValue());
         }
         //default value
@@ -204,7 +204,7 @@ class POSController extends CrudController
         header("Access-Control-Allow-Origin: *");
         $em = $this->getDoctrine()->getManager();
         $opt = $em->getRepository('GistPOSERPBundle:POSSettings')->findOneBy(array('name'=>'Minimum Deposit Percentage'));
-        if (count($opt) > 0) {
+        if ($opt) {
             return new JsonResponse($opt->getValue());
         }
         //default value

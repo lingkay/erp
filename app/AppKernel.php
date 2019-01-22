@@ -88,17 +88,4 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
     }
-
-
-
-    public function getCacheDir()
-    {
-        return '/home/gist_erp2/cache';
-    }
-
-    public function getLogDir()
-    {
-        return '/home/gist_erp2/logs';
-    }
-
 }
